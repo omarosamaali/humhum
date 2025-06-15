@@ -170,16 +170,8 @@
                         {{-- Fixed: Safe access to kitchen relationship --}}
                         <td>
                             {{-- {{ $kitchens->name_ar ?? $kitchen->name_ar }} --}}
-                            <div class="" name="kitchen_type_id" id="kitchen_type_id" required>
-                                {{-- استخدام $kitchens بدلاً من $kitchens --}}
-                                @foreach ($kitchens as $kitchen)
-                                    {{-- استخدام $kitchen->name_ar إذا كان هذا هو العمود الصحيح للاسم --}}
-                                    <div value="{{ $kitchen->id }}"
-                                        {{ old('kitchen_type_id', $recipe->kitchen_type_id) == $kitchen->id ? 'selected' : '' }}>
-                                        {{ $kitchen->name_ar ?? $kitchen->name }} {{-- استخدام name_ar إذا موجود، وإلا name --}}
-                                    </div>
-                                @endforeach
-                            </div>
+                            {{ $recipe->kitchen ? $recipe->kitchen->name_ar : 'غير محدد' }}
+                          
                         </td>
                         {{-- Fixed: Safe access to chef relationship --}}
                         <td>{{ $recipe->chef?->name ?? 'غير محدد' }}</td>

@@ -11,27 +11,27 @@ class Recipe extends Model
     use HasFactory;
 
     protected $fillable = [
-        'title', 
-        'dish_image', 
-        'kitchen_type_id', 
-        'chef_id', 
-        'main_category_id', 
-        'ingredients', 
-        'steps', // إضافة steps للـ fillable
-        'servings', 
-        'preparation_time', 
-        'calories', 
-        'fats', 
-        'carbs', 
-        'protein', 
-        'is_free', 
+        'title',
+        'dish_image',
+        'kitchen_type_id',
+        'chef_id',
+        'main_category_id',
+        'ingredients',
+        'steps',
+        'servings',
+        'preparation_time',
+        'calories',
+        'fats',
+        'carbs',
+        'protein',
+        'is_free',
         'status'
     ];
+
     protected $casts = [
-        // 'is_free' => 'boolean',
-        // 'status' => 'boolean',
-        'steps' => 'array', // هذا هو الأهم: لكي يتعامل Laravel مع 'steps' كمصفوفة JSON
+        'steps' => 'array',
     ];
+
     protected static function booted()
     {
         static::creating(function (Recipe $recipe) {
@@ -82,15 +82,14 @@ class Recipe extends Model
         return $parsedIngredients;
     }
 
-    // Relationships
     public function subCategories()
     {
         return $this->belongsToMany(SubCategory::class, 'recipe_sub_category', 'recipe_id', 'sub_category_id');
     }
 
-    public function Kitchens()
+    public function kitchen()
     {
-        return $this->belongsTo(Kitchens::class);
+        return $this->belongsTo(Kitchens::class, 'kitchen_type_id');
     }
 
     public function chef()
@@ -103,18 +102,11 @@ class Recipe extends Model
         return $this->belongsTo(MainCategories::class, 'main_category_id');
     }
 
-    /**
-     * Get the steps for the recipe from recipe_steps table.
-     */
     public function recipeSteps()
     {
         return $this->hasMany(RecipeStep::class, 'recipe_id')->orderBy('id', 'asc');
     }
 
-    /**
-     * Legacy method - keep for backward compatibility
-     * Use recipeSteps() for the relationship
-     */
     public function steps()
     {
         return $this->hasMany(RecipeStep::class, 'recipe_id')->orderBy('id', 'asc');

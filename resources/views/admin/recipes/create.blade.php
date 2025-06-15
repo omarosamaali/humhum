@@ -2,7 +2,7 @@
 
 @section('title', 'إضافة وصفة جديدة')
 @section('page-title', 'إضافة وصفة جديدة')
-
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 @push('styles')
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <style>
@@ -339,10 +339,9 @@
                     <input type="text" class="form-control" id="title" name="title" value="{{ old('title') }}"
                         required>
                     @error('title')
-                        <div class="text-white mt-1">{{ $message }}</div>
+                        <div class="text-danger mt-1">{{ $message }}</div>
                     @enderror
                 </div>
-
                 <div class="col-md-6 mb-3">
                     <label for="dish_image" class="form-label">صورة الطبق</label>
                     <input type="file" class="form-control" name="dish_image" id="dish_image" accept="image/*">
@@ -369,67 +368,76 @@
                     @enderror
                 </div>
 
-@auth
-    @if (auth()->user()->role === 'طاه')
-        <div class="col-md-4 mb-3">
-            <label for="chef_name" class="form-label">الطاهي</label>
-            <input type="text" class="form-control" id="chef_name" 
-                value="{{ auth()->user()->name }}" readonly>
-            {{-- Hidden field to send the actual chef_id --}}
-            <input type="hidden" name="chef_id" value="{{ auth()->user()->id }}">
-        </div>
-    @else
-        <div class="col-md-4 mb-3">
-            <label for="chef_id" class="form-label">الطاهي (اختياري)</label>
-            <select class="form-select" name="chef_id" id="chef_id">
-                <option value="">اختر الطاهي</option>
-                @foreach ($chefs as $chef)
-                    <option value="{{ $chef->id }}" {{ old('chef_id', isset($recipe) ? $recipe->chef_id : '') == $chef->id ? 'selected' : '' }}>
-                        الطاهي: {{ $chef->name }}
-                    </option>
-                @endforeach
-            </select>
-            @error('chef_id')
-                <div class="text-danger mt-1">{{ $message }}</div>
-            @enderror
-        </div>
-    @endif
-@else
-    <div class="col-md-4 mb-3">
-        <label for="chef_id" class="form-label">الطاهي (اختياري)</label>
-        <select class="form-select" name="chef_id" id="chef_id" disabled>
-            <option value="">لا يوجد طاهي متاح (يرجى تسجيل الدخول)</option>
-        </select>
-    </div>
-@endauth
+                @auth
+                    @if (auth()->user()->role === 'طاه')
+                        <div class="col-md-4 mb-3">
+                            <label for="chef_name" class="form-label">الطاهي</label>
+                            <input type="text" class="form-control" id="chef_name" value="{{ auth()->user()->name }}"
+                                readonly>
+                            {{-- Hidden field to send the actual chef_id --}}
+                            <input type="hidden" name="chef_id" value="{{ auth()->user()->id }}">
+                        </div>
+                    @else
+                        <div class="col-md-4 mb-3">
+                            <label for="chef_id" class="form-label">الطاهي (اختياري)</label>
+                            <select class="form-select" name="chef_id" id="chef_id">
+                                <option value="">اختر الطاهي</option>
+                                @foreach ($chefs as $chef)
+                                    <option value="{{ $chef->id }}"
+                                        {{ old('chef_id', isset($recipe) ? $recipe->chef_id : '') == $chef->id ? 'selected' : '' }}>
+                                        الطاهي: {{ $chef->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            @error('chef_id')
+                                <div class="text-danger mt-1">{{ $message }}</div>
+                            @enderror
+                        </div>
+                    @endif
+                @else
+                    <div class="col-md-4 mb-3">
+                        <label for="chef_id" class="form-label">الطاهي (اختياري)</label>
+                        <select class="form-select" name="chef_id" id="chef_id" disabled>
+                            <option value="">لا يوجد طاهي متاح (يرجى تسجيل الدخول)</option>
+                        </select>
+                    </div>
+                @endauth
 
 
-<div class="col-md-3 mb-3">
-    <div class="form-group mb-3">
-        <label for="is_free" class="form-label">نوع الوصفة</label>
-        @can('isChef')
-            {{-- هذا الجزء يظهر فقط للمدير --}}
-            <select class="form-select" name="is_free" id="is_free" required>
-                <option value="">اختر نوع الوصفة</option>
-                <option value="1" {{ old('is_free', isset($recipe) ? $recipe->is_free : '') == '1' ? 'selected' : '' }}>مجانية</option>
-                <option value="0" {{ old('is_free', isset($recipe) ? $recipe->is_free : '') == '0' ? 'selected' : '' }}>مدفوعة</option>
-            </select>
-        @else
-            {{-- هذا الجزء يظهر لغير المدير --}}
-            <select class="form-select" name="is_free" id="is_free" required>
-                <option value="">اختر نوع الوصفة</option>
-                <option value="1" {{ old('is_free', isset($recipe) ? $recipe->is_free : '') == '1' ? 'selected' : '' }}>مجانية</option>
-                <option value="0" {{ old('is_free', isset($recipe) ? $recipe->is_free : '') == '0' ? 'selected' : '' }}>نظام الباقات</option>
-            </select>
-        @endcan
-    </div>
-    @error('is_free')
-        <div class="text-danger mt-1">{{ $message }}</div>
-    @enderror
-</div>
+                <div class="col-md-3 mb-3">
+                    <div class="form-group mb-3">
+                        <label for="is_free" class="form-label">نوع الوصفة</label>
+                        @can('isChef')
+                            {{-- هذا الجزء يظهر فقط للمدير --}}
+                            <select class="form-select" name="is_free" id="is_free" required>
+                                <option value="">اختر نوع الوصفة</option>
+                                <option value="1"
+                                    {{ old('is_free', isset($recipe) ? $recipe->is_free : '') == '1' ? 'selected' : '' }}>
+                                    مجانية</option>
+                                <option value="0"
+                                    {{ old('is_free', isset($recipe) ? $recipe->is_free : '') == '0' ? 'selected' : '' }}>
+                                    مدفوعة</option>
+                            </select>
+                        @else
+                            {{-- هذا الجزء يظهر لغير المدير --}}
+                            <select class="form-select" name="is_free" id="is_free" required>
+                                <option value="">اختر نوع الوصفة</option>
+                                <option value="1"
+                                    {{ old('is_free', isset($recipe) ? $recipe->is_free : '') == '1' ? 'selected' : '' }}>
+                                    مجانية</option>
+                                <option value="0"
+                                    {{ old('is_free', isset($recipe) ? $recipe->is_free : '') == '0' ? 'selected' : '' }}>نظام
+                                    الباقات</option>
+                            </select>
+                        @endcan
+                    </div>
+                    @error('is_free')
+                        <div class="text-danger mt-1">{{ $message }}</div>
+                    @enderror
+                </div>
                 <div class="col-md-4 mb-3">
                     <label for="main_category_id" class="form-label">التصنيف الرئيسي</label>
-                    <select class="form-select" name="main_category_id" id="main_category_id" required>
+                    <select class="form-control" name="main_category_id" id="main_category_id">
                         <option value="">اختر التصنيف الرئيسي</option>
                         @foreach ($mainCategories as $mainCategory)
                             <option value="{{ $mainCategory->id }}"
@@ -439,22 +447,17 @@
                         @endforeach
                     </select>
                     @error('main_category_id')
-                        <div class="text-white mt-1">{{ $message }}</div>
+                        <div class="text-danger mt-1">{{ $message }}</div>
                     @enderror
                 </div>
 
-                <div class="col-md-12 mb-3">
+                <div class="col-md-12 mb-3" id="id_sub_categories_container" style="display: none;">
                     <label for="sub_categories" class="form-label">التصنيفات الفرعية</label>
-                    <select class="form-control select2" name="sub_categories[]" id="sub_categories" multiple="multiple">
-                        @foreach ($subCategories as $subCategory)
-                            <option value="{{ $subCategory->id }}"
-                                {{ in_array($subCategory->id, old('sub_categories', [])) ? 'selected' : '' }}>
-                                {{ $subCategory->name_ar }}
-                            </option>
-                        @endforeach
+                    <select class="form-control select2" name="sub_categories[]" id="id_sub_categories"
+                        multiple="multiple">
                     </select>
                     @error('sub_categories')
-                        <div class="text-white mt-1">{{ $message }}</div>
+                        <div class="text-danger mt-1">{{ $message }}</div>
                     @enderror
                 </div>
 
@@ -541,7 +544,7 @@
                             @endforeach
                         @endif
                     </div>
-                    <button type="button" id="add-step-btn" class="btn add-step-btn">
+                    <button type="button" id="add-step-btn" class="btn add-ingredient-btn">
                         <i class="fas fa-plus-circle ms-1"></i> أضف خطوة
                     </button>
                     {{-- حقل مخفي لتخزين بيانات الخطوات كـ JSON --}}
@@ -634,34 +637,71 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         $(document).ready(function() {
-            // Initialize Select2 for sub_categories
-            $('#sub_categories').select2({
-                placeholder: "اختر التصنيفات الفرعية",
-                allowClear: true
+            $('#id_sub_categories').select2({
+                placeholder: 'اختر التصنيفات الفرعية',
+                allowClear: true,
+                dir: 'rtl'
             });
 
-            // Image preview logic for dish_image
-            const dishImageInput = document.getElementById('dish_image');
-            const imagePreview = document.getElementById('image_preview');
-            if (dishImageInput) {
-                dishImageInput.addEventListener('change', function(event) {
-                    const file = event.target.files[0];
-                    if (file) {
-                        const reader = new FileReader();
-                        reader.onload = function(e) {
-                            imagePreview.src = e.target.result;
-                            imagePreview.style.display = 'block';
-                        };
-                        reader.readAsDataURL(file);
-                    } else {
-                        imagePreview.src = '#';
-                        imagePreview.style.display = 'none';
-                    }
-                });
-            }
+            $('#main_category_id').on('change', function() {
+                const mainCategoryId = $(this).val();
+                const subCategoriesContainer = $('#id_sub_categories_container');
+                const subCategoriesSelect = $('#id_sub_categories');
 
-            // --- Dynamic Ingredients Logic ---
-            const ingredientsContainer = $('#ingredients-container');
+                console.log('Main Category ID selected:', mainCategoryId);
+
+                if (mainCategoryId) {
+                    subCategoriesContainer.show();
+                    subCategoriesSelect.empty().append('<option value="">جاري التحميل...</option>').trigger('change');
+
+                    $.ajax({
+                        url: '{{ route('admin.recipes.subcategories') }}',
+                        type: 'GET',
+                        data: { main_category_id: mainCategoryId },
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        success: function(response) {
+                            console.log('AJAX Response:', response);
+                            subCategoriesSelect.empty();
+
+                            if (response.length > 0) {
+                                $.each(response, function(index, subCategory) {
+                                    subCategoriesSelect.append(
+                                        `<option value="${subCategory.id}">${subCategory.name_ar}</option>`
+                                    );
+                                });
+                                @if (old('sub_categories'))
+                                    const oldValues = @json(old('sub_categories'));
+                                    subCategoriesSelect.val(oldValues).trigger('change');
+                                @endif
+                            } else {
+                                subCategoriesSelect.append('<option value="">لا توجد تصنيفات فرعية</option>');
+                            }
+                            subCategoriesSelect.trigger('change');
+                        },
+                        error: function(xhr, status, error) {
+                            console.error('AJAX Error:', xhr.responseText);
+                            subCategoriesSelect.empty().append('<option value="">حدث خطأ في التحميل</option>').trigger('change');
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'خطأ',
+                                text: 'فشل تحميل التصنيفات الفرعية. حاول مرة أخرى.'
+                            });
+                        }
+                    });
+                } else {
+                    subCategoriesContainer.hide();
+                    subCategoriesSelect.empty().trigger('change');
+                }
+            });
+
+            @if (old('main_category_id'))
+                $('#main_category_id').trigger('change');
+            @endif
+        });
+
+                    const ingredientsContainer = $('#ingredients-container');
             const addIngredientBtn = $('#add-ingredient-btn');
             const MAX_CHARS_INGREDIENT = 200;
 
@@ -785,7 +825,7 @@
                     const $multiplePreviews = $(this).closest('.step-media-section').find(
                         '.multiple-media-previews');
                     const $mediaActions = $(this).closest('.step-media-section').find(
-                    '.step-media-actions');
+                        '.step-media-actions');
                     const $currentStepItem = $(this).closest('.step-item');
 
                     if (files.length > 0) {
@@ -826,7 +866,7 @@
 
                     // إزالة من المصفوفة الداخلية
                     if ($currentStepItem[0].allMediaFiles && $currentStepItem[0].allMediaFiles[
-                        mediaIndex] !== undefined) {
+                            mediaIndex] !== undefined) {
                         $currentStepItem[0].allMediaFiles.splice(mediaIndex, 1);
                     }
 
@@ -963,9 +1003,9 @@
 
             // --- Form Submission Logic ---
             $('#recipe-form').on('submit', function(e) {
-                e.preventDefault(); // منع الإرسال العادي للنموذج
+                e.preventDefault();
 
-                const formData = new FormData(this); // إنشاء FormData من النموذج
+                const formData = new FormData(this);
 
                 // معالجة المكونات
                 const ingredients = [];
@@ -981,36 +1021,27 @@
 
                 // معالجة الخطوات
                 const steps = [];
-
-                // إزالة جميع ملفات step_media الموجودة مسبقاً من FormData
                 for (let pair of formData.entries()) {
                     if (pair[0].startsWith('step_media[')) {
                         formData.delete(pair[0]);
                     }
                 }
-
                 stepsContainer.find('.step-item').each(function(index) {
                     const $this = $(this);
                     const stepText = $this.find('.step-text').val().trim();
                     const mediaFiles = $this[0].allMediaFiles || [];
-
                     if (stepText) {
-                        // إضافة الملفات الجديدة إلى FormData
                         if (mediaFiles.length > 0) {
                             mediaFiles.forEach((file, fileIndex) => {
                                 formData.append(`step_media[${index}][]`, file);
                             });
                         }
-
-                        // جمع معلومات الملفات الموجودة (للتحديث)
                         const existingMedia = [];
                         $this.find('.media-item').each(function() {
                             const $mediaItem = $(this);
                             const imgSrc = $mediaItem.find('img').attr('src');
                             const videoSrc = $mediaItem.find('video').attr('src');
-
                             if (imgSrc && imgSrc.includes('storage/')) {
-                                // استخراج المسار من URL الكامل
                                 const urlPath = imgSrc.split('storage/')[1];
                                 existingMedia.push({
                                     url: urlPath,
@@ -1026,16 +1057,12 @@
                                 });
                             }
                         });
-
-                        const stepData = {
+                        steps.push({
                             description: stepText,
-                            media: existingMedia // الملفات الموجودة فقط، الجديدة ستتم معالجتها عبر FormData
-                        };
-
-                        steps.push(stepData);
+                            media: existingMedia
+                        });
                     }
                 });
-
                 if (steps.length === 0) {
                     Swal.fire({
                         icon: 'error',
@@ -1044,10 +1071,8 @@
                     });
                     return;
                 }
-
                 formData.set('steps_data', JSON.stringify(steps));
 
-                // إرسال البيانات باستخدام AJAX
                 $.ajax({
                     url: $(this).attr('action'),
                     method: $(this).attr('method') || 'POST',
@@ -1057,16 +1082,15 @@
                     success: function(response) {
                         if (response.success) {
                             Swal.fire({
-                                icon: 'success',
-                                title: 'نجح!',
-                                text: response.message || 'تم حفظ الوصفة بنجاح!'
-                            }).then(() => {
-                                if (response.redirect_url) {
-                                    window.location.href = response.redirect_url;
-                                } else {
-                                    location.reload();
-                                }
-                            });
+                                    icon: 'success',
+                                    title: 'نجح!',
+                                    text: response.message || 'تم حفظ الوصفة بنجاح!'
+                                })
+                                .then(() => {
+                                    if (response.redirect_url) window.location.href =
+                                        response.redirect_url;
+                                    else location.reload();
+                                });
                         } else {
                             Swal.fire({
                                 icon: 'error',
@@ -1077,16 +1101,20 @@
                     },
                     error: function(xhr) {
                         let errorMessage = 'حدث خطأ أثناء الحفظ!';
-
                         if (xhr.status === 422) {
-                            // خطأ في التحقق من البيانات
                             const errors = xhr.responseJSON?.errors || {};
-                            const errorMessages = Object.values(errors).flat();
-                            if (errorMessages.length > 0) {
-                                errorMessage = errorMessages.join('\n');
-                            }
+                            errorMessage = Object.values(errors).flat().join('\n');
+                            // عرض الأخطاء تحت الحقول
+                            $('.text-danger').remove(); // مسح أي أخطاء سابقة
+                            $.each(errors, function(key, value) {
+                                const $input = $(`[name="${key}"]`);
+                                if ($input.length) {
+                                    $input.after(
+                                        `<div class="text-danger mt-1">${value[0]}</div>`
+                                        );
+                                }
+                            });
                         }
-
                         Swal.fire({
                             icon: 'error',
                             title: 'خطأ',
@@ -1095,6 +1123,6 @@
                     }
                 });
             });
-        });
+        
     </script>
 @endpush

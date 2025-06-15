@@ -124,9 +124,9 @@
                     <div class="mb-3">
                         <label for="status" class="form-label font-bold">الحالة</label>
                         <select class="form-select" name="status" id="status" required>
-                            <option value="1" {{ old('status', $subCategory->status) == '1' ? 'selected' : '' }}>فعال
+                            <option value="1" {{ old('status', $subCategory->status) == '1' ? 'selected' : '' }}>غير فعال
                             </option>
-                            <option value="0" {{ old('status', $subCategory->status) == '0' ? 'selected' : '' }}>غير فعال
+                            <option value="0" {{ old('status', $subCategory->status) == '0' ? 'selected' : '' }}>فعال
                             </option>
                         </select>
                         @error('status')

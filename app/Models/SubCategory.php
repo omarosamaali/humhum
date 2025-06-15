@@ -9,14 +9,8 @@ class SubCategory extends Model
 {
     use HasFactory;
 
-    // تحديد اسم الجدول إذا كان مختلفًا عن اسم الموديل بصيغة الجمع
-    protected $table = 'sub_categories';
-
-    // الأعمدة التي يمكن تعبئتها جماعيًا (Mass Assignment)
     protected $fillable = [
-        'category_id',
         'name_ar',
-        'name_en',
         'name_id',
         'name_am',
         'name_hi',
@@ -25,20 +19,21 @@ class SubCategory extends Model
         'name_fil',
         'name_ur',
         'name_ta',
+        'name_en',
         'name_ne',
         'name_ps',
+        'category_id', // التأكد من اسم العمود الصحيح
         'status',
     ];
 
-    // تحديد نوع البيانات لبعض الأعمدة
     protected $casts = [
         'status' => 'boolean',
     ];
 
-    // علاقة "ينتمي إلى" (Belongs To) مع MainCategory
-    public function mainCategory() // Changed from MainCategories() to mainCategory()
+    // العلاقة مع التصنيف الرئيسي
+    public function mainCategory()
     {
-        return $this->belongsTo(MainCategories::class, 'category_id'); // Changed MainCategories::class to MainCategory::class
+        return $this->belongsTo(MainCategories::class, 'category_id');
     }
 
     public function recipes()

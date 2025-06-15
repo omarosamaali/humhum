@@ -42,11 +42,12 @@ Route::middleware(['auth', 'verified', CheckUserStatus::class])->group(function 
         Route::resource('banners', BannerController::class);
         Route::resource('recipes', RecipesController::class);  // This uses plural
         Route::resource('recipeView', RecipeController::class);  // This uses singular
-        
         Route::post('/recipes/{recipe}/ajax-update', [RecipesController::class, 'ajaxUpdate'])
             ->name('recipes.ajax-update');
     });
-
+    Route::get('/recipes/subcategories', [RecipesController::class, 'getSubCategories'])
+        ->name('admin.recipes.subcategories');
+        
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');

@@ -1,5 +1,6 @@
 <?php
-
+// 1. إصلاح model MainCategories
+// في app/Models/MainCategories.php
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -13,16 +14,16 @@ class MainCategories extends Model
     protected $fillable = [
         'name_ar',
         'name_id',
-        'name_am', // جديد
-        'name_hi', // جديد
-        'name_bn', // جديد
-        'name_ml', // جديد
-        'name_fil', // جديد
-        'name_ur', // جديد
-        'name_ta', // جديد
-        'name_en', // جديد
-        'name_ne', // جديد
-        'name_ps', // جديد
+        'name_am',
+        'name_hi',
+        'name_bn',
+        'name_ml',
+        'name_fil',
+        'name_ur',
+        'name_ta',
+        'name_en',
+        'name_ne',
+        'name_ps',
         'image',
         'status',
     ];
@@ -42,22 +43,17 @@ class MainCategories extends Model
         return $this->status ? 'فعال' : 'غير فعال';
     }
 
-    // Accessor للحصول على كلاس Bootstrap للـ badge حسب الحالة
     public function getStatusBadgeClassAttribute()
     {
         return $this->status ? 'bg-success' : 'bg-danger';
     }
 
-    public function MainCategories()
-    {
-        return $this->belongsTo(MainCategories::class);
-    }
-    // In app/Models/MainCategories.php (if your model is named MainCategories)
-
+    // العلاقة الصحيحة مع التصنيفات الفرعية
     public function subCategories()
     {
-        return $this->hasMany(SubCategory::class, 'category_id');
+        return $this->hasMany(SubCategory::class, 'category_id'); // تأكد من اسم العمود الصحيح
     }
+
     public function recipes()
     {
         return $this->hasMany(Recipe::class);
