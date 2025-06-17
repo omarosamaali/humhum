@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'لوحة تحكم الإدارة')</title>
+        <link rel="icon" href="{{ asset('assets/img/Group.png') }}" type="image/x-icon">
 
     <!-- Bootstrap RTL CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
@@ -284,32 +285,32 @@
                 </a>
                 <ul class="dropdown-menu">
 
-                    <a class="nav-link" href="{{ route('admin.recipes.index') }}">
+                    <a class="nav-link " style="color :#333;" href="{{ route('admin.recipes.index') }}">
                         <i class="fas fa-utensils"></i>
                         الإدخال والتعديل
                     </a>
 
-                    <a class="nav-link" href="{{ route('admin.recipeView.index') }}">
+                    <a class="nav-link" style="color :#333;" href="{{ route('admin.recipeView.index') }}">
                         <i class="fas fa-eye"></i>
                         عرض الوصفات
                     </a>
 
-                    <a class="nav-link" href="{{ route('admin.recipeView.index') }}">
+                    <a class="nav-link" style="color :#333;" href="{{ route('admin.recipeView.index') }}">
                         <i class="fas fa-eye"></i>
                         الوصفات المجانية
                     </a>
 
-                    <a class="nav-link" href="{{ route('admin.recipeView.index') }}">
+                    <a class="nav-link" style="color :#333;" href="{{ route('admin.recipeView.index') }}">
                         <i class="fas fa-eye"></i>
                         الوصفات بنظام الإشتراك
                     </a>
 
-                    <a class="nav-link" href="{{ route('admin.recipeView.index') }}">
+                    <a class="nav-link" style="color :#333;" href="{{ route('admin.recipeView.index') }}">
                         <i class="fas fa-eye"></i>
                         الوصفات الخاصة بالطاهي - إشتراك
                     </a>
 
-                    <a class="nav-link" href="{{ route('admin.recipeView.index') }}">
+                    <a class="nav-link" style="color :#333; width: 312px;" href="{{ route('admin.recipeView.index') }}">
                         <i class="fas fa-eye"></i>
                         الوصفات الخاصة بالطاهي - بالوصفة
                     </a>

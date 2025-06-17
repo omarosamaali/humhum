@@ -40,4 +40,9 @@ class SubCategory extends Model
     {
         return $this->belongsToMany(Recipe::class, 'recipe_sub_category', 'sub_category_id', 'recipe_id');
     }
+
+    public function Translations()
+    {
+        return $this->morphMany(Translation::class, 'translatable');
+    }
 }

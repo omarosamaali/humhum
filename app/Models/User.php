@@ -11,7 +11,18 @@ class User extends Authenticatable
     use HasFactory, Notifiable;
 
     protected $fillable = [
-        'name',
+        'name', // احتفظ بهذا إذا كنت لا تزيله أو تغير اسمه
+        'name_ar',
+        'name_en',
+        'name_id',
+        'name_am',
+        'name_hi',
+        'name_bn',
+        'name_ml',
+        'name_fil',
+        'name_ur',
+        'name_ta',
+        'name_ps',
         'email',
         'password',
         'role',
@@ -89,11 +100,12 @@ class User extends Authenticatable
     
     public function recipes()
     {
-        return $this->hasMany(Recipe::class, 'chef_id');
+        return $this->hasMany(Recipe::class, 'chef_id', 'user_id');
     }
 
     public function chefProfile()
     {
         return $this->hasOne(ChefProfile::class);
     }
+
 }

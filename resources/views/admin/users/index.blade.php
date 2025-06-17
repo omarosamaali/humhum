@@ -1,4 +1,3 @@
-```blade
 @extends('layouts.admin')
 
 @section('title', 'إدارة المستخدمين')
@@ -379,64 +378,36 @@
 
 @push('scripts')
     <script>
-        function confirmDelete(userId) {
-            const deleteForm = document.getElementById('deleteForm');
-            deleteForm.action = `/admin/users/${userId}`;
-
-            const deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
-            deleteModal.show();
-        }
-
-        // إظهار/إخفاء حقول الطاه بناءً على اختيار الدور
-        // إظهار/إخفاء حقول الطاه بناءً على اختيار الدور
-        document.getElementById('role').addEventListener('change', function() {
-            const chefFields = document.getElementById('chef-fields');
-            const contractTypeSelect = document.getElementById('contract_type'); // احصل على عنصر contract_type
-            const subscriptionFields = document.getElementById(
-                'subscription-fields'); // احصل على عنصر subscription-fields
-
-            if (this.value === 'طاه') {
-                chefFields.style.display = 'block';
-                // تحقق من قيمة contract_type عند تحميل الصفحة أو تغيير الدور
-                if (contractTypeSelect.value === 'annual_subscription') {
-                    subscriptionFields.style.display = 'block';
-                } else {
-                    subscriptionFields.style.display = 'none';
-                }
-            } else {
-                chefFields.style.display = 'none';
-                subscriptionFields.style.display = 'none'; // تأكد من إخفائها أيضًا
-            }
-        });
-
-        // إظهار/إخفاء حقول الاشتراك بناءً على اختيار نوع التعاقد
-        document.getElementById('contract_type').addEventListener('change', function() {
-            const subscriptionFields = document.getElementById('subscription-fields');
-            if (this.value === 'annual_subscription') {
-                subscriptionFields.style.display = 'block';
-            } else {
-                subscriptionFields.style.display = 'none';
-            }
-        });
-
-        // عند تحميل الصفحة، تحقق من الحالة الأولية لحقول الطاه والاشتراك
         document.addEventListener('DOMContentLoaded', function() {
             const roleSelect = document.getElementById('role');
             const chefFields = document.getElementById('chef-fields');
             const contractTypeSelect = document.getElementById('contract_type');
             const subscriptionFields = document.getElementById('subscription-fields');
 
-            if (roleSelect.value === 'طاه') {
-                chefFields.style.display = 'block';
-                if (contractTypeSelect.value === 'annual_subscription') {
-                    subscriptionFields.style.display = 'block';
-                } else {
-                    subscriptionFields.style.display = 'none';
-                }
-            } else {
-                chefFields.style.display = 'none';
-                subscriptionFields.style.display = 'none';
+            // دالة لإظهار/إخفاء حقول الطاه وحقول الاشتراك
+            function toggleFields() {
+                const isChef = roleSelect.value === 'طاه';
+                chefFields.style.display = isChef ? 'block' : 'none';
+                subscriptionFields.style.display = isChef && contractTypeSelect.value === 'annual_subscription' ?
+                    'block' : 'none';
             }
+
+            // دالة لتأكيد الحذف باستخدام Bootstrap Modal
+            window.confirmDelete = function(userId) {
+                const deleteForm = document.getElementById('deleteForm');
+                deleteForm.action = `/admin/users/${userId}`;
+                const deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
+                deleteModal.show();
+            };
+
+            // إعداد الحالة الأولية عند تحميل الصفحة
+            toggleFields();
+
+            // مستمع لتغيير الدور
+            roleSelect.addEventListener('change', toggleFields);
+
+            // مستمع لتغيير نوع التعاقد
+            contractTypeSelect.addEventListener('change', toggleFields);
         });
     </script>
 @endpush

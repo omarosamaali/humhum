@@ -50,4 +50,9 @@ class Kitchens extends Model
     {
         return $this->hasMany(Recipe::class); // الارتباط الآن بـ id الافتراضي
     }
+
+    public function Translations()
+    {
+        return $this->morphMany(Translation::class, 'translatable');
+    }
 }

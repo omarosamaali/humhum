@@ -4,14 +4,29 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Models\ChefProfile;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\Rule;
-use App\Models\ChefProfile;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\Rule;
+use Stichoza\GoogleTranslate\GoogleTranslate;
+use Illuminate\Support\Facades\Log;
 
 class UserController extends Controller
 {
+    protected $targetLanguages = [
+        'ar' => 'العربية',
+        'id' => 'الإندونيسية',
+        'am' => 'الأمهرية',
+        'hi' => 'الهندية',
+        'bn' => 'البنغالية',
+        'ml' => 'المالايالامية',
+        'fil' => 'الفلبينية',
+        'ur' => 'الأردية',
+        'ta' => 'التاميلية',
+        'ps' => 'الباشتو',
+    ];
+
     public function index(Request $request)
     {
         $query = User::latest();
@@ -30,7 +45,7 @@ class UserController extends Controller
     public function store(Request $request)
     {
         $rules = [
-            'name' => 'required|string|max:255',
+            'name' => 'required|string|max:255', // name_en
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8',
             'role' => 'required|in:مدير,مشرف,مدخل بيانات,طاه',
@@ -38,7 +53,7 @@ class UserController extends Controller
         ];
 
         $messages = [
-            'name.required' => 'حقل الاسم مطلوب',
+            'name.required' => 'حقل الاسم (بالإنجليزية) مطلوب',
             'email.required' => 'حقل البريد الإلكتروني مطلوب',
             'email.email' => 'يرجى إدخال بريد إلكتروني صحيح',
             'email.unique' => 'هذا البريد الإلكتروني مسجل مسبقاً',
@@ -68,14 +83,12 @@ class UserController extends Controller
                 'official_image.max' => 'حجم الصورة يجب ألا يزيد عن 2 ميجابايت',
             ];
 
-            // إضافة قواعد التحقق لحقول الاشتراك إذا كان contract_type هو annual_subscription
             if ($request->contract_type === 'annual_subscription') {
                 $rules += [
                     'subscription_3_months_price' => 'nullable|numeric|min:0',
                     'subscription_6_months_price' => 'nullable|numeric|min:0',
                     'subscription_12_months_price' => 'nullable|numeric|min:0',
                 ];
-                // قاعدة تحقق مخصصة للتأكد من إدخال قيمة في حقل واحد على الأقل
                 $request->mergeIfMissing([
                     'subscription_3_months_price' => '',
                     'subscription_6_months_price' => '',
@@ -128,13 +141,34 @@ class UserController extends Controller
 
         $request->validate($rules, $messages);
 
-        $user = User::create([
-            'name' => $request->name,
+        $userData = [
+            'name_en' => $request->name, // Save input as name_en
+            'name' => $request->name, // Save input as name (for compatibility)
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'role' => $request->role,
             'status' => $request->status,
-        ]);
+        ];
+
+        // Initialize Google Translate
+        $tr = new GoogleTranslate('en'); // Source language is English
+
+        // Translate name to other languages
+        foreach ($this->targetLanguages as $code => $name) {
+            $columnName = 'name_' . $code;
+            try {
+                if (in_array($columnName, (new User())->getFillable())) {
+                    $userData[$columnName] = $tr->setTarget($code)->translate($request->input('name'));
+                } else {
+                    Log::warning("Column {$columnName} not found in User model fillable. Skipping translation.");
+                }
+            } catch (\Exception $e) {
+                $userData[$columnName] = null;
+                Log::error("Translation failed for {$code} (User Store): " . $e->getMessage());
+            }
+        }
+
+        $user = User::create($userData);
 
         if ($request->role === 'طاه') {
             $imagePath = $request->file('official_image')->store('chef_images', 'public');
@@ -161,10 +195,9 @@ class UserController extends Controller
             ->with('success', 'تم إضافة المستخدم بنجاح');
     }
 
-
     public function show(User $user)
     {
-        $user->load('chefProfile'); // جيب العلاقة chefProfile
+        $user->load('chefProfile');
         return view('admin.users.show', compact('user'));
     }
 
@@ -172,10 +205,11 @@ class UserController extends Controller
     {
         return view('admin.users.edit', compact('user'));
     }
+
     public function update(Request $request, User $user)
     {
         $rules = [
-            'name' => 'required|string|max:255',
+            'name' => 'required|string|max:255', // name_en
             'email' => ['required', 'string', 'email', 'max:255', Rule::unique('users')->ignore($user->id)],
             'password' => 'nullable|string|min:8',
             'role' => 'required|in:مدير,مشرف,مدخل بيانات,طاه',
@@ -183,7 +217,7 @@ class UserController extends Controller
         ];
 
         $messages = [
-            'name.required' => 'حقل الاسم مطلوب',
+            'name.required' => 'حقل الاسم (بالإنجليزية) مطلوب',
             'email.required' => 'حقل البريد الإلكتروني مطلوب',
             'email.email' => 'يرجى إدخال بريد إلكتروني صحيح',
             'email.unique' => 'هذا البريد الإلكتروني مسجل مسبقاً',
@@ -211,7 +245,6 @@ class UserController extends Controller
                 'official_image.max' => 'حجم الصورة يجب ألا يزيد عن 2 ميجابايت',
             ];
 
-            // إضافة قواعد التحقق لحقول الاشتراك إذا كان contract_type هو annual_subscription
             if ($request->contract_type === 'annual_subscription') {
                 $rules += [
                     'subscription_3_months_price' => 'nullable|numeric|min:0',
@@ -271,11 +304,30 @@ class UserController extends Controller
         $request->validate($rules, $messages);
 
         $data = [
-            'name' => $request->name,
+            'name_en' => $request->name, // Save input as name_en
+            'name' => $request->name, // Save input as name (for compatibility)
             'email' => $request->email,
             'role' => $request->role,
             'status' => $request->status,
         ];
+
+        // Initialize Google Translate
+        $tr = new GoogleTranslate('en'); // Source language is English
+
+        // Translate name to other languages
+        foreach ($this->targetLanguages as $code => $name) {
+            $columnName = 'name_' . $code;
+            try {
+                if (in_array($columnName, (new User())->getFillable())) {
+                    $data[$columnName] = $tr->setTarget($code)->translate($request->input('name'));
+                } else {
+                    Log::warning("Column {$columnName} not found in User model fillable. Skipping translation.");
+                }
+            } catch (\Exception $e) {
+                $data[$columnName] = null;
+                Log::error("Translation failed for {$code} (User Update): " . $e->getMessage());
+            }
+        }
 
         if ($request->filled('password')) {
             $data['password'] = Hash::make($request->password);
@@ -296,7 +348,6 @@ class UserController extends Controller
                 $chefProfileData['subscription_6_months_price'] = $request->subscription_6_months_price;
                 $chefProfileData['subscription_12_months_price'] = $request->subscription_12_months_price;
             } else {
-                // إذا تغير نوع التعاقد إلى "بالوصفة"، قم بمسح قيم الاشتراك
                 $chefProfileData['subscription_3_months_price'] = null;
                 $chefProfileData['subscription_6_months_price'] = null;
                 $chefProfileData['subscription_12_months_price'] = null;
@@ -305,7 +356,6 @@ class UserController extends Controller
             if ($user->chefProfile) {
                 $imagePath = $user->chefProfile->official_image;
                 if ($request->hasFile('official_image')) {
-                    // حذف الصورة القديمة إذا كانت موجودة
                     if ($imagePath && Storage::exists($imagePath)) {
                         Storage::delete($imagePath);
                     }
@@ -314,7 +364,6 @@ class UserController extends Controller
                 $chefProfileData['official_image'] = $imagePath;
                 $user->chefProfile->update($chefProfileData);
             } else {
-                // في حالة عدم وجود ملف تعريف للطاهي (ربما تم تغيير الدور من قبل)
                 $imagePath = null;
                 if ($request->hasFile('official_image')) {
                     $imagePath = $request->file('official_image')->store('chef_images', 'public');
@@ -324,7 +373,6 @@ class UserController extends Controller
                 ChefProfile::create($chefProfileData);
             }
         } else {
-            // إذا تغير الدور من طاه إلى دور آخر، احذف ملف تعريف الطاهي
             if ($user->chefProfile) {
                 if ($user->chefProfile->official_image && Storage::exists($user->chefProfile->official_image)) {
                     Storage::delete($user->chefProfile->official_image);
@@ -336,11 +384,16 @@ class UserController extends Controller
         return redirect()->route('admin.users.index')
             ->with('success', 'تم تحديث المستخدم بنجاح');
     }
+
     public function destroy(User $user)
     {
         if ($user->id === auth()->id()) {
             return redirect()->route('admin.users.index')
                 ->with('error', 'لا يمكنك حذف حسابك الشخصي');
+        }
+
+        if ($user->chefProfile && $user->chefProfile->official_image) {
+            Storage::delete($user->chefProfile->official_image);
         }
 
         $user->delete();

@@ -1,320 +1,363 @@
 @extends('layouts.admin')
 
-@section('title', 'تفاصيل الوصفة: ' . $recipe->title)
-@section('page-title', 'تفاصيل الوصفة')
+@section('content')
+<style>
+    #icon-eye:hover {
+        background: black !important;
+        color: white !important;
+        border: 1px solid black !important;
+    }
+</style>
+    <div class="recipe-number mb-3">
+        <span class="badge bg-primary fs-6" style="background-color: #ad52da !important">رقم الوصفة: #{{ $recipe->recipe_code }} - 
+            {{ $recipe->title }}</span>
+    </div>
+
+    <div class="recipe-details" style="margin-bottom: 1.5rem;">
+        <div class="row">
+            <div class="col-md-12 "
+                style="display: flex; margin-left: auto; margin-right: auto; text-align: right; align-items: 
+                center; justify-content: space-between;">
+                @if ($recipe->user_id)
+                    <div class="detail-item" style="display: inline-block; margin-left: 20px;">
+                        <i class="fas fa-user" style="color: #000000; margin-left: 5px;"></i>
+                        <strong>اسم مدخل الوصفة:</strong> {{ $recipe->user->name }}
+                    </div>
+                @endif
+                <div>
+                    <div class="detail-item" style="display: flex; align-items: center; gap: 10px; margin-left: 20px; width: 255px;">
+                        <i class="fas fa-calendar" style="color: #000000; margin-left: 5px;"></i>
+                        <strong>تاريخ النشر:</strong>
+                        <div>
+                            {{ $recipe->updated_at->format('Y-m-d') }}
+                        </div>
+
+                    </div>
+                </div>
+                <div>
+                    <div class="detail-item" style="display: flex; align-items: center; gap: 10px; margin-left: 20px;">
+                        <i class="fas fa-calendar" style="color: #000000; margin-left: 5px;"></i>
+                        <strong>تاريخ التحديث:</strong>
+                        <div>
+                            {{ $recipe->created_at->format('Y-m-d') }}
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12" style="display: flex; margin-left: auto; margin-right: auto; text-align: right; align-items: 
+                center; justify-content: space-between;">
+                @if ($recipe->is_free)
+                    <div class="detail-item" style="display: inline-block; margin-left: 20px;">
+                            <i class="fa-solid fa-utensils" style="color: #000000; margin-left: 5px;"></i>
+                        <strong>نوع الوصفة:</strong> {{ $recipe->is_free === 1 ? 'مجانية' : 'مدفوعة' }}
+                    </div>
+                @endif
+
+                <div class="detail-item" style="display: inline-block; margin-left: 20px;">
+                    <i class="fas fa-eye" style="color: #000000; margin-left: 5px;"></i>
+                    <strong>حالة الوصفة:</strong> {{ $recipe->status === 1 ? 'فعال' : 'غير فعال' }}
+                </div>
+
+                <div class="detail-item" style="display: inline-block; margin-left: 20px; width: 224px;">
+                    <i class="fas fa-users" style="color: #000000; margin-left: 5px;"></i>
+                    <strong>عدد مرات الإستخدام:</strong> 35
+                </div>
+
+                {{-- @if ($recipe->calories)
+                    <div class="detail-item" style="display: inline-block; margin-left: 20px;">
+                        <i class="fas fa-fire" style="color: #ffc107; margin-left: 5px;"></i>
+                        <strong>السعرات الحرارية:</strong> {{ $recipe->calories }} سعر
+                    </div>
+                @endif --}}
+
+                {{-- @if ($recipe->fats)
+                    <div class="detail-item" style="display: inline-block; margin-left: 20px;">
+                        <i class="fas fa-tint" style="color: #17a2b8; margin-left: 5px;"></i>
+                        <strong>الدهون:</strong> {{ $recipe->fats }} غرام
+                    </div>
+                @endif
+ --}}
+            </div>
+        </div>
+    </div>
+    @if (session('success'))
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="fas fa-check-circle me-2"></i>{{ session('success') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    @endif
+
+    @if (session('error'))
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="fas fa-exclamation-circle me-2"></i>{{ session('error') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    @endif
+
+    <div class="card shadow-sm">
+        <div style="background: #660099; justify-content: center;" class="card-header text-white d-flex align-items-center">
+            <h5 class="mb-0" style="text-align: center;"> الترجمة لكل لغة</h5>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th class="text-center" style="background:black; width: 60px; text-align: center;;">#</th>
+                            <th style="background:black; width: 200px; text-align: center;;">اللغة</th>
+                            <th style="background:black; width: 200px; text-align: center;;">الطاه</th>
+                            <th style="background:black; width: 200px; text-align: center;;">نوع المطبخ</th>
+                            <th style="background:black; width: 200px; text-align: center;;">التصنيف الرئيسي</th>
+                            <th style="background:black; width: 200px; text-align: center;;">التصنيف الفرعي</th>
+                            <th style="background:black; width: 200px; text-align: center;;">حالة اللغة</th>
+                            <th class="text-center" style="background:black;  text-align: center;;">الإجراءات</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse($allLanguages as $language)
+                            @php
+                                $status = $translationStatus[$language->code] ?? [
+                                    'is_translated' => false,
+                                    'status' => 'missing',
+                                    'completeness' => 0,
+                                ];
+                                // إصلاح عرض اسم المطبخ
+                                $kitchenName = 'غير محدد';
+                                if ($recipe->kitchen) {
+                                    $kitchenFieldName = 'name_' . $language->code;
+                                    $kitchenName =
+                                        $recipe->kitchen->{$kitchenFieldName} ??
+                                        ($recipe->kitchen->name_ar ?? 'غير مترجم');
+                                }
+
+                                // **التعديل لاسم الطاهي داخل حلقة اللغات**
+                                $chefDisplayName = 'غير محدد';
+                                if ($recipe->chef) {
+                                    $chefFieldNameForTable = 'name_' . $language->code; // هنا نستخدم $language->code
+                                    $chefDisplayName =
+                                        $recipe->chef->{$chefFieldNameForTable} ??
+                                        ($recipe->chef->name_ar ?? ($recipe->chef->name ?? 'غير مترجم'));
+                                }
+                                // نهاية التعديل لاسم الطاهي
+                                $subCategoryNames = [];
+                                if ($recipe->subCategories->count() > 0) {
+                                    foreach ($recipe->subCategories as $subCategory) {
+                                        $subCategoryFieldName = 'name_' . $language->code;
+                                        $subCategoryNames[] =
+                                            $subCategory->{$subCategoryFieldName} ??
+                                            ($subCategory->name_ar ?? 'غير مترجم');
+                                    }
+                                }
+
+                                // **** أضف هذا الكود هنا لتعريف mainCategoryName ****
+                                $mainCategoryName = 'غير محدد';
+                                if ($recipe->mainCategories) {
+                                    // تأكد من استخدام mainCategories (اسم العلاقة في الموديل)
+                                    $mainCategoryFieldName = 'name_' . $language->code;
+                                    $mainCategoryName =
+                                        $recipe->mainCategories->{$mainCategoryFieldName} ??
+                                        ($recipe->mainCategories->name_ar ?? 'غير مترجم');
+                                }
+                                // ****************************************************
+                            @endphp
+
+                            <tr>
+                                <td class="text-center text-muted fw-bold">{{ $loop->iteration }}</td>
+                                <td>
+                                    <div class="language-info d-flex align-items-center">
+                                        <img src="{{ $language->flag_image ? Storage::url($language->flag_image) : asset('assets/default-flag.png') }}"
+                                            alt="{{ $language->name }}" class="flag-img rounded"
+                                            style="width: 28px; height: 20px; margin-left: 8px; object-fit: cover;">
+                                        <div>
+                                            <div class="fw-semibold">{{ $language->name }}</div>
+                                            <small class="text-muted">{{ strtoupper($language->code) }}</small>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    @if ($recipe->chef)
+                                        <div class="kitchen-info d-flex align-items-center">
+                                            <i class="fas fa-user-chef text-primary"></i>
+                                            <div class="chef-info d-flex align-items-center mt-2">
+                                                @if ($recipe->chef->chefProfile && $recipe->chef->chefProfile->official_image)
+                                                    <img src="{{ Storage::url($recipe->chef->chefProfile->official_image) }}"
+                                                        alt="{{ $chefDisplayName }}" {{-- استخدام الاسم المترجم هنا أيضًا --}}
+                                                        class="chef-img rounded-circle me-2"
+                                                        style="width: 40px; height: 40px;">
+                                                @else
+                                                    <img src="{{ asset('assets/default-chef.png') }}" alt="صورة افتراضية"
+                                                        class="chef-img rounded-circle me-2"
+                                                        style="width: 40px; height: 40px;">
+                                                @endif
+                                                <span>{{ $chefDisplayName }}</span>
+                                                {{-- **التعديل الثاني: عرض الاسم المترجم** --}}
+                                            </div>
+                                        </div>
+                                    @endif
+                                </td>
+                                <td>
+                                    @if ($recipe->kitchen)
+                                        <div class="kitchen-info d-flex align-items-center">
+                                            @if ($recipe->kitchen->image)
+                                                <img src="{{ Storage::url($recipe->kitchen->image) }}"
+                                                    alt="{{ $kitchenName }}" class="kitchen-img rounded-circle me-2"
+                                                    style="width: 40px; height: 40px;">
+                                            @else
+                                                <img src="{{ asset('assets/default-kitchen.png') }}"
+                                                    alt="صورة مطبخ افتراضي" class="kitchen-img rounded-circle me-2"
+                                                    style="width: 40px; height: 40px;">
+                                            @endif
+                                            <span>{{ $kitchenName }}</span>
+                                        </div>
+                                    @else
+                                        <span class="text-muted">غير محدد</span>
+                                    @endif
+                                </td>
+
+                                <td>
+                                    {{-- **استخدم المتغير الذي تم تعريفه هنا** --}}
+                                    @if ($recipe->mainCategories)
+                                        {{-- استخدم اسم العلاقة من الموديل هنا --}}
+                                        <div class="main-category-info d-flex align-items-center">
+                                            @if ($recipe->mainCategories->image)
+                                                <img src="{{ Storage::url($recipe->mainCategories->image) }}"
+                                                    alt="{{ $mainCategoryName }}"
+                                                    class="main-category-img rounded-circle me-2"
+                                                    style="width: 40px; height: 40px;">
+                                            @else
+                                                <img src="{{ asset('assets/default-category.png') }}"
+                                                    alt="صورة تصنيف افتراضي" class="main-category-img rounded-circle me-2"
+                                                    style="width: 40px; height: 40px;">
+                                            @endif
+                                            <span>{{ $mainCategoryName }}</span>
+                                        </div>
+                                    @else
+                                        <span class="text-muted">غير محدد</span>
+                                    @endif
+                                </td>
+                                <td>
+                                    @if (!empty($subCategoryNames))
+                                        @foreach ($subCategoryNames as $name)
+                                            <span class="badge bg-info me-1">{{ $name }}</span>
+                                        @endforeach
+                                    @else
+                                        <span class="text-muted">غير محدد</span>
+                                    @endif
+                                </td>
+                                <td>
+                                    {{ $language->status == 0 ? 'غير فعال' : 'فعال' }}
+
+                                </td>
+                                <td class="text-center">
+                                    <div class="btn-group" role="group">
+                                        <a href="{{ route('admin.recipes.preview', ['recipe' => $recipe->id, 'lang_code' => $language->code]) }}"
+                                            class="btn btn-outline-info btn-sm" id="icon-eye"  style="color: green; border: 1px solid green !important;" title="معاينة بـ{{ $language->name }}"><i
+                                                class="fas fa-eye"></i></a>
+                                    </div>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="6" class="text-center py-4">
+                                    <div class="text-muted"><i class="fas fa-exclamation-circle fa-2x mb-2"></i>
+                                        <p>لا توجد لغات متاحة</p>
+                                    </div>
+                                </td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-4 d-flex gap-2">
+        <a href="{{ route('admin.recipes.index') }}" class="btn btn-secondary"><i class="fas fa-arrow-right me-1"></i>
+            العودة للقائمة</a>
+        <a href="{{ route('admin.recipes.edit', $recipe->id) }}" class="btn btn-primary"><i
+                class="fas fa-edit me-1"></i> تعديل الوصفة</a>
+        <button type="button" class="btn btn-danger" onclick="deleteRecipe()"><i class="fas fa-trash me-1"></i> حذف
+            الوصفة</button>
+    </div>
+@endsection
+
+@push('scripts')
+    <script>
+        function deleteTranslation(langCode, langName) {
+            if (confirm(`هل أنت متأكد من حذف ترجمة هذه الوصفة باللغة ${langName}؟`)) {
+                fetch(`{{ route('admin.recipes.delete-translation', $recipe->id) }}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        lang_code: langCode
+                    })
+                }).then(response => response.json()).then(data => {
+                    if (data.success) location.reload();
+                    else alert('حدث خطأ أثناء حذف الترجمة');
+                }).catch(error => {
+                    console.error('Error:', error);
+                    alert('حدث خطأ أثناء حذف الترجمة');
+                });
+            }
+        }
+
+        function deleteRecipe() {
+            if (confirm('هل أنت متأكد من حذف هذه الوصفة نهائياً؟ سيتم حذف جميع الترجمات المرتبطة بها.')) {
+                document.getElementById('deleteRecipeForm').submit();
+            }
+        }
+    </script>
+    <form id="deleteRecipeForm" action="{{ route('admin.recipes.destroy', $recipe->id) }}" method="POST"
+        style="display: none;">
+        @csrf @method('DELETE')
+    </form>
+@endpush
 
 @push('styles')
     <style>
-        .details-card {
-            background: white;
-            color: black;
-            padding: 30px;
-            border-radius: 15px;
-            margin-bottom: 30px;
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-            position: relative;
+        .detail-item {
+            /* border-bottom: 1px solid #eee; */
+            padding-bottom: 0.5rem;
         }
 
-        .details-card h4 {
-            font-size: 2rem;
-            font-weight: 700;
-            margin-bottom: 20px;
-            border-bottom: 2px solid rgba(255, 255, 255, 0.3);
-            padding-bottom: 10px;
+        .detail-item:last-child {
+            border-bottom: none;
         }
 
-        .details-item {
-            margin-bottom: 15px;
-            font-size: 1.1rem;
-            display: flex;
-            /* justify-content: space-between; */
-            flex-direction: row;
-        }
-
-        .details-item strong {
-            margin-bottom: 5px;
-            color: rgba(0, 0, 0, 0.8);
-            font-weight: bold;
-        }
-
-        .details-image {
-            width: 100%;
-            height: 36%;
-            border-radius: 10px;
-            margin-bottom: 20px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-        }
-
-        .status-badge {
-            padding: 0.6em 1em;
-            border-radius: 8px;
-            font-size: 0.9rem;
-            font-weight: bold;
-        }
-
-        .status-active {
-            background-color: #28a745;
+        .recipe-number {
+            background: #660099;
+            padding: 1rem;
+            border-radius: 0.5rem;
             color: white;
+            text-align: center;
+            margin-bottom: 1rem;
         }
 
-        .status-inactive {
-            background-color: #dc3545;
-            color: white;
+        .table th {
+            border-top: none;
+            font-weight: 600;
         }
 
-        .status-free {
-            background-color: #17a2b8;
-            color: white;
+        .language-info {
+            transition: all 0.2s ease;
         }
 
-        .status-paid {
-            background-color: #ffc107;
-            color: #333;
+        .btn-group .btn {
+            margin: 0 1px;
         }
 
-        .btn-back {
-            background-color: white;
-            color: #764ba2;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 8px;
-            font-weight: bold;
-            transition: all 0.3s ease;
+        .progress {
+            box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
         }
 
-        .btn-back:hover {
-            background-color: #eee;
-            color: #667eea;
-        }
-
-        .section-title {
-            font-size: 1.3rem;
-            margin-top: 25px;
-            margin-bottom: 10px;
-            color: rgba(0, 0, 0, 0.9);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.5);
-            padding-bottom: 5px;
-        }
-
-        .content-list {
-            list-style: none;
-            padding-left: 0;
-        }
-
-        .content-list li {
-            background-color: rgba(255, 255, 255, 0.1);
-            padding: 8px 15px;
-            border-radius: 5px;
-            margin-bottom: 8px;
-            display: flex;
-            align-items: flex-start;
-        }
-
-        .content-list li i {
-            margin-right: 10px;
-            color: #a7d9ff;
-            font-size: 1.2rem;
-            margin-top: 3px;
-        }
-
-        .tags-container .badge {
-            background-color: rgba(255, 255, 255, 0.2);
-            color: black;
-            margin-right: 5px;
-            margin-bottom: 5px;
-            padding: 0.6em 1em;
-            border-radius: 5px;
-            font-weight: normal;
-        }
-
-        .media-preview {
-            max-width: 150px;
-            max-height: 100px;
-            object-fit: contain;
-            border-radius: 5px;
-            margin-left: 10px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-        }
-
-        .media-preview.video {
-            max-height: 120px;
+        .category-img,
+        .chef-img,
+        .kitchen-img {
+            object-fit: cover;
         }
     </style>
 @endpush
-
-@section('content')
-    <div class="details-card">
-        <h4 class="text-center">{{ $recipe->title }}</h4>
-
-        <div class="row">
-            <div class="col-md-5 text-center">
-                @if ($recipe->dish_image)
-                    <img src="{{ Storage::url($recipe->dish_image) }}" alt="{{ $recipe->title }}" class="details-image">
-                @else
-                    <img src="{{ asset('assets/default-recipe-image.png') }}" alt="بدون صورة" class="details-image">
-                @endif
-            </div>
-            <div class="col-md-7">
-                <div class="flex">
-<div class="details-item ml-2">
-    <strong>صورة الطاهي:</strong>
-    @if ($recipe->chef && $recipe->chef->chefProfile && $recipe->chef->chefProfile->official_image)
-        <img src="{{ Storage::url($recipe->chef->chefProfile->official_image) }}" alt="Official Image"
-            class="h-[200px] rounded-lg w-[200px] mx-2 image-preview">
-    @else
-        <div class="detail-value">لا يوجد صورة</div>
-    @endif
-</div>
-
-<div class="details-item">
-                        <strong>الطاهي:</strong> {{ $recipe->chef ? $recipe->chef->name : 'غير محدد' }}
-                    </div>
-                </div>
-
-                <div class="details-item">
-                    <strong>اسم المدخل:</strong> {{ Auth::user()->name }}
-                </div>
-
-                <div class="details-item">
-                    <strong>نوع المطبخ:</strong>
-                    <div class="" name="kitchen_type_id" id="kitchen_type_id" required>
-                        @foreach ($kitchens as $kitchen)
-                            <div value="{{ $kitchen->id }}"
-                                {{ old('kitchen_type_id', $recipe->kitchen_type_id) == $kitchen->id ? 'selected' : '' }}>
-                                {{ $kitchen->name_ar ?? $kitchen->name }}
-                            </div>
-                        @endforeach
-                    </div>
-                </div>
-                <div class="details-item">
-                    <strong>التصنيف الرئيسي:</strong> {{ $recipe->mainCategories?->name_ar ?? 'غير محدد' }}
-                </div>
-                <div class="details-item">
-                    <strong>التصنيفات الفرعية:</strong>
-                    <div class="tags-container bg-green-500 rounded d-inline-block">
-                        @forelse ($recipe->subCategories as $subCategory)
-                            <span class="badge">{{ $subCategory->name_ar }}</span>
-                        @empty
-                            <span class="text-muted">لا توجد</span>
-                        @endforelse
-                    </div>
-                </div>
-                <div class="details-item">
-                    <strong>تكفي ل:</strong> {{ $recipe->servings }} أشخاص
-                </div>
-                <div class="details-item">
-                    <strong>وقت التحضير:</strong> {{ $recipe->preparation_time }} دقيقة
-                </div>
-                <div class="details-item">
-                    <strong>السعرات الحرارية:</strong> {{ $recipe->calories ?? 'غير محدد' }}
-                </div>
-                <div class="details-item">
-                    <strong>الدهون:</strong> {{ $recipe->fats ?? 'غير محدد' }} جرام
-                </div>
-                <div class="details-item">
-                    <strong>الكربوهيدرات:</strong> {{ $recipe->carbs ?? 'غير محدد' }} جرام
-                </div>
-                <div class="details-item">
-                    <strong>البروتين:</strong> {{ $recipe->protein ?? 'غير محدد' }} جرام
-                </div>
-                <div class="details-item">
-                    <strong>نوع الوصفة:</strong>
-                    <span class="status-badge {{ $recipe->is_free ? 'status-free' : 'status-paid' }}">
-                        {{ $recipe->is_free ? 'مجانية' : 'مدفوعة' }}
-                    </span>
-                </div>
-                <div class="details-item">
-                    <strong>الحالة:</strong>
-                    <span class="status-badge {{ $recipe->status ? 'status-active' : 'status-inactive' }}">
-                        {{ $recipe->status ? 'فعال' : 'غير فعال' }}
-                    </span>
-                </div>
-                <div class="details-item">
-                    <strong>تاريخ الإنشاء:</strong> {{ $recipe->created_at->format('d/m/Y H:i') }}
-                </div>
-                <div class="details-item">
-                    <strong>آخر تحديث:</strong> {{ $recipe->updated_at->format('d/m/Y H:i') }}
-                </div>
-            </div>
-        </div>
-
-        <div class="row mt-4">
-            <div class="col-md-6">
-                <h5 class="section-title">المكونات:</h5>
-                <ul class="content-list">
-                    @foreach (explode("\n", $recipe->ingredients) as $ingredient)
-                        @if (trim($ingredient) !== '')
-                            <li><i class="fas fa-check-circle"></i> {{ trim($ingredient) }}</li>
-                        @endif
-                    @endforeach
-                </ul>
-            </div>
-
-
-            <div class="col-md-6">
-                <h5 class="section-title">خطوات التحضير:</h5>
-                <ol class="content-list">
-                    @if ($recipe->steps && is_array($recipe->steps) && count($recipe->steps) > 0)
-                        @foreach ($recipe->steps as $index => $step)
-                            <li>
-                                <i class="fas fa-arrow-right"></i>
-                                {{ $step['description'] ?? 'بدون وصف' }}
-
-                                @if (isset($step['media']) && is_array($step['media']) && !empty($step['media']))
-                                    <div class="step-media mt-2">
-                                        @foreach ($step['media'] as $mediaItem)
-                                            @php
-                                                // *** التعديل الرئيسي هنا ***
-                                                // تأكد من أننا نستخدم مفتاح 'url' لأنه هو الذي يجب أن يحتوي على المسار الكامل.
-                                                // إذا لم يكن موجوداً، أو كان فارغاً، فسيعتبر المسار غير صالح.
-                                                $mediaSource = $mediaItem['url'] ?? null;
-                                                $mediaType = $mediaItem['type'] ?? 'unknown';
-                                                $mediaName = $mediaItem['original_name'] ?? 'Media_' . $index;
-                                            @endphp
-
-                                            {{-- استخدم Storage::disk('public')->exists للتحقق من وجود الملف فعليًا --}}
-                                            @if ($mediaSource && Storage::disk('public')->exists($mediaSource))
-                                                @if (Str::startsWith($mediaType, 'image'))
-                                                    <img src="{{ Storage::url($mediaSource) }}" alt="{{ $mediaName }}"
-                                                        class="media-preview img-fluid">
-                                                @elseif (Str::startsWith($mediaType, 'video'))
-                                                    <video controls class="media-preview video">
-                                                        <source src="{{ Storage::url($mediaSource) }}"
-                                                            type="{{ $mediaType }}">
-                                                        متصفحك لا يدعم تشغيل الفيديو.
-                                                    </video>
-                                                @else
-                                                    <span class="text-warning">نوع ميديا غير مدعوم:
-                                                        {{ $mediaType }}</span>
-                                                @endif
-                                            @else
-                                                {{-- رسالة توضيحية لما الملف بيكون مش موجود --}}
-                                                <span class="text-danger">
-                                                    الملف غير موجود أو المسار غير صالح:
-                                                    {{ $mediaSource ?: 'مسار غير محدد' }}
-                                                </span>
-                                            @endif
-                                        @endforeach
-                                    </div>
-                                @endif
-                            </li>
-                        @endforeach
-                    @else
-                        <li class="text-warning">لا توجد خطوات متاحة</li>
-                    @endif
-                </ol>
-            </div>
-            {{-- ... (بقية الكود الخاص بالـ HTML والـ CSS سليم) ... --}}
-
-
-
-        </div>
-
-        <div class="text-center mt-4">
-            <a href="{{ route('admin.recipes.index') }}" class="btn btn-back">
-                <i class="fas fa-arrow-right ms-1"></i>
-                العودة لقائمة الوصفات
-            </a>
-        </div>
-    </div>
-@endsection

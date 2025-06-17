@@ -5,11 +5,20 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
+use App\Models\Translation;
+use App\Models\MainCategories;
+use App\Models\Kitchens;
+use App\Models\User;
+use App\Models\SubCategory;
+use App\Models\RecipeStep;
 
 class Recipe extends Model
 {
     use HasFactory;
-
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
     protected $fillable = [
         'title',
         'dish_image',
@@ -25,12 +34,85 @@ class Recipe extends Model
         'carbs',
         'protein',
         'is_free',
-        'status'
+        'status',
+        'user_id',
     ];
 
     protected $casts = [
         'steps' => 'array',
     ];
+
+    // علاقة الترجمات باستخدام morphMany
+    public function translations()
+    {
+        return $this->morphMany(Translation::class, 'translatable');
+    }
+
+    // الحصول على الترجمة للغة معينة
+    public function getTranslation($languageCode)
+    {
+        return $this->translations()->where('language_code', $languageCode)->first();
+    }
+
+    // الحصول على العنوان المترجم
+    public function getTranslatedTitle($languageCode = null)
+    {
+        if (!$languageCode) {
+            $languageCode = app()->getLocale();
+        }
+
+        if ($languageCode === 'ar') {
+            return $this->title;
+        }
+
+        $translation = $this->getTranslation($languageCode);
+        return $translation ? $translation->title : $this->title;
+    }
+
+    // الحصول على الوصف المترجم
+    public function getTranslatedDescription($languageCode = null)
+    {
+        if (!$languageCode) {
+            $languageCode = app()->getLocale();
+        }
+
+        if ($languageCode === 'ar') {
+            return $this->description ?? '';
+        }
+
+        $translation = $this->getTranslation($languageCode);
+        return $translation ? $translation->description : ($this->description ?? '');
+    }
+
+    // الحصول على المكونات المترجمة
+    public function getTranslatedIngredients($languageCode = null)
+    {
+        if (!$languageCode) {
+            $languageCode = app()->getLocale();
+        }
+
+        if ($languageCode === 'ar') {
+            return $this->ingredients;
+        }
+
+        $translation = $this->getTranslation($languageCode);
+        return $translation ? $translation->ingredients : $this->ingredients;
+    }
+
+    // الحصول على التعليمات المترجمة
+    public function getTranslatedInstructions($languageCode = null)
+    {
+        if (!$languageCode) {
+            $languageCode = app()->getLocale();
+        }
+
+        if ($languageCode === 'ar') {
+            return $this->instructions ?? '';
+        }
+
+        $translation = $this->getTranslation($languageCode);
+        return $translation ? $translation->instructions : ($this->instructions ?? '');
+    }
 
     protected static function booted()
     {
@@ -82,6 +164,7 @@ class Recipe extends Model
         return $parsedIngredients;
     }
 
+    // العلاقات
     public function subCategories()
     {
         return $this->belongsToMany(SubCategory::class, 'recipe_sub_category', 'recipe_id', 'sub_category_id');
@@ -100,6 +183,7 @@ class Recipe extends Model
     public function mainCategories()
     {
         return $this->belongsTo(MainCategories::class, 'main_category_id');
+        
     }
 
     public function recipeSteps()
@@ -107,8 +191,55 @@ class Recipe extends Model
         return $this->hasMany(RecipeStep::class, 'recipe_id')->orderBy('id', 'asc');
     }
 
-    public function steps()
+    // دالة للتحقق من وجود ترجمة للغة معينة
+    public function hasTranslation($languageCode)
     {
-        return $this->hasMany(RecipeStep::class, 'recipe_id')->orderBy('id', 'asc');
+        if ($languageCode === 'ar') {
+            return true; // العربية هي اللغة الأساسية
+        }
+
+        return $this->translations()->where('language_code', $languageCode)->exists();
+    }
+
+    // دالة للحصول على نسبة اكتمال الترجمة
+    public function getTranslationCompleteness($languageCode)
+    {
+        if ($languageCode === 'ar') {
+            return 100;
+        }
+
+        $translation = $this->getTranslation($languageCode);
+        if (!$translation) {
+            return 0;
+        }
+
+        $fields = ['title', 'description', 'ingredients', 'instructions'];
+        $completedFields = 0;
+
+        foreach ($fields as $field) {
+            if (!empty($translation->{$field})) {
+                $completedFields++;
+            }
+        }
+
+        return round(($completedFields / count($fields)) * 100);
+    }
+
+    // دالة للحصول على حالة الترجمة
+    public function getTranslationStatus($languageCode)
+    {
+        if ($languageCode === 'ar') {
+            return 'original';
+        }
+
+        $completeness = $this->getTranslationCompleteness($languageCode);
+
+        if ($completeness === 0) {
+            return 'missing';
+        } elseif ($completeness === 100) {
+            return 'complete';
+        } else {
+            return 'partial';
+        }
     }
 }

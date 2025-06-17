@@ -58,4 +58,9 @@ class MainCategories extends Model
     {
         return $this->hasMany(Recipe::class);
     }
+
+    public function Translations()
+    {
+        return $this->morphMany(Translation::class, 'translatable');
+    }
 }

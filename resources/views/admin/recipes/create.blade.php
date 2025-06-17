@@ -332,6 +332,7 @@
         @endif
 
         <form id="recipe-form" action="{{ route('admin.recipes.store') }}" method="POST" enctype="multipart/form-data">
+        <input type="hidden" name="user_id" value="{{ auth()->user()->id }}">
             @csrf
             <div class="row">
                 <div class="col-md-6 mb-3">
@@ -742,7 +743,7 @@
                 const lines = existingIngredientsString.split('\n');
                 lines.forEach(line => {
                     const trimmedLine = line.trim();
-                    if (trimmedLine.startsWith('##')) {
+                    if (trimmedLine.startsWith('## ')) {
                         createIngredientItem(trimmedLine.substring(2).trim(), true);
                     } else if (trimmedLine) {
                         createIngredientItem(trimmedLine, false);
@@ -1014,7 +1015,7 @@
                     const type = $this.data('type');
                     const text = $this.find('.ingredient-text').val().trim();
                     if (text) {
-                        ingredients.push(`${type === 'heading' ? '##' : ''}${text}`);
+                        ingredients.push(`${type === 'heading' ? '## ' : ''}${text}`);
                     }
                 });
                 formData.set('ingredients', ingredients.join('\n'));
