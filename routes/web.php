@@ -78,6 +78,9 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
             ->name('bulk-translate');
     });
 });
+Route::get('/recipes/subcategories', [RecipesController::class, 'getSubCategories'])
+    ->name('admin.recipes.subcategories');
+
 Route::get('admin/recipes/{recipe}/preview/{lang_code}', [RecipesController::class, 'preview']) // Changed to RecipesController
     ->name('admin.recipes.preview');
 Route::middleware(['auth', 'verified', CheckUserStatus::class])->group(function () {
@@ -106,8 +109,6 @@ Route::middleware(['auth', 'verified', CheckUserStatus::class])->group(function 
     });
     // Route::get('/recipes/subcategories', [RecipesController::class, 'getSubCategories'])
     //     ->name('admin.recipes.subcategories');
-    Route::get('/recipes/subcategories', [RecipesController::class, 'getSubCategories'])
-        ->name('admin.recipes.subcategories');
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');

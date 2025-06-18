@@ -158,16 +158,17 @@
     border-radius: 12px;
     text-align: center;">
                     المكونات</h5>
-@foreach (explode("\n", $recipe->ingredients) as $ingredient)
-    @php
-        $trimmed = trim($ingredient);
-    @endphp
+                @foreach (explode("\n", $recipe->ingredients) as $ingredient)
+                    @php
+                        $trimmed = trim($ingredient);
+                    @endphp
 
-    @if ($trimmed !== '')
-        @if (Str::startsWith($trimmed, '##'))
-            <div style="margin-bottom: 5px; justify-content: space-between; font-weight: bold; border-bottom: 1px solid #ccc; padding-bottom: 2px; display: flex; align-items: center; gap: 5px;">
-                {{ Str::replaceFirst('##', '', $trimmed) }}
-                <h1
+                    @if ($trimmed !== '')
+                        @if (Str::startsWith($trimmed, '##'))
+                            <div
+                                style="margin-bottom: 5px; justify-content: space-between; font-weight: bold; border-bottom: 1px solid #ccc; padding-bottom: 2px; display: flex; align-items: center; gap: 5px;">
+                                {{ Str::replaceFirst('##', '', $trimmed) }}
+                                <h1
                                     style="    color: #ffffff;
                     font-size: 29px;
                     background:  #660099;
@@ -177,24 +178,25 @@
                     text-align: center;">
                                     <i style="font-size: 20px; color: #ffffff;" class="fa-solid fa-headphones"></i>
                                 </h1>
-            </div>
-        @else
-            <div style="margin-bottom: 5px; justify-content: space-between; display: flex; align-items: center; gap: 5px;">
-                {{ $trimmed }}
-                <h1
-                 style="    color: #ffffff;
+                            </div>
+                        @else
+                            <div
+                                style="margin-bottom: 5px; justify-content: space-between; display: flex; align-items: center; gap: 5px;">
+                                {{ $trimmed }}
+                                <h1
+                                    style="    color: #ffffff;
  font-size: 29px;
  background:  #660099;
  font-weight: bold;
  padding: 5px;
  border-radius: 12px;
  text-align: center;">
-                 <i style="font-size: 20px; color: #ffffff;" class="fa-solid fa-headphones"></i>
-             </h1>
-            </div>
-        @endif
-    @endif
-@endforeach
+                                    <i style="font-size: 20px; color: #ffffff;" class="fa-solid fa-headphones"></i>
+                                </h1>
+                            </div>
+                        @endif
+                    @endif
+                @endforeach
             </div>
 
         </div>
@@ -426,9 +428,9 @@
                     <div class="col-md-12 text-right">
                         <div style="display: flex; gap: 10px;">
                             @if ($recipe->protein)
-                            <div class="detail-item" style="color: #0c1e24;">
-                                <span
-                                    style="background-color: #e4ebf1;
+                                <div class="detail-item" style="color: #0c1e24;">
+                                    <span
+                                        style="background-color: #e4ebf1;
                                         border-radius: 5px;
                                         width: 39px;
                                         height: 40px;
@@ -436,60 +438,60 @@
                                         align-items: center;
                                         justify-content: center;
                                         margin-left: 5px;">
-                                    <i class="fas fa-egg" style="color: #0c1e24;"></i>
-                                </span>
-                                <span>
-                                    {{ $recipe->protein }}
-                                </span>
-                                @switch($currentLanguageCode)
-                                    @case('ar')
-                                        بروتين
-                                    @break
+                                        <i class="fas fa-egg" style="color: #0c1e24;"></i>
+                                    </span>
+                                    <span>
+                                        {{ $recipe->protein }}
+                                    </span>
+                                    @switch($currentLanguageCode)
+                                        @case('ar')
+                                            بروتين
+                                        @break
 
-                                    @case('en')
-                                        calories
-                                    @break
+                                        @case('en')
+                                            calories
+                                        @break
 
-                                    @case('id')
-                                        kalori
-                                    @break
+                                        @case('id')
+                                            kalori
+                                        @break
 
-                                    @case('am')
-                                        ካሎሪ
-                                    @break
+                                        @case('am')
+                                            ካሎሪ
+                                        @break
 
-                                    @case('hi')
-                                        कैलोरी
-                                    @break
+                                        @case('hi')
+                                            कैलोरी
+                                        @break
 
-                                    @case('bn')
-                                        ক্যালোরি
-                                    @break
+                                        @case('bn')
+                                            ক্যালোরি
+                                        @break
 
-                                    @case('ml')
-                                        കലോറി
-                                    @break
+                                        @case('ml')
+                                            കലോറി
+                                        @break
 
-                                    @case('fil')
-                                        kalorya
-                                    @break
+                                        @case('fil')
+                                            kalorya
+                                        @break
 
-                                    @case('ur')
-                                        کیلوری
-                                    @break
+                                        @case('ur')
+                                            کیلوری
+                                        @break
 
-                                    @case('ta')
-                                        கலோரி
-                                    @break
+                                        @case('ta')
+                                            கலோரி
+                                        @break
 
-                                    @case('ne')
-                                        क्यालोरी
-                                    @break
+                                        @case('ne')
+                                            क्यालोरी
+                                        @break
 
-                                    @default
-                                        calories
-                                @endswitch
-                            </div>
+                                        @default
+                                            calories
+                                    @endswitch
+                                </div>
                             @endif
                             @if ($recipe->calories)
                                 <div class="detail-item" style="color: #0c1e24;">
@@ -558,9 +560,9 @@
                                 </div>
                             @endif
                             @if ($recipe->fats)
-                            <div class="detail-item" style="color: #0c1e24;">
-                                <span
-                                    style="background-color: #e4ebf1;
+                                <div class="detail-item" style="color: #0c1e24;">
+                                    <span
+                                        style="background-color: #e4ebf1;
                                         border-radius: 5px;
                                         width: 39px;
                                         height: 40px;
@@ -568,63 +570,63 @@
                                         align-items: center;
                                         justify-content: center;
                                         margin-left: 5px;">
-                                    <i class="fas fa-tint" style="color: #0c1e24;"></i>
-                                </span>
-                                {{ $recipe->fats }}
-                                @switch($currentLanguageCode)
-                                    @case('ar')
-                                        غرام
-                                    @break
+                                        <i class="fas fa-tint" style="color: #0c1e24;"></i>
+                                    </span>
+                                    {{ $recipe->fats }}
+                                    @switch($currentLanguageCode)
+                                        @case('ar')
+                                            غرام
+                                        @break
 
-                                    @case('en')
-                                        grams
-                                    @break
+                                        @case('en')
+                                            grams
+                                        @break
 
-                                    @case('id')
-                                        gram
-                                    @break
+                                        @case('id')
+                                            gram
+                                        @break
 
-                                    @case('am')
-                                        ግራም
-                                    @break
+                                        @case('am')
+                                            ግራም
+                                        @break
 
-                                    @case('hi')
-                                        ग्राम
-                                    @break
+                                        @case('hi')
+                                            ग्राम
+                                        @break
 
-                                    @case('bn')
-                                        গ্রাম
-                                    @break
+                                        @case('bn')
+                                            গ্রাম
+                                        @break
 
-                                    @case('ml')
-                                        ഗ്രാം
-                                    @break
+                                        @case('ml')
+                                            ഗ്രാം
+                                        @break
 
-                                    @case('fil')
-                                        gramo
-                                    @break
+                                        @case('fil')
+                                            gramo
+                                        @break
 
-                                    @case('ur')
-                                        گرام
-                                    @break
+                                        @case('ur')
+                                            گرام
+                                        @break
 
-                                    @case('ta')
-                                        கிராம்
-                                    @break
+                                        @case('ta')
+                                            கிராம்
+                                        @break
 
-                                    @case('ne')
-                                        ग्राम
-                                    @break
+                                        @case('ne')
+                                            ग्राम
+                                        @break
 
-                                    @default
-                                        grams
-                                @endswitch
-                            </div>
+                                        @default
+                                            grams
+                                    @endswitch
+                                </div>
                             @endif
                             @if ($recipe->carbs)
-                            <div class="detail-item" style="color: #0c1e24;">
-                                <span
-                                    style="background-color: #e4ebf1;
+                                <div class="detail-item" style="color: #0c1e24;">
+                                    <span
+                                        style="background-color: #e4ebf1;
                                         border-radius: 5px;
                                         width: 39px;
                                         height: 40px;
@@ -632,64 +634,63 @@
                                         align-items: center;
                                         justify-content: center;
                                         margin-left: 5px;">
-                                    <i class="fa-brands fa-pagelines" style="color: #0c1e24;"></i>
-                                </span>
-                                {{ $recipe->carbs }}
-                                @switch($currentLanguageCode)
-                                    @case('ar')
-                                        الكربوهيدرات
-                                    @break
+                                        <i class="fa-brands fa-pagelines" style="color: #0c1e24;"></i>
+                                    </span>
+                                    {{ $recipe->carbs }}
+                                    @switch($currentLanguageCode)
+                                        @case('ar')
+                                            الكربوهيدرات
+                                        @break
 
-                                    @case('en')
-                                        grams
-                                    @break
+                                        @case('en')
+                                            grams
+                                        @break
 
-                                    @case('id')
-                                        gram
-                                    @break
+                                        @case('id')
+                                            gram
+                                        @break
 
-                                    @case('am')
-                                        ግራም
-                                    @break
+                                        @case('am')
+                                            ግራም
+                                        @break
 
-                                    @case('hi')
-                                        ग्राम
-                                    @break
+                                        @case('hi')
+                                            ग्राम
+                                        @break
 
-                                    @case('bn')
-                                        গ্রাম
-                                    @break
+                                        @case('bn')
+                                            গ্রাম
+                                        @break
 
-                                    @case('ml')
-                                        ഗ്രാം
-                                    @break
+                                        @case('ml')
+                                            ഗ്രാം
+                                        @break
 
-                                    @case('fil')
-                                        gramo
-                                    @break
+                                        @case('fil')
+                                            gramo
+                                        @break
 
-                                    @case('ur')
-                                        گرام
-                                    @break
+                                        @case('ur')
+                                            گرام
+                                        @break
 
-                                    @case('ta')
-                                        கிராம்
-                                    @break
+                                        @case('ta')
+                                            கிராம்
+                                        @break
 
-                                    @case('ne')
-                                        ग्राम
-                                    @break
+                                        @case('ne')
+                                            ग्राम
+                                        @break
 
-                                    @default
-                                        grams
-                                @endswitch
-                            </div>
-
+                                        @default
+                                            grams
+                                    @endswitch
+                                </div>
                             @endif
-                            @if($recipe->servings)
-                            <div class="detail-item" style="color: #0c1e24; display: flex; align-items: center;">
-                                <span
-                                    style="background-color: #e4ebf1;
+                            @if ($recipe->servings)
+                                <div class="detail-item" style="color: #0c1e24; display: flex; align-items: center;">
+                                    <span
+                                        style="background-color: #e4ebf1;
                                     border-radius: 5px;
                                     width: 39px;
                                     height: 40px;
@@ -697,58 +698,58 @@
                                     align-items: center;
                                     justify-content: center;
                                     margin-left: 5px;">
-                                    <i class="fas fa-user" style="color: #0c1e24;"></i>
-                                </span>
-                                {{ $recipe->servings }}
-                                @switch($currentLanguageCode)
-                                    @case('ar')
-                                        شخص
-                                    @break
+                                        <i class="fas fa-user" style="color: #0c1e24;"></i>
+                                    </span>
+                                    {{ $recipe->servings }}
+                                    @switch($currentLanguageCode)
+                                        @case('ar')
+                                            شخص
+                                        @break
 
-                                    @case('en')
-                                        people
-                                    @break
+                                        @case('en')
+                                            people
+                                        @break
 
-                                    @case('id')
-                                        orang
-                                    @break
+                                        @case('id')
+                                            orang
+                                        @break
 
-                                    @case('am')
-                                        ሰዎች
-                                    @break
+                                        @case('am')
+                                            ሰዎች
+                                        @break
 
-                                    @case('hi')
-                                        लोग
-                                    @break
+                                        @case('hi')
+                                            लोग
+                                        @break
 
-                                    @case('bn')
-                                        মানুষ
-                                    @break
+                                        @case('bn')
+                                            মানুষ
+                                        @break
 
-                                    @case('ml')
-                                        ആളുകൾ
-                                    @break
+                                        @case('ml')
+                                            ആളുകൾ
+                                        @break
 
-                                    @case('fil')
-                                        katao
-                                    @break
+                                        @case('fil')
+                                            katao
+                                        @break
 
-                                    @case('ur')
-                                        افراد
-                                    @break
+                                        @case('ur')
+                                            افراد
+                                        @break
 
-                                    @case('ta')
-                                        நபர்கள்
-                                    @break
+                                        @case('ta')
+                                            நபர்கள்
+                                        @break
 
-                                    @case('ne')
-                                        मानिसहरु
-                                    @break
+                                        @case('ne')
+                                            मानिसहरु
+                                        @break
 
-                                    @default
-                                        servings
-                                @endswitch
-                            </div>
+                                        @default
+                                            servings
+                                    @endswitch
+                                </div>
                             @endif
                         </div>
 
@@ -960,7 +961,7 @@
 
                                             {{ $step['description'] ?? 'بدون وصف' }}
                                             <span
-                                            style="    color: #ffffff;
+                                                style="margin-right: 10px; color: #ffffff;
     font-size: 29px;
     text-align: center;
     background: #660099;
@@ -971,51 +972,29 @@
 ;
     align-items: center;
     justify-content: center;">
-                    <i style="margin: 0px; color: #ffffff;" class="fa-solid fa-headphones"></i>
-                </span>
-            </div>
-
-                                        @if (isset($step['media']) && is_array($step['media']) && !empty($step['media']))
-                                            <div class="step-media mt-2" style="display: flex;">
-                                                
-                                                @foreach ($step['media'] as $mediaItem)
-                                                    @php
-                                                        // *** التعديل الرئيسي هنا ***
-                                                        // تأكد من أننا نستخدم مفتاح 'url' لأنه هو الذي يجب أن يحتوي على المسار الكامل.
-                                                        // إذا لم يكن موجوداً، أو كان فارغاً، فسيعتبر المسار غير صالح.
-                                                        $mediaSource = $mediaItem['url'] ?? null;
-                                                        $mediaType = $mediaItem['type'] ?? 'unknown';
-                                                        $mediaName = $mediaItem['original_name'] ?? 'Media_' . $index;
-                                                    @endphp
-
-                                                    {{-- استخدم Storage::disk('public')->exists للتحقق من وجود الملف فعليًا --}}
-                                                    @if ($mediaSource && Storage::disk('public')->exists($mediaSource))
-                                                        @if (Str::startsWith($mediaType, 'image'))
-                                                            <img src="{{ Storage::url($mediaSource) }}"
-                                                                alt="{{ $mediaName }}"
-                                                                class="media-preview img-fluid">
-                                                                
-                                                        @elseif (Str::startsWith($mediaType, 'video'))
-                                                            <video controls class="media-preview video">
-                                                                <source src="{{ Storage::url($mediaSource) }}"
-                                                                    type="{{ $mediaType }}">
-                                                                متصفحك لا يدعم تشغيل الفيديو.
-                                                            </video>
-                                                        @else
-                                                            <span class="text-warning">نوع ميديا غير مدعوم:
-                                                                {{ $mediaType }}</span>
-                                                        @endif
-                                                    @else
-                                                        {{-- رسالة توضيحية لما الملف بيكون مش موجود --}}
-                                                        <span class="text-danger">
-                                                            الملف غير موجود أو المسار غير صالح:
-                                                            {{ $mediaSource ?: 'مسار غير محدد' }}
-                                                        </span>
-                                                    @endif
-                                                    
-                                                @endforeach
+                                                <i style="margin: 0px; color: #ffffff;"
+                                                    class="fa-solid fa-headphones"></i>
+                                            </span>
+                                        </div>
+                                            <div class="multiple-media-previews"
+                                                style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px;">
+                                                @if (!empty($step['media']))
+                                                    @foreach ($step['media'] as $media)
+                                                        <div class="media-item">
+                                                            @if (str_contains($media['type'], 'image'))
+                                                                <img src="{{ asset('storage/' . $media['url']) }}"
+                                                                    style="width: 150px; max-height: 100px; border-radius: 5px;">
+                                                            @else
+                                                                <video src="{{ asset('storage/' . $media['url']) }}"
+                                                                    controls
+                                                                    style="width: 150px; max-height: 100px; border-radius: 5px;"></video>
+                                                            @endif
+                                                            <button class="btn btn-sm btn-danger remove-single-media"
+                                                                style="position: absolute; top: -8px; right: -8px; border-radius: 50%; width: 24px; height: 24px; padding: 0;">×</button>
+                                                        </div>
+                                                    @endforeach
+                                                @endif
                                             </div>
-                                        @endif
                                     </li>
                                 @endforeach
                             @else
@@ -1024,7 +1003,8 @@
                         </ol>
                     </div>
 
-                    <div class="mt-4" style="    position: fixed;
+                    <div class="mt-4"
+                        style="    position: fixed;
     width: fit-content;
     bottom: 14px;
     right: 12px;

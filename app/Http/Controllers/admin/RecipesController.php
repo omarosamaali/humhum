@@ -153,8 +153,6 @@ class RecipesController extends Controller
     public function store(Request $request)
     {
         Log::info('Recipe Store Request Data:', $request->all());
-
-        // نحتاج أن نمرر Request للمتخصص بالتحقق، وليس فقط $this
         $rules = $this->getValidationRules($request);
         $validator = Validator::make($request->all(), $rules);
 
@@ -165,25 +163,11 @@ class RecipesController extends Controller
         }
 
         $validatedData = $validator->validated();
-
-        // تعيين user_id (الشخص الذي أنشأ الوصفة)
-        // هذا لضمان أن user_id هو دائمًا معرف المستخدم المسجل دخوله، بغض النظر عما إذا كان موجودًا في الـ request
         $validatedData['user_id'] = Auth::id();
-
-        // تعيين chef_id (الطاهي المسؤول عن الوصفة)
         $user = Auth::user();
         if ($user->role === 'طاه') {
-            // إذا كان المستخدم الحالي هو طاهي، فاجعل chef_id هو معرفه
             $validatedData['chef_id'] = $user->id;
         }
-        // إذا لم يكن المستخدم "طاهيًا"، فإننا نعتمد على القيمة المرسلة من الفورم (لو المدير اختار طاهي).
-        // إذا لم يختار المدير طاهي (أي أن chef_id جاء فارغاً من السليكت)،
-        // فإن قاعدة الـ validation (nullable|exists:users,id) ستسمح بمروره كـ null إذا كان العمود يقبل Null.
-        // لا حاجة لتعيينه إلى null يدويًا هنا مرة أخرى.
-        // الشرط "elseif (empty($validatedData['chef_id'])) { $validatedData['chef_id'] = null; }"
-        // يمكن أن يؤدي إلى تعيين null حتى لو كان حقل السليكت غير مطلوب، لذا إزالته أفضل.
-
-        // معالجة صورة الطبق (يجب أن تكون بعد الـ validation للحصول على البيانات الموثوقة)
         $validatedData['dish_image'] = $this->handleDishImage($request);
 
         $recipe = Recipe::create($validatedData);
