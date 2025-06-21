@@ -127,6 +127,20 @@
             border-radius: 8px;
         }
 
+        @media (max-width: 768px) {
+            .ingredient-item {
+                flex-direction: column;
+            }
+
+            .ingredient-item div {
+                width: 100%;
+            }
+
+            .ingredient-type-indicator {
+                display: block;
+            }
+        }
+
         .ingredient-item .form-control {
             flex-grow: 1;
             margin-bottom: 0;
@@ -332,7 +346,7 @@
         @endif
 
         <form id="recipe-form" action="{{ route('admin.recipes.store') }}" method="POST" enctype="multipart/form-data">
-        <input type="hidden" name="user_id" value="{{ auth()->user()->id }}">
+            <input type="hidden" name="user_id" value="{{ auth()->user()->id }}">
             @csrf
             <div class="row">
                 <div class="col-md-6 mb-3">
@@ -455,7 +469,7 @@
                 <div class="col-md-12 mb-3" id="id_sub_categories_container" style="display: none;">
                     <label for="sub_categories" class="form-label">التصنيفات الفرعية</label>
                     <select class="form-control select2" name="sub_categories[]" id="id_sub_categories"
-                        multiple="multiple">
+                        multiple="multiple" required>
                     </select>
                     @error('sub_categories')
                         <div class="text-danger mt-1">{{ $message }}</div>
@@ -555,7 +569,7 @@
                     @enderror
                 </div>
 
-                <div class="col-md-3 mb-3">
+                <div class="col-md-4 mb-3">
                     <label for="servings" class="form-label">تكفي لعدد </label>
                     <input type="number" class="form-control" id="servings" name="servings"
                         value="{{ old('servings') }}" min="1" required>
@@ -564,7 +578,7 @@
                     @enderror
                 </div>
 
-                <div class="col-md-3 mb-3">
+                <div class="col-md-4 mb-3">
                     <label for="preparation_time" class="form-label">وقت التحضير (بالدقائق)</label>
                     <input type="number" class="form-control" id="preparation_time" name="preparation_time"
                         value="{{ old('preparation_time') }}" min="1" required>
@@ -573,7 +587,7 @@
                     @enderror
                 </div>
 
-                <div class="col-md-2 mb-3">
+                <div class="col-md-4 mb-3">
                     <label for="calories" class="form-label">السعرات الحرارية</label>
                     <input type="number" class="form-control" id="calories" name="calories"
                         value="{{ old('calories') }}" min="0">
@@ -582,7 +596,7 @@
                     @enderror
                 </div>
 
-                <div class="col-md-2 mb-3">
+                <div class="col-md-4 mb-3">
                     <label for="fats" class="form-label">الدهون (جرام)</label>
                     <input type="number" step="0.01" class="form-control" id="fats" name="fats"
                         value="{{ old('fats') }}" min="0">
@@ -591,7 +605,7 @@
                     @enderror
                 </div>
 
-                <div class="col-md-2 mb-3">
+                <div class="col-md-4 mb-3">
                     <label for="carbs" class="form-label">الكربوهيدرات (جرام)</label>
                     <input type="number" step="0.01" class="form-control" id="carbs" name="carbs"
                         value="{{ old('carbs') }}" min="0">
@@ -600,7 +614,7 @@
                     @enderror
                 </div>
 
-                <div class="col-md-2 mb-3">
+                <div class="col-md-4 mb-3">
                     <label for="protein" class="form-label">البروتين (جرام)</label>
                     <input type="number" step="0.01" class="form-control" id="protein" name="protein"
                         value="{{ old('protein') }}" min="0">
@@ -609,7 +623,7 @@
                     @enderror
                 </div>
 
-                <div class="col-md-3 mb-3">
+                <div class="col-md-12 mb-3">
                     <label for="status" class="form-label">الحالة</label>
                     <select class="form-select" name="status" id="status">
                         <option value="1" {{ old('status', true) == true ? 'selected' : '' }}>فعال</option>
@@ -653,12 +667,15 @@
 
                 if (mainCategoryId) {
                     subCategoriesContainer.show();
-                    subCategoriesSelect.empty().append('<option value="">جاري التحميل...</option>').trigger('change');
+                    subCategoriesSelect.empty().append('<option value="">جاري التحميل...</option>').trigger(
+                        'change');
 
                     $.ajax({
                         url: '{{ route('admin.recipes.subcategories') }}',
                         type: 'GET',
-                        data: { main_category_id: mainCategoryId },
+                        data: {
+                            main_category_id: mainCategoryId
+                        },
                         headers: {
                             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                         },
@@ -677,13 +694,16 @@
                                     subCategoriesSelect.val(oldValues).trigger('change');
                                 @endif
                             } else {
-                                subCategoriesSelect.append('<option value="">لا توجد تصنيفات فرعية</option>');
+                                subCategoriesSelect.append(
+                                    '<option value="">لا توجد تصنيفات فرعية</option>');
                             }
                             subCategoriesSelect.trigger('change');
                         },
                         error: function(xhr, status, error) {
                             console.error('AJAX Error:', xhr.responseText);
-                            subCategoriesSelect.empty().append('<option value="">حدث خطأ في التحميل</option>').trigger('change');
+                            subCategoriesSelect.empty().append(
+                                '<option value="">حدث خطأ في التحميل</option>').trigger(
+                                'change');
                             Swal.fire({
                                 icon: 'error',
                                 title: 'خطأ',
@@ -702,209 +722,214 @@
             @endif
         });
 
-                    const ingredientsContainer = $('#ingredients-container');
-            const addIngredientBtn = $('#add-ingredient-btn');
-            const MAX_CHARS_INGREDIENT = 200;
+        const ingredientsContainer = $('#ingredients-container');
+        const addIngredientBtn = $('#add-ingredient-btn');
+        const MAX_CHARS_INGREDIENT = 200;
 
-            function updateCharCounter($input, maxLength) {
-                const currentLength = $input.val().length;
-                const remainingChars = maxLength - currentLength;
-                const $counter = $input.next('.char-counter');
-                $counter.text(`متبقي: ${remainingChars} حرف`);
-                $counter.css('color', remainingChars < 0 ? 'red' : '#666');
-            }
+        function updateCharCounter($input, maxLength) {
+            const currentLength = $input.val().length;
+            const remainingChars = maxLength - currentLength;
+            const $counter = $input.next('.char-counter');
+            $counter.text(`متبقي: ${remainingChars} حرف`);
+            $counter.css('color', remainingChars < 0 ? 'red' : '#666');
+        }
 
-            function createIngredientItem(value = '', isHeading = false) {
-                const itemHtml = `
+        function createIngredientItem(value = '', isHeading = false) {
+            const itemHtml = `
             <div class="ingredient-item" data-type="${isHeading ? 'heading' : 'ingredient'}">
-                <span class="ingredient-type-indicator">${isHeading ? 'عنوان' : 'مكون'}</span>
-                <input type="text" class="form-control ingredient-text" value="${value}" placeholder="ادخل المكون أو العنوان" maxlength="${MAX_CHARS_INGREDIENT}" required>
-                <span class="char-counter">متبقي: ${MAX_CHARS_INGREDIENT} حرف</span>
-                <div class="btn-group ingredient-buttons" role="group">
-                    <button type="button" class="btn btn-sm btn-is-heading ${isHeading ? 'active' : ''}" data-type="heading"><i class="fas fa-heading"></i> عنوان</button>
-                    <button type="button" class="btn btn-sm btn-is-ingredient ${!isHeading ? 'active' : ''}" data-type="ingredient"><i class="fas fa-list-alt"></i> مكون</button>
-                </div>
-                <div class="btn-group order-buttons" role="group">
-                    <button type="button" class="btn btn-sm btn-outline-secondary move-up-btn" title="تحريك لأعلى"><i class="fas fa-arrow-up"></i></button>
-                    <button type="button" class="btn btn-sm btn-outline-secondary move-down-btn" title="تحريك لأسفل"><i class="fas fa-arrow-down"></i></button>
-                </div>
-                <button type="button" class="btn btn-sm remove-ingredient-btn" title="حذف المكون/العنوان"><i class="fas fa-times"></i></button>
+                <div>
+                    <span class="ingredient-type-indicator">${isHeading ? 'عنوان' : 'مكون'}</span>
+                    <input type="text" class="form-control ingredient-text" value="${value}" placeholder="ادخل المكون أو العنوان" 
+                    maxlength="${MAX_CHARS_INGREDIENT}" required style="margin-top: 18px;">
+                    <span class="char-counter">متبقي: ${MAX_CHARS_INGREDIENT} حرف</span>
+                    </div>
+                    <div>
+                    <div class="btn-group ingredient-buttons" role="group" style="margin-top: 10px;">
+                        <button type="button" class="btn btn-sm btn-is-heading ${isHeading ? 'active' : ''}" data-type="heading"><i class="fas fa-heading"></i> عنوان</button>
+                        <button type="button" class="btn btn-sm btn-is-ingredient ${!isHeading ? 'active' : ''}" data-type="ingredient"><i class="fas fa-list-alt"></i> مكون</button>
+                        </div>
+                        <div class="btn-group order-buttons" role="group">
+                            <button type="button" class="btn btn-sm btn-outline-secondary move-up-btn" title="تحريك لأعلى"><i class="fas fa-arrow-up"></i></button>
+                            <button type="button" class="btn btn-sm btn-outline-secondary move-down-btn" title="تحريك لأسفل"><i class="fas fa-arrow-down"></i></button>
+                            </div>
+                            <button type="button" class="btn btn-sm remove-ingredient-btn" title="حذف المكون/العنوان"><i class="fas fa-times"></i></button>
+                            </div>
             </div>
         `;
-                const $newItem = $(itemHtml);
-                ingredientsContainer.append($newItem);
-                const $newInput = $newItem.find('.ingredient-text');
-                updateCharCounter($newInput, MAX_CHARS_INGREDIENT);
-            }
+            const $newItem = $(itemHtml);
+            ingredientsContainer.append($newItem);
+            const $newInput = $newItem.find('.ingredient-text');
+            updateCharCounter($newInput, MAX_CHARS_INGREDIENT);
+        }
 
-            // Handle existing ingredients from old() input
-            const existingIngredientsString = `{!! old('ingredients', '') !!}`;
-            if (existingIngredientsString.trim()) {
-                const lines = existingIngredientsString.split('\n');
-                lines.forEach(line => {
-                    const trimmedLine = line.trim();
-                    if (trimmedLine.startsWith('## ')) {
-                        createIngredientItem(trimmedLine.substring(2).trim(), true);
-                    } else if (trimmedLine) {
-                        createIngredientItem(trimmedLine, false);
-                    }
-                });
-            } else {
-                createIngredientItem(); // Add one empty ingredient by default
-            }
+        // Handle existing ingredients from old() input
+        const existingIngredientsString = `{!! old('ingredients', '') !!}`;
+        if (existingIngredientsString.trim()) {
+            const lines = existingIngredientsString.split('\n');
+            lines.forEach(line => {
+                const trimmedLine = line.trim();
+                if (trimmedLine.startsWith('## ')) {
+                    createIngredientItem(trimmedLine.substring(2).trim(), true);
+                } else if (trimmedLine) {
+                    createIngredientItem(trimmedLine, false);
+                }
+            });
+        } else {
+            createIngredientItem(); // Add one empty ingredient by default
+        }
 
-            // Event listeners for ingredients
-            addIngredientBtn.on('click', function() {
-                createIngredientItem();
+        // Event listeners for ingredients
+        addIngredientBtn.on('click', function() {
+            createIngredientItem();
+        });
+
+        ingredientsContainer.on('click', '.remove-ingredient-btn', function() {
+            $(this).closest('.ingredient-item').remove();
+        });
+
+        ingredientsContainer.on('click', '.ingredient-buttons button', function() {
+            const $this = $(this);
+            const itemType = $this.data('type');
+            const $parentItem = $this.closest('.ingredient-item');
+            const $typeIndicator = $parentItem.find('.ingredient-type-indicator');
+            $parentItem.attr('data-type', itemType);
+            $this.addClass('active').siblings().removeClass('active');
+            $typeIndicator.text(itemType === 'heading' ? 'عنوان' : 'مكون');
+        });
+
+        ingredientsContainer.on('focus', '.ingredient-text', function() {
+            $(this).next('.char-counter').addClass('visible');
+            updateCharCounter($(this), MAX_CHARS_INGREDIENT);
+        }).on('blur', '.ingredient-text', function() {
+            $(this).next('.char-counter').removeClass('visible');
+        }).on('input', '.ingredient-text', function() {
+            updateCharCounter($(this), MAX_CHARS_INGREDIENT);
+        });
+
+        ingredientsContainer.on('click', '.move-up-btn', function() {
+            const $currentItem = $(this).closest('.ingredient-item');
+            const $prevItem = $currentItem.prev('.ingredient-item');
+            if ($prevItem.length) $currentItem.insertBefore($prevItem);
+        });
+
+        ingredientsContainer.on('click', '.move-down-btn', function() {
+            const $currentItem = $(this).closest('.ingredient-item');
+            const $nextItem = $currentItem.next('.ingredient-item');
+            if ($nextItem.length) $currentItem.insertAfter($nextItem);
+        });
+
+        // --- Dynamic Steps Logic ---
+        const stepsContainer = $('#steps-container');
+        const addStepBtn = $('#add-step-btn');
+        const MAX_CHARS_STEP = 500;
+        let stepFileInputCounter = 0;
+
+        function updateStepNumbers() {
+            stepsContainer.find('.step-item').each(function(index) {
+                $(this).find('.step-number-indicator').text(`الخطوة ${index + 1}`);
+            });
+        }
+
+        function updateStepIndexes() {
+            stepsContainer.find('.step-item').each(function(index) {
+                $(this).attr('data-step-index', index);
+                $(this).find('.step-number-indicator').text(`الخطوة ${index + 1}`);
+                $(this).find('.step-media-input').attr('name', `step_media[${index}][]`);
+            });
+        }
+
+        // فصل event listeners في دالة منفصلة لسهولة الإدارة
+        function setupStepItemEventListeners($stepItem) {
+            // Event listener for "Add More Media" button
+            $stepItem.find('.add-more-media-btn').on('click', function() {
+                $(this).closest('.step-media-section').find('.step-media-input').click();
             });
 
-            ingredientsContainer.on('click', '.remove-ingredient-btn', function() {
-                $(this).closest('.ingredient-item').remove();
-            });
+            // Event listener for file input change
+            $stepItem.find('.step-media-input').on('change', function(event) {
+                const files = event.target.files;
+                const $multiplePreviews = $(this).closest('.step-media-section').find(
+                    '.multiple-media-previews');
+                const $mediaActions = $(this).closest('.step-media-section').find(
+                    '.step-media-actions');
+                const $currentStepItem = $(this).closest('.step-item');
 
-            ingredientsContainer.on('click', '.ingredient-buttons button', function() {
-                const $this = $(this);
-                const itemType = $this.data('type');
-                const $parentItem = $this.closest('.ingredient-item');
-                const $typeIndicator = $parentItem.find('.ingredient-type-indicator');
-                $parentItem.attr('data-type', itemType);
-                $this.addClass('active').siblings().removeClass('active');
-                $typeIndicator.text(itemType === 'heading' ? 'عنوان' : 'مكون');
-            });
+                if (files.length > 0) {
+                    $mediaActions.show();
+                    $multiplePreviews.show();
 
-            ingredientsContainer.on('focus', '.ingredient-text', function() {
-                $(this).next('.char-counter').addClass('visible');
-                updateCharCounter($(this), MAX_CHARS_INGREDIENT);
-            }).on('blur', '.ingredient-text', function() {
-                $(this).next('.char-counter').removeClass('visible');
-            }).on('input', '.ingredient-text', function() {
-                updateCharCounter($(this), MAX_CHARS_INGREDIENT);
-            });
+                    Array.from(files).forEach(file => {
+                        // إضافة الملف إلى المصفوفة
+                        if (!$currentStepItem[0].allMediaFiles) {
+                            $currentStepItem[0].allMediaFiles = [];
+                        }
+                        $currentStepItem[0].allMediaFiles.push(file);
 
-            ingredientsContainer.on('click', '.move-up-btn', function() {
-                const $currentItem = $(this).closest('.ingredient-item');
-                const $prevItem = $currentItem.prev('.ingredient-item');
-                if ($prevItem.length) $currentItem.insertBefore($prevItem);
-            });
-
-            ingredientsContainer.on('click', '.move-down-btn', function() {
-                const $currentItem = $(this).closest('.ingredient-item');
-                const $nextItem = $currentItem.next('.ingredient-item');
-                if ($nextItem.length) $currentItem.insertAfter($nextItem);
-            });
-
-            // --- Dynamic Steps Logic ---
-            const stepsContainer = $('#steps-container');
-            const addStepBtn = $('#add-step-btn');
-            const MAX_CHARS_STEP = 500;
-            let stepFileInputCounter = 0;
-
-            function updateStepNumbers() {
-                stepsContainer.find('.step-item').each(function(index) {
-                    $(this).find('.step-number-indicator').text(`الخطوة ${index + 1}`);
-                });
-            }
-
-            function updateStepIndexes() {
-                stepsContainer.find('.step-item').each(function(index) {
-                    $(this).attr('data-step-index', index);
-                    $(this).find('.step-number-indicator').text(`الخطوة ${index + 1}`);
-                    $(this).find('.step-media-input').attr('name', `step_media[${index}][]`);
-                });
-            }
-
-            // فصل event listeners في دالة منفصلة لسهولة الإدارة
-            function setupStepItemEventListeners($stepItem) {
-                // Event listener for "Add More Media" button
-                $stepItem.find('.add-more-media-btn').on('click', function() {
-                    $(this).closest('.step-media-section').find('.step-media-input').click();
-                });
-
-                // Event listener for file input change
-                $stepItem.find('.step-media-input').on('change', function(event) {
-                    const files = event.target.files;
-                    const $multiplePreviews = $(this).closest('.step-media-section').find(
-                        '.multiple-media-previews');
-                    const $mediaActions = $(this).closest('.step-media-section').find(
-                        '.step-media-actions');
-                    const $currentStepItem = $(this).closest('.step-item');
-
-                    if (files.length > 0) {
-                        $mediaActions.show();
-                        $multiplePreviews.show();
-
-                        Array.from(files).forEach(file => {
-                            // إضافة الملف إلى المصفوفة
-                            if (!$currentStepItem[0].allMediaFiles) {
-                                $currentStepItem[0].allMediaFiles = [];
-                            }
-                            $currentStepItem[0].allMediaFiles.push(file);
-
-                            const reader = new FileReader();
-                            reader.onload = function(e) {
-                                const mediaPreview = file.type.startsWith('image/') ?
-                                    `<div class="media-item" style="position: relative;">
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            const mediaPreview = file.type.startsWith('image/') ?
+                                `<div class="media-item" style="position: relative;">
                                 <img src="${e.target.result}" style="max-width: 100px; max-height: 80px; object-fit: contain; border-radius: 5px;">
                                 <button class="btn btn-sm btn-danger remove-single-media" style="position: absolute; top: -8px; right: -8px; border-radius: 50%; width: 24px; height: 24px; padding: 0;">×</button>
                             </div>` :
-                                    `<div class="media-item" style="position: relative;">
+                                `<div class="media-item" style="position: relative;">
                                 <video src="${e.target.result}" controls style="max-width: 150px; max-height: 100px; border-radius: 5px;">
                                 <button class="btn btn-sm btn-danger remove-single-media" style="position: absolute; top: -8px; right: -8px; border-radius: 50%; width: 24px; height: 24px; padding: 0;">×</button>
                             </div>`;
-                                $multiplePreviews.append(mediaPreview);
-                            };
-                            reader.readAsDataURL(file);
-                        });
-                        $(this).val(''); // إعادة تعيين الـ input للسماح بتحديد نفس الملفات مرة أخرى
-                    }
-                });
+                            $multiplePreviews.append(mediaPreview);
+                        };
+                        reader.readAsDataURL(file);
+                    });
+                    $(this).val(''); // إعادة تعيين الـ input للسماح بتحديد نفس الملفات مرة أخرى
+                }
+            });
 
-                // Event listener for removing single media
-                $stepItem.on('click', '.remove-single-media', function() {
-                    const $mediaItem = $(this).closest('.media-item');
-                    const $currentStepItem = $(this).closest('.step-item');
-                    const mediaIndex = $mediaItem.index();
+            // Event listener for removing single media
+            $stepItem.on('click', '.remove-single-media', function() {
+                const $mediaItem = $(this).closest('.media-item');
+                const $currentStepItem = $(this).closest('.step-item');
+                const mediaIndex = $mediaItem.index();
 
-                    // إزالة من المصفوفة الداخلية
-                    if ($currentStepItem[0].allMediaFiles && $currentStepItem[0].allMediaFiles[
-                            mediaIndex] !== undefined) {
-                        $currentStepItem[0].allMediaFiles.splice(mediaIndex, 1);
-                    }
+                // إزالة من المصفوفة الداخلية
+                if ($currentStepItem[0].allMediaFiles && $currentStepItem[0].allMediaFiles[
+                        mediaIndex] !== undefined) {
+                    $currentStepItem[0].allMediaFiles.splice(mediaIndex, 1);
+                }
 
-                    $mediaItem.remove();
+                $mediaItem.remove();
 
-                    // إخفاء الأزرار إذا لم تعد هناك ملفات
-                    if ($currentStepItem.find('.media-item').length === 0) {
-                        $currentStepItem.find('.step-media-actions').hide();
-                        $currentStepItem.find('.multiple-media-previews').hide();
-                    }
-                });
-
-                // Event listener for clearing all media
-                $stepItem.find('.clear-all-media-btn').on('click', function() {
-                    const $currentStepItem = $(this).closest('.step-item');
-                    $currentStepItem[0].allMediaFiles = []; // مسح المصفوفة الداخلية
-                    $currentStepItem.find('.multiple-media-previews').empty().hide();
+                // إخفاء الأزرار إذا لم تعد هناك ملفات
+                if ($currentStepItem.find('.media-item').length === 0) {
                     $currentStepItem.find('.step-media-actions').hide();
-                    $currentStepItem.find('.step-media-input').val(''); // مسح قيمة الـ input
-                });
+                    $currentStepItem.find('.multiple-media-previews').hide();
+                }
+            });
 
-                // Event listeners for character counter
-                $stepItem.find('.step-text').on('focus', function() {
-                    $(this).next('.char-counter').addClass('visible');
-                    updateCharCounter($(this), MAX_CHARS_STEP);
-                }).on('blur', function() {
-                    $(this).next('.char-counter').removeClass('visible');
-                }).on('input', function() {
-                    updateCharCounter($(this), MAX_CHARS_STEP);
-                });
-            }
+            // Event listener for clearing all media
+            $stepItem.find('.clear-all-media-btn').on('click', function() {
+                const $currentStepItem = $(this).closest('.step-item');
+                $currentStepItem[0].allMediaFiles = []; // مسح المصفوفة الداخلية
+                $currentStepItem.find('.multiple-media-previews').empty().hide();
+                $currentStepItem.find('.step-media-actions').hide();
+                $currentStepItem.find('.step-media-input').val(''); // مسح قيمة الـ input
+            });
 
-            // تحديث دالة إنشاء عنصر الخطوة لتحسين معالجة الملفات
-            function createStepItem(stepValue = '', existingMedia = []) {
-                stepFileInputCounter++;
-                const index = stepsContainer.children().length;
-                const itemHtml = `
+            // Event listeners for character counter
+            $stepItem.find('.step-text').on('focus', function() {
+                $(this).next('.char-counter').addClass('visible');
+                updateCharCounter($(this), MAX_CHARS_STEP);
+            }).on('blur', function() {
+                $(this).next('.char-counter').removeClass('visible');
+            }).on('input', function() {
+                updateCharCounter($(this), MAX_CHARS_STEP);
+            });
+        }
+
+        // تحديث دالة إنشاء عنصر الخطوة لتحسين معالجة الملفات
+        function createStepItem(stepValue = '', existingMedia = []) {
+            stepFileInputCounter++;
+            const index = stepsContainer.children().length;
+            const itemHtml = `
             <div class="step-item" data-step-index="${index}">
                 <span class="step-number-indicator">الخطوة ${index + 1}</span>
                 <input type="text" class="form-control step-text" value="${stepValue}" placeholder="ادخل وصف الخطوة" maxlength="${MAX_CHARS_STEP}" required>
@@ -935,195 +960,194 @@
             </div>
         `;
 
-                const $newItem = $(itemHtml);
-                $newItem[0].allMediaFiles = []; // تهيئة مصفوفة الملفات
-                stepsContainer.append($newItem);
+            const $newItem = $(itemHtml);
+            $newItem[0].allMediaFiles = []; // تهيئة مصفوفة الملفات
+            stepsContainer.append($newItem);
 
-                // إضافة الملفات الموجودة إذا كانت متوفرة (للتحديث)
-                if (existingMedia && existingMedia.length > 0) {
-                    const $multiplePreviews = $newItem.find('.multiple-media-previews');
-                    const $mediaActions = $newItem.find('.step-media-actions');
+            // إضافة الملفات الموجودة إذا كانت متوفرة (للتحديث)
+            if (existingMedia && existingMedia.length > 0) {
+                const $multiplePreviews = $newItem.find('.multiple-media-previews');
+                const $mediaActions = $newItem.find('.step-media-actions');
 
-                    existingMedia.forEach(media => {
-                        const mediaPreview = media.type === 'image' ?
-                            `<div class="media-item" style="position: relative;">
+                existingMedia.forEach(media => {
+                    const mediaPreview = media.type === 'image' ?
+                        `<div class="media-item" style="position: relative;">
                         <img src="${window.location.origin}/storage/${media.url}" style="max-width: 100px; max-height: 80px; object-fit: contain; border-radius: 5px;">
                         <button class="btn btn-sm btn-danger remove-single-media" style="position: absolute; top: -8px; right: -8px; border-radius: 50%; width: 24px; height: 24px; padding: 0;">×</button>
                     </div>` :
-                            `<div class="media-item" style="position: relative;">
+                        `<div class="media-item" style="position: relative;">
                         <video src="${window.location.origin}/storage/${media.url}" controls style="max-width: 150px; max-height: 100px; border-radius: 5px;"></video>
                         <button class="btn btn-sm btn-danger remove-single-media" style="position: absolute; top: -8px; right: -8px; border-radius: 50%; width: 24px; height: 24px; padding: 0;">×</button>
                     </div>`;
 
-                        $multiplePreviews.append(mediaPreview);
-                    });
+                    $multiplePreviews.append(mediaPreview);
+                });
 
-                    if (existingMedia.length > 0) {
-                        $multiplePreviews.show();
-                        $mediaActions.show();
-                    }
+                if (existingMedia.length > 0) {
+                    $multiplePreviews.show();
+                    $mediaActions.show();
                 }
-
-                // إعداد event listeners للعنصر الجديد
-                setupStepItemEventListeners($newItem);
-
-                const $newInput = $newItem.find('.step-text');
-                updateCharCounter($newInput, MAX_CHARS_STEP);
             }
 
-            // إضافة خطوة افتراضية
+            // إعداد event listeners للعنصر الجديد
+            setupStepItemEventListeners($newItem);
+
+            const $newInput = $newItem.find('.step-text');
+            updateCharCounter($newInput, MAX_CHARS_STEP);
+        }
+
+        // إضافة خطوة افتراضية
+        createStepItem();
+
+        // Event listeners للخطوات
+        addStepBtn.on('click', function() {
             createStepItem();
+        });
 
-            // Event listeners للخطوات
-            addStepBtn.on('click', function() {
-                createStepItem();
-            });
+        stepsContainer.on('click', '.remove-step-btn', function() {
+            $(this).closest('.step-item').remove();
+            updateStepIndexes();
+        });
 
-            stepsContainer.on('click', '.remove-step-btn', function() {
-                $(this).closest('.step-item').remove();
+        stepsContainer.on('click', '.move-up-btn', function() {
+            const $currentItem = $(this).closest('.step-item');
+            const $prevItem = $currentItem.prev('.step-item');
+            if ($prevItem.length) {
+                $currentItem.insertBefore($prevItem);
                 updateStepIndexes();
-            });
+            }
+        });
 
-            stepsContainer.on('click', '.move-up-btn', function() {
-                const $currentItem = $(this).closest('.step-item');
-                const $prevItem = $currentItem.prev('.step-item');
-                if ($prevItem.length) {
-                    $currentItem.insertBefore($prevItem);
-                    updateStepIndexes();
+        stepsContainer.on('click', '.move-down-btn', function() {
+            const $currentItem = $(this).closest('.step-item');
+            const $nextItem = $currentItem.next('.step-item');
+            if ($nextItem.length) {
+                $currentItem.insertAfter($nextItem);
+                updateStepIndexes();
+            }
+        });
+
+        // --- Form Submission Logic ---
+        $('#recipe-form').on('submit', function(e) {
+            e.preventDefault();
+
+            const formData = new FormData(this);
+
+            // معالجة المكونات
+            const ingredients = [];
+            ingredientsContainer.find('.ingredient-item').each(function() {
+                const $this = $(this);
+                const type = $this.data('type');
+                const text = $this.find('.ingredient-text').val().trim();
+                if (text) {
+                    ingredients.push(`${type === 'heading' ? '## ' : ''}${text}`);
                 }
             });
+            formData.set('ingredients', ingredients.join('\n'));
 
-            stepsContainer.on('click', '.move-down-btn', function() {
-                const $currentItem = $(this).closest('.step-item');
-                const $nextItem = $currentItem.next('.step-item');
-                if ($nextItem.length) {
-                    $currentItem.insertAfter($nextItem);
-                    updateStepIndexes();
+            // معالجة الخطوات
+            const steps = [];
+            for (let pair of formData.entries()) {
+                if (pair[0].startsWith('step_media[')) {
+                    formData.delete(pair[0]);
                 }
-            });
-
-            // --- Form Submission Logic ---
-            $('#recipe-form').on('submit', function(e) {
-                e.preventDefault();
-
-                const formData = new FormData(this);
-
-                // معالجة المكونات
-                const ingredients = [];
-                ingredientsContainer.find('.ingredient-item').each(function() {
-                    const $this = $(this);
-                    const type = $this.data('type');
-                    const text = $this.find('.ingredient-text').val().trim();
-                    if (text) {
-                        ingredients.push(`${type === 'heading' ? '## ' : ''}${text}`);
+            }
+            stepsContainer.find('.step-item').each(function(index) {
+                const $this = $(this);
+                const stepText = $this.find('.step-text').val().trim();
+                const mediaFiles = $this[0].allMediaFiles || [];
+                if (stepText) {
+                    if (mediaFiles.length > 0) {
+                        mediaFiles.forEach((file, fileIndex) => {
+                            formData.append(`step_media[${index}][]`, file);
+                        });
                     }
-                });
-                formData.set('ingredients', ingredients.join('\n'));
-
-                // معالجة الخطوات
-                const steps = [];
-                for (let pair of formData.entries()) {
-                    if (pair[0].startsWith('step_media[')) {
-                        formData.delete(pair[0]);
-                    }
-                }
-                stepsContainer.find('.step-item').each(function(index) {
-                    const $this = $(this);
-                    const stepText = $this.find('.step-text').val().trim();
-                    const mediaFiles = $this[0].allMediaFiles || [];
-                    if (stepText) {
-                        if (mediaFiles.length > 0) {
-                            mediaFiles.forEach((file, fileIndex) => {
-                                formData.append(`step_media[${index}][]`, file);
+                    const existingMedia = [];
+                    $this.find('.media-item').each(function() {
+                        const $mediaItem = $(this);
+                        const imgSrc = $mediaItem.find('img').attr('src');
+                        const videoSrc = $mediaItem.find('video').attr('src');
+                        if (imgSrc && imgSrc.includes('storage/')) {
+                            const urlPath = imgSrc.split('storage/')[1];
+                            existingMedia.push({
+                                url: urlPath,
+                                type: 'image',
+                                original_name: 'existing_image.jpg'
+                            });
+                        } else if (videoSrc && videoSrc.includes('storage/')) {
+                            const urlPath = videoSrc.split('storage/')[1];
+                            existingMedia.push({
+                                url: urlPath,
+                                type: 'video',
+                                original_name: 'existing_video.mp4'
                             });
                         }
-                        const existingMedia = [];
-                        $this.find('.media-item').each(function() {
-                            const $mediaItem = $(this);
-                            const imgSrc = $mediaItem.find('img').attr('src');
-                            const videoSrc = $mediaItem.find('video').attr('src');
-                            if (imgSrc && imgSrc.includes('storage/')) {
-                                const urlPath = imgSrc.split('storage/')[1];
-                                existingMedia.push({
-                                    url: urlPath,
-                                    type: 'image',
-                                    original_name: 'existing_image.jpg'
-                                });
-                            } else if (videoSrc && videoSrc.includes('storage/')) {
-                                const urlPath = videoSrc.split('storage/')[1];
-                                existingMedia.push({
-                                    url: urlPath,
-                                    type: 'video',
-                                    original_name: 'existing_video.mp4'
-                                });
-                            }
-                        });
-                        steps.push({
-                            description: stepText,
-                            media: existingMedia
-                        });
-                    }
-                });
-                if (steps.length === 0) {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'خطأ',
-                        text: 'يجب إضافة خطوة واحدة على الأقل!'
                     });
-                    return;
+                    steps.push({
+                        description: stepText,
+                        media: existingMedia
+                    });
                 }
-                formData.set('steps_data', JSON.stringify(steps));
+            });
+            if (steps.length === 0) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'خطأ',
+                    text: 'يجب إضافة خطوة واحدة على الأقل!'
+                });
+                return;
+            }
+            formData.set('steps_data', JSON.stringify(steps));
 
-                $.ajax({
-                    url: $(this).attr('action'),
-                    method: $(this).attr('method') || 'POST',
-                    data: formData,
-                    processData: false,
-                    contentType: false,
-                    success: function(response) {
-                        if (response.success) {
-                            Swal.fire({
-                                    icon: 'success',
-                                    title: 'نجح!',
-                                    text: response.message || 'تم حفظ الوصفة بنجاح!'
-                                })
-                                .then(() => {
-                                    if (response.redirect_url) window.location.href =
-                                        response.redirect_url;
-                                    else location.reload();
-                                });
-                        } else {
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'خطأ',
-                                text: response.message || 'حدث خطأ أثناء الحفظ!'
+            $.ajax({
+                url: $(this).attr('action'),
+                method: $(this).attr('method') || 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(response) {
+                    if (response.success) {
+                        Swal.fire({
+                                icon: 'success',
+                                title: 'نجح!',
+                                text: response.message || 'تم حفظ الوصفة بنجاح!'
+                            })
+                            .then(() => {
+                                if (response.redirect_url) window.location.href =
+                                    response.redirect_url;
+                                else location.reload();
                             });
-                        }
-                    },
-                    error: function(xhr) {
-                        let errorMessage = 'حدث خطأ أثناء الحفظ!';
-                        if (xhr.status === 422) {
-                            const errors = xhr.responseJSON?.errors || {};
-                            errorMessage = Object.values(errors).flat().join('\n');
-                            // عرض الأخطاء تحت الحقول
-                            $('.text-danger').remove(); // مسح أي أخطاء سابقة
-                            $.each(errors, function(key, value) {
-                                const $input = $(`[name="${key}"]`);
-                                if ($input.length) {
-                                    $input.after(
-                                        `<div class="text-danger mt-1">${value[0]}</div>`
-                                        );
-                                }
-                            });
-                        }
+                    } else {
                         Swal.fire({
                             icon: 'error',
                             title: 'خطأ',
-                            text: errorMessage
+                            text: response.message || 'حدث خطأ أثناء الحفظ!'
                         });
                     }
-                });
+                },
+                error: function(xhr) {
+                    let errorMessage = 'حدث خطأ أثناء الحفظ!';
+                    if (xhr.status === 422) {
+                        const errors = xhr.responseJSON?.errors || {};
+                        errorMessage = Object.values(errors).flat().join('\n');
+                        // عرض الأخطاء تحت الحقول
+                        $('.text-danger').remove(); // مسح أي أخطاء سابقة
+                        $.each(errors, function(key, value) {
+                            const $input = $(`[name="${key}"]`);
+                            if ($input.length) {
+                                $input.after(
+                                    `<div class="text-danger mt-1">${value[0]}</div>`
+                                );
+                            }
+                        });
+                    }
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'خطأ',
+                        text: errorMessage
+                    });
+                }
             });
-        
+        });
     </script>
 @endpush

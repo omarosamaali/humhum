@@ -41,6 +41,10 @@
             background-color: #e9ecef;
         }
 
+        .action-buttons {
+            width: 123px;
+        }
+
         .action-buttons .btn {
             padding: 5px 10px;
             font-size: 12px;

@@ -153,6 +153,8 @@ class RecipesController extends Controller
     public function store(Request $request)
     {
         Log::info('Recipe Store Request Data:', $request->all());
+
+        // نحتاج أن نمرر Request للمتخصص بالتحقق، وليس فقط $this
         $rules = $this->getValidationRules($request);
         $validator = Validator::make($request->all(), $rules);
 
@@ -163,6 +165,9 @@ class RecipesController extends Controller
         }
 
         $validatedData = $validator->validated();
+
+        // تعيين user_id (الشخص الذي أنشأ الوصفة)
+        // هذا لضمان أن user_id هو دائمًا معرف المستخدم المسجل دخوله، بغض النظر عما إذا كان موجودًا في الـ request
         $validatedData['user_id'] = Auth::id();
         $user = Auth::user();
         if ($user->role === 'طاه') {
@@ -531,7 +536,8 @@ class RecipesController extends Controller
             'chef_id' => Auth::user()->role === 'طاه' ? 'nullable|exists:users,id' : 'nullable|exists:users,id',
         ];
         if ($request->hasFile('step_media')) {
-            $rules['step_media.*.*'] = 'nullable|file|mimes:jpeg,png,jpg,gif,svg,webp,mp4,mov,avi,ogg,qt|max:10240';
+            $rules['step_media.*.*'] = 'nullable|file|mimes:jpeg,png,jpg,gif,svg,webp,mp4,mov,avi,ogg,qt|max:512000';
+            
         }
         return $rules;
     }

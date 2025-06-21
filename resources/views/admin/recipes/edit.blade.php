@@ -450,6 +450,11 @@
                         @foreach ($selectedSubCategories as $sub)
                             <option value="{{ $sub->id }}" selected>{{ $sub->name_ar }}</option>
                         @endforeach
+                        @foreach ($subCategories as $sub)
+                            @if (!in_array($sub->id, $selectedSubCategoryIds))
+                                <option value="{{ $sub->id }}">{{ $sub->name_ar }}</option>
+                            @endif
+                        @endforeach
                     </select>
                     @error('sub_categories')
                         <div class="text-danger mt-1">{{ $message }}</div>
@@ -649,113 +654,116 @@
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
-   $(document).ready(function() {
-    $('#id_sub_categories').select2({
-        placeholder: 'اختر التصنيفات الفرعية',
-        allowClear: true,
-        dir: 'rtl'
-    });
-
-    // Function to load sub-categories
-    function loadSubCategories(mainCategoryId, preserveExisting = false) {
-        const subCategoriesContainer = $('#id_sub_categories_container');
-        const subCategoriesSelect = $('#id_sub_categories');
-
-        if (mainCategoryId) {
-            subCategoriesContainer.show();
-            
-            // إذا كان preserveExisting = true، احتفظ بالقيم الموجودة
-            if (!preserveExisting) {
-                subCategoriesSelect.empty().append('<option value="">جاري التحميل...</option>').trigger('change');
-            }
-
-            $.ajax({
-                url: '{{ route('admin.recipes.subcategories') }}',
-                type: 'GET',
-                data: {
-                    main_category_id: mainCategoryId
-                },
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                },
-                success: function(response) {
-                    // احتفظ بالقيم المحددة حالياً قبل مسح الـ select
-                    const currentSelectedValues = subCategoriesSelect.val() || [];
-                    
-                    subCategoriesSelect.empty();
-
-                    if (response.length > 0) {
-                        $.each(response, function(index, subCategory) {
-                            const isSelected = currentSelectedValues.includes(subCategory.id.toString());
-                            subCategoriesSelect.append(
-                                `<option value="${subCategory.id}" ${isSelected ? 'selected' : ''}>${subCategory.name_ar}</option>`
-                            );
-                        });
-                        
-                        // استعادة القيم المحددة
-                        if (currentSelectedValues.length > 0) {
-                            subCategoriesSelect.val(currentSelectedValues).trigger('change');
-                        } else {
-                            // Set old or saved values after options are populated (only if no current values)
-                            @if (old('sub_categories'))
-                                const oldValues = @json(old('sub_categories'));
-                                subCategoriesSelect.val(oldValues).trigger('change');
-                            @elseif ($recipe->sub_categories && count($recipe->sub_categories) > 0)
-                                const savedValues = @json($recipe->sub_categories->pluck('id')->toArray());
-                                subCategoriesSelect.val(savedValues).trigger('change');
-                            @endif
-                        }
-                    } else {
-                        subCategoriesSelect.append('<option value="">لا توجد تصنيفات فرعية</option>');
-                    }
-                    subCategoriesSelect.trigger('change');
-                },
-                error: function(xhr, status, error) {
-                    console.error('AJAX Error:', xhr.responseText);
-                    subCategoriesSelect.empty().append(
-                        '<option value="">حدث خطأ في التحميل</option>').trigger('change');
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'خطأ',
-                        text: 'فشل تحميل التصنيفات الفرعية. حاول مرة أخرى.'
-                    });
-                }
+        $(document).ready(function() {
+            $('#id_sub_categories').select2({
+                placeholder: 'اختر التصنيفات الفرعية',
+                allowClear: true,
+                dir: 'rtl'
             });
-        } else {
-            subCategoriesContainer.hide();
-            subCategoriesSelect.empty().trigger('change');
-        }
-    }
 
-    // التحقق من وجود options في التصنيفات الفرعية عند تحميل الصفحة
-    const initialMainCategoryId = $('#main_category_id').val();
-    const hasExistingSubCategories = $('#id_sub_categories option').length > 0;
-    
-    if (initialMainCategoryId) {
-        if (hasExistingSubCategories) {
-            // إذا كانت هناك تصنيفات فرعية موجودة بالفعل، لا تحمل من جديد
-            console.log('Sub-categories already exist, skipping AJAX load');
-        } else {
-            // إذا لم تكن هناك تصنيفات فرعية، حمل من الـ AJAX
-            loadSubCategories(initialMainCategoryId);
-        }
-    } else {
-        // If no main category is selected, try to load sub-categories based on saved data
-        @if ($recipe->sub_categories && count($recipe->sub_categories) > 0)
-            const savedMainCategoryId = '{{ $recipe->main_category_id }}';
-            if (savedMainCategoryId && !hasExistingSubCategories) {
-                loadSubCategories(savedMainCategoryId);
+            // Function to load sub-categories
+            function loadSubCategories(mainCategoryId, preserveExisting = false) {
+                const subCategoriesContainer = $('#id_sub_categories_container');
+                const subCategoriesSelect = $('#id_sub_categories');
+
+                if (mainCategoryId) {
+                    subCategoriesContainer.show();
+
+                    // إذا كان preserveExisting = true، احتفظ بالقيم الموجودة
+                    if (!preserveExisting) {
+                        subCategoriesSelect.empty().append('<option value="">جاري التحميل...</option>').trigger(
+                            'change');
+                    }
+
+                    $.ajax({
+                        url: '{{ route('admin.recipes.subcategories') }}',
+                        type: 'GET',
+                        data: {
+                            main_category_id: mainCategoryId
+                        },
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        success: function(response) {
+                            // احتفظ بالقيم المحددة حالياً قبل مسح الـ select
+                            const currentSelectedValues = subCategoriesSelect.val() || [];
+
+                            subCategoriesSelect.empty();
+
+                            if (response.length > 0) {
+                                $.each(response, function(index, subCategory) {
+                                    const isSelected = currentSelectedValues.includes(
+                                        subCategory.id.toString());
+                                    subCategoriesSelect.append(
+                                        `<option value="${subCategory.id}" ${isSelected ? 'selected' : ''}>${subCategory.name_ar}</option>`
+                                    );
+                                });
+
+                                // استعادة القيم المحددة
+                                if (currentSelectedValues.length > 0) {
+                                    subCategoriesSelect.val(currentSelectedValues).trigger('change');
+                                } else {
+                                    // Set old or saved values after options are populated (only if no current values)
+                                    @if (old('sub_categories'))
+                                        const oldValues = @json(old('sub_categories'));
+                                        subCategoriesSelect.val(oldValues).trigger('change');
+                                    @elseif ($recipe->sub_categories && count($recipe->sub_categories) > 0)
+                                        const savedValues = @json($recipe->sub_categories->pluck('id')->toArray());
+                                        subCategoriesSelect.val(savedValues).trigger('change');
+                                    @endif
+                                }
+                            } else {
+                                subCategoriesSelect.append(
+                                    '<option value="">لا توجد تصنيفات فرعية</option>');
+                            }
+                            subCategoriesSelect.trigger('change');
+                        },
+                        error: function(xhr, status, error) {
+                            console.error('AJAX Error:', xhr.responseText);
+                            subCategoriesSelect.empty().append(
+                                '<option value="">حدث خطأ في التحميل</option>').trigger('change');
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'خطأ',
+                                text: 'فشل تحميل التصنيفات الفرعية. حاول مرة أخرى.'
+                            });
+                        }
+                    });
+                } else {
+                    subCategoriesContainer.hide();
+                    subCategoriesSelect.empty().trigger('change');
+                }
             }
-        @endif
-    }
 
-    // Handle change event for main category
-    $('#main_category_id').on('change', function() {
-        const selectedMainCategoryId = $(this).val();
-        loadSubCategories(selectedMainCategoryId, false); // لا تحتفظ بالقيم الموجودة عند تغيير التصنيف الرئيسي
-    });
-});
+            // التحقق من وجود options في التصنيفات الفرعية عند تحميل الصفحة
+            const initialMainCategoryId = $('#main_category_id').val();
+            const hasExistingSubCategories = $('#id_sub_categories option').length > 0;
 
+            if (initialMainCategoryId) {
+                if (hasExistingSubCategories) {
+                    // إذا كانت هناك تصنيفات فرعية موجودة بالفعل، لا تحمل من جديد
+                    console.log('Sub-categories already exist, skipping AJAX load');
+                } else {
+                    // إذا لم تكن هناك تصنيفات فرعية، حمل من الـ AJAX
+                    loadSubCategories(initialMainCategoryId);
+                }
+            } else {
+                // If no main category is selected, try to load sub-categories based on saved data
+                @if ($recipe->sub_categories && count($recipe->sub_categories) > 0)
+                    const savedMainCategoryId = '{{ $recipe->main_category_id }}';
+                    if (savedMainCategoryId && !hasExistingSubCategories) {
+                        loadSubCategories(savedMainCategoryId);
+                    }
+                @endif
+            }
+
+            // Handle change event for main category
+            $('#main_category_id').on('change', function() {
+                const selectedMainCategoryId = $(this).val();
+                loadSubCategories(selectedMainCategoryId,
+                false); // لا تحتفظ بالقيم الموجودة عند تغيير التصنيف الرئيسي
+            });
+        });
     </script>
     <script>
         // ** ملاحظة هامة جداً: تأكد أن هذا الكود يوضع بعد تحميل مكتبة jQuery **
