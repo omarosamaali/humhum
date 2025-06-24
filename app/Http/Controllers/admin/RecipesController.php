@@ -14,13 +14,157 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
-// import Log
+use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Log;
 
 
 
 class RecipesController extends Controller
 {
+    public function allRecipes()
+    {
+        // افترض أن الوصفات كلها بتاعت الشيف الحالي
+        // لو الوصفات مش مرتبطة بشيف معين، ممكن تجيبها كلها
+        // $recipes = Recipe::all();
+
+        // لو الوصفات مرتبطة بشيف معين (مثلاً، عن طريق user_id أو chef_id)
+        $user = Auth::user();
+        if ($user && $user->role === 'طاه') {
+            // افترض أن فيه علاقة بين المستخدم والوصفات (مثلاً user_id في جدول recipes)
+            // أو علاقة بين ChefProfile والوصفات
+            $allRecipes = Recipe::where('user_id', $user->id)->get();
+        } else {
+            // لو المستخدم مش شيف أو مش مسجل دخول، ممكن ترجع صفحة خطأ أو وصفات فارغة
+            $allRecipes = collect(); // يرجع مجموعة فارغة
+        }
+
+
+        // تقسيم الوصفات لـ "فعالة" و "غير فعالة"
+        $activeRecipes = $allRecipes->where('status', 1); // افترض أن فيه عمود اسمه is_active (boolean)
+        $inactiveRecipes = $allRecipes->where('status', 0);
+
+        return view('c1he3f.recpies.all_recipes', [
+            'activeRecipes' => $activeRecipes,
+            'inactiveRecipes' => $inactiveRecipes,
+        ]);
+    }
+
+    public function showStepsForm(Recipe $recipe)
+    {
+        // Decode existing steps data for pre-filling the form
+        // Ensure 'steps' column is cast to 'array' in your Recipe model.
+        $stepsData = $recipe->steps ? $recipe->steps : []; // If cast to array, it's already an array
+
+        // If you stored media paths, they will be part of $step['media']
+        return view('c1he3f.recpies.steps', compact('recipe', 'stepsData'));
+    }
+
+    public function updateSteps(Request $request, Recipe $recipe)
+    {
+        Log::info('UpdateSteps Request:', ['all' => $request->all(), 'files' => $request->file()]);
+
+        try {
+            $request->validate([
+                'steps_data' => 'nullable|json',
+                'step_media.*.*' => 'nullable|file|mimes:jpeg,png,jpg,gif,svg,webp,mp4,mov,avi,ogg,qt|max:512000',
+            ]);
+
+            $newStepsData = [];
+            $stepsFromRequest = json_decode($request->input('steps_data'), true) ?? [];
+            $uploadedFiles = $request->file('step_media') ?? [];
+
+            foreach ($stepsFromRequest as $index => $step) {
+                $description = $step['description'] ?? '';
+                $currentStepMedia = $step['media'] ?? [];
+
+                if (isset($uploadedFiles[$index]) && is_array($uploadedFiles[$index])) {
+                    foreach ($uploadedFiles[$index] as $key => $file) {
+                        if ($file && $file->isValid()) {
+                            $path = $file->store('recipes/steps', 'public');
+                            $type = Str::startsWith($file->getMimeType(), 'image/') ? 'image' : 'video';
+                            $currentStepMedia[] = [
+                                'path' => $path,
+                                'url' => Storage::url($path),
+                                'type' => $type,
+                            ];
+                            Log::info("File uploaded for step {$index}, key {$key}: {$path}, Type: {$type}");
+                        } else {
+                            Log::warning("Invalid file for step {$index}, key {$key}", ['file' => $file]);
+                        }
+                    }
+                }
+
+                $newStepsData[] = [
+                    'description' => $description,
+                    'media' => $currentStepMedia,
+                ];
+            }
+
+            $recipe->steps = $newStepsData;
+            $recipe->save();
+
+            Log::info("Steps updated for Recipe ID: {$recipe->id}", ['steps' => $newStepsData]);
+            return redirect()->route('c1he3f.recpies.showChefRecipes', $recipe->id)->with('success', 'تم تحديث الخطوات بنجاح!');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            Log::error("Validation error updating steps for Recipe ID: {$recipe->id}: " . $e->getMessage(), ['errors' => $e->errors()]);
+            return redirect()->back()->withErrors($e->errors())->withInput()->with('error', 'خطأ في التحقق من صحة البيانات: ' . $e->getMessage());
+        } catch (\Exception $e) {
+            Log::error("Failed to update steps for Recipe ID: {$recipe->id}", ['error' => $e->getMessage(), 'trace' => $e->getTraceAsString()]);
+            return redirect()->back()->with('error', 'حدث خطأ أثناء تحديث الخطوات: ' . $e->getMessage());
+        }
+    }
+    public function showNutritionalFactsForm(Recipe $recipe)
+    {
+        return view('c1he3f.recpies.facts', compact('recipe'));
+    }
+
+    public function updateNutritionalFacts(Request $request, Recipe $recipe)
+    {
+        // 1. Validate the incoming data
+        $validatedData = $request->validate([
+            'calories' => 'nullable|integer|min:0',
+            'fats' => 'nullable|numeric|min:0',
+            'carbs' => 'nullable|numeric|min:0',
+            'protein' => 'nullable|numeric|min:0',
+        ]);
+
+        // 2. Update the recipe's nutritional facts
+        // Assuming these columns (calories, fat, carbohydrates, protein) exist in your `recipes` table
+        $recipe->calories = $validatedData['calories'];
+        $recipe->fats = $validatedData['fats'];
+        $recipe->carbs = $validatedData['carbs'];
+        $recipe->protein = $validatedData['protein'];
+
+        $recipe->save();
+        return redirect()->route('c1he3f.recpies.showChefRecipes', $recipe->id)->with('success', 'تم تحديث الحقائق الغذائية بنجاح!');
+    }
+
+    public function showIngredientsForm(Recipe $recipe)
+    {
+        // If 'ingredients' is cast to 'array' in the Recipe model, it will already be an array.
+        // Use null coalescing operator to ensure it's an empty array if null.
+        $ingredientsData = $recipe->ingredients ?? [];
+        return view('c1he3f.recpies.ingredients', compact('recipe', 'ingredientsData'));
+    }
+    // App/Http/Controllers/Admin/RecipesController.php
+
+    public function updateIngredients(Request $request, Recipe $recipe)
+    {
+        $request->validate([
+            'ingredients_data' => 'required|json',
+        ]);
+
+        $ingredients = json_decode($request->input('ingredients_data'), true) ?? [];
+
+        foreach ($ingredients as &$ingredient) {
+            $ingredient['is_heading'] = filter_var($ingredient['is_heading'], FILTER_VALIDATE_BOOLEAN);
+        }
+
+        $recipe->ingredients = $ingredients;
+        $recipe->save();
+
+        return redirect()->route('c1he3f.recpies.showChefRecipes', $recipe->id)->with('success', 'تم تحديث المكونات بنجاح!');
+    }
     public function index()
     {
         $recipes = Recipe::with(['kitchen', 'chef', 'mainCategories', 'subCategories'])->paginate(10);
@@ -134,6 +278,7 @@ class RecipesController extends Controller
         $selectedSubCategories = $recipe->subCategories->pluck('id')->toArray();
         return view('admin.recipes.edit', compact('recipe', 'kitchens', 'mainCategories', 'subCategories', 'chefs', 'selectedSubCategories'));
     }
+
     public function create(Request $request)
     {
         $kitchens = Kitchens::select('id', 'name_ar')->get();
@@ -148,14 +293,47 @@ class RecipesController extends Controller
         return view('admin.recipes.create', compact('kitchens', 'mainCategories', 'chefs'));
     }
 
-
-
-    public function store(Request $request)
+    protected function getValidationRules(Request $request, $isUpdate = false, $isPublic = false)
     {
-        Log::info('Recipe Store Request Data:', $request->all());
+        // قواعد التحقق الأساسية للنموذج العام (c1he3f)
+        $rules = [
+            'title' => 'required|string|max:255',
+            'file' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048', // بدلاً من dish_image
+            'kitchen_type_id' => 'required|exists:kitchens,id',
+            'main_category_id' => 'required|exists:main_categories,id',
+            'sub_categories' => 'required|array',
+            'sub_categories.*' => 'exists:sub_categories,id',
+            'is_free' => 'required|in:0,1',
+            'servings' => 'required|integer|min:1',
+            'preparation_time' => 'required|integer|min:1',
+            'status' => 'required|boolean',
+        ];
 
-        // نحتاج أن نمرر Request للمتخصص بالتحقق، وليس فقط $this
-        $rules = $this->getValidationRules($request);
+        // إذا كان النموذج الإداري (store أو update)
+        if (!$isPublic) {
+            $rules = array_merge($rules, [
+                // 'ingredients' => 'required|string', // لن نتحقق منها هنا بل في updateIngredients
+                'steps_data' => 'required|string',
+                'calories' => 'nullable|numeric|min:0',
+                'fats' => 'nullable|numeric|min:0',
+                'carbs' => 'nullable|numeric|min:0',
+                'protein' => 'nullable|numeric|min:0',
+                'chef_id' => Auth::user()->role === 'طاه' ? 'nullable|exists:users,id' : 'nullable|exists:users,id',
+            ]);
+
+            if ($request->hasFile('step_media')) {
+                $rules['step_media.*.*'] = 'nullable|file|mimes:jpeg,png,jpg,gif,svg,webp,mp4,mov,avi,ogg,qt|max:512000';
+            }
+        }
+
+        return $rules;
+    }
+
+    public function storePublicRecipe(Request $request)
+    {
+        Log::info('Public Recipe Store Request Data:', $request->all());
+
+        $rules = $this->getValidationRules($request, false, true);
         $validator = Validator::make($request->all(), $rules);
 
         if ($validator->fails()) {
@@ -165,14 +343,62 @@ class RecipesController extends Controller
         }
 
         $validatedData = $validator->validated();
-
-        // تعيين user_id (الشخص الذي أنشأ الوصفة)
-        // هذا لضمان أن user_id هو دائمًا معرف المستخدم المسجل دخوله، بغض النظر عما إذا كان موجودًا في الـ request
-        $validatedData['user_id'] = Auth::id();
         $user = Auth::user();
-        if ($user->role === 'طاه') {
-            $validatedData['chef_id'] = $user->id;
+
+        // Always set user_id and chef_id to the authenticated user's ID
+        $validatedData['user_id'] = $user->id;
+        $validatedData['chef_id'] = $user->id; // Direct assignment of chef_id
+
+        $validatedData['dish_image'] = $this->handleDishImage($request);
+
+        $recipe = Recipe::create($validatedData);
+
+        if ($request->has('steps_data')) {
+            $processedSteps = $this->processRecipeSteps($request, $recipe);
+            if (isset($processedSteps['errors'])) {
+                if ($recipe->dish_image) {
+                    Storage::disk('public')->delete($recipe->dish_image);
+                }
+                $recipe->delete();
+                return redirect()->back()->withErrors($processedSteps['errors'])->withInput();
+            }
+            $recipe->update(['steps' => $processedSteps]);
         }
+
+        if ($request->has('sub_categories')) {
+            $recipe->subCategories()->sync($request->sub_categories);
+        }
+
+        if ($request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'message' => 'تم إضافة الوصفة بنجاح',
+                'redirect_url' => url('c1he3f/index')
+            ]);
+        }
+        return redirect('c1he3f/recpies/all_recipes')->with('success', 'تم إضافة الوصفة بنجاح');
+    }
+
+    public function store(Request $request)
+    {
+        Log::info('Recipe Store Request Data:', $request->all());
+
+        $rules = $this->getValidationRules($request); // استخدام القواعد الإدارية
+        $validator = Validator::make($request->all(), $rules);
+
+        if ($validator->fails()) {
+            return redirect()->back()
+                ->withErrors($validator)
+                ->withInput();
+        }
+
+        $validatedData = $validator->validated();
+        $user = Auth::user();
+
+        // Always set user_id and chef_id to the authenticated user's ID
+        $validatedData['user_id'] = $user->id;
+        $validatedData['chef_id'] = $user->id; // Direct assignment of chef_id
+
         $validatedData['dish_image'] = $this->handleDishImage($request);
 
         $recipe = Recipe::create($validatedData);
@@ -199,6 +425,24 @@ class RecipesController extends Controller
             ]);
         }
         return redirect()->route('admin.recipes.index')->with('success', 'تم إضافة الوصفة بنجاح');
+    }
+
+
+    protected function handleDishImage(Request $request, Recipe $recipe = null): mixed
+    {
+        $dishImagePath = $recipe ? $recipe->dish_image : null;
+        if ($request->input('remove_current_image') == '1') {
+            if ($dishImagePath) {
+                Storage::disk('public')->delete($dishImagePath);
+            }
+            return null;
+        } elseif ($request->hasFile('dish_image')) {
+            if ($dishImagePath) {
+                Storage::disk('public')->delete($dishImagePath);
+            }
+            return $request->file('dish_image')->store('recipes', 'public');
+        }
+        return $dishImagePath;
     }
 
     public function show(Recipe $recipe)
@@ -248,9 +492,58 @@ class RecipesController extends Controller
         // No need to pass 'mainCategories' in compact, as it's loaded onto the $recipe object.
         return view('admin.recipes.show', compact('recipe', 'selectedKitchen', 'currentLanguage', 'allLanguages', 'translationStatus', 'currentLanguageCode'));
     }
+    public function showFrontend(Recipe $recipe)
+    {
+        $recipe->load(['kitchen', 'chef', 'subCategories', 'mainCategories']);
+        return view('c1he3f.recipe.show', compact('recipe'));
+    }
+    public function showChefRecipes(Recipe $recipe)
+    {
+        $allLanguages = Language::all();
+        $recipe->load([
+            'chef.chefProfile',
+            'kitchen' => function ($query) {
+                $query->select('id', 'name_ar', 'name_am', 'name_bn', 'name_ml', 'name_fil', 'name_ur', 'name_ta', 'name_en', 'name_ne', 'name_ps', 'name_id', 'name_hi', 'image');
+            },
+            // Keep 'mainCategories' as is, since it's the correct relationship name
+            'mainCategories' => function ($query) { // هنا تستخدم اسم العلاقة كما هي في الموديل
+                $query->select('id', 'name_ar', 'name_am', 'name_bn', 'name_ml', 'name_fil', 'name_ur', 'name_ta', 'name_en', 'name_ne', 'name_ps', 'name_id', 'name_hi', 'image');
+            },
 
-    // وفي دالة checkTranslationStatus، أضف المطبخ كمعامل:
-    // ... (الجزء العلوي من الدالة) ...
+            'subCategories' => function ($query) {
+                $query->select('id', 'name_ar', 'name_am', 'name_bn', 'name_ml', 'name_fil', 'name_ur', 'name_ta', 'name_en', 'name_ne', 'name_ps', 'name_id', 'name_hi'); // أضف جميع أعمدة الاسم للترجمة
+            },
+            // باقي العلاقات...
+        ]);
+
+        $currentLanguageCode = app()->getLocale();
+        $currentLanguage = $allLanguages->where('code', $currentLanguageCode)->first();
+
+        if (!$currentLanguage) {
+            $currentLanguage = $allLanguages->where('code', 'ar')->first();
+            app()->setLocale('ar');
+        }
+
+        $selectedKitchen = null;
+        if ($recipe->kitchen_type_id) {
+            $selectedKitchen = Kitchens::select('id', 'name_ar', 'name_am', 'name_bn', 'name_ml', 'name_fil', 'name_ur', 'name_ta', 'name_en', 'name_ne', 'name_ps', 'name_id', 'name_hi', 'image')
+                ->where('id', $recipe->kitchen_type_id)
+                ->first();
+        }
+        $mainCategories = null;
+        if ($recipe->main_category_id) {
+            $selectedMainCategory = MainCategories::select('id', 'name_ar', 'name_am', 'name_bn', 'name_ml', 'name_fil', 'name_ur', 'name_ta', 'name_en', 'name_ne', 'name_ps', 'name_id', 'name_hi', 'image')
+                ->where('id', $recipe->main_category_id)
+                ->first();
+        }
+        $translationStatus = [];
+        foreach ($allLanguages as $language) {
+            $translationStatus[$language->code] = $this->checkTranslationStatus($recipe, $language->code, $selectedKitchen);
+        }
+
+        // No need to pass 'mainCategories' in compact, as it's loaded onto the $recipe object.
+        return view('c1he3f.recpies.showChefRecipes', compact('recipe', 'selectedKitchen', 'currentLanguage', 'allLanguages', 'translationStatus', 'currentLanguageCode'));
+    }
 
     private function checkTranslationStatus(Recipe $recipe, string $languageCode, $selectedKitchen = null): array
     {
@@ -333,14 +626,6 @@ class RecipesController extends Controller
         ];
     }
 
-    /**
-     * التحقق من حالة الترجمة للغة معينة
-     */
-
-
-    /**
-     * عرض نموذج الترجمة
-     */
     public function translate(Recipe $recipe, string $langCode)
     {
         $language = Language::where('code', $langCode)->firstOrFail();
@@ -354,9 +639,6 @@ class RecipesController extends Controller
         return view('admin.recipes.translate', compact('recipe', 'language', 'currentTranslation'));
     }
 
-    /**
-     * حفظ الترجمة - محدث للعمل مع جدول الترجمات المنفصل
-     */
     public function storeTranslation(Request $request, Recipe $recipe, string $langCode)
     {
         $request->validate([
@@ -402,9 +684,7 @@ class RecipesController extends Controller
             ->route('admin.recipes.show', $recipe->id)
             ->with('success', 'تم حفظ الترجمة بنجاح');
     }
-    /**
-     * معاينة الوصفة بلغة معينة
-     */
+
     public function preview(Recipe $recipe, string $langCode)
     {
         $language = Language::where('code', $langCode)->firstOrFail();
@@ -448,8 +728,6 @@ class RecipesController extends Controller
 
         return view('admin.recipes.preview', compact('recipe', 'language', 'selectedKitchen', 'currentLanguage', 'allLanguages', 'translationStatus', 'currentLanguageCode', 'selectedMainCategory'));
     }
-
-
 
     public function destroy(Recipe $recipe)
     {
@@ -512,52 +790,6 @@ class RecipesController extends Controller
                 'errors' => ['general' => [$e->getMessage()]]
             ], 500);
         }
-    }
-
-    protected function getValidationRules(Request $request, $isUpdate = false)
-    {
-        $rules = [
-            'title' => 'required|string|max:255',
-            'dish_image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048',
-            'kitchen_type_id' => 'required|exists:kitchens,id', // تأكيد أنه قيمة واحدة
-            'main_category_id' => 'required|exists:main_categories,id',
-            'sub_categories' => 'nullable|array',
-            'sub_categories.*' => 'exists:sub_categories,id',
-            'ingredients' => 'required|string',
-            'steps_data' => 'required|string',
-            'servings' => 'required|integer|min:1',
-            'preparation_time' => 'required|integer|min:1',
-            'calories' => 'nullable|numeric|min:0',
-            'fats' => 'nullable|numeric|min:0',
-            'carbs' => 'nullable|numeric|min:0',
-            'protein' => 'nullable|numeric|min:0',
-            'is_free' => 'required|in:0,1,2',
-            'status' => 'required|boolean',
-            'chef_id' => Auth::user()->role === 'طاه' ? 'nullable|exists:users,id' : 'nullable|exists:users,id',
-        ];
-        if ($request->hasFile('step_media')) {
-            $rules['step_media.*.*'] = 'nullable|file|mimes:jpeg,png,jpg,gif,svg,webp,mp4,mov,avi,ogg,qt|max:512000';
-            
-        }
-        return $rules;
-    }
-
-
-    protected function handleDishImage(Request $request, Recipe $recipe = null)
-    {
-        $dishImagePath = $recipe ? $recipe->dish_image : null;
-        if ($request->input('remove_current_image') == '1') {
-            if ($dishImagePath) {
-                Storage::disk('public')->delete($dishImagePath);
-            }
-            return null;
-        } elseif ($request->hasFile('dish_image')) {
-            if ($dishImagePath) {
-                Storage::disk('public')->delete($dishImagePath);
-            }
-            return $request->file('dish_image')->store('recipes', 'public');
-        }
-        return $dishImagePath;
     }
 
     protected function processRecipeSteps(Request $request, Recipe $recipe)

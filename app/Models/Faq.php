@@ -37,11 +37,18 @@ class Faq extends Model
         'answer_ps',
         'status',
         'order',
+        'place',
     ];
 
     protected $casts = [
         'status' => 'boolean',
+        'place' => 'string',
     ];
+
+    public function scopeByPlace($query, $place)
+    {
+        return $query->where('place', $place);
+    }
 
     public function scopeActive($query)
     {

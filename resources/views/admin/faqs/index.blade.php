@@ -63,7 +63,8 @@
                 <div class="col-md-6">
                     <div class="mb-3">
                         <label for="question_ar" class="form-label">السؤال (بالعربية)</label>
-                        <input type="text" class="form-control" id="question_ar" name="question_ar" value="{{ old('question_ar') }}" required>
+                        <input type="text" class="form-control" id="question_ar" name="question_ar"
+                            value="{{ old('question_ar') }}" required>
                         @error('question_ar')
                             <div class="text-white">{{ $message }}</div>
                         @enderror
@@ -72,7 +73,8 @@
                 <div class="col-md-6">
                     <div class="mb-3">
                         <label for="answer_ar" class="form-label">الإجابة (بالعربية)</label>
-                        <input type="text" class="form-control" id="answer_ar" name="answer_ar" value="{{ old('answer_ar') }}" required>
+                        <input type="text" class="form-control" id="answer_ar" name="answer_ar"
+                            value="{{ old('answer_ar') }}" required>
                         @error('answer_ar')
                             <div class="text-white">{{ $message }}</div>
                         @enderror
@@ -93,11 +95,25 @@
                 <div class="col-md-4">
                     <div class="mb-3">
                         <label for="order" class="form-label">ترتيب العرض</label>
-                        <input type="number" class="form-control" id="order" name="order" value="{{ old('order', 0) }}" min="0" required>
+                        <input type="number" class="form-control" id="order" name="order"
+                            value="{{ old('order', 0) }}" min="0" required>
                         @error('order')
                             <div class="text-white">{{ $message }}</div>
                         @enderror
                     </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="mb-3">
+                        <label for="place" class="form-label">مكان العرض</label>
+                        <select name="place" id="place" class="form-control" required>
+                            <option value="chef">واجهة الطاهي فقط</option>
+                            <option value="user">واجهة المستخدم فقط</option>
+                            <option value="both" selected>كلاهما</option>
+                        </select>
+                    </div>
+                    @error('place')
+                        <div class="text-white">{{ $message }}</div>
+                    @enderror
                 </div>
             </div>
             <button type="submit" class="btn btn-light mt-3">
@@ -132,6 +148,7 @@
                         <th>السؤال (عربي)</th>
                         <th>الحالة</th>
                         <th>الترتيب</th>
+                        <th>المكان</th>
                         <th>الإجراءات</th>
                     </tr>
                 </thead>
@@ -147,15 +164,20 @@
                                 </span>
                             </td>
                             <td>{{ $faq->order }}</td>
+                            <td>{{ $faq->place == 'chef' ? 'واجهة الطاهي فقط' : ($faq->place == 'user' ? 'واجهة المستخدم فقط' : 'كلاهما') }}
+                            </td>
                             <td>
                                 <div class="action-buttons">
-                                    <a href="{{ route('admin.faqs.show', $faq->id) }}" class="btn btn-info btn-sm" title="عرض">
+                                    <a href="{{ route('admin.faqs.show', $faq->id) }}" class="btn btn-info btn-sm"
+                                        title="عرض">
                                         <i class="fas fa-eye"></i>
                                     </a>
-                                    <a href="{{ route('admin.faqs.edit', $faq->id) }}" class="btn btn-warning btn-sm" title="تعديل">
+                                    <a href="{{ route('admin.faqs.edit', $faq->id) }}" class="btn btn-warning btn-sm"
+                                        title="تعديل">
                                         <i class="fas fa-edit"></i>
                                     </a>
-                                    <button class="btn btn-danger btn-sm" title="حذف" onclick="confirmDelete({{ $faq->id }})">
+                                    <button class="btn btn-danger btn-sm" title="حذف"
+                                        onclick="confirmDelete({{ $faq->id }})">
                                         <i class="fas fa-trash"></i>
                                     </button>
                                 </div>

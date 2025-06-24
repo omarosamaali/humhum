@@ -571,7 +571,7 @@
 
                 <div class="col-md-4 mb-3">
                     <label for="servings" class="form-label">تكفي لعدد </label>
-                    <input type="number" class="form-control" id="servings" name="servings"
+                    <input class="form-control" type="number"  id="servings" name="servings"
                         value="{{ old('servings') }}" min="1" required>
                     @error('servings')
                         <div class="text-white mt-1">{{ $message }}</div>

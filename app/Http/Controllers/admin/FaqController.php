@@ -43,13 +43,14 @@ class FaqController extends Controller
             'answer_ar' => 'required|string',
             'status' => 'required|boolean',
             'order' => 'required|integer|min:0',
+            'place' => 'required|in:chef,user,both',
         ]);
 
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput();
         }
 
-        $data = $request->only(['question_ar', 'answer_ar', 'status', 'order']);
+        $data = $request->only(['question_ar', 'answer_ar', 'status', 'order', 'place']);
 
         $tr = new GoogleTranslate('ar');
 
@@ -60,6 +61,7 @@ class FaqController extends Controller
                 if (in_array($questionColumn, (new Faq())->getFillable()) && in_array($answerColumn, (new Faq())->getFillable())) {
                     $data[$questionColumn] = $tr->setTarget($code)->translate($request->input('question_ar'));
                     $data[$answerColumn] = $tr->setTarget($code)->translate($request->input('answer_ar'));
+                    $data['place'] = $request->input('place');
                 } else {
                     Log::warning("Column {$questionColumn} or {$answerColumn} not found in Faq model fillable. Skipping translation for this column.");
                 }
@@ -94,13 +96,14 @@ class FaqController extends Controller
             'answer_ar' => 'required|string',
             'status' => 'required|boolean',
             'order' => 'required|integer|min:0',
+            'place' => 'required|in:chef,user,both',
         ]);
 
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput();
         }
 
-        $data = $request->only(['question_ar', 'answer_ar', 'status', 'order']);
+        $data = $request->only(['question_ar', 'answer_ar', 'status', 'order', 'place']);
 
         $tr = new GoogleTranslate('ar');
 

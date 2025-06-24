@@ -93,12 +93,15 @@ return [
     'passwords' => [
         'users' => [
             'provider' => 'users',
-            'table' => env('AUTH_PASSWORD_RESET_TOKEN_TABLE', 'password_reset_tokens'),
-            'expire' => 60,
+            'table' => 'password_reset_tokens',
+            'expire' => 60, // Default password reset token expiry
             'throttle' => 60,
         ],
+        // Add a new configuration for OTP expiry specifically if needed,
+        // or just use a fixed value in the controller.
+        'otp_expire_minutes' => 5, // Example for OTP expiry
     ],
-
+    config('auth.passwords.otp_expire_minutes', 5),
     /*
     |--------------------------------------------------------------------------
     | Password Confirmation Timeout

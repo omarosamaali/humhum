@@ -2,17 +2,27 @@
 
 namespace App\Models;
 
+// ... other use statements ...
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Database\Eloquent\Relations\HasMany; // Import HasMany
 
-class User extends Authenticatable
+
+class User extends Authenticatable implements MustVerifyEmail
 {
-    use HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable;
 
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array<int, string>
+     */
     protected $fillable = [
-        'name', // احتفظ بهذا إذا كنت لا تزيله أو تغير اسمه
-        'name_ar',
+        'name', // <--- تأكد أن 'name' موجود هنا
+        'name_ar', // <--- وتأكد من وجود هذه أيضاً إذا كنت تريد حفظها
         'name_en',
         'name_id',
         'name_am',
@@ -25,13 +35,38 @@ class User extends Authenticatable
         'name_ps',
         'email',
         'password',
-        'role',
+        'phone_number',
+        'phone_verified_at',
+        'profile_image',
+        'user_type',
         'status',
+        'role',
+        'otp',
+        'otp_expires_at', // Make sure this is in fillable if you set it directly
+        'contract_signed_at',
     ];
 
+    /**
+     * The attributes that should be hidden for serialization.
+     *
+     * @var array<int, string>
+     */
     protected $hidden = [
         'password',
         'remember_token',
+    ];
+
+    /**
+     * The attributes that should be cast.
+     *
+     * @var array<string, string>
+     */
+    protected $casts = [
+        'email_verified_at' => 'datetime',
+        'password' => 'hashed',
+        'otp_expires_at' => 'datetime', // <--- Add this line!
+        'phone_verified_at' => 'datetime', // Good practice if it's a timestamp
+        'contract_signed_at' => 'datetime', // Good practice if it's a timestamp
     ];
 
     protected function casts(): array
@@ -86,7 +121,6 @@ class User extends Authenticatable
             'بانتظار التفعيل' => 'بانتظار التفعيل',
             default => 'غير معروف'
         };
-        
     }
     public function getStatusBadgeClass()
     {
@@ -96,8 +130,8 @@ class User extends Authenticatable
             'بانتظار التفعيل' => 'badge-warning',
             default => 'badge-secondary'
         };
-    }   
-    
+    }
+
     public function recipes()
     {
         return $this->hasMany(Recipe::class, 'chef_id', 'user_id');
@@ -108,4 +142,10 @@ class User extends Authenticatable
         return $this->hasOne(ChefProfile::class);
     }
 
+    public function deliveryLocations()
+    {
+        return $this->hasMany(DeliveryLocation::class);
+    }
+
+    
 }

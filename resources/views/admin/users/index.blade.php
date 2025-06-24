@@ -119,6 +119,9 @@
                             <option value="غير فعال" {{ old('status') == 'غير فعال' ? 'selected' : '' }}>غير فعال</option>
                             <option value="بانتظار التفعيل" {{ old('status') == 'بانتظار التفعيل' ? 'selected' : '' }}>
                                 بانتظار التفعيل</option>
+                            <option value="بإنتظار إستكمال البيانات"
+                                {{ old('status') == 'بإنتظار إستكمال البيانات' ? 'selected' : '' }}>
+                                بانتظار التفعيل</option>
                         </select>
                         @error('status')
                             <div class="text-white">{{ $message }}</div>
@@ -221,6 +224,7 @@
                             </div>
                         </div>
                     </div>
+                    
                     <div class="col-md-12">
                         <div class="mb-3">
                             <label class="form-label">بيانات تحويل الأرباح</label>
@@ -313,10 +317,77 @@
                             </span>
                         </td>
                         <td>
-                            <span
-                                class="badge bg-{{ $user->status == 'بانتظار التفعيل' ? 'warning' : ($user->status == 'فعال' ? 'success' : 'danger') }} {{ $user->getStatusBadgeClass() }}">
-                                {{ $user->status }}
+                            @php
+                                $statusDisplay = '';
+                                $badgeClass = '';
+
+                                // المنطق الجديد: ابدأ بالحالة المخزنة في جدول المستخدم
+                                // ثم قم بتعديلها للطهاة بناءً على اكتمال البيانات
+
+                                // الحالة الافتراضية بناءً على $user->status
+                                switch ($user->status) {
+                                    case 'فعال':
+                                        $statusDisplay = 'فعال';
+                                        $badgeClass = 'success';
+                                        break;
+                                    case 'غير فعال':
+                                        $statusDisplay = 'غير فعال';
+                                        $badgeClass = 'secondary'; // أو danger حسب رغبتك
+                                        break;
+                                    case 'بانتظار التفعيل':
+                                        $statusDisplay = 'بانتظار التفعيل';
+                                        $badgeClass = 'warning';
+                                        break;
+                                    default:
+                                        $statusDisplay = $user->status; // أي حالة أخرى
+                                        $badgeClass = 'secondary';
+                                        break;
+                                }
+
+                                // *** منطق خاص للطهاة لتحديد إذا كان جاهزاً للتفعيل ***
+                                if ($user->role === 'طاه' && $user->chefProfile) {
+                                    $chefProfile = $user->chefProfile;
+
+                                    $isOfficialImageComplete = !empty($chefProfile->official_image);
+                                    $isContractTypeComplete = !empty($chefProfile->contract_type);
+                                    $isBioComplete = !empty($chefProfile->bio);
+                                    $isContractSigned = !empty($user->contract_signed_at);
+
+                                    $isProfileDataComplete =
+                                        $isOfficialImageComplete &&
+                                        $isContractTypeComplete &&
+                                        $isBioComplete &&
+                                        $isContractSigned;
+
+                                    if ($isProfileDataComplete) {
+                                        // إذا كانت البيانات مكتملة، نتحقق من حالته النهائية
+                                        if ($user->status === 'فعال') {
+                                            $statusDisplay = 'مفعل'; // أو فعال، كما تفضل
+                                            $badgeClass = 'success';
+                                        } elseif ($user->status === 'مرفوض') {
+                                            // إذا كان لديك حالة "مرفوض" في جدول المستخدم
+                                            $statusDisplay = 'مرفوض';
+                                            $badgeClass = 'danger';
+                                        } else {
+                                            // البيانات مكتملة، ولكن حالته ليست "فعال" أو "مرفوض"
+                                            // هذا يعني أنه جاهز للمراجعة والتفعيل
+                                            $statusDisplay = 'جاهز للتفعيل';
+                                            $badgeClass = 'info'; // لون مميز للأدمن
+                                        }
+                                    } else {
+                                        // البيانات غير مكتملة، بغض النظر عن الـ $user->status
+                                        $statusDisplay = 'بانتظار إستكمال البيانات';
+                                        $badgeClass = 'warning';
+                                    }
+                                }
+                            @endphp
+
+                            <span class="badge bg-{{ $badgeClass }}">
+                                {{ $statusDisplay }}
                             </span>
+
+
+
                         </td>
                         <td>
                             <div class="action-buttons">

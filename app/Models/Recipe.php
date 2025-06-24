@@ -40,6 +40,7 @@ class Recipe extends Model
 
     protected $casts = [
         'steps' => 'array',
+        'ingredients' => 'array',
     ];
 
     // علاقة الترجمات باستخدام morphMany
@@ -124,45 +125,45 @@ class Recipe extends Model
         });
     }
 
-    public function setIngredientsAttribute($value)
-    {
-        $this->attributes['ingredients'] = $value;
-    }
+    // public function setIngredientsAttribute($value)
+    // {
+    //     $this->attributes['ingredients'] = $value;
+    // }
 
-    public function getIngredientsAttribute($value)
-    {
-        if (empty($value)) {
-            return '';
-        }
-        return $value;
-    }
+    // public function getIngredientsAttribute($value)
+    // {
+    //     if (empty($value)) {
+    //         return '';
+    //     }
+    //     return $value;
+    // }
 
-    public function getParsedIngredientsAttribute()
-    {
-        if (empty($this->attributes['ingredients'])) {
-            return [];
-        }
-        $parsedIngredients = [];
-        $lines = explode("\n", $this->attributes['ingredients']);
-        foreach ($lines as $line) {
-            $trimmedLine = trim($line);
-            if (empty($trimmedLine)) {
-                continue;
-            }
-            if (str_starts_with($trimmedLine, '##')) {
-                $parsedIngredients[] = [
-                    'type' => 'heading',
-                    'value' => ltrim($trimmedLine, '## ')
-                ];
-            } else {
-                $parsedIngredients[] = [
-                    'type' => 'ingredient',
-                    'value' => $trimmedLine
-                ];
-            }
-        }
-        return $parsedIngredients;
-    }
+    // public function getParsedIngredientsAttribute()
+    // {
+    //     if (empty($this->attributes['ingredients'])) {
+    //         return [];
+    //     }
+    //     $parsedIngredients = [];
+    //     $lines = explode("\n", $this->attributes['ingredients']);
+    //     foreach ($lines as $line) {
+    //         $trimmedLine = trim($line);
+    //         if (empty($trimmedLine)) {
+    //             continue;
+    //         }
+    //         if (str_starts_with($trimmedLine, '##')) {
+    //             $parsedIngredients[] = [
+    //                 'type' => 'heading',
+    //                 'value' => ltrim($trimmedLine, '## ')
+    //             ];
+    //         } else {
+    //             $parsedIngredients[] = [
+    //                 'type' => 'ingredient',
+    //                 'value' => $trimmedLine
+    //             ];
+    //         }
+    //     }
+    //     return $parsedIngredients;
+    // }
 
     // العلاقات
     public function subCategories()
@@ -182,7 +183,7 @@ class Recipe extends Model
 
     public function mainCategories()
     {
-        return $this->belongsTo(MainCategories::class, 'main_category_id');
+        return $this->belongsTo(MainCategories::class, 'main_category_id', 'id');
         
     }
 

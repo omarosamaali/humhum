@@ -56,7 +56,7 @@ class MainCategories extends Model
 
     public function recipes()
     {
-        return $this->hasMany(Recipe::class);
+        return $this->hasMany(Recipe::class, 'main_category_id', 'id');
     }
 
     public function Translations()

@@ -96,7 +96,8 @@
                 <div class="col-md-6">
                     <div class="mb-3">
                         <label for="question_ar" class="form-label font-bold">السؤال (بالعربية)</label>
-                        <input type="text" class="form-control" id="question_ar" name="question_ar" value="{{ old('question_ar', $faq->question_ar) }}" required>
+                        <input type="text" class="form-control" id="question_ar" name="question_ar"
+                            value="{{ old('question_ar', $faq->question_ar) }}" required>
                         @error('question_ar')
                             <div class="text-black">{{ $message }}</div>
                         @enderror
@@ -117,7 +118,8 @@
                         <select class="form-select" name="status" id="status" required>
                             <option value="1" {{ old('status', $faq->status) == '1' ? 'selected' : '' }}>فعال
                             </option>
-                            <option value="0" {{ old('status', $faq->status) == '0' ? 'selected' : '' }}>غير فعال</option>
+                            <option value="0" {{ old('status', $faq->status) == '0' ? 'selected' : '' }}>غير فعال
+                            </option>
                         </select>
                         @error('status')
                             <div class="text-black">{{ $message }}</div>
@@ -127,22 +129,40 @@
                 <div class="col-md-4">
                     <div class="mb-3">
                         <label for="order" class="form-label font-bold">ترتيب العرض</label>
-                        <input type="number" class="form-control" id="order" name="order" value="{{ old('order', $faq->order) }}" min="0" required>
+                        <input type="number" class="form-control" id="order" name="order"
+                            value="{{ old('order', $faq->order) }}" min="0" required>
                         @error('order')
                             <div class="text-black">{{ $message }}</div>
                         @enderror
                     </div>
                 </div>
+                <div class="col-md-4">
+                    <div class="mb-3">
+                        <label for="place" class="form-label">مكان العرض</label>
+                        <select name="place" id="place" class="form-control" required>
+                            <option value="chef" {{ old('place', $faq->place) == 'chef' ? 'selected' : '' }}>واجهة الطاهي فقط</option>
+                            <option value="user" {{ old('place', $faq->place) == 'user' ? 'selected' : ''  }}>واجهة المستخدم فقط</option>
+                            <option value="both" {{ old('place', $faq->place) == 'both' ? 'selected' : ''  }}>كلاهما</option>
+                        </select>
+                    </div>
+                    @error('place')
+                        <div class="text-white">{{ $message }}</div>
+                    @enderror
+                </div>
+
             </div>
 
             <h6 class="mt-4 mb-3 text-black">الأسئلة والإجابات المترجمة (للقراءة فقط - تتحدث تلقائياً):</h6>
             <div class="row">
                 @foreach ($targetLanguages as $code => $name)
                     <div class="col-md-12 mb-3 border rounded-lg p-2">
-                        <label for="question_{{ $code }}" class="form-label font-bold">{{ $name }} (السؤال):</label>
-                        <span class="text-right">{{ old("question_$code", $faq->{"question_$code"}) ?? 'غير متوفر' }}</span>
+                        <label for="question_{{ $code }}" class="form-label font-bold">{{ $name }}
+                            (السؤال):</label>
+                        <span
+                            class="text-right">{{ old("question_$code", $faq->{"question_$code"}) ?? 'غير متوفر' }}</span>
                         <br>
-                        <label for="answer_{{ $code }}" class="form-label font-bold">{{ $name }} (الإجابة):</label>
+                        <label for="answer_{{ $code }}" class="form-label font-bold">{{ $name }}
+                            (الإجابة):</label>
                         <span class="text-right">{{ old("answer_$code", $faq->{"answer_$code"}) ?? 'غير متوفر' }}</span>
                     </div>
                 @endforeach

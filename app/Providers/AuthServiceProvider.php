@@ -5,6 +5,7 @@ namespace App\Providers;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use App\Models\User; // تأكد من استيراد نموذج المستخدم الخاص بك
+use Illuminate\Auth\Notifications\ResetPassword; // تأكد من الاستيراد
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -39,5 +40,16 @@ class AuthServiceProvider extends ServiceProvider
             // الطريقة 3: إذا كان لديك علاقة أدوار مع جدول roles (أكثر تعقيدًا لكنه أكثر قوة)
             // return $user->roles()->where('name', 'admin')->exists();
         });
-    }
+
+
+        ResetPassword::createUrlUsing(function (object $notifiable, string $token) {
+            return route('auth/reset-password.get', [
+                'token' => $token,
+                'email' => $notifiable->getEmailForPasswordReset(),
+            ]);
+        });
+    
+
+
+}
 }

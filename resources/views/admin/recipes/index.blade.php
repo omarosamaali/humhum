@@ -234,7 +234,11 @@
     <div class="d-flex justify-content-center mt-4">
         {{ $recipes->links() }}
     </div>
-
+   @if (session('success'))
+        <div class="alert alert-success">
+            {{ session('success') }}
+        </div>
+    @endif
     {{-- Delete Confirmation Modal --}}
     <div class="modal fade" id="deleteModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog">
