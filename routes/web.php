@@ -114,8 +114,17 @@ Route::get('c1he3f/index', function () {
         ->where('end_date', '>=', now())
         ->latest()
         ->first();
+    $userId = Auth::id();
 
-    $mainCategories = MainCategories::withCount('recipes')->get();
+    $mainCategories = MainCategories::with([
+        'recipes' => function ($query) use ($userId) {
+            $query->where('user_id', $userId); // افترض ان ال recipes ليها عمود user_id
+        }
+    ])
+        ->withCount(['recipes' => function ($query) use ($userId) {
+            $query->where('user_id', $userId);
+        }])
+        ->get();
     $recipes = Recipe::with(['kitchen', 'chef', 'mainCategories', 'subCategories'])
         ->where('status', 1)
         ->latest()
