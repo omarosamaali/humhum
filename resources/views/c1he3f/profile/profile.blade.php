@@ -407,7 +407,7 @@
 
                     {{-- رابط المعاملات - يمكن التحكم فيه --}}
                     {{-- لو عايز تقفله، ممكن تضيف شرط هنا --}}
-                    <a href="transactions.html" class="nav-link {{ !$isProfileComplete ? 'disabled' : '' }}" {{ !$isProfileComplete ? 'onclick="return false;"' : '' }}>
+                    <a href="{{ route('c1he3f.transactions') }}" class="nav-link {{ !$isProfileComplete ? 'disabled' : '' }}" {{ !$isProfileComplete ? 'onclick="return false;"' : '' }}>
                         <i class="fa fa-coins"></i>
                     </a>
 

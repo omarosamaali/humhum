@@ -30,7 +30,7 @@ class ChefAuthenticatedSessionController extends Controller
         return view('c1he3f.auth.sign-in');
     }
 
-    public function storeLogin(Request $request): RedirectResponse // <-- دالة جديدة لمعالجة تسجيل الدخول
+    public function storeLogin(Request $request): RedirectResponse
     {
         $credentials = $request->validate([
             'email' => ['required', 'string', 'email'],
@@ -41,62 +41,68 @@ class ChefAuthenticatedSessionController extends Controller
             'password.required' => 'كلمة المرور مطلوبة.',
         ]);
 
+        // **التحقق الإضافي للدور (Role Check) قبل محاولة تسجيل الدخول**
+        $user = User::where('email', $credentials['email'])->first();
+
+        // لو المستخدم مش موجود أو الـ role بتاعه مش 'طاه'، ارفض تسجيل الدخول
+        if (!$user || $user->role !== 'طاه') {
+            throw ValidationException::withMessages([
+                'email' => 'لا يمكنك تسجيل الدخول بهذا الحساب كطاه.',
+            ]);
+        }
+
         // حاول تسجيل دخول المستخدم باستخدام الحارس الافتراضي (web)
-        // يمكنك تحديد حارس مخصص للطهاة إذا كان لديك واحد (مثل 'chef')
         if (Auth::attempt($credentials, $request->remember)) {
             $request->session()->regenerate();
 
-            $user = Auth::user();
+            $user = Auth::user(); // جلب المستخدم بعد تسجيل الدخول بنجاح
 
             // ------------------- Account Status Redirection Logic (Chef Specific) -------------------
-            if ($user->role === 'طاه') {
-                $chefProfile = $user->chefProfile; // تأكد أن لديك علاقة ChefProfile في موديل User
+            // بما أننا قمنا بالتحقق من الدور مسبقًا، هذه الجزئية ستنفذ فقط للطهاة
+            $chefProfile = $user->chefProfile; // تأكد أن لديك علاقة ChefProfile في موديل User
 
-                $isProfileComplete = false;
-                if ($chefProfile) {
-                    $isOfficialImageComplete = !empty($chefProfile->official_image);
-                    $isContractTypeComplete = !empty($chefProfile->contract_type);
-                    $isBioComplete = !empty($chefProfile->bio);
-                    $isContractSigned = !empty($user->contract_signed_at); // تأكد من وجود هذا الحقل في جدول users
+            $isProfileComplete = false;
+            if ($chefProfile) {
+                $isOfficialImageComplete = !empty($chefProfile->official_image);
+                $isContractTypeComplete = !empty($chefProfile->contract_type);
+                $isBioComplete = !empty($chefProfile->bio);
+                $isContractSigned = !empty($user->contract_signed_at); // تأكد من وجود هذا الحقل في جدول users
 
-                    if ($isOfficialImageComplete && $isContractTypeComplete && $isBioComplete && $isContractSigned) {
-                        $isProfileComplete = true;
-                    }
-                }
-
-                // توجيه بناءً على حالة المستخدم وملفه الشخصي
-                if ($user->status === 'فعال') {
-                    return redirect()->intended(route('c1he3f.index', absolute: false));
-                } elseif ($isProfileComplete && $user->status === 'بانتظار التفعيل') {
-                    return redirect()->intended(route('c1he3f.profile.profile', absolute: false))
-                        ->with('info', 'تم إرسال بياناتك للمراجعة. يرجى الانتظار لتفعيل حسابك.');
-                } elseif ($user->email_verified_at === null) {
-                    // إذا كان مسجل دخول لكن بريده غير مفعل، أرسله لصفحة OTP
-                    Mail::to($user->email)->send(new OtpMail($user->otp)); // إعادة إرسال OTP إذا كان البريد غير مفعل
-                    return redirect()->route('c1he3f.auth.otp-confirm', ['email' => $user->email])
-                        ->with('info', 'بريدك الإلكتروني غير مفعل. تم إرسال رمز تحقق جديد.');
-                } else {
-                    // إذا لم يكن مكتملًا أو حالته "بانتظار استكمال البيانات"
-                    return redirect()->intended(route('c1he3f.profile.profile', absolute: false))
-                        ->with('warning', 'الرجاء استكمال بيانات ملفك الشخصي.');
+                if ($isOfficialImageComplete && $isContractTypeComplete && $isBioComplete && $isContractSigned) {
+                    $isProfileComplete = true;
                 }
             }
+
+            // توجيه بناءً على حالة المستخدم وملفه الشخصي
+            if ($user->status === 'فعال') {
+                return redirect()->intended(route('c1he3f.index', absolute: false));
+            } elseif ($isProfileComplete && $user->status === 'بانتظار التفعيل') {
+                return redirect()->intended(route('c1he3f.profile.profile', absolute: false))
+                    ->with('info', 'تم إرسال بياناتك للمراجعة. يرجى الانتظار لتفعيل حسابك.');
+            } elseif ($user->email_verified_at === null) {
+                // إذا كان مسجل دخول لكن بريده غير مفعل، أرسله لصفحة OTP
+                // تأكد أن OtpMail موجود ولديه متغير otp
+                Mail::to($user->email)->send(new OtpMail($user->otp)); // إعادة إرسال OTP إذا كان البريد غير مفعل
+                return redirect()->route('c1he3f.auth.otp-confirm', ['email' => $user->email])
+                    ->with('info', 'بريدك الإلكتروني غير مفعل. تم إرسال رمز تحقق جديد.');
+            } else {
+                // إذا لم يكن مكتملًا أو حالته "بانتظار استكمال البيانات"
+                return redirect()->intended(route('c1he3f.profile.profile', absolute: false))
+                    ->with('warning', 'الرجاء استكمال بيانات ملفك الشخصي.');
+            }
             // ------------------- End Account Status Redirection Logic -------------------
-
-            // توجيه افتراضي لأنواع المستخدمين الأخرى (غير الطهاة)
-            return redirect()->intended(route('c1he3f.index', absolute: false)); // غير هذا إلى مسار لوحة التحكم الافتراضي الخاصة بك
-
         }
 
-        // إذا فشل تسجيل الدخول
+        // إذا فشل تسجيل الدخول (كلمة مرور خاطئة بعد التحقق من الدور)
         throw ValidationException::withMessages([
             'email' => trans('auth.failed'), // رسالة خطأ قياسية من Laravel
         ]);
     }
 
-    /**
-     * Display the registration view. (For Chefs)
-     */
+
+/**
+ * Display the registration view. (For Chefs)
+ */
     public function create(): \Illuminate\View\View // <--- هذه لعرض فورم التسجيل
     {
         return view('c1he3f.auth.sign-up');
