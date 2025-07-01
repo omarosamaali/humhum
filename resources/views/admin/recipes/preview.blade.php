@@ -148,6 +148,7 @@
                     class="details-image img-fluid rounded">
             @endif
             <div class="col-md-12">
+
                 <h5 class="section-title"
                     style="    color: #660099;
     font-size: 29px;
@@ -158,45 +159,45 @@
     border-radius: 12px;
     text-align: center;">
                     المكونات</h5>
-                @foreach (explode("\n", $recipe->ingredients) as $ingredient)
+
+
+                @php
+                    $sections = explode('##', $recipe->ingredients);
+                    array_shift($sections);
+                @endphp
+
+                @foreach ($sections as $section)
                     @php
-                        $trimmed = trim($ingredient);
+                        $lines = explode("\n", $section);
+                        $title = trim(array_shift($lines));
                     @endphp
 
-                    @if ($trimmed !== '')
-                        @if (Str::startsWith($trimmed, '##'))
-                            <div
-                                style="margin-bottom: 5px; justify-content: space-between; font-weight: bold; border-bottom: 1px solid #ccc; padding-bottom: 2px; display: flex; align-items: center; gap: 5px;">
-                                {{ Str::replaceFirst('##', '', $trimmed) }}
-                                <h1
-                                    style="    color: #ffffff;
-                    font-size: 29px;
-                    background:  #660099;
-                    font-weight: bold;
-                    padding: 5px;
-                    border-radius: 12px;
-                    text-align: center;">
-                                    <i style="font-size: 20px; color: #ffffff;" class="fa-solid fa-headphones"></i>
-                                </h1>
-                            </div>
-                        @else
-                            <div
-                                style="margin-bottom: 5px; justify-content: space-between; display: flex; align-items: center; gap: 5px;">
-                                {{ $trimmed }}
-                                <h1
-                                    style="    color: #ffffff;
- font-size: 29px;
- background:  #660099;
- font-weight: bold;
- padding: 5px;
- border-radius: 12px;
- text-align: center;">
-                                    <i style="font-size: 20px; color: #ffffff;" class="fa-solid fa-headphones"></i>
-                                </h1>
-                            </div>
-                        @endif
+                    @if ($title !== '')
+                        <div
+                            style="margin-bottom: 5px; justify-content: space-between; font-weight: bold; border-bottom: 1px solid #ccc; padding-bottom: 2px; display: flex; align-items: center; gap: 5px;">
+                            {{ $title }}
+                            <h1
+                                style="color: #ffffff; font-size: 29px; background: #660099; font-weight: bold; padding: 5px; border-radius: 12px; text-align: center;">
+                                <i style="font-size: 20px; color: #ffffff;" class="fa-solid fa-headphones"></i>
+                            </h1>
+                        </div>
+
+                        @foreach ($lines as $ingredient)
+                            @php $trimmed = trim($ingredient); @endphp
+                            @if ($trimmed !== '')
+                                <div
+                                    style="margin-bottom: 5px; justify-content: space-between; display: flex; align-items: center; gap: 5px;">
+                                    {{ $trimmed }}
+                                    <h1
+                                        style="color: #ffffff; font-size: 29px; background: #660099; font-weight: bold; padding: 5px; border-radius: 12px; text-align: center;">
+                                        <i style="font-size: 20px; color: #ffffff;" class="fa-solid fa-headphones"></i>
+                                    </h1>
+                                </div>
+                            @endif
+                        @endforeach
                     @endif
                 @endforeach
+
             </div>
 
         </div>
@@ -235,7 +236,7 @@
                     {{-- عرض اللغة الحالية --}}
                     <img src="{{ $currentLanguage->flag_image ? Storage::url($currentLanguage->flag_image) : asset('assets/default-flag.png') }}"
                         alt="{{ $currentLanguage->name }}" class="flag-img rounded"
-                        style="width: 40px; height: 40px; margin-left: 8px; object-fit: cover;">
+                        style="width: 40px; height: 40px; margin-left: 8px;">
                     {{ $currentLanguage->name }}
                 </div>
                 <div>
@@ -296,7 +297,7 @@
                     @endphp
                     <div class="detail-item" style="">
                         @if ($recipe->mainCategories->image)
-                            <img src="{{ Storage::url($recipe->mainCategories->image) }}" alt="here"
+                            <img src="{{ url($recipe->mainCategories->image) }}" alt="here"
                                 class="main-category-img rounded-circle me-2" style="width: 40px; height: 40px;">
                         @else
                             <img src="{{ asset('assets/default-category.png') }}" alt="صورة تصنيف افتراضي"
@@ -928,80 +929,103 @@
                         </div>
                     @endif
 
-                    <div class="">
-                        <h5 class="section-title"
-                            style="    color: #660099;
-    font-size: 29px;
-    border: 1px solid #660099;
-    font-weight: bold;
-    /* width: fit-content; */
-    padding: 12px;
-    border-radius: 12px;
-    text-align: center;">
-                            خطوات التحضير</h5>
-                        <ol class="content-list">
-                            @if ($recipe->steps && is_array($recipe->steps) && count($recipe->steps) > 0)
-                                @foreach ($recipe->steps as $index => $step)
-                                    <li style="flex-direction: column;">
-                                        <span
-                                            style="background: #660099;
-    color: white;
-    font-weight: bold;
-    width: 28px;
-    height: 28px;
-    text-align: center;
-    align-items: center;
-    justify-content: center;
-    display: flex
-;
-    border-radius: 50px;">
-                                            {{ $index + 1 }}
-                                        </span>
-                                        <div style="display: flex;">
+<div class="">
+    <h5 class="section-title" style="color: #660099;
+        font-size: 29px;
+        border: 1px solid #660099;
+        font-weight: bold;
+        padding: 12px;
+        border-radius: 12px;
+        text-align: center;">
+        خطوات التحضير
+    </h5>
 
-                                            {{ $step['description'] ?? 'بدون وصف' }}
-                                            <span
-                                                style="margin-right: 10px; color: #ffffff;
-    font-size: 29px;
-    text-align: center;
-    background: #660099;
-    font-weight: bold;
-    padding: 12px;
-    border-radius: 12px;
-    display: flex
-;
-    align-items: center;
-    justify-content: center;">
-                                                <i style="margin: 0px; color: #ffffff;"
-                                                    class="fa-solid fa-headphones"></i>
-                                            </span>
-                                        </div>
-                                            <div class="multiple-media-previews"
-                                                style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px;">
-                                                @if (!empty($step['media']))
-                                                    @foreach ($step['media'] as $media)
-                                                        <div class="media-item">
-                                                            @if (str_contains($media['type'], 'image'))
-                                                                <img src="{{ asset('storage/' . $media['url']) }}"
-                                                                    style="width: 150px; max-height: 100px; border-radius: 5px;">
-                                                            @else
-                                                                <video src="{{ asset('storage/' . $media['url']) }}"
-                                                                    controls
-                                                                    style="width: 150px; max-height: 100px; border-radius: 5px;"></video>
-                                                            @endif
-                                                            <button class="btn btn-sm btn-danger remove-single-media"
-                                                                style="position: absolute; top: -8px; right: -8px; border-radius: 50%; width: 24px; height: 24px; padding: 0;">×</button>
-                                                        </div>
-                                                    @endforeach
-                                                @endif
-                                            </div>
-                                    </li>
-                                @endforeach
-                            @else
-                                <li class="text-warning">لا توجد خطوات متاحة</li>
-                            @endif
-                        </ol>
+    <ol class="content-list">
+        @if ($recipe->steps && is_array($recipe->steps) && count($recipe->steps) > 0)
+        @foreach ($recipe->steps as $index => $step)
+        <li style="display: flex; align-items: flex-start; margin-bottom: 15px;">
+            {{-- Step number --}}
+            <span style="background: #660099;
+                        color: white;
+                        font-weight: bold;
+                        width: 28px;
+                        height: 28px;
+                        text-align: center;
+                        align-items: center;
+                        justify-content: center;
+                        display: flex;
+                        border-radius: 50px;
+                        margin-left: 15px;
+                        flex-shrink: 0;">
+                {{ $index + 1 }}
+            </span>
+
+            {{-- Step content --}}
+            <div style="flex-grow: 1; padding-right: 15px;">
+                {{-- Display the step description --}}
+                <div style="margin-bottom: 10px;">
+                    {{ $step['description'] ?? 'بدون وصف' }}
+                </div>
+
+                {{-- Display single media (image/video) associated with the step --}}
+                @if (isset($step['media_path']) && !empty($step['media_path']))
+                @php
+                $stepMediaType = $step['media_type'] ?? null;
+                $stepMediaSrc = url($step['media_path']);
+                @endphp
+
+                <div class="step-media-container" style="margin-top: 10px;">
+                    @if ($stepMediaType === 'image')
+                    <img src="{{ $stepMediaSrc }}" alt="صورة الخطوة" style="max-width: 200px; max-height: 150px; object-fit: contain; border-radius: 5px; display: block; margin-top: 5px;">
+                    @elseif ($stepMediaType === 'video')
+                    <video src="{{ $stepMediaSrc }}" controls style="max-width: 250px; max-height: 180px; border-radius: 5px; display: block; margin-top: 5px;"></video>
+                    @else
+                    <p style="color: red;">نوع الوسائط غير مدعوم أو غير محدد.</p>
+                    <a href="{{ $stepMediaSrc }}" target="_blank">عرض الملف</a>
+                    @endif
+                </div>
+                @endif
+
+                {{-- Multiple media previews for this specific step --}}
+                @if (isset($step['media']) && !empty($step['media']))
+                <div class="multiple-media-previews" style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px;">
+                    @foreach ($step['media'] as $media)
+                    <div class="media-item" style="position: relative;">
+                        @if (str_contains($media['type'], 'image'))
+                        <img src="{{ asset($media['url']) }}" style="width: 150px; max-height: 100px; border-radius: 5px;">
+                        @else
+                        <video src="{{ asset($media['url']) }}" controls style="width: 150px; max-height: 100px; border-radius: 5px;"></video>
+                        @endif
                     </div>
+                    @endforeach
+                </div>
+                @endif
+            </div>
+
+            {{-- Headphone icon --}}
+            <span style="margin-right: 10px; 
+                        color: #ffffff; 
+                        font-size: 20px; 
+                        text-align: center; 
+                        background: #660099; 
+                        font-weight: bold; 
+                        padding: 10px; 
+                        border-radius: 12px; 
+                        display: flex; 
+                        align-items: center; 
+                        justify-content: center; 
+                        min-width: 40px; 
+                        height: 40px;
+                        flex-shrink: 0;">
+                <i style="margin: 0px; color: #ffffff;" class="fa-solid fa-headphones"></i>
+            </span>
+        </li>
+        @endforeach
+        @else
+        <li class="text-warning">لا توجد خطوات متاحة</li>
+        @endif
+    </ol>
+</div>
 
                     <div class="mt-4"
                         style="    position: fixed;

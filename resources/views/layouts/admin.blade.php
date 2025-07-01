@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'لوحة تحكم الإدارة')</title>
-        <link rel="icon" href="{{ asset('assets/img/Group.png') }}" type="image/x-icon">
+    <link rel="icon" href="{{ asset('assets/img/Group.png') }}" type="image/x-icon">
 
     <!-- Bootstrap RTL CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
@@ -400,7 +400,14 @@
                         </li>
                     </ul>
                 </div>
-            @endcan <a class="nav-link" href="{{ route('logout') }}"
+            @endcan 
+            
+            <a class="nav-link" href="{{ route('admin.messages.index') }}">
+                <i class="fas fa-message"></i>
+                الرسائل
+            </a>
+
+            <a class="nav-link" href="{{ route('logout') }}"
                 onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                 <i class="fas fa-sign-out-alt"></i>
                 تسجيل الخروج

@@ -150,21 +150,69 @@ class RecipesController extends Controller
 
     public function updateIngredients(Request $request, Recipe $recipe)
     {
+        Log::info('Update Ingredients Request received for recipe ID: ' . $recipe->id);
+
         $request->validate([
-            'ingredients_data' => 'required|json',
+            'ingredients_data' => 'nullable|string', // This hidden field holds the JSON
         ]);
 
-        $ingredients = json_decode($request->input('ingredients_data'), true) ?? [];
+        $ingredientsDataString = $request->input('ingredients_data');
+        $formattedIngredients = ''; // Initialize as empty string
 
-        foreach ($ingredients as &$ingredient) {
-            $ingredient['is_heading'] = filter_var($ingredient['is_heading'], FILTER_VALIDATE_BOOLEAN);
+        if (!empty($ingredientsDataString)) {
+            // Attempt to decode the JSON string from the frontend
+            $ingredientsArray = json_decode($ingredientsDataString, true);
+
+            // Check if JSON decoding was successful and it's an array
+            if (json_last_error() === JSON_ERROR_NONE && is_array($ingredientsArray)) {
+                $lines = [];
+                foreach ($ingredientsArray as $item) {
+                    $description = trim($item['description'] ?? '');
+                    // Ensure is_heading is treated as a boolean (it might come as "1" or "0" string)
+                    $isHeading = filter_var($item['is_heading'] ?? false, FILTER_VALIDATE_BOOLEAN);
+
+                    if (!empty($description)) {
+                        if ($isHeading) {
+                            $lines[] = '##' . $description; // Prepend '##' for headings
+                        } else {
+                            $lines[] = $description; // No '##' for regular ingredients
+                        }
+                    }
+                }
+                // Join all the processed lines into a single string with newlines
+                $formattedIngredients = implode("\n", $lines);
+                Log::info('Formatted ingredients string for saving:', ['string' => $formattedIngredients]);
+            } else {
+                Log::error('Failed to decode ingredients_data JSON or invalid array structure.', [
+                    'json_error' => json_last_error_msg(),
+                    'input_data' => $ingredientsDataString
+                ]);
+                return back()->with('error', 'حدث خطأ في معالجة بيانات المكونات (JSON). الرجاء المحاولة مرة أخرى.');
+            }
+        } else {
+            // If ingredients_data is empty, it means no ingredients or all were removed.
+            // So, save an empty string to the database.
+            Log::info('ingredients_data was empty. Saving empty string to database.');
         }
 
-        $recipe->ingredients = $ingredients;
-        $recipe->save();
+        // Assign the correctly formatted string to the recipe's ingredients attribute
+        $recipe->ingredients = $formattedIngredients;
 
-        return redirect()->route('c1he3f.recpies.showChefRecipes', $recipe->id)->with('success', 'تم تحديث المكونات بنجاح!');
+        // Save the recipe
+        try {
+            $recipe->save();
+            Log::info('Recipe ingredients updated successfully for ID: ' . $recipe->id);
+            return redirect()->back()->with('success', 'تم تحديث المكونات بنجاح!');
+        } catch (\Exception $e) {
+            Log::error('Database save error for recipe ID: ' . $recipe->id, [
+                'error' => $e->getMessage(),
+                'sql' => $e->getSql(), // This might not be available directly on all exceptions
+                'bindings' => $e->getBindings() // Same as above
+            ]);
+            return back()->with('error', 'حدث خطأ أثناء حفظ المكونات في قاعدة البيانات: ' . $e->getMessage());
+        }
     }
+
     public function index()
     {
         $recipes = Recipe::with(['kitchen', 'chef', 'mainCategories', 'subCategories'])->paginate(10);

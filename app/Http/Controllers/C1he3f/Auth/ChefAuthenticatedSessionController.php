@@ -24,19 +24,12 @@ use Illuminate\Support\Facades\Log;
 class ChefAuthenticatedSessionController extends Controller
 {
     // ... (تأكد من تعريف targetLanguages إذا كنت تستخدمها)
-    protected $targetLanguages = ['en', 'fr']; // مثال: يجب تعريفها بشكل صحيح
 
-    /**
-     * Display the Chef login view.
-     */
     public function createLogin(): \Illuminate\View\View // <-- دالة جديدة لعرض صفحة تسجيل الدخول
     {
         return view('c1he3f.auth.sign-in');
     }
 
-    /**
-     * Handle an incoming authentication request (for Chef Login).
-     */
     public function storeLogin(Request $request): RedirectResponse // <-- دالة جديدة لمعالجة تسجيل الدخول
     {
         $credentials = $request->validate([

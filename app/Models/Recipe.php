@@ -40,7 +40,7 @@ class Recipe extends Model
 
     protected $casts = [
         'steps' => 'array',
-        'ingredients' => 'array',
+        // 'ingredients' => 'array',
     ];
 
     // علاقة الترجمات باستخدام morphMany

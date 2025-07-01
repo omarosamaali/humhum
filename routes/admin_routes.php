@@ -16,7 +16,18 @@ use App\Http\Controllers\Admin\FaqController;
 use App\Http\Controllers\Admin\BannerController;
 use App\Http\Controllers\Admin\RecipesController;
 use App\Http\Middleware\CheckUserStatus;
+use App\Http\Controllers\MessageController;
 
+
+Route::prefix('admin')->name('admin.')->group(function () {
+    Route::get('/messages', [MessageController::class, 'adminIndex'])->name('messages.index');
+    Route::get('/messages/{id}', [MessageController::class, 'adminShow'])->name('messages.show');
+    Route::put('/messages/{id}', [MessageController::class, 'adminUpdate'])->name('messages.update');
+    Route::delete('/messages/{id}', [MessageController::class, 'adminDestroy'])->name('messages.destroy');
+    Route::post('/messages/{message}/reply', [MessageController::class, 'adminReply'])->name('messages.reply');
+    Route::get('/messages/{message}', [MessageController::class, 'adminShowAndReply'])->name('messages.message-show');
+    Route::post('/messages/{message}/update-status-and-reply', [MessageController::class, 'adminUpdateStatusAndReply'])->name('messages.update-status-and-reply');
+});
 Route::middleware(['auth', 'verified', CheckUserStatus::class])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', function () {
         return view('admin.dashboard');

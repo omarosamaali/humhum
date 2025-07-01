@@ -2,36 +2,63 @@
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Http\Request;
-use App\Http\Controllers\ProfileController; // للملف الشخصي العام إذا كان موجودًا
-use App\Models\Kitchens;
+use App\Http\Controllers\ProfileController;
+use App\Models\AboutUs;
+use App\Models\Faq;
 use App\Models\MainCategories;
 use App\Models\SubCategory;
 use App\Models\Recipe;
-use App\Http\Controllers\Admin\RecipesController; // قد تحتاجها لمسارات الوصفات العامة
-use App\Models\AboutUs;
-use App\Models\Faq;
-use App\Http\Controllers\MessageController;
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "web" middleware group. Make something great!
-|
-*/
+use App\Models\Kitchens;
+use App\Http\Controllers\Admin\RecipesController;
+use App\Http\Controllers\SnapController; // Import your SnapController
+use App\Models\Snap;
+use App\Models\Banner;
+use App\Http\Controllers\C1he3f\Auth\ChefAuthenticatedSessionController;
+
+// Route for handling the video upload (using the SnapController)
+Route::post('/c1he3f/snaps/store-snap', [SnapController::class, 'store'])->name('c1he3f.snaps.store-snap');
+Route::get('/c1he3f/snaps/get-subcategory-details/{subCategoryId}', [SnapController::class, 'getSubcategoryDetails'])->name('get.subcategory-details');
+// Route for getting subcategories (using the SnapController)
+Route::get(
+    '/c1he3f/snaps/get-subcategories/{mainCategoryId}',
+    [SnapController::class, 'getSubcategories']
+)->name('get.subcategories');
+Route::get('/c1he3f/snaps/edit-snap/{snap}', [SnapController::class, 'edit'])->name('c1he3f.snaps.edit-snap');
+Route::get('/c1he3f/snaps/lens-show/{snap}', function(Snap $snap){
+    return view('c1he3f.snaps.lens-show', compact('snap'));
+})->name('c1he3f.snaps.lens-show');
+// راوت لمعالجة طلب التعديل (عادةً يكون من نوع POST أو PUT/PATCH)
+// نستخدم PUT/PATCH للتعديل كأفضل ممارسة RESTful
+Route::put('/c1he3f/snaps/update-snap/{snap}', [SnapController::class, 'update'])->name('c1he3f.snaps.update-snap');
+Route::delete('/c1he3f/snaps/delete/{snap}', [SnapController::class, 'destroy'])->name('c1he3f.snaps.delete');
+Route::get('/c1he3f/snaps/all-snap', function () {
+    $publishedSnaps = Snap::where('status', 'published')->get();
+    $draftSnaps = Snap::where('status', 'draft')->get();
+    return view('c1he3f.snaps.all-snap', compact('publishedSnaps', 'draftSnaps'));
+})->name('c1he3f.snaps.all-snap');
+
+Route::get('/c1he3f/snaps/add-snap', [SnapController::class, 'create'])->name('c1he3f.snaps.add-snap');
+
+Route::get('/c1he3f/get-subcategories/{mainCategoryId}', function ($mainCategoryId) {
+    $subCategories = SubCategory::where('category_id', $mainCategoryId)->get();
+    return response()->json($subCategories);
+})->name('get.subcategories');
+
+Route::get('/c1he3f/coming-soon', function () {
+    return view('c1he3f.coming-soon');
+})->name('c1he3f.coming-soon');
 
 Route::get('/', function () {
     return view('welcome');
 })->name('welcome');
 
-Route::get('/c1he3f/new-message', [MessageController::class, 'create'])->name('c1he3f.new-message');
-Route::post('/c1he3f/messages', [MessageController::class, 'store'])->name('c1he3f.messages.store');
-Route::get('/c1he3f/messages', [MessageController::class, 'index'])->name('c1he3f.messages');
-Route::get('/c1he3f/messages/{id}', [MessageController::class, 'show'])->name('c1he3f.messages.show');
-Route::post('/c1he3f/messages/{id}/reply', [MessageController::class, 'reply'])->name('c1he3f.messages.reply');
+Route::get('/c1he3f/transactions', function () {
+    return view('c1he3f.transactions');
+})->name('c1he3f.transactions');
+
+Route::get('/c1he3f/withdrwal', function () {
+    return view('c1he3f.withdrwal');
+})->name('c1he3f.withdrwal');
 
 Route::get('/c1he3f/about', function () {
     $about = AboutUs::latest()->first();
@@ -43,126 +70,165 @@ Route::get('/c1he3f/faq', function () {
     return view('/c1he3f/faq', compact('faqs'));
 })->name('c1he3f.faq');
 
-// -----------------------------------------------------------------------------
-// Global Authentication Routes (Login, Register, Logout) - مسارات المصادقة العامة
-// يتم تحميلها من ملف routes/auth.php
-// -----------------------------------------------------------------------------
-require __DIR__ . '/auth.php'; // هذا الملف سيحتوي على مسارات تسجيل الدخول/التسجيل العامة
+require __DIR__ . '/auth.php';
 
-// -----------------------------------------------------------------------------
-// General User Profile Routes - مسارات الملف الشخصي للمستخدمين العاديين (إذا كانوا موجودين)
-// -----------------------------------------------------------------------------
-// إذا كان لديك أنواع مستخدمين آخرين بخلاف الطهاة والإدارة
+require __DIR__ . '/chef_routes.php';
+
+require __DIR__ . '/admin_routes.php';
+
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-// -----------------------------------------------------------------------------
-// Chef Specific Routes - مسارات خاصة بالطهاة (تتضمن مصادقتهم الخاصة)
-// -----------------------------------------------------------------------------
-require __DIR__ . '/chef_routes.php';
-
-// -----------------------------------------------------------------------------
-// Admin Specific Routes - مسارات خاصة بالإدارة
-// -----------------------------------------------------------------------------
-require __DIR__ . '/admin_routes.php';
-
-// -----------------------------------------------------------------------------
-// Other General Routes (if any)
-// -----------------------------------------------------------------------------
-
-
 Route::get('c1he3f/category/{category}', function ($categoryId) {
-    // Ensure user is authenticated
     if (!Auth::check()) {
         return redirect()->route('c1he3f.auth.sign-in')->with('error', 'يجب تسجيل الدخول كطاهٍ أولاً.');
     }
-
-    // Get the authenticated chef's ID
     $chefId = Auth::id();
-
-    // Fetch the specific category by ID
     $selectedCategory = MainCategories::findOrFail($categoryId);
-
-    // Fetch all main categories with their recipes, filtered by chef_id
-    $mainCategories = MainCategories::with([
-        'recipes' => function ($query) use ($chefId) {
-            $query->where('status', 1)
-                ->where('chef_id', $chefId) // Filter by authenticated chef
-                ->with(['kitchen', 'chef', 'subCategories'])
-                ->latest();
-        }
-    ])->withCount(['recipes' => function ($query) use ($chefId) {
+    $mainCategories = MainCategories::with(['recipes' => function ($query) use ($chefId) {
+        $query->where('status', 1)
+            ->where('chef_id', $chefId)
+            ->with(['kitchen', 'chef', 'subCategories'])
+            ->latest();
+    }])->withCount(['recipes' => function ($query) use ($chefId) {
         $query->where('status', 1)
             ->where('chef_id', $chefId);
     }])->get();
-
-    // Debug: Log loaded data
-    \Log::info('Category Page Data for Chef ID: ' . $chefId, [
-        'selected_category' => $selectedCategory->name_ar,
-        'category_id' => $categoryId,
-        'categories' => $mainCategories->pluck('name_ar', 'id'),
-        'recipe_counts' => $mainCategories->pluck('recipes_count', 'id'),
-        'recipes_per_category' => $mainCategories->map(function ($cat) {
-            return [
-                'category' => $cat->name_ar,
-                'recipes' => $cat->recipes->pluck('title', 'id')
-            ];
-        }),
-    ]);
-
     return view('c1he3f.category.show', compact('mainCategories', 'selectedCategory'));
 })->name('c1he3f.category.show');
 
-// Recipe show route
 Route::get('c1he3f/recipe/{id}', [RecipesController::class, 'showFrontend'])->name('c1he3f.recipe.show');
+Route::post('chef/logout', [ChefAuthenticatedSessionController::class, 'destroy'])->name('chef.logout');
 
-// مثال: صفحة وصفات الشيف العامة (تحتاج Auth::check() لتعرف إذا كان المستخدم مسجل دخول أم لا)
 Route::get('c1he3f/index', function () {
     if (!Auth::check()) {
         return redirect()->route('c1he3f.auth.sign-in')->with('error', 'يجب تسجيل الدخول أولاً.');
     }
+
+    $banner = Banner::where('display_location', 'website')
+        ->where('status', 1)
+        ->where('start_date', '<=', now())
+        ->where('end_date', '>=', now())
+        ->latest()
+        ->first();
+
     $mainCategories = MainCategories::withCount('recipes')->get();
     $recipes = Recipe::with(['kitchen', 'chef', 'mainCategories', 'subCategories'])
         ->where('status', 1)
         ->latest()
         ->get();
-    return view('c1he3f.index', compact('recipes', 'mainCategories'));
+
+    return view('c1he3f.index', compact('recipes', 'mainCategories', 'banner'));
 })->name('c1he3f.index');
 
+// Route for handling the video upload (using the SnapController)
+Route::post('/chefThree/snaps/store-snap', [SnapController::class, 'store'])->name('chefThree.snaps.store-snap');
+Route::get('/chefThree/snaps/get-subcategory-details/{subCategoryId}', [SnapController::class, 'getSubcategoryDetails'])->name('get.subcategory-details');
+// Route for getting subcategories (using the SnapController)
+Route::get(
+    '/chefThree/snaps/get-subcategories/{mainCategoryId}',
+    [SnapController::class, 'getSubcategories']
+)->name('get.subcategories');
+Route::get('/chefThree/snaps/edit-snap/{snap}', [SnapController::class, 'edit'])->name('chefThree.snaps.edit-snap');
+Route::get('/chefThree/snaps/lens-show/{snap}', function (Snap $snap) {
+    return view('chefThree.snaps.lens-show', compact('snap'));
+})->name('chefThree.snaps.lens-show');
+// راوت لمعالجة طلب التعديل (عادةً يكون من نوع POST أو PUT/PATCH)
+// نستخدم PUT/PATCH للتعديل كأفضل ممارسة RESTful
+Route::put('/chefThree/snaps/update-snap/{snap}', [SnapController::class, 'update'])->name('chefThree.snaps.update-snap');
+Route::delete('/chefThree/snaps/delete/{snap}', [SnapController::class, 'destroy'])->name('chefThree.snaps.delete');
+Route::get('/chefThree/snaps/all-snap', function () {
+    $publishedSnaps = Snap::where('status', 'published')->get();
+    $draftSnaps = Snap::where('status', 'draft')->get();
+    return view('chefThree.snaps.all-snap', compact('publishedSnaps', 'draftSnaps'));
+})->name('chefThree.snaps.all-snap');
 
-Route::get('/c1he3f/recpies/all_recipes', [App\Http\Controllers\Admin\RecipesController::class, 'allRecipes'])->name('chef.recipes.all');
-Route::get('/chef/recipes/{id}', [App\Http\Controllers\Admin\RecipesController::class, 'viewRecipe'])->name('chef.recipes.view'); // مثال لـ route عرض وصفة واحدة
-Route::get('/chef/recipes/{id}/edit', [App\Http\Controllers\Admin\RecipesController::class, 'editRecipe'])->name('chef.recipes.edit'); // مثال لـ route تعديل وصفة
-Route::get('/c1he3f/recpies/add-recpie', [App\Http\Controllers\Admin\RecipesController::class, 'addRecipe'])->name('c1he3f.recpies.add-recpie'); // تأكد من الـ route بتاع إضافة الوصفة
+Route::get('/chefThree/snaps/add-snap', [SnapController::class, 'create'])->name('chefThree.snaps.add-snap');
 
-// Route::get('/c1he3f/recpies/all_recipes', function () {
-//     return view('c1he3f.recpies.all_recipes');
-// })->name('chef.recipes.all');
+Route::get('/chefThree/get-subcategories/{mainCategoryId}', function ($mainCategoryId) {
+    $subCategories = SubCategory::where('category_id', $mainCategoryId)->get();
+    return response()->json($subCategories);
+})->name('get.subcategories');
 
-// مسارات الوصفات الشيف (تحتاج إلى التأكد من أن ChefRecipesController موجود)
-Route::group(['prefix' => 'c1he3f', 'as' => 'c1he3f.', 'middleware' => ['auth']], function () {
-    // Route to display the steps editing form (GET request)
-    Route::get('recipes/{recipe}/steps/edit', [RecipesController::class, 'showStepsForm'])->name('recpies.steps');
-    // Route to update/save the steps (PUT request)
-    Route::put('recipes/{recipe}/steps', [RecipesController::class, 'updateSteps'])->name('recpies.updateSteps');
-    Route::get('recipes/{recipe}/ingredients', [RecipesController::class, 'showIngredientsForm'])->name('recpies.ingredients');
-    Route::put('recipes/{recipe}/ingredients', [RecipesController::class, 'updateIngredients'])->name('recpies.updateIngredients');
-    Route::get('recipes/{recipe}/ingredients/edit', [RecipesController::class, 'showIngredientsForm'])->name('recipes.editIngredients');
-    Route::get('recpies/add-recpie', function () {
-        $kitchens = Kitchens::select('id', 'name_ar')->get();
-        $mainCategories = MainCategories::select('id', 'name_ar')->get();
-        $subCategory = SubCategory::select('id', 'name_ar')->get();
-        return view('c1he3f/recpies/add-recpie', compact('kitchens', 'mainCategories', 'subCategory'));
-    })->name('recpies.add-recpie');
-    Route::get('recpies/subcategories', [RecipesController::class, 'getSubCategories'])->name('recpies.subcategories');
-    Route::get('recpies/{recipe}/facts', [RecipesController::class, 'showNutritionalFactsForm'])->name('recpies.facts');
-    Route::put('recpies/{recipe}/update_nutritional_facts', [RecipesController::class, 'updateNutritionalFacts'])->name('recpies.update_nutritional_facts');
-    Route::post('recpies/store', [RecipesController::class, 'storePublicRecipe'])->name('recpies.store');
-    Route::get('/recpies/favorites', function () {
-        return view('c1he3f.recpies.favorites');
-    })->name('recpies.favorites');
-    Route::get('recpies/{recipe}', [RecipesController::class, 'showChefRecipes'])->name('recpies.showChefRecipes');
+Route::get('/chefThree/coming-soon', function () {
+    return view('chefThree.coming-soon');
+})->name('chefThree.coming-soon');
+
+Route::get('/', function () {
+    return view('welcome');
+})->name('welcome');
+
+Route::get('/chefThree/transactions', function () {
+    return view('chefThree.transactions');
+})->name('chefThree.transactions');
+
+Route::get('/chefThree/withdrwal', function () {
+    return view('chefThree.withdrwal');
+})->name('chefThree.withdrwal');
+
+Route::get('/chefThree/about', function () {
+    $about = AboutUs::latest()->first();
+    return view('/chefThree/about', compact('about'));
+})->name('chefThree.about');
+
+Route::get('/chefThree/faq', function () {
+    $faqs = Faq::whereIn('place', ['chef', 'both'])->get();
+    return view('/chefThree/faq', compact('faqs'));
+})->name('chefThree.faq');
+
+require __DIR__ . '/auth.php';
+
+require __DIR__ . '/chef_routes.php';
+
+require __DIR__ . '/admin_routes.php';
+
+Route::middleware(['auth', 'verified'])->group(function () {
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
+
+Route::get('chefThree/category/{category}', function ($categoryId) {
+    if (!Auth::check()) {
+        return redirect()->route('chefThree.auth.sign-in')->with('error', 'يجب تسجيل الدخول كطاهٍ أولاً.');
+    }
+    $chefId = Auth::id();
+    $selectedCategory = MainCategories::findOrFail($categoryId);
+    $mainCategories = MainCategories::with(['recipes' => function ($query) use ($chefId) {
+        $query->where('status', 1)
+            ->where('chef_id', $chefId)
+            ->with(['kitchen', 'chef', 'subCategories'])
+            ->latest();
+    }])->withCount(['recipes' => function ($query) use ($chefId) {
+        $query->where('status', 1)
+            ->where('chef_id', $chefId);
+    }])->get();
+    return view('chefThree.category.show', compact('mainCategories', 'selectedCategory'));
+})->name('chefThree.category.show');
+
+Route::get('chefThree/recipe/{id}', [RecipesController::class, 'showFrontend'])->name('chefThree.recipe.show');
+Route::post('chef/logout', [ChefAuthenticatedSessionController::class, 'destroy'])->name('chef.logout');
+
+Route::get('chefThree/index', function () {
+    if (!Auth::check()) {
+        return redirect()->route('chefThree.auth.sign-in')->with('error', 'يجب تسجيل الدخول أولاً.');
+    }
+
+    $banner = Banner::where('display_location', 'website')
+        ->where('status', 1)
+        ->where('start_date', '<=', now())
+        ->where('end_date', '>=', now())
+        ->latest()
+        ->first();
+
+    $mainCategories = MainCategories::withCount('recipes')->get();
+    $recipes = Recipe::with(['kitchen', 'chef', 'mainCategories', 'subCategories'])
+        ->where('status', 1)
+        ->latest()
+        ->get();
+
+    return view('chefThree.index', compact('recipes', 'mainCategories', 'banner'));
+})->name('chefThree.index');

@@ -29,7 +29,10 @@ class SubCategory extends Model
     protected $casts = [
         'status' => 'boolean',
     ];
-
+    public function snap() {
+        
+        return $this->belongsToMany(Snap::class, 'snap_sub_category', 'sub_category_id', 'snap_id');
+    }
     // العلاقة مع التصنيف الرئيسي
     public function mainCategory()
     {

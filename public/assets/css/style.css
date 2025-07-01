@@ -26007,15 +26007,15 @@ label input {
 .chat-box-area .chat-content {
   display: flex;
   align-items: flex-end;
-  justify-content: flex-start;
+  /* justify-content: center; */
   padding-right: 60px;
   margin-bottom: 10px;
 }
 
 .chat-box-area .chat-content.user {
-  justify-content: flex-end;
+  justify-content: center;
   padding-right: 0;
-  padding-left: 60px;
+  /* padding-left: 60px; */
 }
 
 .chat-box-area .chat-content.user .message-item {
