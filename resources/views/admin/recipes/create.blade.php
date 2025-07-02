@@ -647,10 +647,14 @@
     </div>
 @endsection
 @push('scripts')
+
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
+        console.log('CSRF Token:', $('meta[name="csrf-token"]').attr('content'));
+        console.log('Current URL:', window.location.href);
+
         $(document).ready(function() {
             $('#id_sub_categories').select2({
                 placeholder: 'اختر التصنيفات الفرعية',
@@ -671,10 +675,12 @@
                         'change');
 
                     $.ajax({
-                        url: '{{ route('admin.recipes.subcategories') }}',
+                        url: '/admin/get-subcategories',
+
                         type: 'GET',
                         data: {
-                            main_category_id: mainCategoryId
+                            category_id: mainCategoryId
+
                         },
                         headers: {
                             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')

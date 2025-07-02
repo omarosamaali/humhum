@@ -297,19 +297,15 @@ class RecipesController extends Controller
 
     public function getSubCategories(Request $request)
     {
-        $mainCategoryId = $request->get('main_category_id');
+        $mainCategoryId = $request->get('category_id');
 
         if (!$mainCategoryId) {
             return response()->json([]);
         }
 
-        \Log::info('Fetching subcategories for ID:', ['id' => $mainCategoryId]);
-
         $subCategories = SubCategory::where('category_id', $mainCategoryId)
             ->select('id', 'name_ar')
             ->get();
-
-        \Log::info('Subcategories found:', ['count' => $subCategories->count(), 'data' => $subCategories->toArray()]);
 
         return response()->json($subCategories);
     }

@@ -15,6 +15,10 @@ use App\Models\Snap;
 use App\Models\Banner;
 use App\Http\Controllers\C1he3f\Auth\ChefAuthenticatedSessionController;
 
+Route::middleware(['auth'])->group(function () {
+    Route::get('/admin/get-subcategories', [App\Http\Controllers\Admin\RecipesController::class, 'getSubCategories']);
+});
+
 // Route for handling the video upload (using the SnapController)
 Route::post('/c1he3f/snaps/store-snap', [SnapController::class, 'store'])->name('c1he3f.snaps.store-snap');
 Route::get('/c1he3f/snaps/get-subcategory-details/{subCategoryId}', [SnapController::class, 'getSubcategoryDetails'])->name('get.subcategory-details');
@@ -194,11 +198,6 @@ require __DIR__ . '/chef_routes.php';
 
 require __DIR__ . '/admin_routes.php';
 
-Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-});
 
 Route::get('chefThree/category/{category}', function ($categoryId) {
     if (!Auth::check()) {

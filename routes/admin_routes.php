@@ -28,7 +28,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::get('/messages/{message}', [MessageController::class, 'adminShowAndReply'])->name('messages.message-show');
     Route::post('/messages/{message}/update-status-and-reply', [MessageController::class, 'adminUpdateStatusAndReply'])->name('messages.update-status-and-reply');
 });
-Route::middleware(['auth', 'verified', CheckUserStatus::class])->prefix('admin')->name('admin.')->group(function () {
+Route::middleware(['auth', CheckUserStatus::class])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', function () {
         return view('admin.dashboard');
     })->name('dashboard');
