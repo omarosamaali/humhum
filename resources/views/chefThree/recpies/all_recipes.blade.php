@@ -262,7 +262,7 @@
             <a href="{{ route('c1he3f.index') }}" class="nav-link">
                 <i class="fi fi-rr-home"></i>
             </a>
-            <a href="transactions.html" class="nav-link">
+            <a href="{{ route('c1he3f.coming-soon') }}" class="nav-link">
                 <i class="fa fa-coins"></i>
                 {{-- </svg> --}} {{-- في هنا closing tag زيادة لـ svg --}}
             </a>

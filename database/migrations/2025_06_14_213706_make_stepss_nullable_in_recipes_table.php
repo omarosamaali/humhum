@@ -12,10 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('recipes', function (Blueprint $table) {
-            // لو عمود 'steps' نوعه JSON في قاعدة البيانات:
             $table->json('steps')->nullable()->change();
-            // لو عمود 'steps' نوعه TEXT في قاعدة البيانات (أو LongText):
-            // $table->text('steps')->nullable()->change(); // أو $table->longText('steps')->nullable()->change();
         });
     }
 
@@ -25,10 +22,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('recipes', function (Blueprint $table) {
-            // لو عمود 'steps' نوعه JSON:
             $table->json('steps')->nullable(false)->change();
-            // لو عمود 'steps' نوعه TEXT:
-            // $table->text('steps')->nullable(false)->change(); // أو $table->longText('steps')->nullable(false)->change();
         });
     }
 };

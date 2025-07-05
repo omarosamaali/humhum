@@ -87,7 +87,7 @@
                 <div class="detail-item">
                     <span class="detail-label">الحالة:</span>
                     <div class="detail-value">
-                        <span class="badge {{ $user->getStatusBadgeClass() }}"> {{ $user->status }}
+                        <span class="badge {{ $user->getStatusBadgeClass() }}" style="color: black;"> {{ $user->status }}
                         </span>
                     </div>
                 </div>

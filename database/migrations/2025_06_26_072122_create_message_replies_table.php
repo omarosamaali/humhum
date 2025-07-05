@@ -13,11 +13,11 @@ return new class extends Migration
     {
         Schema::create('message_replies', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('message_id')->constrained('messages')->onDelete('cascade'); // الربط بالرسالة الأصلية
-            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');     // من أرسل الرد (الادمن أو الطاهي)
-            $table->text('content')->nullable();                                         // نص الرد
-            $table->string('file_path')->nullable();                                    // مسار المرفق (صورة/فيديو) للرد
-            $table->enum('status', ['unread', 'read'])->default('unread');              // حالة قراءة الرد (بالنسبة لمستقبل الرد)
+            $table->foreignId('message_id')->constrained('messages')->onDelete('cascade');
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+            $table->text('content')->nullable();
+            $table->string('file_path')->nullable();
+            $table->enum('status', ['unread', 'read'])->default('unread');
             $table->timestamps();
         });
     }

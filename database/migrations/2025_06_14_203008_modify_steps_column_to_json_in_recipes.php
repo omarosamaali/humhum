@@ -9,10 +9,7 @@ class ModifyStepsColumnToJsonInRecipes extends Migration
 {
     public function up()
     {
-        // تحويل البيانات الحالية إلى تنسيق JSON صالح
         DB::statement("UPDATE recipes SET steps = CASE WHEN steps IS NULL OR steps = '' THEN '[]' ELSE JSON_ARRAY(REPLACE(steps, '\n', '\",\"')) END WHERE 1=1");
-
-        // تغيير نوع الحقل إلى json
         Schema::table('recipes', function (Blueprint $table) {
             $table->json('steps')->change();
         });

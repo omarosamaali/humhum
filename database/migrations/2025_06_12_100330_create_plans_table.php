@@ -12,14 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('plans', function (Blueprint $table) {
-            $table->id(); // العمود الأساسي ID
-
-            // العمود لربط الخطة بالباقة
+            $table->id();
             $table->unsignedBigInteger('package_id');
-            // قيد المفتاح الأجنبي لربطه بجدول الباقات، مع خيار الحذف المتتالي (cascade)
             $table->foreign('package_id')->references('id')->on('packages')->onDelete('cascade');
-
-            // أعمدة أسماء الخطط باللغات المختلفة (نفس اللغات المستخدمة في packages)
             $table->string('name_ar')->comment('اسم الخطة باللغة العربية');
             $table->string('name_id')->nullable()->comment('اسم الخطة بالإندونيسية');
             $table->string('name_am')->nullable()->comment('اسم الخطة بالأمهرية');
@@ -31,18 +26,11 @@ return new class extends Migration
             $table->string('name_ta')->nullable()->comment('اسم الخطة بالتاميلية');
             $table->string('name_en')->nullable()->comment('اسم الخطة بالإنجليزية');
             $table->string('name_ne')->nullable()->comment('اسم الخطة بالنيبالية');
-            $table->string('name_ps')->nullable()->comment('اسم الخطة بالبشتو'); // تم التعديل إلى البشتو بناءً على ps
-
-            // عمود السعر
-            $table->decimal('price', 8, 2)->comment('سعر الخطة'); // السعر (8 خانات إجمالاً، 2 بعد العلامة العشرية)
-
-            // عمود المدة ووحدتها
+            $table->string('name_ps')->nullable()->comment('اسم الخطة بالبشتو');
+            $table->decimal('price', 8, 2)->comment('سعر الخطة');
             $table->string('duration_unit')->comment('وحدة المدة (شهر، 3 شهور، 6 شهور، 12 شهر)');
-
-            // عمود الحالة (فعال/غير فعال)
-            $table->boolean('status')->default(0)->comment('حالة الخطة (0: فعال, 1: غير فعال)'); // 0 للفعال، 1 لغير الفعال، القيمة الافتراضية 0
-
-            $table->timestamps(); // عمودي created_at و updated_at
+            $table->boolean('status')->default(0)->comment('حالة الخطة (0: فعال, 1: غير فعال)');
+            $table->timestamps();
         });
     }
 

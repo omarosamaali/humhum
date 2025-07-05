@@ -12,12 +12,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('likes', function (Blueprint $table) {
-            $table->id(); // عمود ID فريد لكل إعجاب
-            $table->foreignId('user_id')->constrained()->onDelete('cascade'); // مفتاح خارجي لجدول المستخدمين (users)
-            $table->foreignId('snap_id')->constrained('snaps')->onDelete('cascade'); // مفتاح خارجي لجدول المقاطع (snaps)
-            $table->timestamps(); // عمودين created_at و updated_at لتتبع وقت الإعجاب
-
-            // لضمان أن المستخدم الواحد لا يمكنه الإعجاب بنفس المقطع أكثر من مرة
+            $table->id();
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->foreignId('snap_id')->constrained('snaps')->onDelete('cascade');
+            $table->timestamps();
             $table->unique(['user_id', 'snap_id']);
         });
     }

@@ -12,9 +12,8 @@ return new class extends Migration
     {
         Schema::create('recipes', function (Blueprint $table) {
             $table->id();
-            // هذا هو التعديل الصحيح: اسم الجدول المرجعي يجب أن يكون 'kitchens' وليس 'kitchen_types'
             $table->foreignId('kitchen_type_id')->constrained('kitchens')->onDelete('cascade');
-                        $table->foreignId('chef_id')->constrained('users')->onDelete('cascade'); // Assuming users table exists
+            $table->foreignId('chef_id')->constrained('users')->onDelete('cascade');
             $table->foreignId('main_category_id')->constrained('main_categories')->onDelete('cascade');
             $table->string('dish_image')->nullable();
             $table->string('title');

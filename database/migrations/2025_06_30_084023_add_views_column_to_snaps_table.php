@@ -11,11 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        // تحقق أولاً إذا كان العمود غير موجود قبل إضافته
-        // هذا يمنع الأخطاء إذا قمت بتشغيل الـ migration مرة أخرى بطريق الخطأ وكان العمود موجودًا بالفعل
         Schema::table('snaps', function (Blueprint $table) {
             if (!Schema::hasColumn('snaps', 'views')) {
-                $table->unsignedInteger('views')->default(0)->after('recipe_id'); // أضف بعد recipe_id أو بعد likes_count
+                $table->unsignedInteger('views')->default(0)->after('recipe_id');
             }
         });
     }
@@ -26,7 +24,6 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('snaps', function (Blueprint $table) {
-            // تحقق أولاً إذا كان العمود موجودًا قبل حذفه
             if (Schema::hasColumn('snaps', 'views')) {
                 $table->dropColumn('views');
             }

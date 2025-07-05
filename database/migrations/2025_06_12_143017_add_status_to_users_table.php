@@ -10,7 +10,7 @@ class AddStatusToUsersTable extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             if (!Schema::hasColumn('users', 'status')) {
-                $table->string('status')->default('بانتظار التفعيل'); // Adjust based on your needs
+                $table->string('status')->default('بانتظار التفعيل');
             }
         });
     }

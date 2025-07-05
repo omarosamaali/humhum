@@ -13,29 +13,23 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            // أضف عمودًا مؤقتًا لتخزين القيم الجديدة
             $table->string('status_temp')->nullable()->after('status');
         });
 
-        // تحديث البيانات بناءً على القيم العددية
         DB::table('users')->update([
             'status_temp' => DB::raw("CASE WHEN status = 1 THEN 'فعال' WHEN status = 0 THEN 'غير فعال' ELSE 'بانتظار التفعيل' END")
         ]);
 
         Schema::table('users', function (Blueprint $table) {
-            // إزالة العمود القديم
             $table->dropColumn('status');
-            // إعادة إنشاء العمود كـ enum مع نقل البيانات
             $table->enum('status', ['فعال', 'غير فعال', 'بانتظار التفعيل'])->default('فعال')->after('status_temp');
         });
 
-        // نقل البيانات من العمود المؤقت إلى العمود الجديد
         DB::table('users')->update([
             'status' => DB::raw('status_temp')
         ]);
 
         Schema::table('users', function (Blueprint $table) {
-            // إزالة العمود المؤقت
             $table->dropColumn('status_temp');
         });
     }

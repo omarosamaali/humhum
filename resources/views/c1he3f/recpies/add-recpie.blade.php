@@ -1114,7 +1114,8 @@
                         url: '{{ route('c1he3f.recpies.subcategories') }}',
                         type: 'GET',
                         data: {
-                            main_category_id: mainCategoryId
+                            category_id: mainCategoryId
+
                         },
                         headers: {
                             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')

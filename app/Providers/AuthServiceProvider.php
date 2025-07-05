@@ -4,8 +4,8 @@ namespace App\Providers;
 
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
-use App\Models\User; // تأكد من استيراد نموذج المستخدم الخاص بك
-use Illuminate\Auth\Notifications\ResetPassword; // تأكد من الاستيراد
+use App\Models\User;
+use Illuminate\Auth\Notifications\ResetPassword;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -25,22 +25,12 @@ class AuthServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // ...
         Gate::define('isChef', function (User $user) {
             return $user->role === 'طاه';
         });
-        // Define an 'isAdmin' gate
         Gate::define('isAdmin', function (User $user) {
-            // الطريقة 1: إذا كان لديك عمود is_admin (boolean) في جدول المستخدمين
-            // return $user->is_admin;
-
-            // الطريقة 2: إذا كان لديك عمود role (string) في جدول المستخدمين
             return $user->role === 'مدير'; 
-
-            // الطريقة 3: إذا كان لديك علاقة أدوار مع جدول roles (أكثر تعقيدًا لكنه أكثر قوة)
-            // return $user->roles()->where('name', 'admin')->exists();
         });
-
 
         ResetPassword::createUrlUsing(function (object $notifiable, string $token) {
             return route('auth/reset-password.get', [
@@ -49,7 +39,5 @@ class AuthServiceProvider extends ServiceProvider
             ]);
         });
     
-
-
 }
 }

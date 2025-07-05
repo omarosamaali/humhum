@@ -250,7 +250,7 @@
                 $user = Auth::user();
                 $chefProfile = $user->chefProfile; // Assuming chefProfile is loaded or not null
 
-                $isProfileComplete = true;
+                $isProfileComplete = false;
 
                 // Only check for profile completeness if the user is a chef
                 if ($user && $user->role === 'طاه' && $chefProfile) {
@@ -261,7 +261,7 @@
 
                 // If all conditions are true
                 if ($isOfficialImageComplete && $isContractTypeComplete && $isBioComplete && $isContractSigned) {
-                $isProfileComplete = false;
+                $isProfileComplete = true;
                 }
                 }
                 @endphp
@@ -274,7 +274,7 @@
 
                     {{-- رابط المعاملات - يمكن التحكم فيه --}}
                     {{-- لو عايز تقفله، ممكن تضيف شرط هنا --}}
-                    <a href="{{ route('c1he3f.transactions') }}" class="nav-link {{ !$isProfileComplete ? 'disabled' : '' }}" {{ !$isProfileComplete ? 'onclick="return false;"' : '' }}>
+                    <a href="{{ route('c1he3f.coming-soon') }}" class="nav-link {{ !$isProfileComplete ? 'disabled' : '' }}" {{ !$isProfileComplete ? 'onclick="return false;"' : '' }}>
                         <i class="fa fa-coins"></i>
                     </a>
 

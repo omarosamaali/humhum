@@ -202,7 +202,8 @@
                 <h4 class="title">الخطوات </h4>
             </div>
             <div class="left-content">
-                <a href="javascript:void(0);" class="back-btn">
+                <a href="javascript:history.back()" class="back-btn">
+
                     <i class="feather icon-arrow-left"></i>
                 </a>
             </div>

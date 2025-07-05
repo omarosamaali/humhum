@@ -155,7 +155,7 @@
                 <a href="{{ route('c1he3f.index') }}" class="nav-link active">
                     <i class="fi fi-rr-home"></i>
                 </a>
-                <a href="{{ route('c1he3f.transactions') }}" class="nav-link">
+                <a href="{{ route('c1he3f.coming-soon') }}" class="nav-link">
                     <i class="fa fa-coins"></i>
                     </svg>
                 </a>

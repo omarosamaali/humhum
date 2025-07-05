@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\ProfileController;
 use App\Models\AboutUs;
+use App\Models\Terms;
 use App\Models\Faq;
 use App\Models\MainCategories;
 use App\Models\SubCategory;
@@ -43,10 +44,10 @@ Route::get('/c1he3f/snaps/all-snap', function () {
 
 Route::get('/c1he3f/snaps/add-snap', [SnapController::class, 'create'])->name('c1he3f.snaps.add-snap');
 
-Route::get('/c1he3f/get-subcategories/{mainCategoryId}', function ($mainCategoryId) {
-    $subCategories = SubCategory::where('category_id', $mainCategoryId)->get();
-    return response()->json($subCategories);
-})->name('get.subcategories');
+// Route::get('/c1he3f/get-subcategories/{mainCategoryId}', function ($mainCategoryId) {
+//     $subCategories = SubCategory::where('category_id', $mainCategoryId)->get();
+//     return response()->json($subCategories);
+// })->name('get.subcategories');
 
 Route::get('/c1he3f/coming-soon', function () {
     return view('c1he3f.coming-soon');
@@ -112,7 +113,7 @@ Route::get('c1he3f/index', function () {
         return redirect()->route('c1he3f.auth.sign-in')->with('error', 'يجب تسجيل الدخول أولاً.');
     }
 
-    $banner = Banner::where('display_location', 'website')
+    $banner = Banner::where('display_location', 'mobile_app')
         ->where('status', 1)
         ->where('start_date', '<=', now())
         ->where('end_date', '>=', now())
@@ -139,12 +140,12 @@ Route::get('c1he3f/index', function () {
 
 // Route for handling the video upload (using the SnapController)
 Route::post('/chefThree/snaps/store-snap', [SnapController::class, 'store'])->name('chefThree.snaps.store-snap');
-Route::get('/chefThree/snaps/get-subcategory-details/{subCategoryId}', [SnapController::class, 'getSubcategoryDetails'])->name('get.subcategory-details');
+// Route::get('/chefThree/snaps/get-subcategory-details/{subCategoryId}', [SnapController::class, 'getSubcategoryDetails'])->name('get.subcategory-details');
 // Route for getting subcategories (using the SnapController)
-Route::get(
-    '/chefThree/snaps/get-subcategories/{mainCategoryId}',
-    [SnapController::class, 'getSubcategories']
-)->name('get.subcategories');
+// Route::get(
+//     '/chefThree/snaps/get-subcategories/{mainCategoryId}',
+//     [SnapController::class, 'getSubcategories']
+// )->name('get.subcategories');
 Route::get('/chefThree/snaps/edit-snap/{snap}', [SnapController::class, 'edit'])->name('chefThree.snaps.edit-snap');
 Route::get('/chefThree/snaps/lens-show/{snap}', function (Snap $snap) {
     return view('chefThree.snaps.lens-show', compact('snap'));
@@ -161,10 +162,10 @@ Route::get('/chefThree/snaps/all-snap', function () {
 
 Route::get('/chefThree/snaps/add-snap', [SnapController::class, 'create'])->name('chefThree.snaps.add-snap');
 
-Route::get('/chefThree/get-subcategories/{mainCategoryId}', function ($mainCategoryId) {
-    $subCategories = SubCategory::where('category_id', $mainCategoryId)->get();
-    return response()->json($subCategories);
-})->name('get.subcategories');
+// Route::get('/chefThree/get-subcategories/{mainCategoryId}', function ($mainCategoryId) {
+//     $subCategories = SubCategory::where('category_id', $mainCategoryId)->get();
+//     return response()->json($subCategories);
+// })->name('get.subcategories');
 
 Route::get('/chefThree/coming-soon', function () {
     return view('chefThree.coming-soon');

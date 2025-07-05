@@ -851,7 +851,7 @@
             </div>
         </header>
 
-        <main class="page-content">
+        <main class="page-content" style="margin-top: 15px;">
             <div id="success-message" class="alert alert-success" style="display: none;"></div>
             <div id="error-message" class="alert alert-danger" style="display: none;"></div>
             <form id="ingredientsForm" method="POST" action="{{ route('c1he3f.recpies.updateIngredients', $recipe->id) }}">

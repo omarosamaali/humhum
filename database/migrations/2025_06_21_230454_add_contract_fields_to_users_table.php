@@ -17,7 +17,7 @@ class AddContractFieldsToUsersTable extends Migration
             $table->boolean('is_contract_signed')->default(false)->after('email_verified_at');
             $table->string('otp_code')->nullable()->after('is_contract_signed');
             $table->timestamp('otp_expires_at')->nullable()->after('otp_code');
-            $table->timestamp('contract_signed_at')->nullable()->after('otp_expires_at'); // لتسجيل وقت التوقيع
+            $table->timestamp('contract_signed_at')->nullable()->after('otp_expires_at');
         });
     }
 

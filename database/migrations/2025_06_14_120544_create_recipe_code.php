@@ -14,8 +14,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('recipes', function (Blueprint $table) {
-            // Add the recipe_code column
-            $table->string('recipe_code', 5)->unique()->after('id'); // 5 characters, unique, placed after 'id'
+            $table->string('recipe_code', 5)->unique()->after('id');
         });
     }
 
@@ -25,7 +24,6 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('recipes', function (Blueprint $table) {
-            // Drop the recipe_code column if rolling back
             $table->dropColumn('recipe_code');
         });
     }

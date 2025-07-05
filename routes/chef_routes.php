@@ -18,12 +18,13 @@ Route::post('/c1he3f/messages', [MessageController::class, 'store'])->name('c1he
 Route::get('/c1he3f/messages', [MessageController::class, 'index'])->name('c1he3f.messages');
 Route::get('/c1he3f/messages/{id}', [MessageController::class, 'show'])->name('c1he3f.messages.show');
 Route::post('/c1he3f/messages/{id}/reply', [MessageController::class, 'reply'])->name('c1he3f.messages.reply');
-
+Route::get('/c1he3f/recpies/{recipe}/edit', [RecipesController::class, 'edit'])->name('c1he3f.recpies.edit');
+Route::put('/c1he3f/recpies/{recipe}/update', [RecipesController::class, 'update'])->name('c1he3f.recpies.update');
 Route::get('/c1he3f/recpies/all_recipes', [RecipesController::class, 'allRecipes'])->name('chef.recipes.all');
 Route::get('/chef/recipes/{id}', [RecipesController::class, 'viewRecipe'])->name('chef.recipes.view');
-Route::get('/chef/recipes/{id}/edit', [RecipesController::class, 'editRecipe'])->name('chef.recipes.edit');
 Route::get('/c1he3f/recpies/add-recpie', [RecipesController::class, 'addRecipe'])->name('c1he3f.recpies.add-recpie');
-
+Route::get('/c1he3f/recpies/subcategories', [RecipesController::class, 'getSubCategories'])->name('c1he3f.recpies.subcategories');
+// Route::put('/c1he3f/recpies/{id}/update', [RecipesController::class, 'update'])->name('c1he3f.recpies.update');
 Route::group(['prefix' => 'c1he3f', 'as' => 'c1he3f.', 'middleware' => ['auth']], function () {
     Route::get('recipes/{recipe}/steps/edit', [RecipesController::class, 'showStepsForm'])->name('recpies.steps');
     Route::put('recipes/{recipe}/steps', [RecipesController::class, 'updateSteps'])->name('recpies.updateSteps');
@@ -128,8 +129,7 @@ Route::post('/chefThree/messages/{id}/reply', [MessageController::class, 'reply'
 
 Route::get('/chefThree/recpies/all_recipes', [RecipesController::class, 'allRecipes'])->name('chef.recipes.all');
 Route::get('/chef/recipes/{id}', [RecipesController::class, 'viewRecipe'])->name('chef.recipes.view');
-Route::get('/chef/recipes/{id}/edit', [RecipesController::class, 'editRecipe'])->name('chef.recipes.edit');
-Route::get('/chefThree/recpies/add-recpie', [RecipesController::class, 'addRecipe'])->name('chefThree.recpies.add-recpie');
+Route::get('/chefThree/recpies/add-recpie', [RecipesController::class, 'create'])->name('chefThree.recpies.add-recpie');
 
 Route::group(['prefix' => 'chefThree', 'as' => 'chefThree.', 'middleware' => ['auth']], function () {
     Route::get('recipes/{recipe}/steps/edit', [RecipesController::class, 'showStepsForm'])->name('recpies.steps');

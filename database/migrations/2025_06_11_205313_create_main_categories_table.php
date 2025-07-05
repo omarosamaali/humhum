@@ -11,10 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('main_categories', function (Blueprint $table) { // <--- هنا التغيير
+        Schema::create('main_categories', function (Blueprint $table) {
             $table->id();
             $table->string('name_ar')->comment('اسم التصنيف الرئيسي باللغة العربية');
-            // أعمدة للغات المترجمة
             $table->string('name_id')->nullable()->comment('اسم التصنيف الرئيسي بالإندونيسية');
             $table->string('name_am')->nullable()->comment('اسم التصنيف الرئيسي بالأمهرية');
             $table->string('name_hi')->nullable()->comment('اسم التصنيف الرئيسي بالهندية');
@@ -26,7 +25,6 @@ return new class extends Migration
             $table->string('name_en')->nullable()->comment('اسم التصنيف الرئيسي بالإنجليزية');
             $table->string('name_ne')->nullable()->comment('اسم التصنيف الرئيسي بالنيبالية');
             $table->string('name_ps')->nullable()->comment('اسم التصنيف الرئيسي بالأفغانية');
-
             $table->string('image')->nullable()->comment('مسار صورة التصنيف الرئيسي');
             $table->boolean('status')->default(1)->comment('حالة التصنيف الرئيسي (1: فعال, 0: غير فعال)');
             $table->timestamps();
@@ -38,6 +36,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('main_categories'); // <--- وهنا التغيير
+        Schema::dropIfExists('main_categories');
     }
 };

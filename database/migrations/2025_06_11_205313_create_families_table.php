@@ -11,10 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('families', function (Blueprint $table) { // <--- هنا التغيير
+        Schema::create('families', function (Blueprint $table) {
             $table->id();
             $table->string('name_ar')->comment('اسم صور العائلة باللغة العربية');
-            // أعمدة للغات المترجمة
             $table->string('name_id')->nullable()->comment('اسم صور العائلة بالإندونيسية');
             $table->string('name_am')->nullable()->comment('اسم صور العائلة بالأمهرية');
             $table->string('name_hi')->nullable()->comment('اسم صور العائلة بالهندية');
@@ -26,7 +25,6 @@ return new class extends Migration
             $table->string('name_en')->nullable()->comment('اسم صور العائلة بالإنجليزية');
             $table->string('name_ne')->nullable()->comment('اسم صور العائلة بالنيبالية');
             $table->string('name_ps')->nullable()->comment('اسم صور العائلة بالأفغانية');
-
             $table->string('image')->nullable()->comment('مسار صورة صور العائلة');
             $table->boolean('status')->default(1)->comment('حالة صور العائلة (1: فعال, 0: غير فعال)');
             $table->timestamps();
@@ -38,6 +36,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('families'); // <--- وهنا التغيير
+        Schema::dropIfExists('families');
     }
 };

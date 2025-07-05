@@ -12,9 +12,6 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            // تغيير عمود 'role' ليصبح VARCHAR بطول 50 (أو أي طول آخر تراه مناسبًا)
-            // يجب أن يكون الطول كافياً لأكبر دور تتوقع إدخاله
-            // بعد 'string' يمكنك إضافة 'after' لتحديد مكانه، أو تركه Laravel يضعه في نهاية الجدول
             $table->string('role', 50)->change();
         });
     }
@@ -25,9 +22,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            // عند التراجع (rollback)، يمكنك إعادة العمود إلى حجمه الأصلي
-            // تأكد من أن الحجم الأصلي يمكنه استيعاب الأدوار القديمة
-            $table->string('role', 255)->change(); // افترض أن الطول الأصلي كان 255 أو قم بتعيين الطول الأصلي
+            $table->string('role', 255)->change();
         });
     }
 };

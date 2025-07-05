@@ -11,9 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('snaps', function (Blueprint $table) {
-            $table->dropForeign(['sub_category_id']);
-            $table->json('sub_category_id')->nullable()->change();
+        Schema::table('users', function (Blueprint $table) {
+            //
         });
     }
 
@@ -22,8 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('snaps', function (Blueprint $table) {
-            $table->integer('sub_category_id')->nullable()->change();
+        Schema::table('users', function (Blueprint $table) {
+            //
         });
     }
 };

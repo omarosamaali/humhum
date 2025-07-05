@@ -12,20 +12,17 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            // أضف أعمدة للغات المختلفة.
-            // يمكنك اختيار وضعها بعد عمود 'name' أو في نهاية الجدول.
-            // هنا سأضعها بعد 'name' لمزيد من التنظيم.
-            $table->string('name_ar')->nullable()->after('name'); // العربية
-            $table->string('name_en')->nullable()->after('name_ar'); // الإنجليزية
-            $table->string('name_id')->nullable()->after('name_en'); // الإندونيسية
-            $table->string('name_am')->nullable()->after('name_id'); // الأمهرية
-            $table->string('name_hi')->nullable()->after('name_am'); // الهندية
-            $table->string('name_bn')->nullable()->after('name_hi'); // البنغالية
-            $table->string('name_ml')->nullable()->after('name_bn'); // الماليالامية
-            $table->string('name_fil')->nullable()->after('name_ml'); // الفلبينية
-            $table->string('name_ur')->nullable()->after('name_fil'); // الأردية
-            $table->string('name_ta')->nullable()->after('name_ur'); // التاميلية
-            $table->string('name_ps')->nullable()->after('name_ta'); // الباشتو
+            $table->string('name_ar')->nullable()->after('name');
+            $table->string('name_en')->nullable()->after('name_ar');
+            $table->string('name_id')->nullable()->after('name_en');
+            $table->string('name_am')->nullable()->after('name_id');
+            $table->string('name_hi')->nullable()->after('name_am');
+            $table->string('name_bn')->nullable()->after('name_hi');
+            $table->string('name_ml')->nullable()->after('name_bn');
+            $table->string('name_fil')->nullable()->after('name_ml');
+            $table->string('name_ur')->nullable()->after('name_fil');
+            $table->string('name_ta')->nullable()->after('name_ur');
+            $table->string('name_ps')->nullable()->after('name_ta');
         });
     }
 
@@ -35,7 +32,6 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            // إزالة الأعمدة عند التراجع عن الهجرة
             $table->dropColumn([
                 'name_ar',
                 'name_en',

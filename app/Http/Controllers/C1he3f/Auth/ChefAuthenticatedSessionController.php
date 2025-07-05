@@ -23,9 +23,21 @@ use Illuminate\Support\Facades\Log;
 
 class ChefAuthenticatedSessionController extends Controller
 {
-    // ... (تأكد من تعريف targetLanguages إذا كنت تستخدمها)
-
-    public function createLogin(): \Illuminate\View\View // <-- دالة جديدة لعرض صفحة تسجيل الدخول
+    protected $targetLanguages = [
+        'id' => 'الإندونيسية',
+        'am' => 'الأمهرية',
+        'hi' => 'الهندية',
+        'bn' => 'البنغالية',
+        'ml' => 'المالايالامية',
+        'fil' => 'الفلبينية',
+        'ur' => 'الأردية',
+        'ta' => 'التاميلية',
+        'en' => 'الإنجليزية',
+        'ne' => 'النيبالية',
+        'ps' => 'الأفغانية',
+    ];
+    
+    public function createLogin(): \Illuminate\View\View
     {
         return view('c1he3f.auth.sign-in');
     }

@@ -17,7 +17,6 @@ class CreateTranslationsTable extends Migration
             $table->json('ingredients')->nullable();
             $table->text('instructions')->nullable();
             $table->timestamps();
-
             $table->unique(['recipe_id', 'language_code']);
         });
     }

@@ -219,9 +219,49 @@ class RecipesController extends Controller
         $kitchens = Kitchens::select('id', 'name_ar')->get();
         return view('admin.recipes.index', compact('recipes', 'kitchens'));
     }
+    public function edit(Recipe $recipe)
+    {
+        if (!$recipe->exists) {
+            return redirect()->route('chef.recipes.all')->with('error', 'الوصفة غير موجودة!');
+        }
 
+        $kitchens = Kitchens::select('id', 'name_ar')->get();
+        $mainCategories = MainCategories::select('id', 'name_ar')->get();
+
+        // تحميل التصنيفات الفرعية بناءً على التصنيف الرئيسي للوصفة
+        $subCategories = collect();
+        if ($recipe->main_category_id) {
+            $subCategories = SubCategory::where('category_id', $recipe->main_category_id)
+                ->select('id', 'name_ar', 'category_id')
+                ->get();
+        }
+
+        $chefs = collect();
+        if (Auth::user()->role === 'مدير') {
+            $chefs = User::where('role', 'طاه')->select('id', 'name')->get();
+        }
+
+        // الحصول على التصنيفات الفرعية المحددة للوصفة
+        $selectedSubCategories = $recipe->subCategories()->pluck('id')->toArray();
+
+        return view('c1he3f.recpies.edit', compact(
+            'recipe',
+            'kitchens',
+            'mainCategories',
+            'subCategories',
+            'chefs',
+            'selectedSubCategories'
+        ));
+    }
     public function update(Request $request, Recipe $recipe)
     {
+        // $recipe = Recipe::findOrFail($id);
+
+        \Log::info('Recipe ID in update method: ' . $recipe->id);
+        if (!$recipe->exists) {
+            \Log::error('Recipe not found for ID: ' . $request->id);
+            return back()->withErrors(['general' => 'الوصفة غير موجودة!']);
+        }
         $rules = $this->getValidationRules($request, true);
         try {
             $validatedData = $request->validate($rules);
@@ -310,18 +350,6 @@ class RecipesController extends Controller
         return response()->json($subCategories);
     }
 
-    public function edit(Recipe $recipe)
-    {
-        $kitchens = Kitchens::select('id', 'name_ar')->get();
-        $mainCategories = MainCategories::select('id', 'name_ar')->get();
-        $subCategories = SubCategory::select('id', 'name_ar')->get();
-        $chefs = collect();
-        if (Auth::user()->role === 'مدير') {
-            $chefs = User::where('role', 'طاه')->select('id', 'name')->get();
-        }
-        $selectedSubCategories = $recipe->subCategories->pluck('id')->toArray();
-        return view('admin.recipes.edit', compact('recipe', 'kitchens', 'mainCategories', 'subCategories', 'chefs', 'selectedSubCategories'));
-    }
 
     public function create(Request $request)
     {
@@ -439,9 +467,15 @@ class RecipesController extends Controller
         $validatedData = $validator->validated();
         $user = Auth::user();
 
-        // Always set user_id and chef_id to the authenticated user's ID
+        // Set user_id to the authenticated user's ID
         $validatedData['user_id'] = $user->id;
-        $validatedData['chef_id'] = $user->id; // Direct assignment of chef_id
+
+        // Set chef_id based on user role
+        if ($user->role === 'طاه') {
+            $validatedData['chef_id'] = $user->id; // Chef is the authenticated user
+        } else {
+            $validatedData['chef_id'] = $request->input('chef_id'); // Get chef_id from form
+        }
 
         $validatedData['dish_image'] = $this->handleDishImage($request);
 
@@ -470,7 +504,6 @@ class RecipesController extends Controller
         }
         return redirect()->route('admin.recipes.index')->with('success', 'تم إضافة الوصفة بنجاح');
     }
-
 
     protected function handleDishImage(Request $request, Recipe $recipe = null): mixed
     {

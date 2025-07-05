@@ -14,7 +14,6 @@ return new class extends Migration
         Schema::create('packages', function (Blueprint $table) {
             $table->id();
             $table->string('name_ar')->comment('اسم الباقة باللغة العربية');
-            // أعمدة للغات المترجمة
             $table->string('name_id')->nullable()->comment('اسم الباقة بالإندونيسية');
             $table->string('name_am')->nullable()->comment('اسم الباقة بالأمهرية');
             $table->string('name_hi')->nullable()->comment('اسم الباقة بالهندية');
@@ -26,7 +25,6 @@ return new class extends Migration
             $table->string('name_en')->nullable()->comment('اسم الباقة بالإنجليزية');
             $table->string('name_ne')->nullable()->comment('اسم الباقة بالنيبالية');
             $table->string('name_ps')->nullable()->comment('اسم الباقة بالأفغانية');
-
             $table->string('image')->nullable()->comment('مسار صورة الباقة');
             $table->boolean('status')->default(1)->comment('حالة الباقة (1: فعال, 0: غير فعال)');
             $table->timestamps();

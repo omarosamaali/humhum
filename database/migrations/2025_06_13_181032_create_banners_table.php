@@ -13,11 +13,11 @@ return new class extends Migration
     {
         Schema::create('banners', function (Blueprint $table) {
             $table->id();
-            $table->string('image'); // مسار الصورة
-            $table->dateTime('start_date')->nullable(); // وقت بدء العرض
-            $table->dateTime('end_date')->nullable();   // وقت انتهاء العرض
-            $table->enum('display_location', ['website', 'mobile_app'])->default('website'); // مكان العرض
-            $table->boolean('status')->default(true); // حالة البانر (فعال/غير فعال)
+            $table->string('image');
+            $table->dateTime('start_date')->nullable();
+            $table->dateTime('end_date')->nullable();
+            $table->enum('display_location', ['website', 'mobile_app'])->default('website');
+            $table->boolean('status')->default(true);
             $table->timestamps();
         });
     }

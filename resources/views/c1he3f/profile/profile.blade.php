@@ -69,8 +69,9 @@
                 </div>
             </div>
             <ul class="nav navbar-nav" style="direction: ltr;">
+
                 <li>
-                    <a class="nav-link active" href="{{ route('c1he3f.index') }}">
+                    <a class="nav-link {{ Auth::user()->status == 'فعال' ? 'active' : 'disabled' }}" href="{{ route('c1he3f.index') }}">
                         <span class="dz-icon">
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M3 8.40002V21C3 21.2652 3.10536 21.5196 3.29289 21.7071C3.48043 21.8947 3.73478 22 4 22H20C20.2652 22 20.5196 21.8947 20.7071 21.7071C20.8946 21.5196 21 21.2652 21 21V8.40002C21.0001 8.23638 20.96 8.07523 20.8833 7.93069C20.8066 7.78616 20.6956 7.66265 20.56 7.57102L12.56 2.17102C12.3946 2.05924 12.1996 1.99951 12 1.99951C11.8004 1.99951 11.6054 2.05924 11.44 2.17102L3.44 7.57102C3.30443 7.66265 3.19342 7.78616 3.11671 7.93069C3.03999 8.07523 2.99992 8.23638 3 8.40002V8.40002ZM14 20H10V14H14V20ZM5 8.93202L12 4.20702L19 8.93202V20H16V13C16 12.7348 15.8946 12.4804 15.7071 12.2929C15.5196 12.1054 15.2652 12 15 12H9C8.73478 12 8.48043 12.1054 8.29289 12.2929C8.10536 12.4804 8 12.7348 8 13V20H5V8.93202Z" fill="#BDBDBD" />
@@ -156,11 +157,11 @@
                 <div class="header-content">
                     <div class="left-content">
                         <div class="info">
-                              <a href="{{ route('c1he3f.profile.edit-profile') }}">
-                                  <svg enable-background="new 0 0 461.75 461.75" height="24" viewBox="0 0 461.75 461.75" width="24" xmlns="http://www.w3.org/2000/svg">
-                                      <path d="m23.099 461.612c2.479-.004 4.941-.401 7.296-1.177l113.358-37.771c3.391-1.146 6.472-3.058 9.004-5.587l226.67-226.693 75.564-75.541c9.013-9.016 9.013-23.63 0-32.645l-75.565-75.565c-9.159-8.661-23.487-8.661-32.645 0l-75.541 75.565-226.693 226.67c-2.527 2.53-4.432 5.612-5.564 9.004l-37.794 113.358c-4.029 12.097 2.511 25.171 14.609 29.2 2.354.784 4.82 1.183 7.301 1.182zm340.005-406.011 42.919 42.919-42.919 42.896-42.896-42.896zm-282.056 282.056 206.515-206.492 42.896 42.896-206.492 206.515-64.367 21.448z" fill="#4A3749"></path>
-                                  </svg>
-                              </a>
+                            <a href="{{ route('c1he3f.profile.edit-profile') }}">
+                                <svg enable-background="new 0 0 461.75 461.75" height="24" viewBox="0 0 461.75 461.75" width="24" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="m23.099 461.612c2.479-.004 4.941-.401 7.296-1.177l113.358-37.771c3.391-1.146 6.472-3.058 9.004-5.587l226.67-226.693 75.564-75.541c9.013-9.016 9.013-23.63 0-32.645l-75.565-75.565c-9.159-8.661-23.487-8.661-32.645 0l-75.541 75.565-226.693 226.67c-2.527 2.53-4.432 5.612-5.564 9.004l-37.794 113.358c-4.029 12.097 2.511 25.171 14.609 29.2 2.354.784 4.82 1.183 7.301 1.182zm340.005-406.011 42.919 42.919-42.919 42.896-42.896-42.896zm-282.056 282.056 206.515-206.492 42.896 42.896-206.492 206.515-64.367 21.448z" fill="#4A3749"></path>
+                                </svg>
+                            </a>
 
                         </div>
                     </div>
@@ -200,43 +201,53 @@
                                 <p>حالة الحساب :
                                     @php
                                     $user = Auth::user();
-                                    $chefProfile = $user->chefProfile; // افترض أن chefProfile محمل بالفعل أو غير null
+                                    $chefProfile = $user->chefProfile;
 
-                                    // تحقق من وجود chefProfile لتجنب الأخطاء
-                                    $isProfileComplete = false;
+                                    // تحقق من اكتمال البيانات المطلوبة
+                                    $isDataComplete = false;
+
                                     if ($chefProfile) {
-                                    $isOfficialImageComplete = !empty($chefProfile->official_image);
-                                    $isContractTypeComplete = !empty($chefProfile->contract_type);
-                                    $isBioComplete = !empty($chefProfile->bio);
-                                    $isContractSigned = !empty($user->contract_signed_at); // هذا من جدول المستخدم
+                                    $hasOfficialImage = !empty($chefProfile->official_image);
+                                    $hasContractType = !empty($chefProfile->contract_type);
+                                    $hasBio = !empty($chefProfile->bio);
+                                    $hasSignedContract = !empty($user->contract_signed_at);
 
-                                    // إذا كانت جميع الشروط صحيحة
-                                    if (
-                                    $isOfficialImageComplete &&
-                                    $isContractTypeComplete &&
-                                    $isBioComplete &&
-                                    $isContractSigned
-                                    ) {
-                                    $isProfileComplete = true;
-                                    }
+                                    // إذا كانت جميع البيانات الأربعة موجودة
+                                    $isDataComplete = $hasOfficialImage && $hasContractType && $hasBio && $hasSignedContract;
                                     }
                                     @endphp
 
-                                    {{-- عرض الحالة بناءً على المتغير $isProfileComplete --}}
-                                    @if (Auth::user()->role === 'طاه')
-                                    @if ($isProfileComplete && Auth::user()->status == 'قيد التفعيل')
-                                    قيد التفعيل
-                                    @elseif(Auth::user()->status == 'فعال')
-                                    فعال
-                                    @else
-                                    بإنتظار إستكمال البيانات
-                                    @endif
-                                    @else
-                                    {{-- للمستخدمين الذين ليسوا طهاة، أو في حالة عدم وجود chefProfile --}}
-                                    بإنتظار إستكمال البيانات
-                                    @endif
-                                </p>
+                                    @php
+                                    $user = Auth::user();
+                                    $chefProfile = $user->chefProfile;
 
+                                    // تحقق من اكتمال البيانات المطلوبة
+                                    $isDataComplete = false;
+
+                                    if ($chefProfile) {
+                                    $hasOfficialImage = !empty($chefProfile->official_image);
+                                    $hasContractType = !empty($chefProfile->contract_type);
+                                    $hasBio = !empty($chefProfile->bio);
+                                    $hasSignedContract = !empty($user->contract_signed_at);
+
+                                    // إذا كانت جميع البيانات الأربعة موجودة
+                                    $isDataComplete = $hasOfficialImage && $hasContractType && $hasBio && $hasSignedContract;
+                                    }
+                                    @endphp
+
+                                    @if (Auth::user()->role === 'طاه')
+                                    @if (Auth::user()->status == 'فعال')
+                                    فعال
+                                    @elseif ($isDataComplete)
+                                    بإنتظار الاعتماد
+                                    @else
+                                    بإنتظار إستكمال البيانات
+                                    @endif
+                                    @else
+                                    بإنتظار إستكمال البيانات
+                                    @endif
+
+                                </p>
                             </div>
                         </div>
                         <div class="widget_getintuch pb-15 profile">
@@ -407,7 +418,7 @@
 
                     {{-- رابط المعاملات - يمكن التحكم فيه --}}
                     {{-- لو عايز تقفله، ممكن تضيف شرط هنا --}}
-                    <a href="{{ route('c1he3f.transactions') }}" class="nav-link {{ !$isProfileComplete ? 'disabled' : '' }}" {{ !$isProfileComplete ? 'onclick="return false;"' : '' }}>
+                    <a href="{{ route('c1he3f.coming-soon') }}" class="nav-link {{ !$isProfileComplete ? 'disabled' : '' }}" {{ !$isProfileComplete ? 'onclick="return false;"' : '' }}>
                         <i class="fa fa-coins"></i>
                     </a>
 
@@ -451,4 +462,3 @@
 </body>
 
 </html>
-
