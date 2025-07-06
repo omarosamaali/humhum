@@ -18,10 +18,11 @@ use App\Http\Controllers\Admin\FaqController;
 use App\Http\Controllers\Admin\BannerController;
 use App\Http\Controllers\Admin\RecipesController;
 use App\Http\Middleware\CheckUserStatus;
+use App\Http\Middleware\AdminRole;
 use App\Http\Controllers\MessageController;
 
 
-Route::prefix('admin')->name('admin.')->group(function () {
+Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/messages', [MessageController::class, 'adminIndex'])->name('messages.index');
     Route::get('/messages/{id}', [MessageController::class, 'adminShow'])->name('messages.show');
     Route::put('/messages/{id}', [MessageController::class, 'adminUpdate'])->name('messages.update');
@@ -30,11 +31,10 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::get('/messages/{message}', [MessageController::class, 'adminShowAndReply'])->name('messages.message-show');
     Route::post('/messages/{message}/update-status-and-reply', [MessageController::class, 'adminUpdateStatusAndReply'])->name('messages.update-status-and-reply');
 });
-Route::middleware(['auth', CheckUserStatus::class])->prefix('admin')->name('admin.')->group(function () {
+Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', function () {
         return view('admin.dashboard');
     })->name('dashboard');
-
     Route::resource('users', UserController::class);
     Route::resource('languages', LanguageController::class);
     Route::resource('packages', PackageController::class);
@@ -51,9 +51,7 @@ Route::middleware(['auth', CheckUserStatus::class])->prefix('admin')->name('admi
     Route::resource('banners', BannerController::class);
     Route::resource('recipes', RecipesController::class);
     Route::resource('recipeView', RecipeController::class);
-
     Route::post('/recipes/{recipe}/ajax-update', [RecipesController::class, 'ajaxUpdate'])->name('recipes.ajax-update');
-
     Route::prefix('recipes/{recipe}')->name('recipes.')->group(function () {
         Route::get('translate/{lang_code}', [RecipeController::class, 'translate'])->name('translate');
         Route::post('translate/{lang_code}', [RecipeController::class, 'storeTranslation'])->name('store-translation');
@@ -62,7 +60,6 @@ Route::middleware(['auth', CheckUserStatus::class])->prefix('admin')->name('admi
         Route::post('copy/{lang_code}', [RecipeController::class, 'copyToLanguage'])->name('copy-to-language');
         Route::get('export/{lang_code}', [RecipeController::class, 'exportToLanguage'])->name('export-language');
     });
-
     Route::prefix('recipes')->name('recipes.')->group(function () {
         Route::get('search', [RecipeController::class, 'search'])->name('search');
         Route::get('export', [RecipeController::class, 'export'])->name('export');
@@ -70,8 +67,6 @@ Route::middleware(['auth', CheckUserStatus::class])->prefix('admin')->name('admi
         Route::get('translation-stats', [RecipeController::class, 'translationStats'])->name('translation-stats');
         Route::post('bulk-translate', [RecipeController::class, 'bulkTranslate'])->name('bulk-translate');
     });
-
     Route::get('/recipes/subcategories', [RecipesController::class, 'getSubCategories'])->name('recipes.subcategories');
-
     Route::get('/recipes/{recipe}/preview/{lang_code}', [RecipesController::class, 'preview'])->name('recipes.preview');
 });

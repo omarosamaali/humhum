@@ -72,45 +72,57 @@
                         <p>هل لديك منتجات تريد بيعها</p>
                     </div>
 
-                    <form action="{{ route('c1he3f.profile.save-market-choice') }}" method="POST" id="marketChoiceForm">
-                        @csrf
-                        <ul class="dz-list-group radio style-2" style="direction: rtl;">
-                            <li class="list-group-items" style="margin-bottom: 20px; border-radius: 5px; border: 1px solid #e00000; padding: 12px;">
-                                <label class="radio-label">
-                                    <input type="radio" name="has_market" value="1" {{ old('has_market', $chefHasMarket ?? 0) == 1 ? 'checked' : '' }}>
-                                    <div class="checkmark">
-                                        <div class="list-content">
-                                            <h6 class="title">نعم</h6>
-                                        </div>
-                                        <span class="check"></span>
-                                    </div>
-                                </label>
-                            </li>
-                            <li class="list-group-items" style="margin-bottom: 20px; border-radius: 5px; border: 1px solid #e00000; padding: 12px;">
-                                <label class="radio-label">
-                                    <input type="radio" name="has_market" value="0" {{ old('has_market', $chefHasMarket ?? 0) == 0 ? 'checked' : '' }}>
-                                    <div class="checkmark">
-                                        <div class="list-content">
-                                            <h6 class="title">لا</h6>
-                                        </div>
-                                        <span class="check"></span>
-                                    </div>
-                                </label>
-                            </li>
-                        </ul>
+                             <form action="{{ route('c1he3f.profile.save-market-choice') }}" method="POST" id="marketChoiceForm">
+                                 @csrf
+                                 <ul class="dz-list-group radio style-2" style="direction: rtl;">
+                                     <li class="list-group-items" style="margin-bottom: 20px; border-radius: 5px; border: 1px solid #e00000; padding: 12px;">
+                                         <label class="radio-label">
+                                             <input type="radio" name="has_market" value="1" {{ old('has_market', $chefHasMarket ?? 0) == 1 ? 'checked' : '' }}>
+                                             <div class="checkmark">
+                                                 <div class="list-content">
+                                                     <h6 class="title">نعم</h6>
+                                                 </div>
+                                                 <span class="check"></span>
+                                             </div>
+                                         </label>
+                                     </li>
+                                     <li class="list-group-items" style="margin-bottom: 20px; border-radius: 5px; border: 1px solid #e00000; padding: 12px;">
+                                         <label class="radio-label">
+                                             <input type="radio" name="has_market" value="0" {{ old('has_market', $chefHasMarket ?? 0) == 0 ? 'checked' : '' }}>
+                                             <div class="checkmark">
+                                                 <div class="list-content">
+                                                     <h6 class="title">لا</h6>
+                                                 </div>
+                                                 <span class="check"></span>
+                                             </div>
+                                         </label>
+                                     </li>
+                                 </ul>
 
-                        {{-- الزر الذي سيتم إخفاؤه/إظهاره --}}
-                        <div class="footer-fixed-btn bottom-0 bg-white" id="deliveryLocationButton" style="bottom: 25%; position: relative; 
-                             {{ old('has_market', $chefHasMarket ?? 0) == 0 ? 'display: none;' : '' }}">
-                            <a href="{{ route('c1he3f.coming-soon') }}" class="btn btn-lg btn-thin btn-primary w-100 rounded-xl">أماكن التوصيل</a>
-                        </div>
+                                 <div class="footer-fixed-btn bottom-0 bg-white" id="deliveryLocationButton" style="bottom: 25%; position: relative; {{ old('has_market', $chefHasMarket ?? 0) == 0 ? 'display: none;' : '' }}">
+                                     <a href="{{ route('c1he3f.profile.delivery-location') }}" class="btn btn-lg btn-thin btn-primary w-100 rounded-xl">أماكن التوصيل</a>
+                                 </div>
+                                 <div class="footer-fixed-btn bottom-0 bg-white">
+                                     <button type="submit" class="btn btn-lg btn-thin btn-primary w-100 rounded-xl">حفظ</button>
+                                 </div>
+                             </form>
+                             </div>
+                             </div>
+                             </main>
 
-                        {{-- زر الحفظ الذي ينقل لصفحة البروفايل أو أماكن التوصيل بناءً على الاختيار --}}
-                        <div class="footer-fixed-btn bottom-0 bg-white">
-                            <a href={{ route('c1he3f.coming-soon') }} type="submit" class="btn btn-lg btn-thin btn-primary w-100 rounded-xl"
-                            >حفظ</a>
-                        </div>
-                    </form>
+                             <script src="{{ asset('assets/js/jquery.js') }}"></script>
+                             <script src="{{ asset('assets/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+                             <script src="{{ asset('assets/js/custom.js') }}"></script>
+                             <script>
+                                 $(document).ready(function() {
+                                     $('input[name="has_market"]').on('change', function() {
+                                         const hasMarket = $(this).val();
+                                         $('#deliveryLocationButton').toggle(hasMarket == 1);
+                                     });
+                                 });
+
+                             </script>
+
 
                 </div>
             </div>

@@ -1,10 +1,11 @@
 <!DOCTYPE html>
-<html lang="en" dir="rtl">
+<html lang="en">
 
 <head>
 
     <!-- Title -->
     <title>واجهة الطاهي</title>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <!-- Meta -->
     <meta charset="utf-8">
@@ -18,18 +19,15 @@
 
     <meta name="twitter:title" content="Ombe- Coffee Shop Mobile App Template (Bootstrap + PWA) | DexignZone">
     <meta name="twitter:description" content="Discover the perfect blend of design and functionality with Ombe, a Coffee Shop Mobile App Template crafted with Bootstrap and enhanced with Progressive Web App (PWA) capabilities. Elevate your coffee shop's online presence with a seamless, responsive, and feature-rich template. Explore a modern design, user-friendly interface, and PWA technology for an immersive mobile experience. Brew success for your coffee shop effortlessly – Ombe is the ideal template to caffeinate your digital presence.">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css">
 
     <meta name="twitter:image" content="{{ asset('assets/images/social-image.png') }}">
     <meta name="twitter:card" content="summary_large_image">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-LCY/8p2NaW6Bsmo1g3+6j+EkH0dY1o+2C73AVM0DIA3A92vN0bFz5H6uX3bM6+0F5a1g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <!-- Mobile Specific -->
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, minimal-ui, viewport-fit=cover">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <!-- Favicons Icon -->
     <link rel="shortcut icon" type="image/x-icon" href="{{ asset('assets/images/app-logo/favicon.png') }}">
-
-    <!-- PWA Version -->
-    <link rel="manifest" href="{{ asset('manifest.json') }}">
 
     <!-- Global CSS -->
     <link href="{{ asset('assets/vendor/bootstrap-select/dist/css/bootstrap-select.min.css') }}" rel="stylesheet">
@@ -54,7 +52,9 @@
                 color: rgb(74 74 74/var(--tw-text-opacity, 1));
             }
         }
-
+        #remove-image {
+            display: block !important;
+        }
         body {
             font-size: 17px;
         }
@@ -368,33 +368,28 @@
         <!-- Main Content Start -->
         <main class="page-content space-top p-b100" style="direction: rtl;">
             <div class="container">
-                <form action="{{ route('c1he3f.recpies.update', $recipe) }}" method="POST">
+                <form action="{{ route('c1he3f.recipes.updateChef', $recipe) }}" method="POST" id="recipe-update-form" enctype="multipart/form-data">
                     @csrf
                     @method('PUT')
-
-                    <div class="bg-cookpad-gray-9gi p-6h1" style="height: 40vh; width: 80%; margin: auto; border-radius: 15px;">
-                        <div style="top: 20%;" class="image-zyn text-wbi fle-kj4 item-sji justify-byc">
+                    <div class="bg-cookpad-gray-9gi p-6h1" style="position: relative; height: 40vh; width: 80%; margin: auto; border-radius: 15px;">
+                        <div style="top: 20%; text-align: center;" class="image-zyn text-wbi fle-kj4 item-sji justify-byc">
                             <div class="text-fim">
-                                @if ($recipe->dish_image)
-                                <img src="{{ Storage::url($recipe->dish_image) }}" alt="Current Dish Image" class="w-8so mx-33j" style="max-height: 150px;">
-                                @else
-                                <img class="w-8so mx-33j pointer-events-j3t" src="https://global-web-assets.cpcdn.com/assets/camera-f90eec676af2f051ccca0255d3874273a419172412e3a6d2884f963f6ec5a2c3.png">
-                                @endif
+                                <img name="dish_image" id="dish_image" accept="image/*" class="w-8so mx-33j pointer-events-j3t" src="https://global-web-assets.cpcdn.com/assets/camera-f90eec676af2f051ccca0255d3874273a419172412e3a6d2884f963f6ec5a2c3.png">
                                 <p class="text-x8v font-9s7 mt-mnq">حمّل صورة الطبق إذا صوّرته</p>
                                 <p class="text-b94 px-ql7">شاركنا صورة طبقك، كل شي من إيديك حلو</p>
                             </div>
-                            <input type="file" name="file" id="fil-ttd" accept="image/*">
-                            @error('file')
-                            <div class="text-danger">{{ $message }}</div>
+                            <input type="file" name="dish_image" id="fil-ttd" accept="image/*">
+                            @error('dish_image')
+                            <div class="text-white mt-1">{{ $message }}</div>
                             @enderror
-                            @if ($recipe->dish_image)
-                            <label>
-                                <input type="checkbox" name="remove_current_image" value="1"> إزالة الصورة الحالية
-                            </label>
-                            @endif
                         </div>
+                        <img src="{{ $recipe->dish_image ? asset('storage/' . $recipe->dish_image) : 'https://via.placeholder.com/740' }}" value="{{ asset('storage/' . $recipe->dish_image) }}" id="image_preview" src="#" alt="معاينة الصورة" class="dish-image-preview" style="width: 100%; height: 100%; position: absolute; top: 0px; right: 0px; border-radius: 17px;">
                     </div>
-
+                    @if(! $recipe->dish_image !== null)
+                    <button type="button" class="btn btn-danger" id="remove-image" style="display: block !important; margin-right: 58px; margin-top: 13px;">
+                        حذف
+                    </button>
+                    @endif
                     <div class="my-3">
                         <label class="form-label" style="display: flex; justify-content: center;">اسم الوصفة</label>
                         <input type="text" name="title" style="text-align: center; color: #000000;" placeholder="اسم الوصفة: مكرونة بالدجاج والكريمة للعشاء" value="{{ old('title', $recipe->title) }}" class="form-control">
@@ -429,17 +424,13 @@
                         <div class="text-danger">{{ $message }}</div>
                         @enderror
                     </div>
-                            <div style="background-color: #e00000; color: white; padding: 5px; border-radius: 5px; width: fit-content; margin-top: 10px;">
-                                {{ $recipe->mainCategories?->name_ar ?? 'غير مصنف' }}
-                            </div>
-
 
                     <div class="mb-3">
                         <label for="main_category_id" class="form-label">التصنيف الرئيسي</label>
                         <select class="form-control" name="main_category_id" id="main_category_id" required>
-                            <option value="">اختر التصنيف الرئيسي</option>
+                            <option value="" {{ old('main_category_id', $recipe->mainCategories?->id) ? '' : 'selected' }}>اختر تصنيف</option>
                             @foreach ($mainCategories as $mainCategory)
-                            <option value="{{ $mainCategory->id }}" {{ (old('main_category_id', $recipe->main_category_id) == $mainCategory->id) ? 'selected' : '' }}>
+                            <option value="{{ $mainCategory->id }}" {{ old('main_category_id', $recipe->mainCategories?->id == $mainCategory?->id ? 'selected' : '') }}>
                                 {{ $mainCategory->name_ar }}
                             </option>
                             @endforeach
@@ -448,80 +439,112 @@
                         <div class="text-danger mt-1">{{ $message }}</div>
                         @enderror
                     </div>
-                            @forelse ($recipe->subCategories as $subCategory)
-                            <span class="badge badge-info">{{ $subCategory->name_ar }}</span>
-                            @empty
-                            <span class="text-muted">لا توجد</span>
-                            @endforelse
-
                     <div class="mb-3" id="id_sub_categories_container">
                         <label for="sub_categories" class="form-label">التصنيفات الفرعية</label>
                         <select class="form-control select2" style="text-align: center;" name="sub_categories[]" id="id_sub_categories" multiple="multiple" required>
+                            @foreach ($recipe->subCategories as $subCategory)
+                            <option value="{{ $subCategory->id }}" selected>{{ $subCategory->name_ar }}</option>
+                            @endforeach
                         </select>
                         @error('sub_categories')
                         <div class="text-danger mt-1">{{ $message }}</div>
                         @enderror
                     </div>
 
-            <!-- Servings -->
-            <div class="my-3">
-                <label class="form-label" style="display: flex; justify-content: center;">عدد الأشخاص</label>
-                <input type="number" name="servings" style="text-align: center; color: #000000;" placeholder="عدد الأشخاص: 4" value="{{ old('servings', $recipe->servings) }}" class="form-control" min="1">
-                @error('servings')
-                <div class="text-danger">{{ $message }}</div>
-                @enderror
+                    <!-- Servings -->
+                    <div class="my-3">
+                        <label class="form-label" style="display: flex; justify-content: center;">عدد الأشخاص</label>
+                        <input type="number" name="servings" style="text-align: center; color: #000000;" placeholder="عدد الأشخاص: 4" value="{{ old('servings', $recipe->servings) }}" class="form-control" min="1">
+                        @error('servings')
+                        <div class="text-danger">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <!-- Preparation Time -->
+                    <div class="my-3">
+                        <label class="form-label" style="display: flex; justify-content: center;">وقت التحضير (بالدقائق)</label>
+                        <input type="number" name="preparation_time" style="text-align: center; color: #000000;" placeholder="وقت التحضير: 30د" value="{{ old('preparation_time', $recipe->preparation_time) }}" class="form-control" min="1">
+                        @error('preparation_time')
+                        <div class="text-danger">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <!-- Status -->
+                    <div class="my-3">
+                        <label class="form-label" style="display: flex; justify-content: center;">الحالة</label>
+                        <select class="form-select" name="status" style="width: 100%; text-align: center;">
+                            <option value="">اختر الحالة</option>
+                            <option value="1" {{ old('status', $recipe->status) == 1 ? 'selected' : '' }}>فعال</option>
+                            <option value="0" {{ old('status', $recipe->status) == 0 ? 'selected' : '' }}>غير فعال</option>
+                        </select>
+                        @error('status')
+                        <div class="text-danger">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div class="my-3 text-center">
+                        <button type="submit" class="btn btn-primary">تحديث الوصفة</button>
+                    </div>
+                </form>
             </div>
+        </main>
 
-            <!-- Preparation Time -->
-            <div class="my-3">
-                <label class="form-label" style="display: flex; justify-content: center;">وقت التحضير (بالدقائق)</label>
-                <input type="number" name="preparation_time" style="text-align: center; color: #000000;" placeholder="وقت التحضير: 30د" value="{{ old('preparation_time', $recipe->preparation_time) }}" class="form-control" min="1">
-                @error('preparation_time')
-                <div class="text-danger">{{ $message }}</div>
-                @enderror
-            </div>
-
-            <!-- Status -->
-            <div class="my-3">
-                <label class="form-label" style="display: flex; justify-content: center;">الحالة</label>
-                <select class="form-select" name="status" style="width: 100%; text-align: center;">
-                    <option value="">اختر الحالة</option>
-                    <option value="1" {{ old('status', $recipe->status) == 1 ? 'selected' : '' }}>فعال</option>
-                    <option value="0" {{ old('status', $recipe->status) == 0 ? 'selected' : '' }}>غير فعال</option>
-                </select>
-                @error('status')
-                <div class="text-danger">{{ $message }}</div>
-                @enderror
-            </div>
-
-            <!-- Submit Button -->
-            <div class="my-3 text-center">
-                <button type="submit" class="btn btn-primary">تحديث الوصفة</button>
-            </div>
-            </form>
-        </div>
-    </main>
-
-
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    </div>
+    <script src="{{ asset('assets/js/jquery.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="{{ asset('assets/vendor/nouislider/nouislider.min.js') }}"></script>
+    <script src="{{ asset('assets/vendor/wnumb/wNumb.js') }}"></script>
+    <script src="{{ asset('assets/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+    <script src="{{ asset('assets/vendor/swiper/swiper-bundle.min.js') }}"></script>
+    <script src="{{ asset('assets/js/noui-slider.init.js') }}"></script>
+    <script src="{{ asset('assets/js/dz.carousel.js') }}"></script>
+    <script src="{{ asset('assets/js/settings.js') }}"></script>
+    <script src="{{ asset('assets/js/custom.js') }}"></script>
+    {{-- <script src="{{ asset('assets/js/index.js') }}"></script> --}}
+
     <script>
         $(document).ready(function() {
-            $('#id_sub_categories').select2({
-                placeholder: 'اختر التصنيفات الفرعية'
-                , allowClear: true
-                , dir: 'rtl'
-            });
+            console.log('Document ready - initializing...');
+            console.log('Main category element:', $('#main_category_id').length);
+            console.log('Sub categories element:', $('#id_sub_categories').length);
+            console.log('Container element:', $('#id_sub_categories_container').length);
+
+            // Initialize Select2
+            if ($('#id_sub_categories').length > 0) {
+                $('#id_sub_categories').select2({
+                    placeholder: 'اختر التصنيفات الفرعية'
+                    , allowClear: true
+                    , dir: 'rtl'
+                });
+                console.log('Select2 initialized');
+            } else {
+                console.error('Sub categories select element not found!');
+            }
+
+            // Handle subcategory loading
             $('#main_category_id').on('change', function() {
+                console.log('Main category changed event fired');
+
                 const mainCategoryId = $(this).val();
                 const subCategoriesContainer = $('#id_sub_categories_container');
                 const subCategoriesSelect = $('#id_sub_categories');
+
                 console.log('Main Category ID selected:', mainCategoryId);
+                console.log('Container element found:', subCategoriesContainer.length);
+                console.log('Select element found:', subCategoriesSelect.length);
+
                 if (mainCategoryId) {
+                    console.log('Main category ID is valid, proceeding...');
                     subCategoriesContainer.show();
-                    subCategoriesSelect.empty().append('<option value="">جاري التحميل...</option>').trigger('change');
+                    subCategoriesSelect.empty()
+                        .append('<option value="">جاري التحميل...</option>')
+                        .trigger('change');
+                    console.log('Loading message added');
+                    const ajaxUrl = '{{ route("c1he3f.recpies.subcategories") }}';
+                    console.log('AJAX URL:', ajaxUrl);
                     $.ajax({
-                        url: '{{ route("c1he3f.recpies.subcategories") }}'
+                        url: ajaxUrl
                         , type: 'GET'
                         , data: {
                             category_id: mainCategoryId
@@ -529,54 +552,122 @@
                         , headers: {
                             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                         }
+                        , beforeSend: function() {
+                            console.log('Sending AJAX request...');
+                            console.log('Request data:', {
+                                category_id: mainCategoryId
+                            });
+                        }
                         , success: function(response) {
-                            console.log('AJAX Response:', response);
+                            console.log('AJAX Success!');
+                            console.log('Response type:', typeof response);
+                            console.log('Response data:', response);
+                            console.log('Response length:', response ? response.length : 'N/A');
                             subCategoriesSelect.empty();
-                            if (response.length > 0) {
+                            if (response && response.length > 0) {
+                                console.log('Adding subcategories...');
                                 $.each(response, function(index, subCategory) {
+                                    console.log('Adding subcategory:', subCategory);
                                     subCategoriesSelect.append(
-                                        $('<option>', {
-                                            value: subCategory.id
-                                            , text: subCategory.name_ar
-                                        })
+                                        `<option value="${subCategory.id}">${subCategory.name_ar}</option>`
                                     );
                                 });
-                                @if(old('sub_categories', $selectedSubCategories))
-                                const oldValues = @json(old('sub_categories', $selectedSubCategories));
-                                subCategoriesSelect.val(oldValues).trigger('change');
+                                @if(old('sub_categories'))
+                                const oldValues = @json(old('sub_categories'));
+                                console.log('Old values:', oldValues);
+                                subCategoriesSelect.val(oldValues);
                                 @endif
                             } else {
-                                subCategoriesSelect.append('<option value="">لا توجد تصنيفات فرعية</option>');
+                                console.log('No subcategories found');
+                                subCategoriesSelect.append(
+                                    '<option value="">لا توجد تصنيفات فرعية</option>'
+                                );
                             }
+
+                            // تحديث Select2
                             subCategoriesSelect.trigger('change');
+                            console.log('Select2 updated');
                         }
                         , error: function(xhr, status, error) {
-                            console.error('AJAX Error:', xhr.responseText);
-                            subCategoriesSelect.empty().append('<option value="">حدث خطأ في التحميل</option>').trigger('change');
-                            alert('فشل تحميل التصنيفات الفرعية. حاول مرة أخرى.');
+                            console.error('AJAX Error!');
+                            console.error('Status:', status);
+                            console.error('Error:', error);
+                            console.error('Status Code:', xhr.status);
+                            console.error('Response Text:', xhr.responseText);
+                            console.error('Ready State:', xhr.readyState);
+
+                            subCategoriesSelect.empty()
+                                .append('<option value="">حدث خطأ في التحميل</option>')
+                                .trigger('change');
+
+                            // إظهار رسالة خطأ مفصلة
+                            let errorMessage = 'فشل تحميل التصنيفات الفرعية: ';
+                            if (xhr.status === 404) {
+                                errorMessage += 'الرابط المطلوب غير موجود (404)';
+                            } else if (xhr.status === 500) {
+                                errorMessage += 'خطأ في الخادم (500)';
+                            } else if (xhr.status === 0) {
+                                errorMessage += 'لا يوجد اتصال بالخادم';
+                            } else {
+                                errorMessage += `خطأ غير معروف (${xhr.status})`;
+                            }
+
+                            alert(errorMessage); // استخدم alert بدلاً من Swal للتبسيط
                         }
                     });
                 } else {
-                    subCategoriesContainer.hide();
+                    console.log('No main category selected, hiding container');
+                    // إخفاء حاوية التصنيفات الفرعية
+                    subCategoriesContainer.hide(); // استخدم hide() بدلاً من removeClass('show')
                     subCategoriesSelect.empty().trigger('change');
                 }
             });
-            @if(old('main_category_id', $recipe->main_category_id))
+
+            // تحميل التصنيفات الفرعية إذا كان هناك تصنيف رئيسي محدد مسبقاً
+            @if(old('main_category_id'))
+            console.log('Triggering change for old main category');
             $('#main_category_id').trigger('change');
             @endif
-        });
-    </script>
-    </div>
-    <script src="{{ asset('assets/js/noui-slider.init.js') }}"></script>
-    <script src="{{ asset('assets/vendor/nouislider/nouislider.min.js') }}"></script>
-    <script src="{{ asset('assets/vendor/wnumb/wNumb.js') }}"></script>
-    <script src="{{ asset('assets/js/jquery.js') }}"></script>
-    <script src="{{ asset('assets/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
-    <script src="{{ asset('assets/vendor/swiper/swiper-bundle.min.js') }}"></script>
-    <script src="{{ asset('assets/js/dz.carousel.js') }}"></script>
-    <script src="{{ asset('assets/js/settings.js') }}"></script>
-    <script src="{{ asset('assets/js/custom.js') }}"></script>
-    <script src="{{ asset('index.js') }}"></script>
-</body>
 
+            // Image preview functionality
+            $('#fil-ttd').on('change', function() {
+                console.log('File input changed');
+                const file = this.files[0];
+                const imagePreview = $('#image_preview');
+                const defaultImage = $('#dish_image');
+                const removeButton = $('#remove-image');
+
+                if (file) {
+                    console.log('File selected:', file.name);
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        imagePreview.attr('src', e.target.result).show();
+                        defaultImage.hide();
+                        removeButton.show();
+                    };
+                    reader.readAsDataURL(file);
+                } else {
+                    console.log('No file selected');
+                    imagePreview.hide().attr('src', '#');
+                    defaultImage.show();
+                    removeButton.hide();
+                }
+            });
+
+            // Remove image functionality
+            $('#remove-image').on('click', function() {
+                console.log('Remove image clicked');
+                $('#fil-ttd').val('');
+                $('#image_preview').hide().attr('src', '#');
+                $('#dish_image').show();
+                $(this).hide();
+            }).hide(); // إخفاء الزر عند تحميل الصفحة
+        });
+
+    </script>
+
+
+
+    </div>
+</body>
 </html>

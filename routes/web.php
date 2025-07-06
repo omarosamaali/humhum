@@ -16,14 +16,40 @@ use App\Models\Snap;
 use App\Models\Banner;
 use App\Http\Controllers\C1he3f\Auth\ChefAuthenticatedSessionController;
 
-Route::middleware(['auth'])->group(function () {
-    Route::get('/admin/get-subcategories', [App\Http\Controllers\Admin\RecipesController::class, 'getSubCategories']);
+Route::prefix('c1he3f')->middleware(['auth'])->group(function () {
+    Route::get('/profile/market-choice', [ProfileController::class, 'showMarketChoice'])->name('c1he3f.profile.market-choice');
+    Route::post('/profile/save-market-choice', [ProfileController::class, 'saveMarketChoice'])->name('c1he3f.profile.save-market-choice');
+    Route::get('/profile/delivery-locations', [ProfileController::class, 'showDeliveryLocations'])->name('c1he3f.profile.delivery-location');
+    Route::get('/profile/add-delivery-address', [ProfileController::class, 'showAddDeliveryAddress'])->name('c1he3f.profile.add-delivery-address');
+    Route::post('/profile/store-delivery-address', [ProfileController::class, 'storeDeliveryAddress'])->name('c1he3f.profile.store-delivery-address');
+    Route::get('/profile/delivery-location/{id}/edit', [ProfileController::class, 'editDeliveryLocation'])->name('c1he3f.profile.delivery-location.edit');
+    Route::put('/profile/delivery-location/{id}', [ProfileController::class, 'updateDeliveryLocation'])->name('c1he3f.profile.delivery-location.update');
+    Route::delete('/profile/delivery-location/{id}', [ProfileController::class, 'destroyDeliveryLocation'])->name('c1he3f.profile.delivery-location.destroy');
+    Route::get('/coming-soon', [ProfileController::class, 'comingSoon'])->name('c1he3f.coming-soon');
+    Route::get('/', function () {
+        return view('chef.index');
+    })->name('c1he3f.index');
+});
+Route::get('/', function () {
+    if (!Auth::check()) {
+        return redirect()->route('login');
+    }
+    $user = Auth::user();
+    switch ($user->role) {
+        case 'مدير':
+            return redirect()->route('admin.dashboard');
+        case 'طاه':
+            return redirect()->route('c1he3f.index');
+        default:
+            Auth::logout();
+            return redirect()->route('login')->with('error', 'حدث خطأ في تحديد نوع الحساب');
+    }
 });
 
-// Route for handling the video upload (using the SnapController)
+Route::middleware(['auth'])->group(function () {
+    Route::get('/admin/get-subcategories', [App\Http\Controllers\Admin\RecipesController::class, 'getSubCategories']);});
 Route::post('/c1he3f/snaps/store-snap', [SnapController::class, 'store'])->name('c1he3f.snaps.store-snap');
 Route::get('/c1he3f/snaps/get-subcategory-details/{subCategoryId}', [SnapController::class, 'getSubcategoryDetails'])->name('get.subcategory-details');
-// Route for getting subcategories (using the SnapController)
 Route::get(
     '/c1he3f/snaps/get-subcategories/{mainCategoryId}',
     [SnapController::class, 'getSubcategories']
@@ -32,8 +58,6 @@ Route::get('/c1he3f/snaps/edit-snap/{snap}', [SnapController::class, 'edit'])->n
 Route::get('/c1he3f/snaps/lens-show/{snap}', function(Snap $snap){
     return view('c1he3f.snaps.lens-show', compact('snap'));
 })->name('c1he3f.snaps.lens-show');
-// راوت لمعالجة طلب التعديل (عادةً يكون من نوع POST أو PUT/PATCH)
-// نستخدم PUT/PATCH للتعديل كأفضل ممارسة RESTful
 Route::put('/c1he3f/snaps/update-snap/{snap}', [SnapController::class, 'update'])->name('c1he3f.snaps.update-snap');
 Route::delete('/c1he3f/snaps/delete/{snap}', [SnapController::class, 'destroy'])->name('c1he3f.snaps.delete');
 Route::get('/c1he3f/snaps/all-snap', function () {
@@ -44,18 +68,10 @@ Route::get('/c1he3f/snaps/all-snap', function () {
 
 Route::get('/c1he3f/snaps/add-snap', [SnapController::class, 'create'])->name('c1he3f.snaps.add-snap');
 
-// Route::get('/c1he3f/get-subcategories/{mainCategoryId}', function ($mainCategoryId) {
-//     $subCategories = SubCategory::where('category_id', $mainCategoryId)->get();
-//     return response()->json($subCategories);
-// })->name('get.subcategories');
-
 Route::get('/c1he3f/coming-soon', function () {
     return view('c1he3f.coming-soon');
 })->name('c1he3f.coming-soon');
 
-Route::get('/', function () {
-    return view('welcome');
-})->name('welcome');
 
 Route::get('/c1he3f/transactions', function () {
     return view('c1he3f.transactions');
@@ -74,6 +90,7 @@ Route::get('/c1he3f/faq', function () {
     $faqs = Faq::whereIn('place', ['chef', 'both'])->get();
     return view('/c1he3f/faq', compact('faqs'));
 })->name('c1he3f.faq');
+
 
 require __DIR__ . '/auth.php';
 
@@ -138,20 +155,11 @@ Route::get('c1he3f/index', function () {
     return view('c1he3f.index', compact('recipes', 'mainCategories', 'banner'));
 })->name('c1he3f.index');
 
-// Route for handling the video upload (using the SnapController)
 Route::post('/chefThree/snaps/store-snap', [SnapController::class, 'store'])->name('chefThree.snaps.store-snap');
-// Route::get('/chefThree/snaps/get-subcategory-details/{subCategoryId}', [SnapController::class, 'getSubcategoryDetails'])->name('get.subcategory-details');
-// Route for getting subcategories (using the SnapController)
-// Route::get(
-//     '/chefThree/snaps/get-subcategories/{mainCategoryId}',
-//     [SnapController::class, 'getSubcategories']
-// )->name('get.subcategories');
 Route::get('/chefThree/snaps/edit-snap/{snap}', [SnapController::class, 'edit'])->name('chefThree.snaps.edit-snap');
 Route::get('/chefThree/snaps/lens-show/{snap}', function (Snap $snap) {
     return view('chefThree.snaps.lens-show', compact('snap'));
 })->name('chefThree.snaps.lens-show');
-// راوت لمعالجة طلب التعديل (عادةً يكون من نوع POST أو PUT/PATCH)
-// نستخدم PUT/PATCH للتعديل كأفضل ممارسة RESTful
 Route::put('/chefThree/snaps/update-snap/{snap}', [SnapController::class, 'update'])->name('chefThree.snaps.update-snap');
 Route::delete('/chefThree/snaps/delete/{snap}', [SnapController::class, 'destroy'])->name('chefThree.snaps.delete');
 Route::get('/chefThree/snaps/all-snap', function () {
@@ -161,19 +169,9 @@ Route::get('/chefThree/snaps/all-snap', function () {
 })->name('chefThree.snaps.all-snap');
 
 Route::get('/chefThree/snaps/add-snap', [SnapController::class, 'create'])->name('chefThree.snaps.add-snap');
-
-// Route::get('/chefThree/get-subcategories/{mainCategoryId}', function ($mainCategoryId) {
-//     $subCategories = SubCategory::where('category_id', $mainCategoryId)->get();
-//     return response()->json($subCategories);
-// })->name('get.subcategories');
-
 Route::get('/chefThree/coming-soon', function () {
     return view('chefThree.coming-soon');
 })->name('chefThree.coming-soon');
-
-Route::get('/', function () {
-    return view('welcome');
-})->name('welcome');
 
 Route::get('/chefThree/transactions', function () {
     return view('chefThree.transactions');

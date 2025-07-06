@@ -83,56 +83,51 @@
         <main class="page-content space-top" style="margin-top: 50px;">
             <div class="container">
                 <div class="dz-list m-b20">
-                    <ul class="dz-list-group radio style-2" style="direction: rtl;">
-                        @forelse($deliveryLocations as $location)
-                            @if ($location->country !== 'غير محدد')
-                                <li class="list-group-items">
-                                    <label class="radio-label">
-                                        <div class="checkmark">
-                                            <div class="dz-icon style-2 icon-fill">
-                                                <form
-                                                    action="{{ route('c1he3f.profile.delivery-location.destroy', $location->id) }}"
-                                                    method="POST" class="d-inline delete-form">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" class="btn btn-link p-0 text-danger"
-                                                        style="border:none; background:none;">
-                                                        <i class="fi fi-rr-trash font-20"></i>
-                                                    </button>
-                                                </form>
-                                            </div>
-                                            <div class="list-content">
-                                                <a href="#">
-                                                    <h6 class="title">{{ $location->country }}</h6>
-                                                </a>
-                                                <p class="active-status">
-                                                    {{ $location->city }} , {{ $location->area }}
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24"
-                                                        height="24" viewBox="0 0 24 24" fill="none">
-                                                        <path d="M8 7V17H12C14.8 17 17 14.8 17 12C17 9.2 14.8 7 12 7H8Z"
-                                                            stroke="#17191C" stroke-width="1.5" stroke-miterlimit="10"
-                                                            stroke-linecap="round" stroke-linejoin="round" />
-                                                        <path d="M6.5 11H18.5" stroke="#17191C" stroke-width="1.5"
-                                                            stroke-miterlimit="10" stroke-linecap="round"
-                                                            stroke-linejoin="round" />
-                                                        <path d="M6.5 13H12.5H18.5" stroke="#17191C" stroke-width="1.5"
-                                                            stroke-miterlimit="10" stroke-linecap="round"
-                                                            stroke-linejoin="round" />
-                                                    </svg>
-                                                    {{ number_format($location->delivery_fee, 2) }}
-                                                </p>
-                                            </div>
-                                            <span class="check"></span>
-                                        </div>
-                                    </label>
-                                </li>
-                            @endif
-                        @empty
-                            {{-- This block runs if $deliveryLocations is empty --}}
-                            <p class="text-center">لا توجد أماكن توصيل مضافة بعد.</p>
-                        @endforelse
+                <ul class="dz-list-group radio style-2" style="direction: rtl;">
+                    @forelse($deliveryLocations as $location)
+                    @if ($location->country !== 'غير محدد')
+                    <li class="list-group-items">
+                        <label class="radio-label">
+                            <div class="checkmark">
+                                <div class="dz-icon style-2 icon-fill">
+                                    <form action="{{ route('c1he3f.profile.delivery-location.destroy', $location->id) }}" method="POST" class="d-inline delete-form">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-link p-0 text-danger" style="border:none; background:none;">
+                                            <i class="fi fi-rr-trash font-20"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                                <div class="dz-icon style-2 icon-fill">
 
-                    </ul>
+                                            <a href="{{ route('c1he3f.profile.delivery-location.edit', $location->id) }}" class="btn btn-link p-0 text-primary edit-btn" style="border:none; background:none;">
+                                                <i class="feather icon-edit font-20"></i>
+                                            </a>
+
+                                </div>
+                                <div class="list-content">
+                                    <a href="#">
+                                        <h6 class="title">{{ $location->country }}</h6>
+                                    </a>
+                                    <p class="active-status">
+                                        {{ $location->city }} , {{ $location->area }}
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+                                            <path d="M8 7V17H12C14.8 17 17 14.8 17 12C17 9.2 14.8 7 12 7H8Z" stroke="#17191C" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round" />
+                                            <path d="M6.5 11H18.5" stroke="#17191C" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round" />
+                                            <path d="M6.5 13H12.5H18.5" stroke="#17191C" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round" />
+                                        </svg>
+                                        {{ number_format($location->delivery_fee, 2) }}
+                                    </p>
+                                </div>
+                                <span class="check"></span>
+                            </div>
+                        </label>
+                    </li>
+                    @endif
+                    @empty
+                    <p class="text-center">لا توجد أماكن توصيل مضافة بعد.</p>
+                    @endforelse
+                </ul>
                 </div>
 
                 <a href="{{ route('c1he3f.profile.add-delivery-address') }}" class="dz-add-box">
@@ -140,10 +135,21 @@
                     <span>إضافة جديد</span>
                     <i class="feather icon-chevron-right"></i>
                 </a>
-            </div>
-        </main>
-    </div>
-    </div>
+                </div>
+                </main>
+
+                <script src="{{ asset('assets/js/jquery.js') }}"></script>
+                <script src="{{ asset('assets/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+                <script src="{{ asset('assets/js/custom.js') }}"></script>
+                <script>
+                    $(document).ready(function() {
+                        $('.delete-form').on('submit', function(e) {
+                            e.preventDefault();
+                        });
+                    });
+
+                </script>
+
     <script src="{{ asset('assets/js/jquery.js') }}"></script>
     <script src="{{ asset('assets/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
     <script src="{{ asset('assets/vendor/swiper/swiper-bundle.min.js') }}"></script>

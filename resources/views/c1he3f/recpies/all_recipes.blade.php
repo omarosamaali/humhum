@@ -177,7 +177,8 @@
                                                         href="{{ route('c1he3f.recpies.showChefRecipes', $recipe->id) }}">
                                                         {{-- تأكد من الـ route لصفحة عرض الوصفة --}}
                                                         <img style="max-height: 132px;"
-                                                            src="{{ asset('storage/' . $recipe->dish_image) }}"
+                                                            src="{{ $recipe->dish_image ? asset('storage/' . $recipe->dish_image) : 'https://via.placeholder.com/740' }}"
+
                                                             alt="{{ $recipe->title }}">
                                                     </a>
                                                 </div>

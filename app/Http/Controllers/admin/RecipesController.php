@@ -17,32 +17,18 @@ use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Log;
 
-
-
 class RecipesController extends Controller
 {
     public function allRecipes()
     {
-        // افترض أن الوصفات كلها بتاعت الشيف الحالي
-        // لو الوصفات مش مرتبطة بشيف معين، ممكن تجيبها كلها
-        // $recipes = Recipe::all();
-
-        // لو الوصفات مرتبطة بشيف معين (مثلاً، عن طريق user_id أو chef_id)
         $user = Auth::user();
         if ($user && $user->role === 'طاه') {
-            // افترض أن فيه علاقة بين المستخدم والوصفات (مثلاً user_id في جدول recipes)
-            // أو علاقة بين ChefProfile والوصفات
             $allRecipes = Recipe::where('user_id', $user->id)->get();
         } else {
-            // لو المستخدم مش شيف أو مش مسجل دخول، ممكن ترجع صفحة خطأ أو وصفات فارغة
-            $allRecipes = collect(); // يرجع مجموعة فارغة
+            $allRecipes = collect();
         }
-
-
-        // تقسيم الوصفات لـ "فعالة" و "غير فعالة"
-        $activeRecipes = $allRecipes->where('status', 1); // افترض أن فيه عمود اسمه is_active (boolean)
+        $activeRecipes = $allRecipes->where('status', 1);
         $inactiveRecipes = $allRecipes->where('status', 0);
-
         return view('c1he3f.recpies.all_recipes', [
             'activeRecipes' => $activeRecipes,
             'inactiveRecipes' => $inactiveRecipes,
@@ -51,11 +37,7 @@ class RecipesController extends Controller
 
     public function showStepsForm(Recipe $recipe)
     {
-        // Decode existing steps data for pre-filling the form
-        // Ensure 'steps' column is cast to 'array' in your Recipe model.
-        $stepsData = $recipe->steps ? $recipe->steps : []; // If cast to array, it's already an array
-
-        // If you stored media paths, they will be part of $step['media']
+        $stepsData = $recipe->steps ? $recipe->steps : [];
         return view('c1he3f.recpies.steps', compact('recipe', 'stepsData'));
     }
 
@@ -113,6 +95,7 @@ class RecipesController extends Controller
             return redirect()->back()->with('error', 'حدث خطأ أثناء تحديث الخطوات: ' . $e->getMessage());
         }
     }
+
     public function showNutritionalFactsForm(Recipe $recipe)
     {
         return view('c1he3f.recpies.facts', compact('recipe'));
@@ -146,7 +129,6 @@ class RecipesController extends Controller
         $ingredientsData = $recipe->ingredients ?? [];
         return view('c1he3f.recpies.ingredients', compact('recipe', 'ingredientsData'));
     }
-    // App/Http/Controllers/Admin/RecipesController.php
 
     public function updateIngredients(Request $request, Recipe $recipe)
     {
@@ -219,49 +201,9 @@ class RecipesController extends Controller
         $kitchens = Kitchens::select('id', 'name_ar')->get();
         return view('admin.recipes.index', compact('recipes', 'kitchens'));
     }
-    public function edit(Recipe $recipe)
-    {
-        if (!$recipe->exists) {
-            return redirect()->route('chef.recipes.all')->with('error', 'الوصفة غير موجودة!');
-        }
 
-        $kitchens = Kitchens::select('id', 'name_ar')->get();
-        $mainCategories = MainCategories::select('id', 'name_ar')->get();
-
-        // تحميل التصنيفات الفرعية بناءً على التصنيف الرئيسي للوصفة
-        $subCategories = collect();
-        if ($recipe->main_category_id) {
-            $subCategories = SubCategory::where('category_id', $recipe->main_category_id)
-                ->select('id', 'name_ar', 'category_id')
-                ->get();
-        }
-
-        $chefs = collect();
-        if (Auth::user()->role === 'مدير') {
-            $chefs = User::where('role', 'طاه')->select('id', 'name')->get();
-        }
-
-        // الحصول على التصنيفات الفرعية المحددة للوصفة
-        $selectedSubCategories = $recipe->subCategories()->pluck('id')->toArray();
-
-        return view('c1he3f.recpies.edit', compact(
-            'recipe',
-            'kitchens',
-            'mainCategories',
-            'subCategories',
-            'chefs',
-            'selectedSubCategories'
-        ));
-    }
     public function update(Request $request, Recipe $recipe)
     {
-        // $recipe = Recipe::findOrFail($id);
-
-        \Log::info('Recipe ID in update method: ' . $recipe->id);
-        if (!$recipe->exists) {
-            \Log::error('Recipe not found for ID: ' . $request->id);
-            return back()->withErrors(['general' => 'الوصفة غير موجودة!']);
-        }
         $rules = $this->getValidationRules($request, true);
         try {
             $validatedData = $request->validate($rules);
@@ -335,26 +277,143 @@ class RecipesController extends Controller
         }
     }
 
-    public function getSubCategories(Request $request)
+    public function editChef(Recipe $recipe)
     {
-        $mainCategoryId = $request->get('category_id');
+        $kitchens = Kitchens::select('id', 'name_ar')->get();
+        $mainCategories = MainCategories::select('id', 'name_ar')->get();
+        $chefs = collect();
 
-        if (!$mainCategoryId) {
-            return response()->json([]);
+        if (Auth::user()->role === 'مدير') {
+            $chefs = User::where('role', 'طاه')->select('id', 'name')->get();
         }
 
-        $subCategories = SubCategory::where('category_id', $mainCategoryId)
-            ->select('id', 'name_ar')
-            ->get();
+        // تحديد التصنيفات الفرعية المختارة
+        $selectedSubCategories = $recipe->subCategories->pluck('id')->toArray();
 
-        return response()->json($subCategories);
+        // جلب التصنيفات الفرعية الخاصة بالتصنيف الرئيسي الحالي
+        $subCategories = [];
+        if ($recipe->main_category_id) {
+            $subCategories = SubCategory::where('category_id', $recipe->main_category_id)
+                ->select('id', 'name_ar')
+                ->get();
+        }
+
+        return view('c1he3f.recpies.editChef', compact(
+            'recipe',
+            'kitchens',
+            'mainCategories',
+            'subCategories',
+            'chefs',
+            'selectedSubCategories'
+        ));
     }
 
+    public function updateChef(Request $request, Recipe $recipe)
+    {
+        $rules = $this->getValidationRules($request, true);
+        try {
+            $validatedData = $request->validate($rules);
+            $validatedData['dish_image'] = $this->handleDishImage($request, $recipe);
+            $user = Auth::user();
+            if ($user->role === 'طاه') {
+                $validatedData['chef_id'] = $user->id;
+            }
+            if ($request->has('steps_data') && !empty($request->input('steps_data'))) {
+                $processedSteps = $this->processRecipeSteps($request, $recipe);
+                if (isset($processedSteps['errors'])) {
+                    if ($recipe->dish_image) {
+                        Storage::disk('public')->delete($recipe->dish_image);
+                    }
+                    $recipe->delete();
+                    if ($request->ajax()) {
+                        return response()->json([
+                            'success' => false,
+                            'message' => 'خطأ في بيانات الخطوات',
+                            'errors' => $processedSteps['errors']
+                        ], 422);
+                    }
+                    return back()->withErrors($processedSteps['errors'])->withInput();
+                }
+                $validatedData['steps'] = $processedSteps;
+            }
+            $kitchenTypeId = $request->input('kitchen_type_id');
+            if ($kitchenTypeId && is_numeric($kitchenTypeId)) {
+                $validatedData['kitchen_type_id'] = $kitchenTypeId;
+            } else {
+                $validatedData['kitchen_type_id'] = null;
+            }
+            unset($validatedData['steps_data']);
+            $recipe->update($validatedData);
+            $recipe->subCategories()->sync($request->input('sub_categories', []));
+            if ($request->ajax()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'تم تحديث الوصفة بنجاح!',
+                    'redirect_url' => route('c1he3f.recipes.all_recipes')
+                ]);
+            }
+            return redirect()->route('c1he3f.recipes.all_recipes')->with('success', 'تم تحديث الوصفة بنجاح!');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            Log::error('Validation Error in updateChef: ', $e->errors());
+            if ($request->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'خطأ في التحقق من البيانات.',
+                    'errors' => $e->errors()
+                ], 422);
+            }
+            return back()->withErrors($e->errors())->withInput();
+        } catch (\Exception $e) {
+            Log::error('Update Error in updateChef: ' . $e->getMessage(), ['exception' => $e]);
+            if ($request->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'حدث خطأ غير متوقع.',
+                    'errors' => ['general' => [$e->getMessage()]]
+                ], 500);
+            }
+            return back()->withErrors(['general' => [$e->getMessage()]])->withInput();
+        }
+    }
+
+    public function getSubCategories(Request $request)
+    {
+        try {
+            $mainCategoryId = $request->get('category_id');
+
+            if (!$mainCategoryId) {
+                return response()->json([]);
+            }
+
+            $subCategories = SubCategory::where('category_id', $mainCategoryId)
+                ->select('id', 'name_ar')
+                ->orderBy('name_ar', 'asc')
+                ->get();
+
+            return response()->json($subCategories);
+        } catch (\Exception $e) {
+            \Log::error('Error fetching subcategories: ' . $e->getMessage());
+            return response()->json(['error' => 'Server error'], 500);
+        }
+    } 
+
+    public function edit(Recipe $recipe)
+    {
+        $kitchens = Kitchens::select('id', 'name_ar')->get();
+        $mainCategories = MainCategories::select('id', 'name_ar')->get();
+        $subCategories = SubCategory::select('id', 'name_ar')->get();
+        $chefs = collect();
+        if (Auth::user()->role === 'مدير') {
+            $chefs = User::where('role', 'طاه')->select('id', 'name')->get();
+        }
+        $selectedSubCategories = $recipe->subCategories->pluck('id')->toArray();
+        return view('admin.recipes.edit', compact('recipe', 'kitchens', 'mainCategories', 'subCategories', 'chefs', 'selectedSubCategories'));
+    }
 
     public function create(Request $request)
     {
         $kitchens = Kitchens::select('id', 'name_ar')->get();
-        $mainCategories = MainCategories::where('status', true) // إضافة التحقق من الحالة
+        $mainCategories = MainCategories::where('status', true)
             ->select('id', 'name_ar')->get();
 
         $chefs = collect();
@@ -367,10 +426,9 @@ class RecipesController extends Controller
 
     protected function getValidationRules(Request $request, $isUpdate = false, $isPublic = false)
     {
-        // قواعد التحقق الأساسية للنموذج العام (c1he3f)
         $rules = [
             'title' => 'required|string|max:255',
-            'file' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048', // بدلاً من dish_image
+            'file' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048',
             'kitchen_type_id' => 'required|exists:kitchens,id',
             'main_category_id' => 'required|exists:main_categories,id',
             'sub_categories' => 'required|array',
@@ -381,11 +439,9 @@ class RecipesController extends Controller
             'status' => 'required|boolean',
         ];
 
-        // إذا كان النموذج الإداري (store أو update)
         if (!$isPublic) {
             $rules = array_merge($rules, [
-                // 'ingredients' => 'required|string', // لن نتحقق منها هنا بل في updateIngredients
-                'steps_data' => 'required|string',
+                'steps_data' => 'nullable|string', // جعل steps_data اختياريًا
                 'calories' => 'nullable|numeric|min:0',
                 'fats' => 'nullable|numeric|min:0',
                 'carbs' => 'nullable|numeric|min:0',
@@ -416,8 +472,6 @@ class RecipesController extends Controller
 
         $validatedData = $validator->validated();
         $user = Auth::user();
-
-        // Always set user_id and chef_id to the authenticated user's ID
         $validatedData['user_id'] = $user->id;
         $validatedData['chef_id'] = $user->id; // Direct assignment of chef_id
 
@@ -530,15 +584,12 @@ class RecipesController extends Controller
             'kitchen' => function ($query) {
                 $query->select('id', 'name_ar', 'name_am', 'name_bn', 'name_ml', 'name_fil', 'name_ur', 'name_ta', 'name_en', 'name_ne', 'name_ps', 'name_id', 'name_hi', 'image');
             },
-            // Keep 'mainCategories' as is, since it's the correct relationship name
-            'mainCategories' => function ($query) { // هنا تستخدم اسم العلاقة كما هي في الموديل
+            'mainCategories' => function ($query) {
                 $query->select('id', 'name_ar', 'name_am', 'name_bn', 'name_ml', 'name_fil', 'name_ur', 'name_ta', 'name_en', 'name_ne', 'name_ps', 'name_id', 'name_hi', 'image');
             },
-
             'subCategories' => function ($query) {
                 $query->select('id', 'name_ar', 'name_am', 'name_bn', 'name_ml', 'name_fil', 'name_ur', 'name_ta', 'name_en', 'name_ne', 'name_ps', 'name_id', 'name_hi'); // أضف جميع أعمدة الاسم للترجمة
             },
-            // باقي العلاقات...
         ]);
 
         $currentLanguageCode = app()->getLocale();
@@ -569,11 +620,13 @@ class RecipesController extends Controller
         // No need to pass 'mainCategories' in compact, as it's loaded onto the $recipe object.
         return view('admin.recipes.show', compact('recipe', 'selectedKitchen', 'currentLanguage', 'allLanguages', 'translationStatus', 'currentLanguageCode'));
     }
+
     public function showFrontend(Recipe $recipe)
     {
         $recipe->load(['kitchen', 'chef', 'subCategories', 'mainCategories']);
         return view('c1he3f.recipe.show', compact('recipe'));
     }
+
     public function showChefRecipes(Recipe $recipe)
     {
         $allLanguages = Language::all();
@@ -582,15 +635,12 @@ class RecipesController extends Controller
             'kitchen' => function ($query) {
                 $query->select('id', 'name_ar', 'name_am', 'name_bn', 'name_ml', 'name_fil', 'name_ur', 'name_ta', 'name_en', 'name_ne', 'name_ps', 'name_id', 'name_hi', 'image');
             },
-            // Keep 'mainCategories' as is, since it's the correct relationship name
-            'mainCategories' => function ($query) { // هنا تستخدم اسم العلاقة كما هي في الموديل
+            'mainCategories' => function ($query) {
                 $query->select('id', 'name_ar', 'name_am', 'name_bn', 'name_ml', 'name_fil', 'name_ur', 'name_ta', 'name_en', 'name_ne', 'name_ps', 'name_id', 'name_hi', 'image');
             },
-
             'subCategories' => function ($query) {
                 $query->select('id', 'name_ar', 'name_am', 'name_bn', 'name_ml', 'name_fil', 'name_ur', 'name_ta', 'name_en', 'name_ne', 'name_ps', 'name_id', 'name_hi'); // أضف جميع أعمدة الاسم للترجمة
             },
-            // باقي العلاقات...
         ]);
 
         $currentLanguageCode = app()->getLocale();
@@ -624,7 +674,6 @@ class RecipesController extends Controller
 
     private function checkTranslationStatus(Recipe $recipe, string $languageCode, $selectedKitchen = null): array
     {
-        // إذا كانت اللغة العربية (اللغة الأساسية)
         if ($languageCode === 'ar') {
             return [
                 'is_translated' => true,
@@ -632,29 +681,20 @@ class RecipesController extends Controller
                 'completeness' => 100
             ];
         }
-
-        // البحث عن الترجمة في جدول الترجمات
         $translation = $recipe->translations()->where('language_code', $languageCode)->first();
-
-        // الحقول التي يجب التحقق من ترجمتها
         $translationFields = [
             'title',
             'description',
             'ingredients',
             'instructions'
         ];
-
         $translatedFields = 0;
         $totalFields = count($translationFields);
-
-        // التحقق من ترجمة الحقول الأساسية
         foreach ($translationFields as $field) {
             if (!empty($translation->{$field})) {
                 $translatedFields++;
             }
         }
-
-        // التحقق من ترجمة اسم المطبخ
         if ($selectedKitchen) {
             $kitchenNameField = 'name_' . $languageCode;
             if (!empty($selectedKitchen->{$kitchenNameField})) {
@@ -664,9 +704,7 @@ class RecipesController extends Controller
             }
             $totalFields++;
         }
-
-        // **** أضف هذا الجزء للتحقق من ترجمة التصنيف الرئيسي ****
-        if ($recipe->mainCategories) { // تأكد من أن العلاقة تم تحميلها
+        if ($recipe->mainCategories) {
             $mainCategoryNameField = 'name_' . $languageCode;
             if (!empty($recipe->mainCategories->{$mainCategoryNameField})) {
                 $translatedFields++;
@@ -675,9 +713,6 @@ class RecipesController extends Controller
             }
             $totalFields++;
         }
-        // ******************************************************
-
-        // التحقق من ترجمة خطوات الوصفة
         $stepsTranslated = true;
         if ($recipe->recipeSteps && $recipe->recipeSteps->count() > 0) {
             foreach ($recipe->recipeSteps as $step) {
@@ -761,7 +796,6 @@ class RecipesController extends Controller
             ->route('admin.recipes.show', $recipe->id)
             ->with('success', 'تم حفظ الترجمة بنجاح');
     }
-
     public function preview(Recipe $recipe, string $langCode)
     {
         $language = Language::where('code', $langCode)->firstOrFail();
@@ -805,7 +839,6 @@ class RecipesController extends Controller
 
         return view('admin.recipes.preview', compact('recipe', 'language', 'selectedKitchen', 'currentLanguage', 'allLanguages', 'translationStatus', 'currentLanguageCode', 'selectedMainCategory'));
     }
-
     public function destroy(Recipe $recipe)
     {
         if ($recipe->steps && is_array($recipe->steps)) {
@@ -868,7 +901,6 @@ class RecipesController extends Controller
             ], 500);
         }
     }
-
     protected function processRecipeSteps(Request $request, Recipe $recipe)
     {
         $stepsData = json_decode($request->steps_data, true);

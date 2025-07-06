@@ -19,8 +19,15 @@ Route::get('/c1he3f/messages', [MessageController::class, 'index'])->name('c1he3
 Route::get('/c1he3f/messages/{id}', [MessageController::class, 'show'])->name('c1he3f.messages.show');
 Route::post('/c1he3f/messages/{id}/reply', [MessageController::class, 'reply'])->name('c1he3f.messages.reply');
 Route::get('/c1he3f/recpies/{recipe}/edit', [RecipesController::class, 'edit'])->name('c1he3f.recpies.edit');
+// Route::put('/c1he3f/recpies/{recipe}/updateChef', [RecipesController::class, 'updateChef'])->name('c1he3f.recpies.updateChef');
+Route::put('/c1he3f/recipes/{recipe}', [RecipesController::class, 'updateChef'])->name('c1he3f.recipes.updateChef');
+
+Route::get('/c1he3f/recpies/{recipe}/editChef', [RecipesController::class, 'editChef'])->name('c1he3f.recpies.editChef');
+Route::get('/admin/recipes/subcategories', [RecipesController::class, 'getSubCategories'])
+    ->name('admin.recipes.subcategories');
+
 Route::put('/c1he3f/recpies/{recipe}/update', [RecipesController::class, 'update'])->name('c1he3f.recpies.update');
-Route::get('/c1he3f/recpies/all_recipes', [RecipesController::class, 'allRecipes'])->name('chef.recipes.all');
+// Route::get('/c1he3f/recpies/all_recipes', [RecipesController::class, 'allRecipes'])->name('chef.recipes.all');
 Route::get('/chef/recipes/{id}', [RecipesController::class, 'viewRecipe'])->name('chef.recipes.view');
 Route::get('/c1he3f/recpies/add-recpie', [RecipesController::class, 'addRecipe'])->name('c1he3f.recpies.add-recpie');
 Route::get('/c1he3f/recpies/subcategories', [RecipesController::class, 'getSubCategories'])->name('c1he3f.recpies.subcategories');

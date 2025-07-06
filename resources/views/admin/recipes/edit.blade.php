@@ -460,6 +460,7 @@
                         <div class="text-danger mt-1">{{ $message }}</div>
                     @enderror
                 </div>
+                
                 <div style="background-color: #f00f0f; padding: 5px; border-radius: 5px; width: fit-content; ">
                     @forelse ($recipe->subCategories as $subCategory)
                         <span class="badge badge-info">{{ $subCategory->name_ar }}</span>
@@ -469,16 +470,6 @@
                 </div>
                 <div style="width: 100%; height: 1px; background: #afafaf; margin-top: 10px; margin-bottom: 10px;"></div>
                 <div class="col-md-12 mb-3">
-                    {{-- <label class="form-label">المكونات</label>
-                    <ul class="content-list">
-                        @foreach (explode("\n", $recipe->ingredients) as $ingredient)
-                            @if (trim($ingredient) !== '')
-                                <li class="font-{{ trim($ingredient) == 'المكونات' ? 'normal' : 'bold' }}">
-                                    {{ trim($ingredient) }}
-                                </li>
-                            @endif
-                        @endforeach
-                    </ul> --}}
                     <div class="mb-3">
                         <label class="form-label">المكونات</label>
                         <div id="ingredients-container">

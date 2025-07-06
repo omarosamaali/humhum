@@ -5,11 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class DeliveryLocation extends Model
+class ChefMarket extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['user_id', 'country', 'city', 'area', 'delivery_fee'];
+    protected $fillable = ['user_id', 'has_market'];
 
     public function user()
     {

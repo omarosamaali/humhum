@@ -190,7 +190,7 @@
         <!-- Main Content End -->
         @if (Auth::check() && Auth::user()->id == $recipe->user_id)
         <div class="footer-fixed-btn bottom-0 bg-white">
-            <a href="{{ route('c1he3f.recpies.edit', $recipe->id) }}" class="btn btn-lg btn-thin btn-primary w-100 rounded-xl">تعديل</a>
+            <a href="{{ route('c1he3f.recpies.editChef', $recipe->id) }}" class="btn btn-lg btn-thin btn-primary w-100 rounded-xl">تعديل</a>
         </div>
         @endif
     </div>
