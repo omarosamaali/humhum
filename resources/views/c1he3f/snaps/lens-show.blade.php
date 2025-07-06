@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="ar" dir="rtl">
 <head>
     <!-- Title -->
     <title>
@@ -544,14 +544,12 @@
                 }
                 @endphp
 
-                <div class="toolbar-inner menubar-nav">
+                <div class="toolbar-inner menubar-nav" style="direction: rtl;">
                     {{-- رابط الصفحة الرئيسية (عادةً بيكون متاح دايماً) --}}
                     <a href="{{ route('c1he3f.index') }}" class="nav-link {{ !$isProfileComplete ? 'disabled' : '' }}" {{ !$isProfileComplete ? 'onclick="return false;"' : '' }}>
                         <i class="fi fi-rr-home"></i>
                     </a>
 
-                    {{-- رابط المعاملات - يمكن التحكم فيه --}}
-                    {{-- لو عايز تقفله، ممكن تضيف شرط هنا --}}
                     <a href="{{ route('c1he3f.coming-soon') }}" class="nav-link {{ !$isProfileComplete ? 'disabled' : '' }}" {{ !$isProfileComplete ? 'onclick="return false;"' : '' }}>
                         <i class="fa fa-coins"></i>
                     </a>
