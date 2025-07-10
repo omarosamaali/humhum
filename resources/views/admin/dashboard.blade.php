@@ -176,7 +176,7 @@
                     إدارة المستخدمين
                 </a>
                 
-                <a href="{{ route('admin.users.create') }}" class="action-btn">
+                {{-- <a href="{{ route('admin.users.create') }}" class="action-btn">
                     <i class="fas fa-user-plus"></i>
                     إضافة مستخدم جديد
                 </a>
@@ -189,7 +189,7 @@
                 <a href="#" class="action-btn">
                     <i class="fas fa-cog"></i>
                     إعدادات النظام
-                </a>
+                </a> --}}
             </div>
         </div>
     </div>
