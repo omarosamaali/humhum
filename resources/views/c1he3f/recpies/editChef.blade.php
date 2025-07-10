@@ -52,9 +52,11 @@
                 color: rgb(74 74 74/var(--tw-text-opacity, 1));
             }
         }
+
         #remove-image {
             display: block !important;
         }
+
         body {
             font-size: 17px;
         }
@@ -412,18 +414,27 @@
                         <div class="text-danger">{{ $message }}</div>
                         @enderror
                     </div>
-
                     <div class="my-3">
                         <label class="form-label" style="display: flex; justify-content: center;">نوع الوصفة</label>
-                        <select class="form-select" name="is_free" style="width: 100%; text-align: center;">
+                        <select class="form-select" name="is_free" id="is_free" style="width: 100%; text-align: center;" required>
                             <option value="">اختر نوع الوصفة</option>
-                            <option value="1" {{ old('is_free', $recipe->is_free) == 1 ? 'selected' : '' }}>مجانية</option>
-                            <option value="0" {{ old('is_free', $recipe->is_free) == 0 ? 'selected' : '' }}>مدفوعة</option>
+                            <option value="1" {{ old('is_free', $recipe->is_free ?? '') == 1 ? 'selected' : '' }}>مجانية</option>
+                            <option value="0" {{ old('is_free', $recipe->is_free ?? '') == 0 ? 'selected' : '' }}>مدفوعة</option>
                         </select>
                         @error('is_free')
-                        <div class="text-danger">{{ $message }}</div>
+                        <div class="text-danger mt-1">{{ $message }}</div>
                         @enderror
                     </div>
+
+                    @if(Auth::user()->chefProfile->contract_type == 'per_recipe')
+                    <div class="my-3" id="price_field" style="display: none;">
+                        <label class="form-label" style="display: flex; justify-content: center;">سعر الوصفة (بالدرهم)</label>
+    <input type="number" id="price" name="price" value="{{ old('price', $recipe->price ?? '') }}" min="0" step="0.01" style="text-align: center; color: #000000;" placeholder="سعر الوصفة: 10.00" class="form-control"> @error('price')
+                        <div class="text-danger mt-1">{{ $message }}</div>
+                        @enderror
+                    </div>
+                    @endif
+
 
                     <div class="mb-3">
                         <label for="main_category_id" class="form-label">التصنيف الرئيسي</label>
@@ -501,171 +512,194 @@
     <script src="{{ asset('assets/js/dz.carousel.js') }}"></script>
     <script src="{{ asset('assets/js/settings.js') }}"></script>
     <script src="{{ asset('assets/js/custom.js') }}"></script>
-    {{-- <script src="{{ asset('assets/js/index.js') }}"></script> --}}
+<script>
+    $(document).ready(function() {
+        // تهيئة Select2
+        if ($('#id_sub_categories').length > 0) {
+            $('#id_sub_categories').select2({
+                placeholder: 'اختر التصنيفات الفرعية'
+                , allowClear: true
+                , dir: 'rtl'
+            });
+        }
 
-    <script>
-        $(document).ready(function() {
-            console.log('Document ready - initializing...');
-            console.log('Main category element:', $('#main_category_id').length);
-            console.log('Sub categories element:', $('#id_sub_categories').length);
-            console.log('Container element:', $('#id_sub_categories_container').length);
+function togglePriceField() {
+const contractType = '{{ Auth::user()->chefProfile->contract_type ?? "none" }}';
+const isFree = $('#is_free').val();
+const priceField = $('#price_field');
+const priceInput = $('#price');
 
-            // Initialize Select2
-            if ($('#id_sub_categories').length > 0) {
-                $('#id_sub_categories').select2({
-                    placeholder: 'اختر التصنيفات الفرعية'
-                    , allowClear: true
-                    , dir: 'rtl'
-                });
-                console.log('Select2 initialized');
+if (contractType === 'per_recipe' && isFree === '0') {
+priceField.show();
+priceInput.prop('required', true).prop('disabled', false);
+} else {
+priceField.hide();
+priceInput.prop('required', false).prop('disabled', true).val('');
+}
+}
+
+togglePriceField();
+
+$('#is_free').on('change', function() {
+console.log('is_free changed to:', $(this).val());
+togglePriceField();
+});
+
+
+        // منع السلوك الافتراضي وإرسال الفورم عبر AJAX
+        $('#recipe-update-form').on('submit', function(event) {
+            event.preventDefault(); // منع السلوك الافتراضي
+
+            // التأكد من معالجة حقل السعر قبل الإرسال
+            const contractType = '{{ Auth::user()->chefProfile->contract_type ?? "none" }}';
+            const isFree = $('#is_free').val();
+            const priceInput = $('#price');
+
+            // إذا كانت الوصفة مجانية أو نوع العقد ليس per_recipe، امسح قيمة السعر
+            if (contractType !== 'per_recipe' || isFree === '1') {
+                priceInput.val('');
+                priceInput.prop('required', false);
+                priceInput.prop('disabled', true);
             } else {
-                console.error('Sub categories select element not found!');
+                priceInput.prop('disabled', false);
             }
 
-            // Handle subcategory loading
-            $('#main_category_id').on('change', function() {
-                console.log('Main category changed event fired');
-
-                const mainCategoryId = $(this).val();
-                const subCategoriesContainer = $('#id_sub_categories_container');
-                const subCategoriesSelect = $('#id_sub_categories');
-
-                console.log('Main Category ID selected:', mainCategoryId);
-                console.log('Container element found:', subCategoriesContainer.length);
-                console.log('Select element found:', subCategoriesSelect.length);
-
-                if (mainCategoryId) {
-                    console.log('Main category ID is valid, proceeding...');
-                    subCategoriesContainer.show();
-                    subCategoriesSelect.empty()
-                        .append('<option value="">جاري التحميل...</option>')
-                        .trigger('change');
-                    console.log('Loading message added');
-                    const ajaxUrl = '{{ route("c1he3f.recpies.subcategories") }}';
-                    console.log('AJAX URL:', ajaxUrl);
-                    $.ajax({
-                        url: ajaxUrl
-                        , type: 'GET'
-                        , data: {
-                            category_id: mainCategoryId
+            $.ajax({
+                url: $(this).attr('action')
+                , method: $(this).attr('method')
+                , data: new FormData(this)
+                , processData: false
+                , contentType: false
+                , headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+                , success: function(response) {
+                    if (response.success) {
+                        window.location.href = response.redirect_url;
+                    } else {
+                        alert(response.message);
+                    }
+                }
+                , error: function(xhr) {
+                    let errorMessage = 'خطأ: ';
+                    if (xhr.responseJSON && xhr.responseJSON.message) {
+                        errorMessage += xhr.responseJSON.message;
+                    } else if (xhr.responseJSON && xhr.responseJSON.errors) {
+                        // عرض تفاصيل الأخطاء
+                        let errors = [];
+                        for (let field in xhr.responseJSON.errors) {
+                            errors.push(xhr.responseJSON.errors[field].join(', '));
                         }
-                        , headers: {
-                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                        }
-                        , beforeSend: function() {
-                            console.log('Sending AJAX request...');
-                            console.log('Request data:', {
-                                category_id: mainCategoryId
-                            });
-                        }
-                        , success: function(response) {
-                            console.log('AJAX Success!');
-                            console.log('Response type:', typeof response);
-                            console.log('Response data:', response);
-                            console.log('Response length:', response ? response.length : 'N/A');
-                            subCategoriesSelect.empty();
-                            if (response && response.length > 0) {
-                                console.log('Adding subcategories...');
-                                $.each(response, function(index, subCategory) {
-                                    console.log('Adding subcategory:', subCategory);
-                                    subCategoriesSelect.append(
-                                        `<option value="${subCategory.id}">${subCategory.name_ar}</option>`
-                                    );
-                                });
-                                @if(old('sub_categories'))
-                                const oldValues = @json(old('sub_categories'));
-                                console.log('Old values:', oldValues);
-                                subCategoriesSelect.val(oldValues);
-                                @endif
-                            } else {
-                                console.log('No subcategories found');
-                                subCategoriesSelect.append(
-                                    '<option value="">لا توجد تصنيفات فرعية</option>'
-                                );
-                            }
-
-                            // تحديث Select2
-                            subCategoriesSelect.trigger('change');
-                            console.log('Select2 updated');
-                        }
-                        , error: function(xhr, status, error) {
-                            console.error('AJAX Error!');
-                            console.error('Status:', status);
-                            console.error('Error:', error);
-                            console.error('Status Code:', xhr.status);
-                            console.error('Response Text:', xhr.responseText);
-                            console.error('Ready State:', xhr.readyState);
-
-                            subCategoriesSelect.empty()
-                                .append('<option value="">حدث خطأ في التحميل</option>')
-                                .trigger('change');
-
-                            // إظهار رسالة خطأ مفصلة
-                            let errorMessage = 'فشل تحميل التصنيفات الفرعية: ';
-                            if (xhr.status === 404) {
-                                errorMessage += 'الرابط المطلوب غير موجود (404)';
-                            } else if (xhr.status === 500) {
-                                errorMessage += 'خطأ في الخادم (500)';
-                            } else if (xhr.status === 0) {
-                                errorMessage += 'لا يوجد اتصال بالخادم';
-                            } else {
-                                errorMessage += `خطأ غير معروف (${xhr.status})`;
-                            }
-
-                            alert(errorMessage); // استخدم alert بدلاً من Swal للتبسيط
-                        }
-                    });
-                } else {
-                    console.log('No main category selected, hiding container');
-                    // إخفاء حاوية التصنيفات الفرعية
-                    subCategoriesContainer.hide(); // استخدم hide() بدلاً من removeClass('show')
-                    subCategoriesSelect.empty().trigger('change');
+                        errorMessage += errors.join('\n');
+                    } else {
+                        errorMessage += 'حدث خطأ غير متوقع';
+                    }
+                    alert(errorMessage);
                 }
             });
-
-            // تحميل التصنيفات الفرعية إذا كان هناك تصنيف رئيسي محدد مسبقاً
-            @if(old('main_category_id'))
-            console.log('Triggering change for old main category');
-            $('#main_category_id').trigger('change');
-            @endif
-
-            // Image preview functionality
-            $('#fil-ttd').on('change', function() {
-                console.log('File input changed');
-                const file = this.files[0];
-                const imagePreview = $('#image_preview');
-                const defaultImage = $('#dish_image');
-                const removeButton = $('#remove-image');
-
-                if (file) {
-                    console.log('File selected:', file.name);
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        imagePreview.attr('src', e.target.result).show();
-                        defaultImage.hide();
-                        removeButton.show();
-                    };
-                    reader.readAsDataURL(file);
-                } else {
-                    console.log('No file selected');
-                    imagePreview.hide().attr('src', '#');
-                    defaultImage.show();
-                    removeButton.hide();
-                }
-            });
-
-            // Remove image functionality
-            $('#remove-image').on('click', function() {
-                console.log('Remove image clicked');
-                $('#fil-ttd').val('');
-                $('#image_preview').hide().attr('src', '#');
-                $('#dish_image').show();
-                $(this).hide();
-            }).hide(); // إخفاء الزر عند تحميل الصفحة
         });
 
-    </script>
+        // تحميل التصنيفات الفرعية
+        $('#main_category_id').on('change', function() {
+            const mainCategoryId = $(this).val();
+            const subCategoriesContainer = $('#id_sub_categories_container');
+            const subCategoriesSelect = $('#id_sub_categories');
 
+            if (mainCategoryId) {
+                subCategoriesContainer.show();
+                subCategoriesSelect.empty()
+                    .append('<option value="">جاري التحميل...</option>')
+                    .trigger('change');
+
+                const ajaxUrl = '{{ route("c1he3f.recpies.subcategories") }}';
+                $.ajax({
+                    url: ajaxUrl
+                    , type: 'GET'
+                    , data: {
+                        category_id: mainCategoryId
+                    }
+                    , headers: {
+                        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    }
+                    , success: function(response) {
+                        subCategoriesSelect.empty();
+                        if (response && response.length > 0) {
+                            $.each(response, function(index, subCategory) {
+                                subCategoriesSelect.append(
+                                    `<option value="${subCategory.id}">${subCategory.name_ar}</option>`
+                                );
+                            });
+                            @if(old('sub_categories'))
+                            const oldValues = @json(old('sub_categories'));
+                            subCategoriesSelect.val(oldValues);
+                            @endif
+                        } else {
+                            subCategoriesSelect.append(
+                                '<option value="">لا توجد تصنيفات فرعية</option>'
+                            );
+                        }
+                        subCategoriesSelect.trigger('change');
+                    }
+                    , error: function(xhr) {
+                        subCategoriesSelect.empty()
+                            .append('<option value="">حدث خطأ في التحميل</option>')
+                            .trigger('change');
+                        let errorMessage = 'فشل تحميل التصنيفات الفرعية: ';
+                        if (xhr.status === 404) {
+                            errorMessage += 'الرابط المطلوب غير موجود (404)';
+                        } else if (xhr.status === 500) {
+                            errorMessage += 'خطأ في الخادم (500)';
+                        } else if (xhr.status === 0) {
+                            errorMessage += 'لا يوجد اتصال بالخادم';
+                        } else {
+                            errorMessage += `خطأ غير معروف (${xhr.status})`;
+                        }
+                        alert(errorMessage);
+                    }
+                });
+            } else {
+                subCategoriesContainer.hide();
+                subCategoriesSelect.empty().trigger('change');
+            }
+        });
+
+        // تحميل التصنيفات الفرعية إذا كان هناك تصنيف رئيسي
+        @if(old('main_category_id'))
+        $('#main_category_id').trigger('change');
+        @endif
+
+        // معاينة الصورة
+        $('#fil-ttd').on('change', function() {
+            const file = this.files[0];
+            const imagePreview = $('#image_preview');
+            const defaultImage = $('#dish_image');
+            const removeButton = $('#remove-image');
+
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    imagePreview.attr('src', e.target.result).show();
+                    defaultImage.hide();
+                    removeButton.show();
+                };
+                reader.readAsDataURL(file);
+            } else {
+                imagePreview.hide().attr('src', '#');
+                defaultImage.show();
+                removeButton.hide();
+            }
+        });
+
+        // حذف الصورة
+        $('#remove-image').on('click', function() {
+            $('#fil-ttd').val('');
+            $('#image_preview').hide().attr('src', '#');
+            $('#dish_image').show();
+            $(this).hide();
+        }).hide();
+    });
+
+</script>
 
 
     </div>

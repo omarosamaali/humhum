@@ -163,81 +163,94 @@
                             </svg>
                         </a>
 
-                </div>
-                <div class="mid-content">
-                    <h4 class="title">المراسلات</h4>
-                </div>
-                <div>
+                    </div>
+                    <div class="mid-content">
+                        <h4 class="title">المراسلات</h4>
+                    </div>
+                    <div>
 
+                    </div>
                 </div>
-            </div>
-        </header>
-        <!-- Header -->
+            </header>
+            <!-- Header -->
 
-        <!-- Main Content Start -->
-        <main class="page-content space-top" style="direction: rtl;">
-            <div class="container">
-                <div class="chat-list">
-                    <ul id="myList" class="list-unstyled">
-                        @foreach ($messages as $message)
-                        <li>
-                            <a href="{{ route('c1he3f.messages.show', $message->id) }}" class="list-items d-flex align-items-center p-3 border-bottom">
-                                <div class="dz-media me-3">
-                                    @if ($message->status === 'unread')
-                                    <i class="fa-regular fa-envelope" style="color: red; font-size: 60px;"></i>
-                                    @elseif ($message->status === 'opened')
-                                    <i class="fa-regular fa-envelope-open" style="color: green; font-size: 60px;"></i>
-                                    @elseif ($message->status === 'replied')
-                                    <i class="fa-regular fa-envelope-open" style="color: orange; font-size: 60px;"></i>
-                                    @elseif ($message->status === 'closed')
-                                    <i class="fa-regular fa-envelope" style="color: blue; font-size: 60px;"></i>
+            <!-- Main Content Start -->
+            <main class="page-content space-top" style="direction: rtl;">
+                <div class="container">
+                    <div class="chat-list">
+                        <ul id="myList" class="list-unstyled">
+                            @foreach ($messages as $message)
+                            <li>
+                                <a href="{{ route('c1he3f.messages.show', $message->id) }}" class="list-items d-flex align-items-center p-3 border-bottom">
+                                    <div class="dz-media me-3">
+                                        @if ($message->status === 'unread')
+                                        <i class="fa-regular fa-envelope" style="color: red; font-size: 60px;"></i>
+                                        @elseif ($message->status === 'opened')
+                                        <i class="fa-regular fa-envelope-open" style="color: green; font-size: 60px;"></i>
+                                        @elseif ($message->status === 'replied')
+                                        <i class="fa-regular fa-envelope-open" style="color: orange; font-size: 60px;"></i>
+                                        @elseif ($message->status === 'closed')
+                                        <i class="fa-regular fa-envelope" style="color: blue; font-size: 60px;"></i>
 
-                                    @endif
-                                </div>
-                                <div class="list-content">
-                                    <h6 class="title">{{ $message->title }}</h6>
-                                    <div class="dz-status">
-                                        <span class="item-time">
-                                            {{ $message->created_at->diffForHumans() }}
-                                            <i class="feather icon-clock me-1"></i>
-                                        </span>
+                                        @endif
                                     </div>
-                                </div>
-                            </a>
-                        </li>
-                        @endforeach
-                    </ul>
+                                    <div class="list-content">
+                                        <h6 class="title">{{ $message->title }}</h6>
+                                        <div class="dz-status">
+                                            <span class="item-time">
+                                                {{ $message->created_at->diffForHumans() }}
+                                                <i class="feather icon-clock me-1"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </a>
+                            </li>
+                            @endforeach
+                        </ul>
+                    </div>
                 </div>
-            </div>
-        </main>
-        <!-- Main Content End -->
-        <a href="{{ route('c1he3f.new-message') }}" style="position: fixed; bottom: 30px; left: 20px; z-index: 99999; ">
-            <svg fill="#000" xmlns="http://www.w3.org/2000/svg" style="width: 25px;" viewBox="0 0 448 512">
-                <path d="M64 32C28.7 32 0 60.7 0 96L0 416c0 35.3 28.7 64 64 64l320 0c35.3 0 64-28.7 64-64l0-320c0-35.3-28.7-64-64-64L64 32zM200 344l0-64-64 0c-13.3 0-24-10.7-24-24s10.7-24 24-24l64 0 0-64c0-13.3 10.7-24 24-24s24 10.7 24 24l0 64 64 0c13.3 0 24 10.7 24 24s-10.7 24-24 24l-64 0 0 64c0 13.3-10.7 24-24 24s-24-10.7-24-24z">
-                </path>
-            </svg>
-        </a>
-    </div>
+            </main>
 
-    <script src="{{ asset('assets/vendor/bootstrap-touchspin/dist/jquery.bootstrap-touchspin.min.js') }}"></script>
-    <script src="{{ asset('assets/js/jquery.js') }}"></script>
-    <script src="{{ asset('assets/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
-    <script src="{{ asset('assets/vendor/swiper/swiper-bundle.min.js') }}"></script>
-    <script src="{{ asset('assets/js/dz.carousel.js') }}"></script>
-    <script src="{{ asset('assets/js/settings.js') }}"></script>
-    <script src="{{ asset('assets/js/custom.js') }}"></script>
-    <script src="{{ asset('index.js') }}"></script>
-    <script>
-        $(document).ready(function() {
-            $("#myInput").on("keyup", function() {
-                var value = $(this).val().toLowerCase();
-                $("#myList li").filter(function() {
-                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            <style>
+                .plus-btn {
+                    position: fixed;
+                    bottom: 30px;
+                    text-align: center;
+                    left: 20px;
+                    z-index: 99999;
+                    background-color: black;
+                    color: white;
+                    width: 50px;
+                    height: 50px;
+                    border-radius: 50%;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-size: 37px;
+                }
+
+            </style> <a href="{{ route('c1he3f.new-message') }}" class="plus-btn"> <span style="position: relative; top: -4px;">+</span> </a>
+        </div>
+
+        <script src="{{ asset('assets/vendor/bootstrap-touchspin/dist/jquery.bootstrap-touchspin.min.js') }}"></script>
+        <script src="{{ asset('assets/js/jquery.js') }}"></script>
+        <script src="{{ asset('assets/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+        <script src="{{ asset('assets/vendor/swiper/swiper-bundle.min.js') }}"></script>
+        <script src="{{ asset('assets/js/dz.carousel.js') }}"></script>
+        <script src="{{ asset('assets/js/settings.js') }}"></script>
+        <script src="{{ asset('assets/js/custom.js') }}"></script>
+        <script src="{{ asset('index.js') }}"></script>
+        <script>
+            $(document).ready(function() {
+                $("#myInput").on("keyup", function() {
+                    var value = $(this).val().toLowerCase();
+                    $("#myList li").filter(function() {
+                        $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                    });
                 });
             });
-        });
 
-    </script>
+        </script>
 </body>
 
 </html>

@@ -476,7 +476,7 @@
                     @enderror
                 </div>
 
-                {{-- Section for Ingredients with Buttons --}}
+                {{-- Ingredients Section --}}
                 <div class="col-md-12 mb-3">
                     <label class="form-label">المكونات</label>
                     <div id="ingredients-container">
@@ -652,35 +652,25 @@
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
-        console.log('CSRF Token:', $('meta[name="csrf-token"]').attr('content'));
-        console.log('Current URL:', window.location.href);
-
         $(document).ready(function() {
             $('#id_sub_categories').select2({
                 placeholder: 'اختر التصنيفات الفرعية',
                 allowClear: true,
                 dir: 'rtl'
             });
-
             $('#main_category_id').on('change', function() {
                 const mainCategoryId = $(this).val();
                 const subCategoriesContainer = $('#id_sub_categories_container');
                 const subCategoriesSelect = $('#id_sub_categories');
-
-                console.log('Main Category ID selected:', mainCategoryId);
-
                 if (mainCategoryId) {
                     subCategoriesContainer.show();
                     subCategoriesSelect.empty().append('<option value="">جاري التحميل...</option>').trigger(
                         'change');
-
                     $.ajax({
                         url: '/admin/get-subcategories',
-
                         type: 'GET',
                         data: {
                             category_id: mainCategoryId
-
                         },
                         headers: {
                             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -688,7 +678,6 @@
                         success: function(response) {
                             console.log('AJAX Response:', response);
                             subCategoriesSelect.empty();
-
                             if (response.length > 0) {
                                 $.each(response, function(index, subCategory) {
                                     subCategoriesSelect.append(
@@ -727,6 +716,8 @@
                 $('#main_category_id').trigger('change');
             @endif
         });
+// End 5atwat
+
 
         const ingredientsContainer = $('#ingredients-container');
         const addIngredientBtn = $('#add-ingredient-btn');
@@ -823,7 +814,7 @@
             const $nextItem = $currentItem.next('.ingredient-item');
             if ($nextItem.length) $currentItem.insertAfter($nextItem);
         });
-
+// End 5atwat
         // --- Dynamic Steps Logic ---
         const stepsContainer = $('#steps-container');
         const addStepBtn = $('#add-step-btn');

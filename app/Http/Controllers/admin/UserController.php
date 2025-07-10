@@ -11,11 +11,11 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 use Stichoza\GoogleTranslate\GoogleTranslate;
 use Illuminate\Support\Facades\Log;
-// import AUth
 use Illuminate\Support\Facades\Auth;
-use Carbon\Carbon; // تأكد من استيراد Carbon
-use App\Mail\OtpMail; // تأكد من استيراد OtpMail
-use Illuminate\Support\Facades\Mail; // <--- ADD THIS LINE
+use Carbon\Carbon;
+use App\Mail\OtpMail;
+use Illuminate\Support\Facades\Mail;
+use App\Models\Recipe;
 
 class UserController extends Controller
 {
@@ -35,36 +35,24 @@ class UserController extends Controller
     public function index(Request $request)
     {
         $query = User::latest();
-
-        // ** الأهم هنا: تحميل علاقة chefProfile مع المستخدمين **
         $query->with(['chefProfile' => function ($q) {
-            // يمكنك هنا تحديد الأعمدة التي تريد تحميلها من chef_profiles
-            // $q->select('id', 'user_id', 'official_image', 'contract_type', 'bio', 'status');
         }]);
-
         if ($request->has('role') && $request->role != '') {
             $query->where('role', $request->role);
         }
         $users = $query->paginate(10);
-
-        // لم تعد بحاجة لـ $chefsProfiles بشكل منفصل بهذه الطريقة إذا كنت ستمررها لكل user
-        // $chefsProfiles = ChefProfile::with('user')->get();
-
-        // نمرر فقط $users
-        return view('admin.users.index', compact('users')); // تم إزالة 'chefsProfiles'
+        return view('admin.users.index', compact('users'));
     }
 
 
     public function updateChefAgreementType(Request $request)
     {
-        // 1. التأكد أن المستخدم مسجل الدخول وهو طاه
         if (!Auth::check() || Auth::user()->role !== 'طاه') {
             return redirect()->route('sign-in.get')->with('error', 'لا تملك الصلاحية للوصول لهذه الصفحة.');
         }
 
-        $user = Auth::user(); // جلب المستخدم المسجل دخوله حالياً
+        $user = Auth::user();
 
-        // 2. التحقق من صحة البيانات المرسلة
         $rules = [
             'contract_type' => 'required|in:per_recipe,annual_subscription',
             'subscription_3_months_price' => 'nullable|numeric|min:0',
@@ -83,30 +71,16 @@ class UserController extends Controller
             'subscription_12_months_price.min' => 'يجب أن يكون سعر اشتراك 12 شهرًا قيمة موجبة.',
         ];
 
-        // منطق required_if للأسعار
-        // هذا المنطق يضمن أن على الأقل أحد حقول الأسعار الثلاثة مطلوب إذا كان نوع التعاقد "annual_subscription"
         if ($request->contract_type === 'annual_subscription') {
-            // هذا الجزء من الكود غير ضروري هنا إذا كان لديك حقول input في الفورم
-            // $request->mergeIfMissing([
-            //     'subscription_3_months_price' => '',
-            //     'subscription_6_months_price' => '',
-            //     'subscription_12_months_price' => '',
-            // ]);
-
-            // استخدام required_if لتطبيق شروط "يجب إدخال سعر واحد على الأقل"
-            // هذا يحل مشكلة أن كل الحقول "nullable" بشكل فردي
             $rules['subscription_3_months_price'] .= '|required_if:contract_type,annual_subscription,' .
                 '|required_if:subscription_6_months_price,"",null,' .
                 '|required_if:subscription_12_months_price,"",null';
-
             $rules['subscription_6_months_price'] .= '|required_if:contract_type,annual_subscription,' .
                 '|required_if:subscription_3_months_price,"",null,' .
                 '|required_if:subscription_12_months_price,"",null';
-
             $rules['subscription_12_months_price'] .= '|required_if:contract_type,annual_subscription,' .
                 '|required_if:subscription_3_months_price,"",null,' .
                 '|required_if:subscription_6_months_price,"",null';
-
             $messages += [
                 'subscription_3_months_price.required_if' => 'عند اختيار الاشتراك السنوي، يجب إدخال سعر اشتراك 3 شهور أو 6 شهور أو 12 شهرًا على الأقل.',
                 'subscription_6_months_price.required_if' => 'عند اختيار الاشتراك السنوي، يجب إدخال سعر اشتراك 3 شهور أو 6 شهور أو 12 شهرًا على الأقل.',
@@ -114,30 +88,26 @@ class UserController extends Controller
             ];
         }
 
-
         $validatedData = $request->validate($rules, $messages);
 
-        // 3. تحديث بيانات ChefProfile
-        // البحث عن الـ ChefProfile المرتبط بالمستخدم الحالي أو إنشائه إذا لم يكن موجودًا
-        // updateOrCreate سيقوم بالبحث بناءً على user_id، إذا وجده يقوم بالتحديث، وإلا ينشئ جديد
+        // تحديث الوصفات بس لو التعاقد اتغير من annual_subscription إلى per_recipe
+        if ($validatedData['contract_type'] === 'per_recipe' && $user->chefProfile->contract_type === 'annual_subscription') {
+            $statusRecipes = Recipe::where('status', 1)->update(['status' => 0]);
+            \Log::info("Updated $statusRecipes recipes to status 1");
+        }
+
         $chefProfile = $user->chefProfile()->updateOrCreate(
-            ['user_id' => $user->id], // الشرط للبحث عن الصف
+            ['user_id' => $user->id],
             [
                 'contract_type' => $validatedData['contract_type'],
-                // قم بتعيين حقول الأسعار بناءً على نوع التعاقد
                 'subscription_3_months_price' => ($validatedData['contract_type'] === 'annual_subscription') ? $validatedData['subscription_3_months_price'] : null,
                 'subscription_6_months_price' => ($validatedData['contract_type'] === 'annual_subscription') ? $validatedData['subscription_6_months_price'] : null,
                 'subscription_12_months_price' => ($validatedData['contract_type'] === 'annual_subscription') ? $validatedData['subscription_12_months_price'] : null,
-                // يمكنك إضافة حقول أخرى هنا إذا كانت قابلة للتحديث عبر هذا الفورم
             ]
         );
 
-        // 4. إعادة التوجيه بعد النجاح
-        // هذا هو المسار الذي طلبته: c1he3f.profile.profile
-        return redirect()->route('c1he3f.profile.profile') // توجيه لصفحة نوع التعاقد نفسها
-            ->with('success', 'تم تحديث نوع التعاقد بنجاح!');
+        return redirect()->route('c1he3f.profile.profile')->with('success', 'تم تحديث نوع التعاقد بنجاح!');
     }
-
     public function updateChefBio(Request $request)
     {
         // 1. التأكد أن المستخدم مسجل الدخول

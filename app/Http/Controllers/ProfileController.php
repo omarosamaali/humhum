@@ -21,7 +21,19 @@ class ProfileController extends Controller
         $deliveryLocations = DeliveryLocation::where('user_id', Auth::id())->get();
         return view('chef.profile.delivery-locations', compact('deliveryLocations'));
     }
+    public function selectDeliveryLocation(Request $request, $id)
+    {
+        DeliveryLocation::where('user_id', auth()->id())->update(['is_selected' => false]);
+        $location = DeliveryLocation::where('user_id', auth()->id())->findOrFail($id);
+        $location->update(['is_selected' => true]);
 
+        Log::info('Delivery location selected', [
+            'user_id' => Auth::id(),
+            'location_id' => $id
+        ]);
+
+        return response()->json(['success' => true]);
+    }
     public function showAddDeliveryAddress()
     {
         // Ensure the user has chosen to have a market
@@ -127,17 +139,8 @@ class ProfileController extends Controller
     public function editDeliveryLocation($id)
     {
         $location = DeliveryLocation::where('user_id', Auth::id())->findOrFail($id);
-
-        // شيل التحقق من المتجر خالص
-        // $chefMarket = ChefMarket::where('user_id', Auth::id())->first();
-        // if (!$chefMarket || !$chefMarket->has_market) {
-        //     return redirect()->route('c1he3f.profile.delivery-location')
-        //         ->with('error', 'يرجى اختيار امتلاك متجر أولاً');
-        // }
-
         return view('c1he3f.profile.edit-delivery-address', compact('location'));
     }
-    // أضف هذا الكود للتحقق من حالة المتجر
     public function checkMarketStatus()
     {
         $chefMarket = ChefMarket::where('user_id', Auth::id())->first();
@@ -166,6 +169,14 @@ class ProfileController extends Controller
         ]);
 
         $location = DeliveryLocation::where('user_id', Auth::id())->findOrFail($id);
+        DeliveryLocation::where('user_id', auth()->id())
+            ->update(['is_selected' => false]);
+        if ($request->has('selected_location')) {
+            DeliveryLocation::where('id', $request->selected_location)
+                ->where('user_id', auth()->id())
+                ->update(['is_selected' => true]);
+        }
+
         $location->update([
             'country' => $request->country,
             'city' => $request->city,

@@ -938,7 +938,6 @@
                 @csrf
                 <input type="hidden" name="user_id" value="{{ auth()->user()->id }}">
                 <input type="hidden" name="chef_id" value="{{ auth()->user()->id }}">
-
                 <div class="container">
                     <div class="bg-cookpad-gray-9gi p-6h1" style="position: relative; height: 40vh; width: 80%; margin: auto; border-radius: 15px;">
                         <div style="top: 20%; text-align: center;" class="image-zyn text-wbi fle-kj4 item-sji justify-byc">
@@ -992,6 +991,14 @@
                             <div class="text-danger mt-1">{{ $message }}</div>
                             @enderror
                         </div>
+                        <div class="my-3" id="price_field" style="display: none;">
+                            <label class="form-label" style="display: flex; justify-content: center;">سعر الوصفة (بالدرهم)</label>
+                            <input type="number" id="price" name="price" value="{{ old('price') }}" min="0" step="1" style="text-align: center; color: #000000;" placeholder="سعر الوصفة: 10.00" class="form-control">
+                            @error('price')
+                            <div class="text-danger mt-1">{{ $message }}</div>
+                            @enderror
+                        </div>
+
                         <div class="mb-3">
                             <label for="main_category_id" class="form-label">التصنيف الرئيسي</label>
                             <select class="form-control" name="main_category_id" id="main_category_id" required>
@@ -1042,6 +1049,7 @@
                         <div class="text-danger mt-1">{{ $message }}</div>
                         @enderror
                     </div>
+                    {{ Auth::user()->chefProfile->contract_type }}
                     <div class="footer-fixed-btn bottom-0 bg-white">
                         <button type="submit" class="btn btn-lg btn-thin btn-primary w-100 rounded-xl">حفظ</button>
                     </div>
@@ -1060,53 +1068,59 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         $(document).ready(function() {
-            console.log('Document ready - initializing...');
-            console.log('Main category element:', $('#main_category_id').length);
-            console.log('Sub categories element:', $('#id_sub_categories').length);
-            console.log('Container element:', $('#id_sub_categories_container').length);
-
-            // Initialize Select2
             if ($('#id_sub_categories').length > 0) {
                 $('#id_sub_categories').select2({
                     placeholder: 'اختر التصنيفات الفرعية'
                     , allowClear: true
                     , dir: 'rtl'
                 });
-                console.log('Select2 initialized');
-            } else {
-                console.error('Sub categories select element not found!');
             }
 
-            // Handle subcategory loading
-            $('#main_category_id').on('change', function() {
-                console.log('Main category changed event fired');
+            function togglePriceField() {
+                const contractType = '{{ Auth::user()->chefProfile->contract_type ?? "none" }}';
+                const isFree = $('#is_free').val();
+                const priceField = $('#price_field');
 
+                // Debugging logs
+                console.log('Contract Type:', contractType);
+                console.log('Is Free:', isFree);
+                console.log('Price Field Element:', priceField.length ? 'Found' : 'Not Found');
+
+                // Show price field only if contract_type is 'per_recipe' AND is_free is '0' (paid)
+                if (contractType === 'per_recipe' && isFree === '0') {
+                    console.log('Showing price field');
+                    priceField.show();
+                    $('#price').prop('required', true); // Make price field required
+                } else {
+                    console.log('Hiding price field');
+                    priceField.hide();
+                    $('#price').prop('required', false); // Remove required attribute
+                    $('#price').val(''); // Clear the price input
+                }
+            }
+            // togglePriceField();
+
+            // Listen for changes in the is_free select field
+            $('#is_free').on('change', function() {
+                // console.log('is_free changed to:', $(this).val());
+                togglePriceField();
+            });
+
+            // Debugging: Log if jQuery is loaded
+            // console.log('jQuery Loaded:', typeof $ !== 'undefined' ? 'Yes' : 'No');
+
+
+
+            $('#main_category_id').on('change', function() {
                 const mainCategoryId = $(this).val();
                 const subCategoriesContainer = $('#id_sub_categories_container');
                 const subCategoriesSelect = $('#id_sub_categories');
-
-                console.log('Main Category ID selected:', mainCategoryId);
-                console.log('Container element found:', subCategoriesContainer.length);
-                console.log('Select element found:', subCategoriesSelect.length);
-
                 if (mainCategoryId) {
-                    console.log('Main category ID is valid, proceeding...');
-
-                    // إظهار حاوية التصنيفات الفرعية
-                    subCategoriesContainer.show(); // استخدم show() بدلاً من addClass('show')
-                    console.log('Container shown');
-
-                    // إظهار رسالة التحميل
+                    subCategoriesContainer.show();
                     subCategoriesSelect.empty()
                         .append('<option value="">جاري التحميل...</option>')
                         .trigger('change');
-                    console.log('Loading message added');
-
-                    // تحقق من وجود الـ route
                     const ajaxUrl = '{{ route("c1he3f.recpies.subcategories") }}';
-                    console.log('AJAX URL:', ajaxUrl);
-
-                    // طلب AJAX لجلب التصنيفات الفرعية
                     $.ajax({
                         url: ajaxUrl
                         , type: 'GET'
@@ -1117,61 +1131,33 @@
                             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                         }
                         , beforeSend: function() {
-                            console.log('Sending AJAX request...');
                             console.log('Request data:', {
                                 category_id: mainCategoryId
                             });
                         }
                         , success: function(response) {
-                            console.log('AJAX Success!');
-                            console.log('Response type:', typeof response);
-                            console.log('Response data:', response);
-                            console.log('Response length:', response ? response.length : 'N/A');
-
-                            // مسح القائمة أولاً
                             subCategoriesSelect.empty();
-
                             if (response && response.length > 0) {
-                                console.log('Adding subcategories...');
-
-                                // إضافة التصنيفات الفرعية
                                 $.each(response, function(index, subCategory) {
-                                    console.log('Adding subcategory:', subCategory);
                                     subCategoriesSelect.append(
                                         `<option value="${subCategory.id}">${subCategory.name_ar}</option>`
                                     );
                                 });
-
-                                // استرجاع القيم القديمة إذا كانت موجودة
                                 @if(old('sub_categories'))
                                 const oldValues = @json(old('sub_categories'));
-                                console.log('Old values:', oldValues);
                                 subCategoriesSelect.val(oldValues);
                                 @endif
                             } else {
-                                console.log('No subcategories found');
                                 subCategoriesSelect.append(
                                     '<option value="">لا توجد تصنيفات فرعية</option>'
                                 );
                             }
-
-                            // تحديث Select2
                             subCategoriesSelect.trigger('change');
-                            console.log('Select2 updated');
                         }
                         , error: function(xhr, status, error) {
-                            console.error('AJAX Error!');
-                            console.error('Status:', status);
-                            console.error('Error:', error);
-                            console.error('Status Code:', xhr.status);
-                            console.error('Response Text:', xhr.responseText);
-                            console.error('Ready State:', xhr.readyState);
-
                             subCategoriesSelect.empty()
                                 .append('<option value="">حدث خطأ في التحميل</option>')
                                 .trigger('change');
-
-                            // إظهار رسالة خطأ مفصلة
                             let errorMessage = 'فشل تحميل التصنيفات الفرعية: ';
                             if (xhr.status === 404) {
                                 errorMessage += 'الرابط المطلوب غير موجود (404)';
@@ -1182,34 +1168,24 @@
                             } else {
                                 errorMessage += `خطأ غير معروف (${xhr.status})`;
                             }
-
-                            alert(errorMessage); // استخدم alert بدلاً من Swal للتبسيط
+                            alert(errorMessage);
                         }
                     });
                 } else {
-                    console.log('No main category selected, hiding container');
-                    // إخفاء حاوية التصنيفات الفرعية
-                    subCategoriesContainer.hide(); // استخدم hide() بدلاً من removeClass('show')
+                    subCategoriesContainer.hide();
                     subCategoriesSelect.empty().trigger('change');
                 }
             });
-
-            // تحميل التصنيفات الفرعية إذا كان هناك تصنيف رئيسي محدد مسبقاً
             @if(old('main_category_id'))
             console.log('Triggering change for old main category');
             $('#main_category_id').trigger('change');
             @endif
-
-            // Image preview functionality
             $('#fil-ttd').on('change', function() {
-                console.log('File input changed');
                 const file = this.files[0];
                 const imagePreview = $('#image_preview');
                 const defaultImage = $('#dish_image');
                 const removeButton = $('#remove-image');
-
                 if (file) {
-                    console.log('File selected:', file.name);
                     const reader = new FileReader();
                     reader.onload = function(e) {
                         imagePreview.attr('src', e.target.result).show();
@@ -1218,23 +1194,19 @@
                     };
                     reader.readAsDataURL(file);
                 } else {
-                    console.log('No file selected');
                     imagePreview.hide().attr('src', '#');
                     defaultImage.show();
                     removeButton.hide();
                 }
             });
-
-            // Remove image functionality
             $('#remove-image').on('click', function() {
                 console.log('Remove image clicked');
                 $('#fil-ttd').val('');
                 $('#image_preview').hide().attr('src', '#');
                 $('#dish_image').show();
                 $(this).hide();
-            }).hide(); // إخفاء الزر عند تحميل الصفحة
+            }).hide();
         });
-
 
     </script>
 

@@ -1,7 +1,6 @@
 <!DOCTYPE html dir="rtl">
 <html lang="en">
 
-
 <head>
 
     <!-- Title -->
@@ -52,6 +51,23 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700;800;900&family=Raleway:wght@300;400;500&display=swap" rel="stylesheet">
 
     <style>
+        .plus-btn {
+            position: fixed;
+            bottom: 30px;
+            text-align: center;
+            left: 20px;
+            z-index: 99999;
+            background-color: black;
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 37px;
+        }
+
         /* Exported with SnipCSS extension (Ver 1.9.8) */
         @media all {
             body {
@@ -340,8 +356,9 @@
 <body class="bg-light">
 
     @yield('content')
-
-
+    <script src="{{ asset('assets/vendor/wnumb/wNumb.js') }}"></script>
+    <script src="{{ asset('assets/vendor/nouislider/nouislider.min.js') }}"></script>
+    <script src="{{ asset('assets/js/noui-slider.init.js') }}"></script>
     <script src="{{ asset('assets/vendor/bootstrap-touchspin/dist/jquery.bootstrap-touchspin.min.js') }}"></script>
     <script src="{{ asset('assets/js/jquery.js') }}"></script>
     <script src="{{ asset('assets/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
@@ -349,7 +366,7 @@
     <script src="{{ asset('assets/js/dz.carousel.js') }}"></script>
     <script src="{{ asset('assets/js/settings.js') }}"></script>
     <script src="{{ asset('assets/js/custom.js') }}"></script>
-    <script src="{{ asset('index.js') }}"></script>
+
 </body>
 
 </html>

@@ -29,27 +29,22 @@ class SnapController extends Controller
 
     public function store(Request $request)
     {
-        // 1. التحقق من صحة البيانات (Validation)
         $request->validate([
-            'video' => 'required|file|mimetypes:video/mp4,video/quicktime,video/x-flv,video/x-ms-wmv,video/avi|max:50000', // 50000 كيلوبايت = 50 ميجابايت
+            'video' => 'required|file|mimetypes:video/mp4,video/quicktime,video/x-flv,video/x-ms-wmv,video/avi|max:50000',
             'name' => 'required|string|max:255',
-            'kitchen_id' => 'required|exists:kitchens,id',
-            'main_category_id' => 'required|exists:main_categories,id',
-            // الأن، بما أنها مصفوفة مباشرة من الواجهة الأمامية
+            'kitchen_id' => 'nullable|exists:kitchens,id',
+            'main_category_id' => 'nullable|exists:main_categories,id',
             'subCategory_ids' => 'nullable|array',
-            'subCategory_ids.*' => 'exists:sub_categories,id', // يتحقق من وجود كل ID في جدول sub_categories
+            'subCategory_ids.*' => 'exists:sub_categories,id',
             'recipe_id' => 'nullable|exists:recipes,id',
             'status' => 'required|in:published,draft',
         ]);
 
         $videoPath = null;
-        // 2. معالجة تحميل الفيديو
         if ($request->hasFile('video')) {
-            $videoFile = $request->file('video');
-            $videoPath = $videoFile->store('snaps', 'public');
+            $videoPath = $request->file('video')->store('snaps', 'public');
         }
 
-        // 3. إنشاء سجل جديد في قاعدة البيانات
         $snap = new Snap();
         $snap->name = $request->name;
         $snap->kitchen_id = $request->kitchen_id;
@@ -57,26 +52,15 @@ class SnapController extends Controller
         $snap->recipe_id = $request->recipe_id;
         $snap->status = $request->status;
         $snap->video_path = $videoPath;
-        $snap->user_id = auth()->id(); 
-        $snap->save(); // حفظ السناب في قاعدة البيانات
+        $snap->user_id = auth()->id();
+        $snap->save();
 
-        // 4. ربط التصنيفات الفرعية (إذا تم اختيارها)
-        // لا حاجة لـ json_decode() هنا. $request->subCategory_ids هي بالفعل مصفوفة
         if ($request->has('subCategory_ids') && is_array($request->subCategory_ids)) {
-            $snap->subCategories()->attach($request->subCategory_ids);
+            $snap->subCategories()->sync($request->subCategory_ids); // استخدام sync بدلاً من attach لتجنب التكرار
         }
-        // السطر أعلاه هو كل ما تحتاجه للتعامل مع الـ array
-        // تأكد أن علاقة subCategories() مُعرفة بشكل صحيح في نموذج Snap الخاص بك
-        // كمثال:
-        // public function subCategories()
-        // {
-        //     return $this->belongsToMany(SubCategory::class, 'snap_sub_category', 'snap_id', 'sub_category_id');
-        // }
 
-        // 5. إعادة التوجيه مع رسالة نجاح
         return redirect()->route('c1he3f.snaps.all-snap')->with('success', 'تم إضافة السناب بنجاح!');
     }
-
     // app/Http/Controllers/SnapController.php
     public function getSubcategoryDetails($subCategoryId)
     {
@@ -109,9 +93,9 @@ class SnapController extends Controller
         $request->validate([
             'video' => 'nullable|file|mimetypes:video/mp4,video/quicktime,video/x-flv,video/x-ms-wmv,video/avi|max:50000',
             'name' => 'required|string|max:255',
-            'kitchen_id' => 'required|exists:kitchens,id',
-            'main_category_id' => 'required|exists:main_categories,id',
-            'subCategory_ids' => 'nullable', // تغيير إلى nullable فقط، بدون array
+            'kitchen_id' => 'nullable|exists:kitchens,id',
+            'main_category_id' => 'nullable|exists:main_categories,id',
+            'subCategory_ids' => 'nullable',
             'recipe_id' => 'nullable|exists:recipes,id',
             'status' => 'required|in:published,draft',
         ]);
@@ -148,20 +132,27 @@ class SnapController extends Controller
 
         return redirect()->route('c1he3f.snaps.all-snap')->with('success', 'تم تعديل السناب بنجاح!');
     }
-
-    
-    
     
     /**
      * Handle AJAX request for subcategories.
      */
     public function getSubcategories($mainCategoryId)
     {
-        $subCategories = SubCategory::where('category_id', $mainCategoryId)->get();
-        return response()->json($subCategories);
+        try {
+            if (!is_numeric($mainCategoryId) || $mainCategoryId <= 0) {
+                \Log::error("Invalid mainCategoryId: {$mainCategoryId}");
+                return response()->json(['error' => 'Invalid category ID'], 400);
+            }
+            $subCategories = SubCategory::where('category_id', $mainCategoryId)->get();
+            if ($subCategories->isEmpty()) {
+                \Log::info("No subcategories found for mainCategoryId: {$mainCategoryId}");
+            }
+            return response()->json($subCategories);
+        } catch (\Exception $e) {
+            \Log::error("Error fetching subcategories: " . $e->getMessage());
+            return response()->json(['error' => 'Internal Server Error'], 500);
+        }
     }
-
-    // app/Http/Controllers/SnapController.php
 
     public function destroy(Snap $snap)
     {

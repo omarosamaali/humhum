@@ -27,11 +27,13 @@ class RecipesController extends Controller
         } else {
             $allRecipes = collect();
         }
+        $mainCategories = MainCategories::select('id', 'name_ar')->get();
         $activeRecipes = $allRecipes->where('status', 1);
         $inactiveRecipes = $allRecipes->where('status', 0);
         return view('c1he3f.recpies.all_recipes', [
             'activeRecipes' => $activeRecipes,
             'inactiveRecipes' => $inactiveRecipes,
+            'mainCategories' => $mainCategories
         ]);
     }
 
@@ -311,6 +313,13 @@ class RecipesController extends Controller
     public function updateChef(Request $request, Recipe $recipe)
     {
         $rules = $this->getValidationRules($request, true);
+
+        if (auth()->user()->chefProfile->contract_type === 'per_recipe' && $request->input('is_free') == 0) {
+            $rules['price'] = 'required|numeric|min:0';
+        } else {
+            $rules['price'] = 'nullable|numeric|min:0'; // السماح بـ null أو 0
+        }
+
         try {
             $validatedData = $request->validate($rules);
             $validatedData['dish_image'] = $this->handleDishImage($request, $recipe);
@@ -318,6 +327,10 @@ class RecipesController extends Controller
             if ($user->role === 'طاه') {
                 $validatedData['chef_id'] = $user->id;
             }
+
+            // تعيين السعر بناءً على is_free
+            $validatedData['price'] = $request->input('is_free') == 1 ? 0 : ($validatedData['price'] ?? null);
+
             if ($request->has('steps_data') && !empty($request->input('steps_data'))) {
                 $processedSteps = $this->processRecipeSteps($request, $recipe);
                 if (isset($processedSteps['errors'])) {
@@ -336,25 +349,23 @@ class RecipesController extends Controller
                 }
                 $validatedData['steps'] = $processedSteps;
             }
+
             $kitchenTypeId = $request->input('kitchen_type_id');
-            if ($kitchenTypeId && is_numeric($kitchenTypeId)) {
-                $validatedData['kitchen_type_id'] = $kitchenTypeId;
-            } else {
-                $validatedData['kitchen_type_id'] = null;
-            }
+            $validatedData['kitchen_type_id'] = $kitchenTypeId && is_numeric($kitchenTypeId) ? $kitchenTypeId : null;
+
             unset($validatedData['steps_data']);
             $recipe->update($validatedData);
             $recipe->subCategories()->sync($request->input('sub_categories', []));
+
             if ($request->ajax()) {
                 return response()->json([
                     'success' => true,
                     'message' => 'تم تحديث الوصفة بنجاح!',
-                    'redirect_url' => route('c1he3f.recipes.all_recipes')
+                    'redirect_url' => route('c1he3f.recpies.all_recipes')
                 ]);
             }
-            return redirect()->route('c1he3f.recipes.all_recipes')->with('success', 'تم تحديث الوصفة بنجاح!');
+            return redirect()->route('c1he3f.recpies.all_recipes')->with('success', 'تم تحديث الوصفة بنجاح!');
         } catch (\Illuminate\Validation\ValidationException $e) {
-            Log::error('Validation Error in updateChef: ', $e->errors());
             if ($request->ajax()) {
                 return response()->json([
                     'success' => false,
@@ -395,7 +406,7 @@ class RecipesController extends Controller
             \Log::error('Error fetching subcategories: ' . $e->getMessage());
             return response()->json(['error' => 'Server error'], 500);
         }
-    } 
+    }
 
     public function edit(Recipe $recipe)
     {
@@ -433,10 +444,12 @@ class RecipesController extends Controller
             'main_category_id' => 'required|exists:main_categories,id',
             'sub_categories' => 'required|array',
             'sub_categories.*' => 'exists:sub_categories,id',
+            'ingredients' => 'nullable|string',
             'is_free' => 'required|in:0,1',
             'servings' => 'required|integer|min:1',
             'preparation_time' => 'required|integer|min:1',
             'status' => 'required|boolean',
+            'price' => 'nullable|numeric|min:0',
         ];
 
         if (!$isPublic) {
@@ -508,33 +521,26 @@ class RecipesController extends Controller
     public function store(Request $request)
     {
         Log::info('Recipe Store Request Data:', $request->all());
-
-        $rules = $this->getValidationRules($request); // استخدام القواعد الإدارية
+        $rules = $this->getValidationRules($request);
         $validator = Validator::make($request->all(), $rules);
-
         if ($validator->fails()) {
             return redirect()->back()
                 ->withErrors($validator)
                 ->withInput();
         }
-
         $validatedData = $validator->validated();
         $user = Auth::user();
-
-        // Set user_id to the authenticated user's ID
         $validatedData['user_id'] = $user->id;
-
-        // Set chef_id based on user role
         if ($user->role === 'طاه') {
-            $validatedData['chef_id'] = $user->id; // Chef is the authenticated user
+            $validatedData['chef_id'] = $user->id;
         } else {
-            $validatedData['chef_id'] = $request->input('chef_id'); // Get chef_id from form
+            $validatedData['chef_id'] = $request->input('chef_id');
         }
-
+        if ($validatedData['is_free'] == 0) {
+            $validatedData['price'] = $request->input('price');
+        }
         $validatedData['dish_image'] = $this->handleDishImage($request);
-
         $recipe = Recipe::create($validatedData);
-
         $processedSteps = $this->processRecipeSteps($request, $recipe);
         if (isset($processedSteps['errors'])) {
             if ($recipe->dish_image) {

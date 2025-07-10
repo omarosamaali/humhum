@@ -15,8 +15,10 @@ use App\Http\Controllers\SnapController; // Import your SnapController
 use App\Models\Snap;
 use App\Models\Banner;
 use App\Http\Controllers\C1he3f\Auth\ChefAuthenticatedSessionController;
+use App\Models\DeliveryLocation;
 
 Route::prefix('c1he3f')->middleware(['auth'])->group(function () {
+    Route::post('/profile/delivery-location/select/{id}', [ProfileController::class, 'selectDeliveryLocation'])->name('c1he3f.profile.delivery-location.select');
     Route::get('/profile/market-choice', [ProfileController::class, 'showMarketChoice'])->name('c1he3f.profile.market-choice');
     Route::post('/profile/save-market-choice', [ProfileController::class, 'saveMarketChoice'])->name('c1he3f.profile.save-market-choice');
     Route::get('/profile/delivery-locations', [ProfileController::class, 'showDeliveryLocations'])->name('c1he3f.profile.delivery-location');
@@ -50,10 +52,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/admin/get-subcategories', [App\Http\Controllers\Admin\RecipesController::class, 'getSubCategories']);});
 Route::post('/c1he3f/snaps/store-snap', [SnapController::class, 'store'])->name('c1he3f.snaps.store-snap');
 Route::get('/c1he3f/snaps/get-subcategory-details/{subCategoryId}', [SnapController::class, 'getSubcategoryDetails'])->name('get.subcategory-details');
-Route::get(
-    '/c1he3f/snaps/get-subcategories/{mainCategoryId}',
-    [SnapController::class, 'getSubcategories']
-)->name('get.subcategories');
+Route::get('/c1he3f/snaps/get-subcategories/{mainCategoryId}', [SnapController::class, 'getSubcategories'])->name('get.subcategories');
 Route::get('/c1he3f/snaps/edit-snap/{snap}', [SnapController::class, 'edit'])->name('c1he3f.snaps.edit-snap');
 Route::get('/c1he3f/snaps/lens-show/{snap}', function(Snap $snap){
     return view('c1he3f.snaps.lens-show', compact('snap'));
@@ -61,17 +60,16 @@ Route::get('/c1he3f/snaps/lens-show/{snap}', function(Snap $snap){
 Route::put('/c1he3f/snaps/update-snap/{snap}', [SnapController::class, 'update'])->name('c1he3f.snaps.update-snap');
 Route::delete('/c1he3f/snaps/delete/{snap}', [SnapController::class, 'destroy'])->name('c1he3f.snaps.delete');
 Route::get('/c1he3f/snaps/all-snap', function () {
-    $publishedSnaps = Snap::where('status', 'published')->get();
-    $draftSnaps = Snap::where('status', 'draft')->get();
-    return view('c1he3f.snaps.all-snap', compact('publishedSnaps', 'draftSnaps'));
+    $publishedSnaps = Snap::where('status', 'published')->with(['mainCategory', 'subCategories'])->get();
+    $draftSnaps = Snap::where('status', 'draft')->with(['mainCategory', 'subCategories'])->get();
+    $mainCategories = MainCategories::all();
+    $subCategories = SubCategory::all();
+    return view('c1he3f.snaps.all-snap', compact('publishedSnaps', 'draftSnaps', 'mainCategories', 'subCategories'));
 })->name('c1he3f.snaps.all-snap');
-
 Route::get('/c1he3f/snaps/add-snap', [SnapController::class, 'create'])->name('c1he3f.snaps.add-snap');
-
 Route::get('/c1he3f/coming-soon', function () {
     return view('c1he3f.coming-soon');
 })->name('c1he3f.coming-soon');
-
 
 Route::get('/c1he3f/transactions', function () {
     return view('c1he3f.transactions');
@@ -144,15 +142,15 @@ Route::get('c1he3f/index', function () {
         }
     ])
         ->withCount(['recipes' => function ($query) use ($userId) {
-            $query->where('user_id', $userId);
+            $query->where('user_id', $userId)->where('status', 1);
         }])
         ->get();
     $recipes = Recipe::with(['kitchen', 'chef', 'mainCategories', 'subCategories'])
         ->where('status', 1)
         ->latest()
         ->get();
-
-    return view('c1he3f.index', compact('recipes', 'mainCategories', 'banner'));
+    $delivery_locations = DeliveryLocation::where('user_id', Auth::user()->id)->get();
+    return view('c1he3f.index', compact('recipes', 'mainCategories', 'banner', 'delivery_locations'));
 })->name('c1he3f.index');
 
 Route::post('/chefThree/snaps/store-snap', [SnapController::class, 'store'])->name('chefThree.snaps.store-snap');

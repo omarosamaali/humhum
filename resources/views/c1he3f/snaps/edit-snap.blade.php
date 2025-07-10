@@ -63,7 +63,6 @@
 
     </style>
 
-
     <title>Ombe- Coffee Shop Mobile App Template (Bootstrap + PWA) | DexignZone</title>
 
     <meta charset="utf-8">
@@ -90,7 +89,7 @@
 
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, minimal-ui, viewport-fit=cover">
 
-    <link rel="shortcut icon" type="image/x-icon" href="assets/images/app-logo/favicon.png">
+    <link rel="shortcut icon" type="image/x-icon" href="/assets/images/app-logo/favicon.png">
 
     <link href="assets/vendor/bootstrap-select/dist/css/bootstrap-select.min.css" rel="stylesheet">
     <link rel="stylesheet" href="assets/vendor/bootstrap-touchspin/dist/jquery.bootstrap-touchspin.min.css">
@@ -103,7 +102,6 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700;800;900&family=Raleway:wght@300;400;500&display=swap" rel="stylesheet">
     <style>
- 
         .bg-cookpad-gray-9gi {
             background-color: #f8f9fa;
             border: 2px dashed #dee2e6;
@@ -200,22 +198,33 @@
         }
 
         .error-message {
-            color: #dc3545;
-            background: #f8d7da;
+            color: #721c24;
+            background-color: #f8d7da;
             border: 1px solid #f5c6cb;
             padding: 10px;
             border-radius: 8px;
             margin: 10px 0;
+            text-align: center;
+            font-size: 14px;
+            display: block;
+            opacity: 1;
+            visibility: visible;
         }
 
         .success-message {
             color: #155724;
-            background: #d4edda;
+            background-color: #d4edda;
             border: 1px solid #c3e6cb;
             padding: 10px;
             border-radius: 8px;
             margin: 10px 0;
+            text-align: center;
+            font-size: 14px;
+            display: block;
+            opacity: 1;
+            visibility: visible;
         }
+
 
         .btn {
             padding: 10px 20px;
@@ -736,29 +745,13 @@
         <main class="page-content space-top p-b100" style="direction: rtl;">
             <div class="container">
                 <div class="container" style="max-width: 800px; margin:0px auto; padding: 20px;">
-
                     <form action="{{ route('c1he3f.snaps.update-snap', $snap) }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         @method('put')
-                        <div class="bg-cookpad-gray-9gi p-6h1 upload-area" id="upload-area" style="height: 280px; width: 80%; margin: auto; border-radius: 15px; 
-                            {{ $snap->video_path ? 'display: none;' : '' }}">
-                            <div style="top: 20%;" class="image-zyn text-wbi fle-kj4 item-sji justify-byc">
-                                <div class="text-fim">
-                                    <img class="w-8so mx-33j pointer-events-j3t" src="https://global-web-assets.cpcdn.com/assets/camera-f90eec676af2f051ccca0255d3874273a419172412e3a6d2884f963f6ec5a2c3.png">
-                                    <p class="text-x8v font-9s7 mt-mnq">أضف الفيديو الذي تريد مشاركته</p>
-                                    <p class="text-b94 px-ql7">يجب علي الفيديو ان لا يزيد عن 60 ثانية</p>
-                                </div>
-                                <input type="file" name="video" id="fil-ttd" accept="video/*">
-                            </div>
-                        </div>
-
-                        <div id="message-container"></div>
-
                         <div class="video-preview {{ $snap->video_path ? '' : 'hidden' }}" id="video-preview">
                             @if($snap->video_path)
                             <video id="preview-video" style="height: 280px; width: 80%; margin: auto; border-radius: 15px;" controls>
                                 <source src="{{ Storage::url($snap->video_path) }}" type="video/mp4">
-
                                 متصفحك لا يدعم تشغيل الفيديو.
                             </video>
                             @else
@@ -767,8 +760,13 @@
                                 متصفحك لا يدعم تشغيل الفيديو.
                             </video>
                             @endif
+                            <div id="message-container" style="margin-top: 15px; text-align: center;"></div>
 
                             <div class="video-controls" style="margin-top: 10px; text-align: center;">
+                                <button type="button" class="btn btn-secondary mb-3" id="change-video-btn" style="background-color: #6c757d; border: none; padding: 10px 20px; border-radius: 5px; color: white;">
+                                    تغيير الفيديو
+                                </button>
+
                                 <div class="video-info" id="video-info">
                                     @if($snap->video_path)
                                     <strong>الفيديو الحالي:</strong><br>
@@ -777,18 +775,23 @@
                                     <span id="video-size"></span>
                                     @endif
                                 </div>
-
                                 <div class="progress-bar" id="progress-bar" style="display: none; margin: 10px 0;">
                                     <div class="progress-fill" id="progress-fill"></div>
                                 </div>
+                            </div>
+                        </div>
 
-                                <div style="margin-top: 15px;">
-                                    <button type="button" class="btn btn-secondary" onclick="changeVideo()" id="change-video-btn">
-                                        {{ $snap->video_path ? 'تغيير الفيديو' : 'اختيار فيديو' }}
-                                    </button>
-                                    @if($snap->video_path)
-                                    <button type="button" class="btn btn-danger" onclick="removeVideo()">إزالة الفيديو</button>
-                                    @endif
+                        <div class="bg-cookpad-gray-9gi p-6h1 upload-area" id="upload-area" style="height: 280px; width: 80%; margin: auto; border-radius: 15px; {{ $snap->video_path ? 'display: none;' : '' }}">
+                            <div class="bg-light p-4 upload-area" style="height: 230px; width: 80%; margin: auto; border-radius: 15px;">
+                                <div class="text-center">
+                                    <div>
+                                        <img class="w-25 mx-auto mb-3" src="https://via.placeholder.com/80x80/007bff/ffffff?text=📹" alt="كاميرا">
+                                        <p class="h5 font-weight-bold">أضف الفيديو الذي تريد مشاركته</p>
+                                        <p class="text-muted">يجب على الفيديو أن لا يزيد عن 60 ثانية</p>
+                                    </div>
+                                    <input type="file" name="video" id="fil-ttd" accept="video/*">
+                                    <!-- إضافة message-container في منطقة الرفع أيضاً -->
+                                    <div id="message-container" style="margin-top: 15px; text-align: center;"></div>
                                 </div>
                             </div>
                         </div>
@@ -796,6 +799,7 @@
                         <div class="my-3">
                             <input type="text" id="name" value="{{ $snap->name }}" name="name" style="height: 98px; text-align: center; color: #000000;" placeholder="ماذا تريد ان تقول للمستخدمين" class="form-control" required>
                         </div>
+
                         <div class="my-3">
                             <div class="form-group">
                                 <label for="kitchen-search" style="text-align: center; display: block; margin-bottom: 5px;">إختر المطبخ</label>
@@ -819,13 +823,8 @@
                                     @endforeach
                                 </select>
                             </div>
-
-                            <!-- حاوية التصنيفات الفرعية -->
                             <div id="subcategory-container">
-                                <!-- سيتم ملء هذا القسم بواسطة JavaScript -->
                             </div>
-
-
                             <div class="form-group">
                                 <label for="recipe-search" style="text-align: center; display: block; margin-bottom: 5px; margin-top: 15px;">إربط مع وصفة</label>
                                 <select class="form-control" id="recipe-search" name="recipe_id" style="width: 100%;">
@@ -836,89 +835,119 @@
                                 </select>
                             </div>
                         </div>
-
                         <h6 class="dz-title my-2" style="text-align: center;">اين تريد ان تحفظ الفيديو</h6>
                         <div class="d-flex flex-wrap gap-2" style="justify-content: center;">
                             <div class="form-check style-2">
-                                <input class="form-check-input" type="radio" name="status" id="filterRadio1" value="published" 
-                                       {{ $snap->status == 'published' ? 'checked' : '' }}>
+                                <input class="form-check-input" type="radio" name="status" id="filterRadio1" value="published" {{ $snap->status == 'published' ? 'checked' : '' }}>
                                 <label class="form-check-label" for="filterRadio1">
                                     نشر
                                 </label>
                             </div>
                             <div class="form-check style-2">
                                 <input {{ $snap->status == 'draft' ? 'checked' : '' }} class="form-check-input" type="radio" name="status" id="filterRadio2" value="draft">
-                                <label  class="form-check-label" for="filterRadio2">
+                                <label class="form-check-label" for="filterRadio2">
                                     مسودة
                                 </label>
                             </div>
                         </div>
-    <input type="hidden" id="subCategory_ids" name="subCategory_ids" value="">
-
-
+                        <input type="hidden" id="subCategory_ids" name="subCategory_ids" value="">
                         <button type="submit" class="btn btn-lg btn-thin btn-primary w-100 rounded-xl">حفظ</button>
-                    
                     </form>
                 </div>
-
         </main>
+
     </div>
+    @php
+    $selectedSubCategoryIds = $snap->subCategories->pluck('id')->toArray();
+    @endphp
+
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script>
+        document.getElementById('change-video-btn').addEventListener('click', function() {
+            document.getElementById('upload-area').style.display = 'block';
+            document.getElementById('video-preview').classList.add('hidden');
+            document.getElementById('fil-ttd').value = '';
+            selectedFile = null;
+            videoDuration = 0;
+            document.getElementById('message-container').innerHTML = '';
+        });
+
         let selectedFile = null;
         let videoDuration = 0;
 
-        document.getElementById('fil-ttd').addEventListener('change', function(e) {
-            const file = e.target.files[0];
+        function showMessage(message, type) {
+            console.log('نوع الرسالة:', type);
 
-            if (!file) return;
+            // البحث عن message-container في video-preview أولاً
+            let container = document.querySelector('#video-preview #message-container');
 
-            if (!file.type.startsWith('video/')) {
-                showMessage('يرجى اختيار ملف فيديو صالح', 'error');
-                return;
-            }
+            // إذا لم يجد أو كان مخفياً، قم بإنشاء container جديد في upload-area
+            if (!container || document.getElementById('video-preview').classList.contains('hidden')) {
+                container = document.querySelector('#upload-area #message-container');
 
-            // التحقق من حجم الملف (50MB كحد أقصى)
-            const maxSize = 50 * 1024 * 1024; // 50MB
-            if (file.size > maxSize) {
-                showMessage('حجم الفيديو كبير جداً. الحد الأقصى 50 ميجابايت', 'error');
-                return;
-            }
+                // إذا لم يوجد، أنشئ واحد جديد
+                if (!container) {
+                    container = document.createElement('div');
+                    container.id = 'message-container';
+                    container.style.cssText = 'margin-top: 15px; text-align: center;';
 
-            selectedFile = file;
-            previewVideo(file);
-        });
-
-        function previewVideo(file) {
-            const video = document.getElementById('preview-video');
-            const url = URL.createObjectURL(file);
-
-            video.src = url;
-
-            video.addEventListener('loadedmetadata', function() {
-                videoDuration = video.duration;
-
-                // التحقق من مدة الفيديو
-                if (videoDuration > 60) {
-                    showMessage('مدة الفيديو أكثر من 60 ثانية. يرجى اختيار فيديو أقصر', 'error');
-                    removeVideo();
-                    return;
+                    const uploadArea = document.querySelector('#upload-area .text-center');
+                    if (uploadArea) {
+                        uploadArea.appendChild(container);
+                    }
                 }
+            }
 
-                // إظهار معلومات الفيديو
-                updateVideoInfo(file, videoDuration);
+            if (!container) {
+                console.error('لا يمكن العثور على أو إنشاء message-container');
+                return;
+            }
 
-                // إخفاء منطقة الرفع وإظهار المعاينة
-                document.getElementById('upload-area').classList.add('hidden');
-                document.getElementById('video-preview').classList.remove('hidden');
+            const messageClass = type === 'error' ? 'error-message' : 'success-message';
+            const iconClass = type === 'error' ? '❌' : '✅';
+            const bgColor = type === 'error' ? '#f8d7da' : '#d4edda';
+            const textColor = type === 'error' ? '#721c24' : '#155724';
+            const borderColor = type === 'error' ? '#f5c6cb' : '#c3e6cb';
 
-                showMessage('تم تحميل الفيديو بنجاح! يمكنك الآن مراجعته ورفعه', 'success');
-            });
+            container.innerHTML = `
+<div class="${messageClass}" style="
+            background-color: ${bgColor};
+            color: ${textColor};
+            border: 1px solid ${borderColor};
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+            text-align: center;
+            font-weight: bold;
+            position: relative;
+            z-index: 1000;
+        ">
+    ${iconClass} ${message}
+</div>
+`;
 
-            video.addEventListener('error', function() {
-                showMessage('حدث خطأ في تحميل الفيديو', 'error');
-                removeVideo();
+            // إزالة الرسالة بعد 5 ثواني
+            setTimeout(() => {
+                if (container) {
+                    container.innerHTML = '';
+                }
+            }, 5000);
+        }
+
+        function resetVideoUpload() {
+            const video = document.getElementById('preview-video');
+            video.src = "";
+            document.getElementById('upload-area').style.display = 'block';
+            document.getElementById('video-preview').classList.add('hidden');
+            document.getElementById('fil-ttd').value = '';
+            selectedFile = null;
+            videoDuration = 0;
+
+            // مسح جميع الرسائل
+            const allMessageContainers = document.querySelectorAll('#message-container');
+            allMessageContainers.forEach(container => {
+                container.innerHTML = '';
             });
         }
 
@@ -933,22 +962,106 @@
                 `الحجم: ${sizeInMB} ميجابايت`;
         }
 
-        function removeVideo() {
-            selectedFile = null;
-            videoDuration = 0;
+        function previewVideo(file) {
+            const video = document.getElementById('preview-video');
+            const url = URL.createObjectURL(file);
+            video.src = url;
 
-            // إعادة تعيين input الملف
-            document.getElementById('fil-ttd').value = '';
+            video.addEventListener('loadedmetadata', function() {
+                videoDuration = video.duration;
 
-            // إخفاء المعاينة وإظهار منطقة الرفع
-            document.getElementById('video-preview').classList.add('hidden');
-            document.getElementById('upload-area').classList.remove('hidden');
+                if (videoDuration > 60) {
+                    // First, reset everything for a clean state
+                    resetVideoUpload();
+                    // Then, show the specific error message
+                    showMessage('مدة الفيديو أكثر من 60 ثانية. يرجى اختيار فيديو أقصر.', 'error');
+                    return; // Stop further processing
+                }
 
-            // مسح الرسائل
-            document.getElementById('message-container').innerHTML = '';
+                updateVideoInfo(file, videoDuration);
+                document.getElementById('upload-area').style.display = 'none';
+                document.getElementById('video-preview').classList.remove('hidden');
+                showMessage('تم تحميل الفيديو بنجاح! يمكنك الآن مراجعته ورفعه', 'success');
+            }, {
+                once: true
+            });
 
-            // إعادة تعيين شريط التقدم
-            document.getElementById('progress-fill').style.width = '0%';
+            video.addEventListener('error', function() {
+                resetVideoUpload(); // Reset on error
+                showMessage('مدة الفيديو أكثر من 60 ثانية. يرجى اختيار فيديو أقصر.', 'error');
+
+            }, {
+                once: true
+            });
+        }
+
+        // In the 'fil-ttd' change event listener:
+        document.getElementById('fil-ttd').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (!file) {
+                // Clear any existing messages if the user clears the selection
+                document.getElementById('message-container').innerHTML = '';
+                return;
+            }
+
+            if (!file.type.startsWith('video/')) {
+                resetVideoUpload(); // Reset before showing error
+                showMessage('يرجى اختيار ملف فيديو صالح', 'error');
+                return;
+            }
+
+            const maxSize = 50 * 1024 * 1024; // 50MB
+            if (file.size > maxSize) {
+                resetVideoUpload(); // Reset before showing error
+                showMessage('حجم الفيديو كبير جداً. الحد الأقصى 50 ميجابايت', 'error');
+                return;
+            }
+
+            selectedFile = file;
+            previewVideo(file);
+        });
+
+
+
+        // Event listener لتحديد الفيديو
+        document.getElementById('fil-ttd').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            // التحقق من نوع الملف
+            if (!file.type.startsWith('video/')) {
+                showMessage('يرجى اختيار ملف فيديو صالح', 'error');
+                this.value = ''; // إعادة تعيين قيمة الـ input
+                return;
+            }
+
+            // التحقق من حجم الملف
+            const maxSize = 50 * 1024 * 1024; // 50MB
+            if (file.size > maxSize) {
+                showMessage('حجم الفيديو كبير جداً. الحد الأقصى 50 ميجابايت', 'error');
+                this.value = ''; // إعادة تعيين قيمة الـ input
+                return;
+            }
+
+            selectedFile = file;
+            previewVideo(file);
+        });
+
+        function simulateUpload() {
+            document.getElementById('progress-bar').style.display = 'block';
+            const progressFill = document.getElementById('progress-fill');
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += Math.random() * 15;
+                if (progress >= 100) {
+                    progress = 100;
+                    clearInterval(interval);
+                    showMessage('تم رفع الفيديو بنجاح!', 'success');
+                    document.getElementById('progress-bar').style.display = 'none';
+                    progressFill.style.width = '0%';
+                }
+                progressFill.style.width = progress + '%';
+            }, 200);
         }
 
         function uploadVideo() {
@@ -957,51 +1070,48 @@
                 return;
             }
 
-            // محاكاة عملية الرفع
+            // التحقق من المدة والحجم مرة أخرى قبل الرفع
+            if (videoDuration > 60) {
+                showMessage('مدة الفيديو أكثر من 60 ثانية. يرجى اختيار فيديو أقصر.', 'error');
+                resetVideoUpload();
+                return;
+            }
+
+            if (selectedFile.size > 50 * 1024 * 1024) {
+                showMessage('حجم الفيديو كبير جداً. الحد الأقصى 50 ميجابايت', 'error');
+                resetVideoUpload();
+                return;
+            }
+
             simulateUpload();
         }
 
-        function simulateUpload() {
-            const progressFill = document.getElementById('progress-fill');
-            let progress = 0;
+        // إضافة CSS للرسائل
+        const style = document.createElement('style');
+        style.textContent = `
+.error-message {
+animation: fadeIn 0.3s ease-in;
+}
 
-            const interval = setInterval(() => {
-                progress += Math.random() * 15;
+.success-message {
+animation: fadeIn 0.3s ease-in;
+}
 
-                if (progress >= 100) {
-                    progress = 100;
-                    clearInterval(interval);
-                    showMessage('تم رفع الفيديو بنجاح!', 'success');
+@keyframes fadeIn {
+from { opacity: 0; transform: translateY(-10px); }
+to { opacity: 1; transform: translateY(0); }
+}
+`;
+        document.head.appendChild(style);
 
-                    // هنا يمكنك إضافة كود الرفع الفعلي للسيرفر
-                    // uploadToServer(selectedFile);
-                }
 
-                progressFill.style.width = progress + '%';
-            }, 200);
-        }
 
-        function showMessage(message, type) {
-            const container = document.getElementById('message-container');
-            const messageClass = type === 'error' ? 'error-message' : 'success-message';
-
-            container.innerHTML = `<div class="${messageClass}">${message}</div>`;
-
-            // إزالة الرسالة بعد 5 ثواني
-            setTimeout(() => {
-                container.innerHTML = '';
-            }, 5000);
-        }
-
-        // إضافة إمكانية السحب والإفلات
         const uploadArea = document.getElementById('upload-area');
-
         uploadArea.addEventListener('dragover', function(e) {
             e.preventDefault();
             uploadArea.style.backgroundColor = '#e3f2fd';
             uploadArea.style.borderColor = '#007bff';
         });
-
         uploadArea.addEventListener('dragleave', function(e) {
             e.preventDefault();
             uploadArea.style.backgroundColor = '#f8f9fa';
@@ -1012,13 +1122,10 @@
             e.preventDefault();
             uploadArea.style.backgroundColor = '#f8f9fa';
             uploadArea.style.borderColor = '#dee2e6';
-
             const files = e.dataTransfer.files;
             if (files.length > 0) {
                 const file = files[0];
                 document.getElementById('fil-ttd').files = files;
-
-                // تشغيل event change يدوياً
                 const event = new Event('change', {
                     bubbles: true
                 });
@@ -1026,74 +1133,42 @@
             }
         });
 
-    </script>
-@php
-$selectedSubCategoryIds = $snap->subCategories->pluck('id')->toArray();
-@endphp
+        document.addEventListener('DOMContentLoaded', function() {
+            const mainCategorySelect = document.getElementById('main_category_id');
+            const subCategoryContainer = document.getElementById('subcategory-container');
+            const subCategoryIdsInput = document.getElementById('subCategory_ids');
+            const savedSubCategories = @json($selectedSubCategoryIds);
+            console.log('التصنيفات المحفوظة:', savedSubCategories);
 
-
-    <script>
-    document.addEventListener('DOMContentLoaded', function() {
-    const mainCategorySelect = document.getElementById('main_category_id');
-    const subCategoryContainer = document.getElementById('subcategory-container');
-    const subCategoryIdsInput = document.getElementById('subCategory_ids');
-
-    // احصل على معرفات التصنيفات الفرعية المرتبطة بهذا السناب
-    const savedSubCategories = @json($selectedSubCategoryIds);
-    console.log('التصنيفات المحفوظة:', savedSubCategories); // للتأكد من البيانات
-
-
-            // دالة لجلب التصنيفات الفرعية
             function loadSubcategories(mainCategoryId, selectedSubCategories = []) {
                 if (!mainCategoryId) {
                     subCategoryContainer.innerHTML = '';
                     subCategoryIdsInput.value = '';
                     return;
                 }
-
-                // إظهار مؤشر التحميل
                 subCategoryContainer.innerHTML = '<div class="text-center">جاري التحميل...</div>';
-
-                // استخدام fetch للحصول على التصنيفات الفرعية
-                fetch(`/c1he3f/get-subcategories/${mainCategoryId}`)
-                    .then(response => response.json())
+                fetch(`/c1he3f/snaps/get-subcategories/${mainCategoryId}`).then(response => response.json())
                     .then(data => {
                         if (data.length === 0) {
                             subCategoryContainer.innerHTML = '<div class="text-muted">لا توجد تصنيفات فرعية لهذا التصنيف</div>';
                             return;
                         }
-
                         let html = '<div class="form-group"><label>التصنيفات الفرعية:</label><div class="subcategory-checkboxes">';
-
                         data.forEach(subCategory => {
-                            // التحقق من أن التصنيف الفرعي محدد مسبقاً
-                            // نحول كلاً من القيم إلى string للمقارنة الصحيحة
                             const isSelected = selectedSubCategories.map(id => String(id)).includes(String(subCategory.id));
                             const isChecked = isSelected ? 'checked' : '';
-
                             console.log(`التصنيف ${subCategory.id}: محدد = ${isSelected}`); // للتأكد
-
                             html += `
-                        <div class="form-check">
-                            <input class="form-check-input subcategory-checkbox" 
-                                   type="checkbox" 
-                                   value="${subCategory.id}" 
-                                   id="subcat_${subCategory.id}"
-                                   ${isChecked}>
-                            <label class="form-check-label" style="margin-right: 31px;" for="subcat_${subCategory.id}">
-                                ${subCategory.name_ar}
-                            </label>
-                        </div>
-                    `;
+                            <div class="form-check">
+                                <input class="form-check-input subcategory-checkbox" type="checkbox" value="${subCategory.id}" id="subcat_${subCategory.id}" ${isChecked}>
+                                <label class="form-check-label" style="margin-right: 31px;" for="subcat_${subCategory.id}">
+                                    ${subCategory.name_ar}
+                                </label>
+                            </div>`;
                         });
-
                         html += '</div></div>';
                         subCategoryContainer.innerHTML = html;
-
-                        // إضافة event listeners للـ checkboxes
                         addCheckboxListeners();
-
-                        // تحديث القيم المخفية
                         updateSelectedSubcategories();
                     })
                     .catch(error => {
@@ -1102,7 +1177,6 @@ $selectedSubCategoryIds = $snap->subCategories->pluck('id')->toArray();
                     });
             }
 
-            // دالة لإضافة event listeners للـ checkboxes
             function addCheckboxListeners() {
                 const checkboxes = document.querySelectorAll('.subcategory-checkbox');
                 checkboxes.forEach(checkbox => {
@@ -1110,44 +1184,31 @@ $selectedSubCategoryIds = $snap->subCategories->pluck('id')->toArray();
                 });
             }
 
-function updateSelectedSubcategories() {
-const checkboxes = document.querySelectorAll('.subcategory-checkbox:checked');
-const selectedIds = Array.from(checkboxes).map(cb => cb.value);
-const subCategoryIdsInput = document.getElementById('subCategory_ids');
+            function updateSelectedSubcategories() {
+                const checkboxes = document.querySelectorAll('.subcategory-checkbox:checked');
+                const selectedIds = Array.from(checkboxes).map(cb => cb.value);
+                const subCategoryIdsInput = document.getElementById('subCategory_ids');
+                subCategoryIdsInput.parentNode.querySelectorAll('input[name="subCategory_ids[]"]').forEach(input => input.remove());
+                selectedIds.forEach(id => {
+                    const input = document.createElement('input');
+                    input.type = 'hidden';
+                    input.name = 'subCategory_ids[]';
+                    input.value = id;
+                    subCategoryIdsInput.parentNode.appendChild(input);
+                });
+                console.log('القيم المحدثة:', selectedIds);
+            }
 
-// إزالة أي مدخلات مخفية سابقة
-subCategoryIdsInput.parentNode.querySelectorAll('input[name="subCategory_ids[]"]').forEach(input => input.remove());
-
-// إضافة مدخل مخفي لكل معرف
-selectedIds.forEach(id => {
-const input = document.createElement('input');
-input.type = 'hidden';
-input.name = 'subCategory_ids[]';
-input.value = id;
-subCategoryIdsInput.parentNode.appendChild(input);
-});
-
-console.log('القيم المحدثة:', selectedIds);
-}
-
-
-            // عند تغيير التصنيف الرئيسي
             mainCategorySelect.addEventListener('change', function() {
                 const selectedMainCategory = this.value;
                 loadSubcategories(selectedMainCategory);
             });
-
-            // تحميل التصنيفات الفرعية عند تحميل الصفحة (إذا كان هناك تصنيف رئيسي محدد مسبقاً)
             const currentMainCategory = mainCategorySelect.value;
             if (currentMainCategory) {
-                // تمرير التصنيفات المحفوظة مباشرة
                 loadSubcategories(currentMainCategory, savedSubCategories);
             }
         });
 
-    </script>
-
-    <script>
         $(document).ready(function() {
             $('#kitchen-search').select2({
                 placeholder: "إختر مطبخ"
@@ -1164,19 +1225,16 @@ console.log('القيم المحدثة:', selectedIds);
                 , allowClear: true
             });
 
-
-            let selectedSubcategories = {}; // Object to store selected subcategories {id: name_ar}
+            let selectedSubcategories = {};
 
             function updateSelectedSubcategoriesDisplay() {
                 const container = $('#selected-subcategories');
-                container.empty(); // Clear current display
-
+                container.empty();
                 const ids = Object.keys(selectedSubcategories);
                 if (ids.length === 0) {
                     container.addClass('empty').text('لم يتم اختيار أي تصنيفات فرعية بعد');
                 } else {
-                    container.removeClass('empty').text(''); // Remove the placeholder text
-
+                    container.removeClass('empty').text('');
                     ids.forEach(id => {
                         const name = selectedSubcategories[id];
                         const itemHtml = `
@@ -1188,29 +1246,22 @@ console.log('القيم المحدثة:', selectedIds);
                         container.append(itemHtml);
                     });
                 }
-                $('#subcategory-ids').val(ids.join(',')); // Update the hidden input field
+                $('#subcategory-ids').val(ids.join(','));
             }
-
-            // Initial display check
             updateSelectedSubcategoriesDisplay();
-
             $('#mainCategorie-search').on('change', function() {
                 const mainCategoryId = $(this).val();
                 const subCategorySelect = $('#subCategory-search');
-                subCategorySelect.empty().append($('<option value="">إختر التصنيف الفرعي لإضافته</option>')); // Clear existing options and add default
-
+                subCategorySelect.empty().append($('<option value="">إختر التصنيف الفرعي لإضافته</option>'));
                 if (mainCategoryId) {
-                    // Show a loading indicator in the select box
                     subCategorySelect.append($('<option disabled>جارٍ التحميل...</option>'));
-
                     $.ajax({
-                        url: `/api/subcategories/${mainCategoryId}`, // Adjust this API endpoint as needed
-                        method: 'GET'
+                        url: `/api/subcategories/${mainCategoryId}`
+                        , method: 'GET'
                         , success: function(data) {
                             subCategorySelect.empty().append($(
-                                '<option value="">إختر التصنيف الفرعي لإضافته</option>')); // Clear loading
+                                '<option value="">إختر التصنيف الفرعي لإضافته</option>'));
                             data.forEach(subCategory => {
-                                // Only add if not already selected
                                 if (!selectedSubcategories[subCategory.id]) {
                                     subCategorySelect.append(new Option(subCategory
                                         .name_ar, subCategory.id));
@@ -1225,42 +1276,31 @@ console.log('القيم المحدثة:', selectedIds);
                     });
                 }
             });
-
             $('#subCategory-search').on('change', function() {
                 const subcategoryId = $(this).val();
                 const subcategoryName = $(this).find('option:selected').text();
-
                 if (subcategoryId && !selectedSubcategories[subcategoryId]) {
                     selectedSubcategories[subcategoryId] = subcategoryName;
                     updateSelectedSubcategoriesDisplay();
-
-                    // Remove the selected option from the dropdown to prevent re-selection
                     $(this).find(`option[value="${subcategoryId}"]`).remove();
-                    $(this).val(''); // Reset dropdown
+                    $(this).val('');
                 }
             });
-
-            // Handle removal of subcategory
             $('#selected-subcategories').on('click', '.remove-btn', function() {
                 const idToRemove = $(this).data('id');
                 const $itemToRemove = $(this).closest('.selected-item');
-
-                $itemToRemove.addClass('removing'); // Add animation class
-
+                $itemToRemove.addClass('removing');
                 $itemToRemove.on('animationend', function() {
                     delete selectedSubcategories[idToRemove];
                     updateSelectedSubcategoriesDisplay();
-
-                    // Re-add the option to the main dropdown if its parent category is currently selected
                     const mainCategoryId = $('#mainCategorie-search').val();
                     if (mainCategoryId) {
                         $.ajax({
-                            url: `/api/subcategory-details/${idToRemove}`, // Fetch details of the removed subcategory
-                            method: 'GET'
+                            url: `/api/subcategory-details/${idToRemove}`
+                            , method: 'GET'
                             , success: function(data) {
                                 if (data && data.main_category_id == mainCategoryId) {
                                     const subCategorySelect = $('#subCategory-search');
-                                    // Append the option back in alphabetical order if desired, or just at the end
                                     subCategorySelect.append(new Option(data.name_ar, data
                                         .id));
                                 }
@@ -1270,124 +1310,6 @@ console.log('القيم المحدثة:', selectedIds);
                 });
             });
         });
-
-    </script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const fileInput = document.getElementById('fil-ttd');
-            const uploadArea = document.getElementById('upload-area');
-            const videoPreview = document.getElementById('video-preview');
-            const previewVideo = document.getElementById('preview-video');
-            const videoInfo = document.getElementById('video-info');
-            const progressBar = document.getElementById('progress-bar');
-            const changeVideoBtn = document.getElementById('change-video-btn');
-
-            // إذا كان هناك فيديو محفوظ، قم بتحميل معلوماته
-            @if($snap->video_path)
-            loadVideoInfo('{{ asset('
-                storage / ' . $snap->video_path) }}');
-            @endif
-
-            // عند تغيير الملف
-            fileInput.addEventListener('change', function(e) {
-                const file = e.target.files[0];
-                if (file) {
-                    // التحقق من نوع الملف
-                    if (!file.type.startsWith('video/')) {
-                        alert('يرجى اختيار ملف فيديو صالح');
-                        return;
-                    }
-
-                    // التحقق من حجم الملف (60MB كحد أقصى)
-                    if (file.size > 60 * 1024 * 1024) {
-                        alert('حجم الفيديو يجب أن يكون أقل من 60 ميجابايت');
-                        return;
-                    }
-
-                    // إنشاء URL للمعاينة
-                    const videoUrl = URL.createObjectURL(file);
-
-                    // إخفاء منطقة الرفع وإظهار المعاينة
-                    uploadArea.style.display = 'none';
-                    videoPreview.classList.remove('hidden');
-
-                    // تحديث مصدر الفيديو
-                    previewVideo.src = videoUrl;
-
-                    // تحديث معلومات الفيديو
-                    updateVideoInfo(file);
-
-                    // تحديث النص في الزر
-                    changeVideoBtn.textContent = 'تغيير الفيديو';
-                }
-            });
-
-            function loadVideoInfo(videoUrl) {
-                const video = document.createElement('video');
-                video.src = videoUrl;
-
-                video.addEventListener('loadedmetadata', function() {
-                    const duration = Math.round(video.duration);
-                    const minutes = Math.floor(duration / 60);
-                    const seconds = duration % 60;
-
-                    document.getElementById('video-duration').textContent =
-                        `المدة: ${minutes}:${seconds.toString().padStart(2, '0')}`;
-                });
-            }
-
-            function updateVideoInfo(file) {
-                // حساب حجم الملف
-                const fileSize = (file.size / (1024 * 1024)).toFixed(2);
-                document.getElementById('video-size').textContent = `الحجم: ${fileSize} ميجابايت`;
-
-                // حساب مدة الفيديو
-                const video = document.createElement('video');
-                video.src = URL.createObjectURL(file);
-
-                video.addEventListener('loadedmetadata', function() {
-                    const duration = Math.round(video.duration);
-
-                    if (duration > 60) {
-                        alert('مدة الفيديو يجب أن تكون أقل من 60 ثانية');
-                        removeVideo();
-                        return;
-                    }
-
-                    const minutes = Math.floor(duration / 60);
-                    const seconds = duration % 60;
-
-                    document.getElementById('video-duration').textContent =
-                        `المدة: ${minutes}:${seconds.toString().padStart(2, '0')}`;
-                });
-            }
-        });
-
-        function changeVideo() {
-            document.getElementById('fil-ttd').click();
-        }
-
-        function removeVideo() {
-            const fileInput = document.getElementById('fil-ttd');
-            const uploadArea = document.getElementById('upload-area');
-            const videoPreview = document.getElementById('video-preview');
-            const previewVideo = document.getElementById('preview-video');
-
-            // إعادة تعيين الملف
-            fileInput.value = '';
-
-            // إخفاء المعاينة وإظهار منطقة الرفع
-            videoPreview.classList.add('hidden');
-            uploadArea.style.display = 'block';
-
-            // مسح مصدر الفيديو
-            previewVideo.src = '';
-
-            // مسح معلومات الفيديو
-            document.getElementById('video-info').innerHTML = '<strong>معلومات الفيديو:</strong><br>';
-            document.getElementById('video-duration').textContent = '';
-            document.getElementById('video-size').textContent = '';
-        }
 
     </script>
 

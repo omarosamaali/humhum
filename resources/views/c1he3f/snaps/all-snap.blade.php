@@ -148,9 +148,6 @@
                 <div class="mid-content">
                     <h4 class="title"> عدسة الطاهي</h4>
                 </div>
-                <!-- <div class="right-content">
-					<a href="{{ route('c1he3f.index') }}" class=""><i class="feather icon-home font-24"></i></a>
-				</div> -->
             </div>
         </header>
         <!-- Header -->
@@ -180,29 +177,161 @@
                                     <div class="dz-card list">
                                         <div class="dz-media">
                                             <a href="{{ route('c1he3f.snaps.lens-show', $snap) }}">
-
-
                                                 @if ($snap && $snap->video_path)
-                                                <video width="120" style="border-radius: var(--border-radius);" height="132" controls>
-                                                    <source src="{{ Storage::url($snap->video_path) }}" type="video/mp4">
-                                                    Your browser does not support the video tag.
-                                                </video>
+                                                <div style="position: relative; width: 120px; height: 132px;">
+                                                    <video width="120" height="132" style="border-radius: var(--border-radius); object-fit: cover;" preload="metadata" muted>
+                                                        <source src="{{ Storage::url($snap->video_path) }}#t=1" type="video/mp4">
+                                                        Your browser does not support the video tag.
+                                                    </video>
+                                                </div>
                                                 @else
                                                 <p>الفيديو غير متاح.</p>
                                                 @endif
-
-                                                <div class="dz-rating" style="background-color: var(--primary);">
+                                                <div class="dz-rating" style="left: 25px; background-color: var(--primary);">
                                                     {{ $snap->likes_count ?? 0 }}
-
                                                     <i class="feather icon-heart-on"></i>
                                                 </div>
+                                            </a>
                                         </div>
                                         <div class="dz-content">
                                             <div class="dz-head">
                                                 <h6 class="title"> <a href="{{ route('c1he3f.snaps.lens-show', $snap) }}">
-
-
                                                         {{ $snap->name }}</a></h6>
+                                                <div style="display: flex;">
+                                                    <h6 class="title" style="font-size: 13px; background-color: green; color: white; width: fit-content; padding: 3px; border-radius: 5px; ">
+                                                        {{ $snap->mainCategory->name_ar ?? 'غير محدد' }}
+                                                    </h6>
+                                                    <div class="subcategory-container">
+                                                        @if($snap->subCategories->isNotEmpty())
+                                                        <div class="subcategory-list">
+                                                            @foreach($snap->subCategories as $subCategory)
+                                                            <span class="badge" style="font-size: 12px; background-color: #007bff; color: white; margin: 2px; padding: 3px 8px; border-radius: 5px;">
+                                                                {{ $subCategory->name_ar }}
+                                                            </span>
+                                                            @endforeach
+                                                        </div>
+                                                        @else
+                                                        <div class="text-muted">لا توجد تصنيفات فرعية</div>
+                                                        @endif
+                                                    </div>
+                                                </div>
+                                                <script>
+                                                    document.addEventListener('DOMContentLoaded', function() {
+                                                        const mainCategorySelect = document.getElementById('main_category_id');
+                                                        const subCategoryContainer = document.getElementById('subcategory-container');
+                                                        const subCategoryIdsInput = document.getElementById('subCategory_ids');
+                                                        const savedSubCategories = @json($subCategories);
+
+                                                        // احصل على معرفات التصنيفات الفرعية المرتبطة بهذا السناب
+                                                        const savedSubCategories = @json($subCategories);
+
+                                                        console.log('التصنيفات المحفوظة:', savedSubCategories); // للتأكد من البيانات
+
+
+                                                        // دالة لجلب التصنيفات الفرعية
+                                                        function loadSubcategories(mainCategoryId, selectedSubCategories = []) {
+                                                            if (!mainCategoryId) {
+                                                                subCategoryContainer.innerHTML = '';
+                                                                subCategoryIdsInput.value = '';
+                                                                return;
+                                                            }
+
+                                                            // إظهار مؤشر التحميل
+                                                            subCategoryContainer.innerHTML = '<div class="text-center">جاري التحميل...</div>';
+
+                                                            // استخدام fetch للحصول على التصنيفات الفرعية
+                                                            fetch(`/c1he3f/snaps/get-subcategories/${mainCategoryId}`).then(response => response.json())
+
+                                                                .then(data => {
+                                                                    if (data.length === 0) {
+                                                                        subCategoryContainer.innerHTML = '<div class="text-muted">لا توجد تصنيفات فرعية لهذا التصنيف</div>';
+                                                                        return;
+                                                                    }
+
+                                                                    let html = '<div class="form-group"><label>التصنيفات الفرعية:</label><div class="subcategory-checkboxes">';
+
+                                                                    data.forEach(subCategory => {
+                                                                        // التحقق من أن التصنيف الفرعي محدد مسبقاً
+                                                                        // نحول كلاً من القيم إلى string للمقارنة الصحيحة
+                                                                        const isSelected = selectedSubCategories.map(id => String(id)).includes(String(subCategory.id));
+                                                                        const isChecked = isSelected ? 'checked' : '';
+
+                                                                        console.log(`التصنيف ${subCategory.id}: محدد = ${isSelected}`); // للتأكد
+
+                                                                        html += `
+                        <div class="form-check">
+                            <input class="form-check-input subcategory-checkbox" 
+                                   type="checkbox" 
+                                   value="${subCategory.id}" 
+                                   id="subcat_${subCategory.id}"
+                                   ${isChecked}>
+                            <label class="form-check-label" style="margin-right: 31px;" for="subcat_${subCategory.id}">
+                                ${subCategory.name_ar}
+                            </label>
+                        </div>
+                    `;
+                                                                    });
+
+                                                                    html += '</div></div>';
+                                                                    subCategoryContainer.innerHTML = html;
+
+                                                                    // إضافة event listeners للـ checkboxes
+                                                                    addCheckboxListeners();
+
+                                                                    // تحديث القيم المخفية
+                                                                    updateSelectedSubcategories();
+                                                                })
+                                                                .catch(error => {
+                                                                    console.error('خطأ في جلب التصنيفات الفرعية:', error);
+                                                                    subCategoryContainer.innerHTML = '<div class="text-danger">خطأ في تحميل التصنيفات الفرعية</div>';
+                                                                });
+                                                        }
+
+                                                        // دالة لإضافة event listeners للـ checkboxes
+                                                        function addCheckboxListeners() {
+                                                            const checkboxes = document.querySelectorAll('.subcategory-checkbox');
+                                                            checkboxes.forEach(checkbox => {
+                                                                checkbox.addEventListener('change', updateSelectedSubcategories);
+                                                            });
+                                                        }
+
+                                                        function updateSelectedSubcategories() {
+                                                            const checkboxes = document.querySelectorAll('.subcategory-checkbox:checked');
+                                                            const selectedIds = Array.from(checkboxes).map(cb => cb.value);
+                                                            const subCategoryIdsInput = document.getElementById('subCategory_ids');
+
+                                                            // إزالة أي مدخلات مخفية سابقة
+                                                            subCategoryIdsInput.parentNode.querySelectorAll('input[name="subCategory_ids[]"]').forEach(input => input.remove());
+
+                                                            // إضافة مدخل مخفي لكل معرف
+                                                            selectedIds.forEach(id => {
+                                                                const input = document.createElement('input');
+                                                                input.type = 'hidden';
+                                                                input.name = 'subCategory_ids[]';
+                                                                input.value = id;
+                                                                subCategoryIdsInput.parentNode.appendChild(input);
+                                                            });
+
+                                                            console.log('القيم المحدثة:', selectedIds);
+                                                        }
+
+
+                                                        // عند تغيير التصنيف الرئيسي
+                                                        mainCategorySelect.addEventListener('change', function() {
+                                                            const selectedMainCategory = this.value;
+                                                            loadSubcategories(selectedMainCategory);
+                                                        });
+
+                                                        // تحميل التصنيفات الفرعية عند تحميل الصفحة (إذا كان هناك تصنيف رئيسي محدد مسبقاً)
+                                                        const currentMainCategory = mainCategorySelect.value;
+                                                        if (currentMainCategory) {
+                                                            // تمرير التصنيفات المحفوظة مباشرة
+                                                            loadSubcategories(currentMainCategory, savedSubCategories);
+                                                        }
+                                                    });
+
+                                                </script>
+
                                                 <ul class="tag-list">
                                                     <li class="dz-price" style="text-align: center; font-size: 14px;">
                                                         <i class="fa-solid fa-clock" style="color: var(--primary);"></i>
@@ -265,18 +394,20 @@
                                         <div class="dz-media">
                                             <a href="{{ route('c1he3f.snaps.lens-show', $snap) }}">
                                                 @if ($snap && $snap->video_path)
-                                                <video width="120" style="border-radius: var(--border-radius);" height="132" controls>
-                                                    <source src="{{ Storage::url($snap->video_path) }}" type="video/mp4">
-                                                    Your browser does not support the video tag.
-                                                </video>
+                                                <div style="position: relative; width: 120px; height: 132px;">
+                                                    <video width="120" height="132" style="border-radius: var(--border-radius); object-fit: cover;" preload="metadata" muted>
+                                                        <source src="{{ Storage::url($snap->video_path) }}#t=1" type="video/mp4">
+                                                        Your browser does not support the video tag.
+                                                    </video>
+                                                </div>
                                                 @else
                                                 <p>الفيديو غير متاح.</p>
                                                 @endif
-
-                                                <div class="dz-rating" style="background-color: var(--primary);">
+                                                <div class="dz-rating" style="left: 25px; background-color: var(--primary);">
                                                     {{ $snap->likes_count ?? 0 }}
                                                     <i class="feather icon-heart-on"></i>
                                                 </div>
+                                            </a>
                                         </div>
                                         <div class="dz-content">
                                             <div class="dz-head">
@@ -284,7 +415,7 @@
                                                     <a href="{{ route('c1he3f.snaps.lens-show', $snap) }}">
                                                         {{ $snap->name }}</a>
                                                 </h6>
-                                                <ul class="tag-list">
+                                                 <ul class="tag-list">
                                                     <li class="dz-price" style="text-align: center; font-size: 14px;">
                                                         <i class="fa-solid fa-clock" style="color: var(--primary);"></i>
                                                         {{ $snap->created_at->diffForHumans() ?? '5 دقيقة' }}
@@ -348,14 +479,10 @@
         </div>
         <!-- Main Content End -->
     </div>
-    <!--**********************************
-    Scripts
-***********************************-->
     <script>
         document.querySelector('form').addEventListener('submit', function(e) {
             console.log('Form submitted with response:', document.querySelector('input[name="response"]').value);
         });
-
     </script>
     <!-- Scripts -->
     <script src="{{ asset('assets/vendor/bootstrap-touchspin/dist/jquery.bootstrap-touchspin.min.js') }}"></script>

@@ -19,11 +19,6 @@ class Snap extends Model
         'recipe_id',
     ];
 
-    public function subCategories()
-    {
-        return $this->belongsToMany(SubCategory::class, 'snap_sub_category', 'snap_id', 'sub_category_id');
-    }
-
     public function user()
     {
         return $this->belongsTo(User::class);
@@ -34,6 +29,10 @@ class Snap extends Model
         return $this->belongsTo(Kitchens::class);
     }
 
+    public function subCategories()
+    {
+        return $this->belongsToMany(SubCategory::class, 'snap_sub_category', 'snap_id', 'sub_category_id');
+    }
     public function mainCategory()
     {
         return $this->belongsTo(MainCategories::class, 'main_category_id');

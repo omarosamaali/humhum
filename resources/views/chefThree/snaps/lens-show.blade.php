@@ -164,7 +164,7 @@
 
         .pause-icon {
             color: white;
-            justify-content: end;
+            justify-content: start;
             display: flex;
             font-size: 24px;
             padding-bottom: 30px;

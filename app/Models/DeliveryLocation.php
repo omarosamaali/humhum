@@ -9,8 +9,12 @@ class DeliveryLocation extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['user_id', 'country', 'city', 'area', 'delivery_fee'];
+    protected $fillable = ['user_id', 'country', 'city', 'area', 'delivery_fee', 'is_selected', 'has_market'];
 
+    protected $casts = [
+        'is_selected' => 'boolean',
+    ];
+    
     public function user()
     {
         return $this->belongsTo(User::class);

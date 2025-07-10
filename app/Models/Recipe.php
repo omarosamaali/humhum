@@ -35,27 +35,24 @@ class Recipe extends Model
         'protein',
         'is_free',
         'status',
+        'price',
         'user_id',
     ];
 
     protected $casts = [
         'steps' => 'array',
-        // 'ingredients' => 'array',
     ];
 
-    // علاقة الترجمات باستخدام morphMany
     public function translations()
     {
         return $this->morphMany(Translation::class, 'translatable');
     }
 
-    // الحصول على الترجمة للغة معينة
     public function getTranslation($languageCode)
     {
         return $this->translations()->where('language_code', $languageCode)->first();
     }
 
-    // الحصول على العنوان المترجم
     public function getTranslatedTitle($languageCode = null)
     {
         if (!$languageCode) {
@@ -70,7 +67,6 @@ class Recipe extends Model
         return $translation ? $translation->title : $this->title;
     }
 
-    // الحصول على الوصف المترجم
     public function getTranslatedDescription($languageCode = null)
     {
         if (!$languageCode) {
@@ -85,7 +81,6 @@ class Recipe extends Model
         return $translation ? $translation->description : ($this->description ?? '');
     }
 
-    // الحصول على المكونات المترجمة
     public function getTranslatedIngredients($languageCode = null)
     {
         if (!$languageCode) {
@@ -100,7 +95,6 @@ class Recipe extends Model
         return $translation ? $translation->ingredients : $this->ingredients;
     }
 
-    // الحصول على التعليمات المترجمة
     public function getTranslatedInstructions($languageCode = null)
     {
         if (!$languageCode) {
@@ -125,47 +119,6 @@ class Recipe extends Model
         });
     }
 
-    // public function setIngredientsAttribute($value)
-    // {
-    //     $this->attributes['ingredients'] = $value;
-    // }
-
-    // public function getIngredientsAttribute($value)
-    // {
-    //     if (empty($value)) {
-    //         return '';
-    //     }
-    //     return $value;
-    // }
-
-    // public function getParsedIngredientsAttribute()
-    // {
-    //     if (empty($this->attributes['ingredients'])) {
-    //         return [];
-    //     }
-    //     $parsedIngredients = [];
-    //     $lines = explode("\n", $this->attributes['ingredients']);
-    //     foreach ($lines as $line) {
-    //         $trimmedLine = trim($line);
-    //         if (empty($trimmedLine)) {
-    //             continue;
-    //         }
-    //         if (str_starts_with($trimmedLine, '##')) {
-    //             $parsedIngredients[] = [
-    //                 'type' => 'heading',
-    //                 'value' => ltrim($trimmedLine, '## ')
-    //             ];
-    //         } else {
-    //             $parsedIngredients[] = [
-    //                 'type' => 'ingredient',
-    //                 'value' => $trimmedLine
-    //             ];
-    //         }
-    //     }
-    //     return $parsedIngredients;
-    // }
-
-    // العلاقات
     public function subCategories()
     {
         return $this->belongsToMany(SubCategory::class, 'recipe_sub_category', 'recipe_id', 'sub_category_id');

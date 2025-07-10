@@ -71,7 +71,7 @@
 
     </style>
 </head>
-<body>
+<body style="direction: ltr;">
         <div class="page-wrapper">
 
             <!-- Preloader -->
@@ -93,7 +93,7 @@
                         </a>
                     </div>
                     <div class="mid-content">
-                        <h4 class="title">إتفاقية الإستخدام</h4>
+                        <h4 class="title">إضافة مكان</h4>
                     </div>
                     <div class="right-content"></div>
                 </div>
