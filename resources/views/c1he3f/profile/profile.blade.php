@@ -9,6 +9,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="author" content="DexignZone">
     <meta name="robots" content="index, follow">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
 
     <meta property="og:image" content="{{ asset('assets/images/social-image.png') }}">
 
@@ -41,6 +43,18 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700;800;900&family=Raleway:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        .delete-btn {
+            border: 0px;
+            background: red;
+            color: white;
+            font-weight: bold;
+            border-radius: 10px;
+            height: 48px;
+            min-width: 94px;
+        }
+
+    </style>
 </head>
 
 <body>
@@ -275,13 +289,178 @@
                                     <div class="dz-content">
                                         <p class="sub-title">البريد الإلكتروني</p>
                                         <h6 class="title">{{ Auth::user()->email }}</h6>
-
                                     </div>
                                 </li>
                             </ul>
-                            <a href="{{ route('c1he3f.profile.profileDisplayed') }}" class="btn btn-primary" style="width: 100% !important;
+                            <div style="display: flex; gap: 6px;">
+                                <a href="{{ route('c1he3f.profile.profileDisplayed') }}" class="btn btn-primary" style="width: 100% !important;
 							margin-bottom: 20px;
 							">كيف يرى عملائك ملفك</a>
+                                <div>
+                                    <button class="delete-btn" id="deleteAccountBtn">🗑️ حذف حسابي</button>
+                                </div>
+                                <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+                                <script>
+                                    document.addEventListener('DOMContentLoaded', function() {
+                                        // الكود الموجود هنا...
+
+                                        // إضافة وظيفة زر حذف الحساب
+                                        const deleteBtn = document.querySelector('.delete-btn');
+
+                                        if (deleteBtn) {
+                                            deleteBtn.addEventListener('click', function() {
+                                                Swal.fire({
+                                                    title: 'تأكيد حذف الحساب'
+                                                    , html: `
+<div style="text-align: right; margin-bottom: 20px;">
+    <p>لحذف حسابك نهائياً، يجب عليك كتابة كلمة <strong>delete</strong> في الحقل أدناه.</p>
+    <p style="color: #dc3545; font-size: 0.9em; margin-top: 10px;">
+        <strong>تحذير:</strong> سيتم حذف جميع بياناتك وإلغاء تفعيل جميع الوصفات والفيديوهات الخاصة بك نهائياً.
+    </p>
+    <p style="color: #dc3545; font-size: 0.9em; margin-top: 5px;">
+        <strong>هذا الإجراء لا يمكن التراجع عنه!</strong>
+    </p>
+</div>
+<div class="confirmation-input">
+    <label for="deleteConfirmationInput" style="display: block; margin-bottom: 8px; font-weight: bold;">اكتب كلمة "delete" للتأكيد:</label>
+    <input type="text" id="deleteConfirmationInput" class="swal2-input" placeholder="اكتب delete هنا" style="margin:0px; width: 100%; text-align: center;">
+    <div id="deleteInputError" class="error-text" style="display: none; color: #dc3545; font-size: 0.875em; margin-top: 5px;">يجب كتابة كلمة "delete" بالضبط</div>
+</div>
+`
+                                                    , icon: 'error'
+                                                    , showCancelButton: true
+                                                    , confirmButtonColor: '#dc3545'
+                                                    , cancelButtonColor: '#6c757d'
+                                                    , confirmButtonText: 'حذف الحساب نهائياً'
+                                                    , cancelButtonText: 'إلغاء'
+                                                    , customClass: {
+                                                        popup: 'text-right'
+                                                        , title: 'text-right'
+                                                        , content: 'text-right'
+                                                    }
+                                                    , preConfirm: () => {
+                                                        const inputValue = document.getElementById('deleteConfirmationInput').value;
+                                                        const errorDiv = document.getElementById('deleteInputError');
+
+                                                        if (inputValue !== 'delete') {
+                                                            errorDiv.style.display = 'block';
+                                                            return false;
+                                                        }
+                                                        return true;
+                                                    }
+                                                }).then((result) => {
+                                                    if (result.isConfirmed) {
+                                                        // الحصول على CSRF Token
+                                                        const csrfToken = getCSRFToken();
+
+                                                        if (!csrfToken) {
+                                                            Swal.fire({
+                                                                title: 'خطأ'
+                                                                , text: 'لم يتم العثور على رمز الحماية. يرجى تحديث الصفحة والمحاولة مرة أخرى.'
+                                                                , icon: 'error'
+                                                                , confirmButtonText: 'موافق'
+                                                                , customClass: {
+                                                                    popup: 'text-right'
+                                                                    , title: 'text-right'
+                                                                    , content: 'text-right'
+                                                                }
+                                                            });
+                                                            return;
+                                                        }
+
+                                                        // إرسال طلب حذف الحساب
+                                                        fetch('/delete-account', {
+                                                                method: 'POST'
+                                                                , headers: {
+                                                                    'Content-Type': 'application/json'
+                                                                    , 'X-CSRF-TOKEN': csrfToken
+                                                                }
+                                                                , body: JSON.stringify({
+                                                                    confirmation: 'delete'
+                                                                })
+                                                            })
+                                                            .then(response => response.json())
+                                                            .then(data => {
+                                                                if (data.success) {
+                                                                    Swal.fire({
+                                                                        title: 'تم حذف الحساب'
+                                                                        , text: 'تم حذف حسابك بنجاح. سيتم تسجيل خروجك الآن.'
+                                                                        , icon: 'success'
+                                                                        , confirmButtonText: 'موافق'
+                                                                        , customClass: {
+                                                                            popup: 'text-right'
+                                                                            , title: 'text-right'
+                                                                            , content: 'text-right'
+                                                                        }
+                                                                    }).then(() => {
+                                                                        // إعادة توجيه إلى صفحة تسجيل الدخول
+                                                                        window.location.href = '/login';
+                                                                    });
+                                                                } else {
+                                                                    Swal.fire({
+                                                                        title: 'خطأ'
+                                                                        , text: data.message || 'حدث خطأ أثناء حذف الحساب'
+                                                                        , icon: 'error'
+                                                                        , confirmButtonText: 'موافق'
+                                                                        , customClass: {
+                                                                            popup: 'text-right'
+                                                                            , title: 'text-right'
+                                                                            , content: 'text-right'
+                                                                        }
+                                                                    });
+                                                                }
+                                                            })
+                                                            .catch(error => {
+                                                                console.error('Error:', error);
+                                                                Swal.fire({
+                                                                    title: 'خطأ'
+                                                                    , text: 'حدث خطأ غير متوقع'
+                                                                    , icon: 'error'
+                                                                    , confirmButtonText: 'موافق'
+                                                                    , customClass: {
+                                                                        popup: 'text-right'
+                                                                        , title: 'text-right'
+                                                                        , content: 'text-right'
+                                                                    }
+                                                                });
+                                                            });
+                                                    }
+                                                });
+                                            });
+                                        }
+                                    });
+
+                                    // دالة للحصول على CSRF Token من مصادر مختلفة
+                                    function getCSRFToken() {
+                                        // محاولة الحصول على التوكن من meta tag
+                                        const metaToken = document.querySelector('meta[name="csrf-token"]');
+                                        if (metaToken) {
+                                            return metaToken.getAttribute('content');
+                                        }
+
+                                        // محاولة الحصول على التوكن من input hidden
+                                        const hiddenInput = document.querySelector('input[name="_token"]');
+                                        if (hiddenInput) {
+                                            return hiddenInput.value;
+                                        }
+
+                                        // محاولة الحصول على التوكن من cookie
+                                        const cookies = document.cookie.split(';');
+                                        for (let cookie of cookies) {
+                                            const [name, value] = cookie.trim().split('=');
+                                            if (name === 'XSRF-TOKEN') {
+                                                return decodeURIComponent(value);
+                                            }
+                                        }
+
+                                        return null;
+                                    }
+
+                                </script>
+
+
+
+                            </div>
                         </div>
 
                         <!-- Most Ordered -->
@@ -384,11 +563,11 @@
                                 </div>
                             </div>
                         </div>
-
                     </div>
                 </div>
             </main>
             <!-- Main Content End -->
+
 
             <div class="menubar-area footer-fixed">
                 @php

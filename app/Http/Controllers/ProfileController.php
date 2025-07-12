@@ -10,12 +10,118 @@ use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
 use App\Models\ChefMarket;
 use App\Models\DeliveryLocation;
-// Import Log
-use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
+use App\Models\User;
+use App\Models\Recipe;
+use App\Models\Snap;use Illuminate\Support\Facades\Log;
 
 class ProfileController extends Controller
 {
-  
+    public function deleteAccount(Request $request)
+    {
+        try {
+            // التحقق من أن المستخدم مسجل دخول
+            if (!Auth::check()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'يجب تسجيل الدخول أولاً'
+                ], 401);
+            }
+
+            // التحقق من كلمة التأكيد
+            if ($request->confirmation !== 'delete') {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'يجب كتابة كلمة delete للتأكيد'
+                ], 400);
+            }
+
+            $user = Auth::user();
+            $userId = $user->id;
+            $originalEmail = $user->email;
+
+            // بدء المعاملة
+            DB::beginTransaction();
+
+            try {
+                // تحديث حالة جميع الوصفات إلى inactive
+                Recipe::where('user_id', $userId)->update([
+                    'status' => '0',
+                    'updated_at' => now()
+                ]);
+
+                // تحديث حالة جميع الـ snaps إلى inactive
+                Snap::where('user_id', $userId)->update([
+                    'status' => '0',
+                    'updated_at' => now()
+                ]);
+
+                // إنشاء إيميل جديد بإضافة delete_ مع رقم عشوائي
+                $randomNumber = rand(100, 999);
+                $newEmail = 'delete_' . $randomNumber . $originalEmail;
+
+                // التأكد من أن الإيميل الجديد غير موجود
+                while (User::where('email', $newEmail)->exists()) {
+                    $randomNumber = rand(100, 999);
+                    $newEmail = 'delete_' . $randomNumber . $originalEmail;
+                }
+
+                // تحديث بيانات المستخدم
+                $user->update([
+                    'email' => $newEmail,
+                    'status' => 'cancelled', // أو 'deleted' حسب ما تفضل
+                    'email_verified_at' => null,
+                    'deleted_at' => now(), // إذا كنت تستخدم soft delete
+                    'updated_at' => now()
+                ]);
+
+                // حذف الجلسات النشطة للمستخدم
+                DB::table('sessions')->where('user_id', $userId)->delete();
+
+                // تسجيل خروج المستخدم
+                Auth::logout();
+
+                // إنهاء المعاملة
+                DB::commit();
+
+                return response()->json([
+                    'success' => true,
+                    'message' => 'تم حذف الحساب بنجاح'
+                ]);
+            } catch (\Exception $e) {
+                DB::rollback();
+                throw $e;
+            }
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'حدث خطأ أثناء حذف الحساب: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+    public function checkEmailAvailability(Request $request)
+    {
+        $email = $request->email;
+        $existingUser = User::where('email', $email)->first();
+        if ($existingUser && $existingUser->status === 'cancelled') {
+            return response()->json([
+                'available' => false,
+                'message' => 'هذا الإيميل مستخدم مسبقاً'
+            ]);
+        }
+        $deletedUser = User::where('email', 'like', 'delete_%' . $email)->first();
+        if ($deletedUser) {
+            return response()->json([
+                'available' => true,
+                'message' => 'يمكن استخدام هذا الإيميل'
+            ]);
+        }
+        return response()->json([
+            'available' => !$existingUser,
+            'message' => $existingUser ? 'هذا الإيميل مستخدم مسبقاً' : 'يمكن استخدام هذا الإيميل'
+        ]);
+    }
     public function showDeliveryLocations()
     {
         $deliveryLocations = DeliveryLocation::where('user_id', Auth::id())->get();

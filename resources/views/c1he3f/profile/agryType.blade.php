@@ -104,26 +104,22 @@
         </main>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const contractTypeSelect = document.getElementById('contract_type');
-        const subscriptionFields = document.getElementById('subscription-fields');
-        const contractForm = document.getElementById('contractForm');
-        const currentContractType = '{{ Auth::user()->chefProfile->contract_type ?? "" }}';
-
-        function toggleFields() {
-            subscriptionFields.style.display = contractTypeSelect.value === 'annual_subscription' ? 'block' : 'none';
-        }
-
-        toggleFields();
-
-        contractTypeSelect.addEventListener('change', function() {
-            const selectedValue = this.value;
-
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const contractTypeSelect = document.getElementById('contract_type');
+            const subscriptionFields = document.getElementById('subscription-fields');
+            const contractForm = document.getElementById('contractForm');
+            const currentContractType = '{{ Auth::user()->chefProfile->contract_type ?? "" }}';
+            function toggleFields() {
+                subscriptionFields.style.display = contractTypeSelect.value === 'annual_subscription' ? 'block' : 'none';
+            }
+            toggleFields();
+            contractTypeSelect.addEventListener('change', function() {
+                const selectedValue = this.value;
             if (currentContractType === 'annual_subscription' && selectedValue === 'per_recipe') {
-                Swal.fire({
-                    title: 'تأكيد تغيير نوع التعاقد'
-                    , html: `
+                    Swal.fire({
+                        title: 'تأكيد تغيير نوع التعاقد'
+                        , html: `
                     <div style="text-align: right; margin-bottom: 20px;">
                         <p>لتغيير نوع التعاقد من <strong>بنظام الاشتراك</strong> إلى <strong>نظام الوصفة</strong> يجب عليك كتابة كلمة <strong>change</strong> في الحقل أدناه.</p>
                         <p style="color: #dc3545; font-size: 0.9em; margin-top: 10px;">
@@ -136,76 +132,63 @@
                         <div id="inputError" class="error-text" style="display: none; color: #dc3545; font-size: 0.875em; margin-top: 5px;">يجب كتابة كلمة "change" بالضبط</div>
                     </div>
                 `
-                    , icon: 'warning'
-                    , showCancelButton: true
-                    , confirmButtonColor: '#3085d6'
-                    , cancelButtonColor: '#d33'
-                    , confirmButtonText: 'تأكيد التغيير'
-                    , cancelButtonText: 'إلغاء'
-                    , customClass: {
-                        popup: 'text-right'
-                        , title: 'text-right'
-                        , content: 'text-right'
-                    }
-                    , preConfirm: () => {
-                        const inputValue = document.getElementById('confirmationInput').value;
-                        const errorDiv = document.getElementById('inputError');
-                        if (inputValue !== 'change') {
-                            errorDiv.style.display = 'block';
-                            return false;
+                        , icon: 'warning'
+                        , showCancelButton: true
+                        , confirmButtonColor: '#3085d6'
+                        , cancelButtonColor: '#d33'
+                        , confirmButtonText: 'تأكيد التغيير'
+                        , cancelButtonText: 'إلغاء'
+                        , customClass: {
+                            popup: 'text-right'
+                            , title: 'text-right'
+                            , content: 'text-right'
                         }
-                        return true;
-                    }
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        toggleFields();
-
-                        // Show success message and submit form on confirmation
-                        Swal.fire({
-                            title: 'تم التأكيد'
-                            , text: 'تم تغيير نوع التعاقد بنجاح'
-                            , icon: 'success'
-                            , confirmButtonText: 'موافق'
-                            , customClass: {
-                                popup: 'text-right'
-                                , title: 'text-right'
-                                , content: 'text-right'
+                        , preConfirm: () => {
+                            const inputValue = document.getElementById('confirmationInput').value;
+                            const errorDiv = document.getElementById('inputError');
+                            if (inputValue !== 'change') {
+                                errorDiv.style.display = 'block';
+                                return false;
                             }
-                        }).then((successResult) => {
-                            if (successResult.isConfirmed) {
-                                // Submit the form when user clicks "موافق"
-                                contractForm.submit();
-                            }
-                        });
-                    } else {
-                        // User cancelled, revert to previous selection
-                        contractTypeSelect.value = currentContractType;
-                        toggleFields();
-                    }
-                });
-            } else {
-                toggleFields();
-            }
+                            return true;
+                        }
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            toggleFields();
+                            Swal.fire({
+                                title: 'تم التأكيد'
+                                , text: 'تم تغيير نوع التعاقد بنجاح'
+                                , icon: 'success'
+                                , confirmButtonText: 'موافق'
+                                , customClass: {
+                                    popup: 'text-right'
+                                    , title: 'text-right'
+                                    , content: 'text-right'
+                                }
+                            }).then((successResult) => {
+                                if (successResult.isConfirmed) {
+                                    contractForm.submit();
+                                }
+                            });
+                        } else {
+                            contractTypeSelect.value = currentContractType;
+                            toggleFields();
+                        }
+                    });
+                } else {
+                    toggleFields();
+                }
+            });
+            contractForm.addEventListener('submit', function(e) {
+                const selectedValue = contractTypeSelect.value;
+                if (currentContractType === 'annual_subscription' && selectedValue === 'per_recipe') {
+                    e.preventDefault();
+                    contractTypeSelect.dispatchEvent(new Event('change'));
+                }
+            });
         });
-
-        // Form submission handler
-        contractForm.addEventListener('submit', function(e) {
-            const selectedValue = contractTypeSelect.value;
-
-            // If changing from annual_subscription to per_recipe, prevent default submission
-            // because it will be handled by the confirmation dialog
-            if (currentContractType === 'annual_subscription' && selectedValue === 'per_recipe') {
-                e.preventDefault();
-                // Trigger the change event to show confirmation dialog
-                contractTypeSelect.dispatchEvent(new Event('change'));
-            }
-            // For other cases, form will submit normally
-        });
-    });
-
-</script>
-<script src="{{ asset('assets/js/jquery.js') }}"></script>
-
+    </script>
+    <script src="{{ asset('assets/js/jquery.js') }}"></script>
     <script src="{{ asset('assets/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
     <script src="{{ asset('assets/vendor/swiper/swiper-bundle.min.js') }}"></script>
     <script src="{{ asset('assets/js/dz.carousel.js') }}"></script>

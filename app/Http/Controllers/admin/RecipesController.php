@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Log;
+use Stichoza\GoogleTranslate\GoogleTranslate;
 
 class RecipesController extends Controller
 {
@@ -105,21 +106,16 @@ class RecipesController extends Controller
 
     public function updateNutritionalFacts(Request $request, Recipe $recipe)
     {
-        // 1. Validate the incoming data
         $validatedData = $request->validate([
             'calories' => 'nullable|integer|min:0',
             'fats' => 'nullable|numeric|min:0',
             'carbs' => 'nullable|numeric|min:0',
             'protein' => 'nullable|numeric|min:0',
         ]);
-
-        // 2. Update the recipe's nutritional facts
-        // Assuming these columns (calories, fat, carbohydrates, protein) exist in your `recipes` table
         $recipe->calories = $validatedData['calories'];
         $recipe->fats = $validatedData['fats'];
         $recipe->carbs = $validatedData['carbs'];
         $recipe->protein = $validatedData['protein'];
-
         $recipe->save();
         return redirect()->route('c1he3f.recpies.showChefRecipes', $recipe->id)->with('success', 'تم تحديث الحقائق الغذائية بنجاح!');
     }
@@ -135,11 +131,9 @@ class RecipesController extends Controller
     public function updateIngredients(Request $request, Recipe $recipe)
     {
         Log::info('Update Ingredients Request received for recipe ID: ' . $recipe->id);
-
         $request->validate([
-            'ingredients_data' => 'nullable|string', // This hidden field holds the JSON
+            'ingredients_data' => 'nullable|string',
         ]);
-
         $ingredientsDataString = $request->input('ingredients_data');
         $formattedIngredients = ''; // Initialize as empty string
 
@@ -386,7 +380,6 @@ class RecipesController extends Controller
             return back()->withErrors(['general' => [$e->getMessage()]])->withInput();
         }
     }
-
     public function getSubCategories(Request $request)
     {
         try {
@@ -802,6 +795,7 @@ class RecipesController extends Controller
             ->route('admin.recipes.show', $recipe->id)
             ->with('success', 'تم حفظ الترجمة بنجاح');
     }
+
     public function preview(Recipe $recipe, string $langCode)
     {
         $language = Language::where('code', $langCode)->firstOrFail();
@@ -812,8 +806,6 @@ class RecipesController extends Controller
             'mainCategories.translations',
             'subCategories.translations',
             'translations',
-            // 'ingredients' 
-            // Add if ingredients relation exists
         ]);
 
         app()->setLocale($langCode);
@@ -835,6 +827,58 @@ class RecipesController extends Controller
         $currentLanguage = $allLanguages->where('code', $currentLanguageCode)->first() ?? $allLanguages->where('code', 'ar')->first();
         app()->setLocale($currentLanguage->code);
 
+        // Translation logic for title, ingredients, and steps
+        $translatedTitle = $recipe->title; // Default to Arabic
+        $translatedIngredients = $recipe->ingredients; // Default to Arabic
+        $translatedSteps = $recipe->steps; // Default to Arabic
+        if ($currentLanguageCode !== 'ar') {
+            try {
+                $translate = new GoogleTranslate();
+                $translate->setTarget($currentLanguageCode);
+                $translatedTitle = $translate->translate($recipe->title);
+
+                // Translate ingredients
+                if (strpos($recipe->ingredients, '##') !== false) {
+                    $sections = explode('##', $recipe->ingredients);
+                    $translatedSections = [];
+                    foreach ($sections as $section) {
+                        $section = trim($section);
+                        if ($section !== '') {
+                            $lines = explode("\n", $section);
+                            $translatedLines = array_map(function ($line) use ($translate) {
+                                return trim($line) !== '' ? $translate->translate(trim($line)) : '';
+                            }, $lines);
+                            $translatedSections[] = implode("\n", array_filter($translatedLines));
+                        }
+                    }
+                    $translatedIngredients = implode('##', array_filter($translatedSections));
+                } else {
+                    $lines = explode("\n", $recipe->ingredients);
+                    $translatedLines = array_map(function ($line) use ($translate) {
+                        return trim($line) !== '' ? $translate->translate(trim($line)) : '';
+                    }, $lines);
+                    $translatedIngredients = implode("\n", array_filter($translatedLines));
+                }
+
+                // Translate steps
+                if (is_array($recipe->steps) && count($recipe->steps) > 0) {
+                    $translatedSteps = [];
+                    foreach ($recipe->steps as $step) {
+                        $translatedStep = $step;
+                        if (isset($step['description']) && !empty($step['description'])) {
+                            $translatedStep['description'] = $translate->translate($step['description']);
+                        }
+                        $translatedSteps[] = $translatedStep;
+                    }
+                }
+            } catch (\Exception $e) {
+                \Log::error('Translation failed: ' . $e->getMessage());
+                $translatedTitle = $recipe->title; // Fallback
+                $translatedIngredients = $recipe->ingredients; // Fallback
+                $translatedSteps = $recipe->steps; // Fallback
+            }
+        }
+
         $selectedKitchen = $recipe->kitchen_type_id ? Kitchens::select('id', 'name_ar', 'name_am', 'name_bn', 'name_ml', 'name_fil', 'name_ur', 'name_ta', 'name_en', 'name_ne', 'name_ps', 'name_id', 'name_hi', 'image')->where('id', $recipe->kitchen_type_id)->first() : null;
         $selectedMainCategory = $recipe->main_category_id ? MainCategories::select('id', 'name_ar', 'name_am', 'name_bn', 'name_ml', 'name_fil', 'name_ur', 'name_ta', 'name_en', 'name_ne', 'name_ps', 'name_id', 'name_hi', 'image')->where('id', $recipe->main_category_id)->first() : null;
 
@@ -843,8 +887,9 @@ class RecipesController extends Controller
             $translationStatus[$language->code] = $this->checkTranslationStatus($recipe, $language->code, $selectedKitchen);
         }
 
-        return view('admin.recipes.preview', compact('recipe', 'language', 'selectedKitchen', 'currentLanguage', 'allLanguages', 'translationStatus', 'currentLanguageCode', 'selectedMainCategory'));
+        return view('admin.recipes.preview', compact('recipe', 'language', 'selectedKitchen', 'currentLanguage', 'allLanguages', 'translationStatus', 'currentLanguageCode', 'selectedMainCategory', 'translatedTitle', 'translatedIngredients', 'translatedSteps'));
     }
+
     public function destroy(Recipe $recipe)
     {
         if ($recipe->steps && is_array($recipe->steps)) {
@@ -907,6 +952,7 @@ class RecipesController extends Controller
             ], 500);
         }
     }
+
     protected function processRecipeSteps(Request $request, Recipe $recipe)
     {
         $stepsData = json_decode($request->steps_data, true);

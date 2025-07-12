@@ -2,6 +2,43 @@
 
 @section('content')
 <style>
+    .submit--btn {
+        position: fixed;
+        width: fit-content;
+        bottom: 14px;
+        right: 12px;
+        z-index: 999999999999999999;
+    }
+
+    .detail-item {
+        padding-bottom: 0.5rem;
+    }
+
+    .detail-item:last-child {
+        border-bottom: none;
+    }
+
+    .headphone-icon {
+        color: #ffffff;
+        font-size: 29px;
+        background: #660099;
+        font-weight: bold;
+        padding: 12px;
+        border-radius: 12px;
+        text-align: center;
+    }
+
+    .recpie-title {
+        color: #660099;
+        font-size: 29px;
+        border: 1px solid #660099;
+        font-weight: bold;
+        padding: 12px;
+        border-radius: 12px;
+        text-align: center;
+        margin-left: 20px;
+    }
+
     .details-card {
         background: white;
         color: black;
@@ -24,7 +61,6 @@
         margin-bottom: 15px;
         font-size: 1.1rem;
         display: flex;
-        /* justify-content: space-between; */
         flex-direction: row;
     }
 
@@ -147,36 +183,64 @@
         max-height: 120px;
     }
 
+    .recipe-image {
+        width: 50%;
+        min-width: 499px;
+    }
+
+    .ingredient-section-title {
+        margin-bottom: 5px;
+        justify-content: space-between;
+        font-weight: bold;
+        border-bottom: 1px solid #ccc;
+        padding-bottom: 2px;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
 </style>
+
 <div style="display: flex; gap: 20px;">
-    <div class="recipe-image mb-4" style="width: 50%; min-width: 499px;">
+    <div class="recipe-image mb-4">
         @if ($recipe->dish_image)
-        <!-- Assuming 'image' is the field for the dish photo -->
         <img src="{{ Storage::url($recipe->dish_image) }}" alt="Recipe Image" class="details-image img-fluid rounded">
         @else
         <img src="{{ asset('assets/default-recipe.png') }}" alt="Default Recipe Image" class="details-image img-fluid rounded">
         @endif
-
         <div class="col-md-12">
-            <h5 class="section-title heading">المكونات</h5>
+            <h5 class="section-title heading">
+                @switch($currentLanguageCode)
+                @case('ar') المكونات @break
+                @case('en') Ingredients @break
+                @case('id') Bahan-bahan @break
+                @case('am') ንጥረ ነገሮች @break
+                @case('hi') सामग्री @break
+                @case('bn') উপকরণ @break
+                @case('ml') ചേരുവകൾ @break
+                @case('fil') Mga Sangkap @break
+                @case('ur') اجزاء @break
+                @case('ta') பொருட்கள் @break
+                @case('ne') सामग्रीहरू @break
+                @case('ps') اجزاء @break
+                @default Ingredients @endswitch
+            </h5>
             @php
-            if (strpos($recipe->ingredients, '##') !== false) {
-            $sections = explode('##', $recipe->ingredients);
+            if (strpos($translatedIngredients, '##') !== false) {
+            $sections = explode('##', $translatedIngredients);
             $sections = array_filter($sections, function($section) {
             return trim($section) !== '';
             });
             $hasSections = true;
             } else {
-            $sections = [$recipe->ingredients];
+            $sections = [$translatedIngredients];
             $hasSections = false;
             }
             @endphp
-
             @forelse ($sections as $section)
             @php
             $section = trim($section);
             $lines = explode("\n", $section);
-
             $hasTitle = false;
             $title = '';
             if ($hasSections) {
@@ -189,58 +253,86 @@
             }
             @endphp
             @if ($hasTitle && $title !== '')
-            <div style="margin-bottom: 5px; justify-content: space-between; font-weight: bold; border-bottom: 1px solid #ccc; padding-bottom: 2px; display: flex; align-items: center; gap: 5px;">
-                {{ $title }}
-                <h1 style="color: #ffffff; font-size: 29px; background: #660099; font-weight: bold; padding: 5px; border-radius: 12px; text-align: center;">
+            <div class="ingredient-section-title">
+                <span>{{ $title }}</span>
+                <button class="speak-btn" onclick="speakText('{{ $title }}', '{{ $currentLanguageCode }}')" style="color: #ffffff; font-size: 29px; background: #660099; font-weight: bold; padding: 5px; border-radius: 12px; text-align: center; border: none; cursor: pointer;">
                     <i style="font-size: 20px; color: #ffffff;" class="fa-solid fa-headphones"></i>
-                </h1>
+                </button>
             </div>
             @endif
             @foreach ($lines as $ingredient)
             @php $trimmed = trim($ingredient); @endphp
             @if ($trimmed !== '')
-            <div style="margin-bottom: 5px; justify-content: space-between; display: flex; align-items: center; gap: 5px;">
-                {{ $trimmed }}
-                <h1 style="color: #ffffff; font-size: 29px; background: #660099; font-weight: bold; padding: 5px; border-radius: 12px; text-align: center;">
+            <div class="ingredient-item" style="margin-bottom: 5px; justify-content: space-between; display: flex; align-items: center; gap: 5px;">
+                <span>{{ $trimmed }}</span>
+                <button class="speak-btn" onclick="speakText('{{ $trimmed }}', '{{ $currentLanguageCode }}')" style="color: #ffffff; font-size: 29px; background: #660099; font-weight: bold; padding: 5px; border-radius: 12px; text-align: center; border: none; cursor: pointer;">
                     <i style="font-size: 20px; color: #ffffff;" class="fa-solid fa-headphones"></i>
-                </h1>
+                </button>
             </div>
             @endif
             @endforeach
             @empty
             <div style="margin-bottom: 5px; justify-content: space-between; display: flex; align-items: center; gap: 5px;">
-                لا توجد مكونات متاحة
+                @switch($currentLanguageCode)
+                @case('ar') لا توجد مكونات متاحة @break
+                @case('en') No ingredients available @break
+                @case('id') Tidak ada bahan yang tersedia @break
+                @case('am') ምንም ንጥረ ነገሮች የሉም @break
+                @case('hi') कोई सामग्री उपलब्ध नहीं है @break
+                @case('bn') কোনো উপকরণ পাওয়া যায়নি @break
+                @case('ml') ചേരുവകൾ ലഭ്യമല്ല @break
+                @case('fil') Walang magagamit na sangkap @break
+                @case('ur') کوئی اجزاء دستیاب نہیں ہیں @break
+                @case('ta') பொருட்கள் எதுவும் கிடைக்கவில்லை @break
+                @case('ne') कुनै सामग्री उपलब्ध छैन @break
+                @case('ps') هیڅ اجزاء شتون نلري @break
+                @default No ingredients available @endswitch
             </div>
             @endforelse
         </div>
     </div>
-
-
     <div>
-
         <div class="recipe-number mb-3">
             <span class="badge bg-primary fs-6">#{{ $recipe->recipe_code }}</span>
         </div>
         <div style="display: flex; gap; 20px; ">
-
-            <h1 style="    color: #660099;
-    font-size: 29px;
-    border: 1px solid #660099;
-    font-weight: bold;
-    padding: 12px;
-    border-radius: 12px;
-    text-align: center; margin-left: 20px;">
-                {{ $recipe->title }}
+            <h1 class="recpie-title">
+                {{ $translatedTitle }}
             </h1>
-            <h1 style="    color: #ffffff;
-    font-size: 29px;
-    background:  #660099;
-    font-weight: bold;
-    padding: 12px;
-    border-radius: 12px;
-    text-align: center;">
+            <h1 class="headphone-icon" style="cursor: pointer;" onclick="speakText('{{ addslashes($translatedTitle) }}', '{{ $currentLanguageCode }}')">
                 <i style="color: #ffffff;" class="fa-solid fa-headphones"></i>
             </h1>
+            <script src="https://code.responsivevoice.org/responsivevoice.js?key=vm7hFTHk"></script>
+            <script>
+                function speakText(text, lang) {
+                    responsiveVoice.speak(text, getVoiceForLang(lang), {
+                        rate: 0.9
+                    });
+                }
+
+                function getVoiceForLang(lang) {
+                    const voices = {
+                        'ar': 'Arabic Female'
+                        , 'en': 'UK English Female'
+                        , 'id': 'Indonesian Female'
+                        , 'hi': 'Hindi Female'
+                        , 'bn': 'Bengali Female'
+                        , 'ml': 'Malayalam Female'
+                        , 'fil': 'Filipino Female'
+                        , 'ur': 'Urdu Female'
+                        , 'ta': 'Tamil Female'
+                        , 'ne': 'Nepali Female'
+                        , 'ps': 'UK English Female'
+                        , 'am': 'UK English Female'
+                    };
+                    return voices[lang] || 'UK English Female';
+                }
+
+                function backOnePage() {
+                    window.history.back();
+                }
+
+            </script>
         </div>
         <div style="display: flex; align-items: center; justify-content: space-between;">
             <div>
@@ -264,7 +356,46 @@
                     @else
                     <img src="{{ asset('assets/default-chef.png') }}" alt="Default Chef" class="chef-img rounded-circle me-2" style="width: 40px; height: 40px;">
                     @endif
-                    الطاهي :
+                    @switch($currentLanguageCode)
+                    @case('ar')
+                    الطاهي
+                    @break
+                    @case('en')
+                    Ingredients
+                    @break
+                    @case('id')
+                    Bahan-bahan
+                    @break
+                    @case('am')
+                    ንጥረ ነገሮች
+                    @break
+                    @case('hi')
+                    सामग्री
+                    @break
+                    @case('bn')
+                    উপকরণ
+                    @break
+                    @case('ml')
+                    ചേരുവകൾ
+                    @break
+                    @case('fil')
+                    Mga Sangkap
+                    @break
+                    @case('ur')
+                    اجزاء
+                    @break
+                    @case('ta')
+                    பொருட்கள்
+                    @break
+                    @case('ne')
+                    सामग्रीहरू
+                    @break
+                    @case('ps')
+                    اجزاء
+                    @break
+                    @default
+                    Ingredients
+                    @endswitch:
                     {{ $chefDisplayName }}
                 </div>
                 @endif
@@ -287,7 +418,6 @@
                 @endif
             </div>
         </div>
-
         <div style="display: flex; align-items: center; gap: 20px;">
             @if ($recipe->mainCategories)
             @php
@@ -374,34 +504,27 @@
                 @case('bn')
                 মিনিট
                 @break
-
                 @case('ml')
                 മിനിറ്റുകൾ
                 @break
-
                 @case('fil')
                 minuto
                 @break
-
                 @case('ur')
                 منٹ
                 @break
-
                 @case('ta')
                 நிமிடங்கள்
                 @break
-
                 @case('ne')
                 मिनेट
                 @break
-
                 @default
                 minutes
                 @endswitch
             </div>
             @endif
         </div>
-
         <div class="recipe-details mb-4">
             <div class="row">
                 <div class="col-md-12 text-right">
@@ -900,66 +1023,81 @@
                     </div>
                 </div>
                 @endif
-
                 <div class="">
-                    <h5 class="section-title" style="color: #660099;
-        font-size: 29px;
-        border: 1px solid #660099;
-        font-weight: bold;
-        padding: 12px;
-        border-radius: 12px;
-        text-align: center;">
+                    <h5 class="section-title" style="color: #660099; font-size: 29px; border: 1px solid #660099; font-weight: bold; padding: 12px; border-radius: 12px; text-align: center;">
+                        @switch($currentLanguageCode)
+                        @case('ar')
                         خطوات التحضير
+                        @break
+                        @case('en')
+                        Preparation Steps
+                        @break
+                        @case('id')
+                        Langkah-langkah Persiapan
+                        @break
+                        @case('am')
+                        የዝግጅት ደረጃዎች
+                        @break
+                        @case('hi')
+                        तैयारी के चरण
+                        @break
+                        @case('bn')
+                        প্রস্তুতির ধাপ
+                        @break
+                        @case('ml')
+                        തയ്യാറെടുപ്പ് ഘട്ടങ്ങൾ
+                        @break
+                        @case('fil')
+                        Mga Hakbang sa Paghahanda
+                        @break
+                        @case('ur')
+                        تیاری کے مراحل
+                        @break
+                        @case('ta')
+                        தயாரிப்பு படிகள்
+                        @break
+                        @case('ne')
+                        तयारी चरणहरू
+                        @break
+                        @case('ps')
+                        د تیاری مرحلې
+                        @break
+                        @default
+                        Preparation Steps
+                        @endswitch
                     </h5>
-
                     <ol class="content-list">
-                        @if ($recipe->steps && is_array($recipe->steps) && count($recipe->steps) > 0)
-                        @foreach ($recipe->steps as $index => $step)
+                        @if (is_array($translatedSteps) && count($translatedSteps) > 0)
+                        @foreach ($translatedSteps as $index => $step)
                         <li style="display: flex; align-items: flex-start; margin-bottom: 15px;">
-                            {{-- Step number --}}
-                            <span style="background: #660099;
-                        color: white;
-                        font-weight: bold;
-                        width: 28px;
-                        height: 28px;
-                        text-align: center;
-                        align-items: center;
-                        justify-content: center;
-                        display: flex;
-                        border-radius: 50px;
-                        margin-left: 15px;
-                        flex-shrink: 0;">
+                            <span style=" background: #660099; color: white; font-weight: bold; width: 28px; height: 28px; text-align: center; align-items: center; 
+            justify-content: center; display: flex; border-radius: 50px; margin-left: 15px; flex-shrink: 0;">
                                 {{ $index + 1 }}
                             </span>
-
-                            {{-- Step content --}}
                             <div style="flex-grow: 1; padding-right: 15px;">
-                                {{-- Display the step description --}}
                                 <div style="margin-bottom: 10px;">
-                                    {{ $step['description'] ?? 'بدون وصف' }}
+                                    {{ $step['description'] ?? ($currentLanguageCode === 'ar' ? 'بدون وصف' : 'No description') }}
                                 </div>
-
-                                {{-- Display single media (image/video) associated with the step --}}
                                 @if (isset($step['media_path']) && !empty($step['media_path']))
                                 @php
                                 $stepMediaType = $step['media_type'] ?? null;
                                 $stepMediaSrc = url($step['media_path']);
                                 @endphp
-
                                 <div class="step-media-container" style="margin-top: 10px;">
                                     @if ($stepMediaType === 'image')
-
-                                    <img src="{{ $stepMediaSrc }}" alt="صورة الخطوة" style="max-width: 200px; max-height: 150px; object-fit: contain; border-radius: 5px; display: block; margin-top: 5px;">
+                                    <img src="{{ $stepMediaSrc }}" alt="{{ $currentLanguageCode === 'ar' ? 'صورة الخطوة' : 'Step image' }}" style="max-width: 200px; max-height: 150px; object-fit: contain; border-radius: 5px; display: block; margin-top: 5px;">
                                     @elseif ($stepMediaType === 'video')
                                     <video src="{{ $stepMediaSrc }}" controls style="max-width: 250px; max-height: 180px; border-radius: 5px; display: block; margin-top: 5px;"></video>
                                     @else
-                                    <p style="color: red;">نوع الوسائط غير مدعوم أو غير محدد.</p>
-                                    <a href="{{ $stepMediaSrc }}" target="_blank">عرض الملف</a>
+                                    <p style="color: red;">
+                                        {{ $currentLanguageCode === 'ar' ? 'نوع الوسائط غير مدعوم أو غير محدد.' : 'Unsupported or unspecified media type.' }}
+                                    </p>
+                                    <a href="{{ $stepMediaSrc }}" target="_blank">
+                                        {{ $currentLanguageCode === 'ar' ? 'عرض الملف' : 'View file' }}
+                                    </a>
                                     @endif
                                 </div>
                                 @endif
-
-                                {{-- Multiple media previews for this specific step --}}
                                 @if (isset($step['media']) && !empty($step['media']))
                                 <div class="multiple-media-previews" style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px;">
                                     @foreach ($step['media'] as $media)
@@ -974,59 +1112,63 @@
                                 </div>
                                 @endif
                             </div>
-
-                            {{-- Headphone icon --}}
-                            <span style="margin-right: 10px; 
-                        color: #ffffff; 
-                        font-size: 20px; 
-                        text-align: center; 
-                        background: #660099; 
-                        font-weight: bold; 
-                        padding: 10px; 
-                        border-radius: 12px; 
-                        display: flex; 
-                        align-items: center; 
-                        justify-content: center; 
-                        min-width: 40px; 
-                        height: 40px;
-                        flex-shrink: 0;">
+                            {{-- ADD THIS ONCLICK EVENT --}}
+                            <span style="cursor: pointer; margin-right: 10px; color: #ffffff; font-size: 20px; text-align: center; background: #660099; font-weight: bold; padding: 10px; border-radius: 12px; display: flex; align-items: center; justify-content: center; min-width: 40px; height: 40px; flex-shrink: 0;" onclick="speakText('{{ addslashes($step['description'] ?? ($currentLanguageCode === 'ar' ? 'بدون وصف' : 'No description')) }}', '{{ $currentLanguageCode }}')">
                                 <i style="margin: 0px; color: #ffffff;" class="fa-solid fa-headphones"></i>
                             </span>
                         </li>
                         @endforeach
                         @else
-                        <li class="text-warning">لا توجد خطوات متاحة</li>
+                        <li class="text-warning">
+                            @switch($currentLanguageCode)
+                            @case('ar')
+                            لا توجد خطوات متاحة
+                            @break
+                            @case('en')
+                            No steps available
+                            @break
+                            @case('id')
+                            Tidak ada langkah yang tersedia
+                            @break
+                            @case('am')
+                            ምንም ደረጃዎች የሉም
+                            @break
+                            @case('hi')
+                            कोई कदम उपलब्ध नहीं हैं
+                            @break
+                            @case('bn')
+                            কোনো ধাপ পাওয়া যায়নি
+                            @break
+                            @case('ml')
+                            ഘട്ടങ്ങൾ ലഭ്യമല്ല
+                            @break
+                            @case('fil')
+                            Walang magagamit na hakbang
+                            @break
+                            @case('ur')
+                            کوئی مراحل دستیاب نہیں ہیں
+                            @break
+                            @case('ta')
+                            படிகள் எதுவும் கிடைக்கவில்லை
+                            @break
+                            @case('ne')
+                            कुनै चरणहरू उपलब्ध छैनन्
+                            @break
+                            @case('ps')
+                            هیڅ مرحلې شتون نلري
+                            @break
+                            @default
+                            No steps available
+                            @endswitch
+                        </li>
                         @endif
                     </ol>
                 </div>
-
-                <div class="mt-4" style="    position: fixed;
-    width: fit-content;
-    bottom: 14px;
-    right: 12px;
-    z-index: 999999999999999999;">
+                <div class="mt-4 submit--btn">
                     <button type="button" onclick="backOnePage();" class="btn btn-secondary" style="background: #660099; border: #660099;">الرجوع</button>
                 </div>
             </div>
         </div>
-
-        @endsection
-
-        @push('styles')
-        <style>
-            .detail-item {
-                padding-bottom: 0.5rem;
-            }
-
-            .detail-item:last-child {
-                border-bottom: none;
-            }
-
-        </style>
-        @endpush
-        <script>
-            function backOnePage() {
-                window.history.back();
-            }
-
-        </script>
+    </div>
+</div>
+@endsection

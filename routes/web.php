@@ -17,6 +17,10 @@ use App\Models\Banner;
 use App\Http\Controllers\C1he3f\Auth\ChefAuthenticatedSessionController;
 use App\Models\DeliveryLocation;
 
+Route::middleware(['auth'])->group(function () {
+    Route::post('/delete-account', [ProfileController::class, 'deleteAccount'])->name('account.delete');
+    Route::post('/check-email-availability', [ProfileController::class, 'checkEmailAvailability'])->name('email.check');
+});
 Route::prefix('c1he3f')->middleware(['auth'])->group(function () {
     Route::post('/profile/delivery-location/select/{id}', [ProfileController::class, 'selectDeliveryLocation'])->name('c1he3f.profile.delivery-location.select');
     Route::get('/profile/market-choice', [ProfileController::class, 'showMarketChoice'])->name('c1he3f.profile.market-choice');

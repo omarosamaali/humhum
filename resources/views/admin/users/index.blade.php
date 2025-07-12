@@ -116,6 +116,8 @@
                         <label for="status" class="form-label">الحالة</label>
                         <select class="form-select" name="status" id="status" required>
                             <option value="فعال" {{ old('status') == 'فعال' ? 'selected' : '' }}>فعال</option>
+                            <option value="محذوف" {{ old('status') == 'محذوف' ? 'selected' : '' }}>محذوف</option>
+
                             <option value="غير فعال" {{ old('status') == 'غير فعال' ? 'selected' : '' }}>غير فعال</option>
                             <option value="بانتظار التفعيل" {{ old('status') == 'بانتظار التفعيل' ? 'selected' : '' }}>
                                 بانتظار التفعيل</option>
@@ -330,6 +332,12 @@
                                         $statusDisplay = 'فعال';
                                         $badgeClass = 'success';
                                         break;
+                                    case 'محذوف':
+
+                                        $statusDisplay = 'محذوف';
+
+                                        $badgeClass = 'danger';
+                                        break;
                                     case 'غير فعال':
                                         $statusDisplay = 'غير فعال';
                                         $badgeClass = 'secondary'; // أو danger حسب رغبتك
@@ -365,8 +373,13 @@
                                             $statusDisplay = 'مفعل'; // أو فعال، كما تفضل
                                             $badgeClass = 'success';
                                         } elseif ($user->status === 'مرفوض') {
+                                        // إذا كان لديك حالة "مرفوض" في جدول المستخدم
+                                        $statusDisplay = 'محذوف';
+                                        $badgeClass = 'danger';
+                                        } elseif ($user->status === 'محذوف') {
+
                                             // إذا كان لديك حالة "مرفوض" في جدول المستخدم
-                                            $statusDisplay = 'مرفوض';
+                                            $statusDisplay = 'محذوف';
                                             $badgeClass = 'danger';
                                         } else {
                                             // البيانات مكتملة، ولكن حالته ليست "فعال" أو "مرفوض"
