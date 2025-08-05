@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\AboutUs;
+use App\Models\Food;
+use App\Models\Types;
 use App\Models\Terms;
 use App\Models\Hosp; // تأكد أن هذا هو الموديل الصحيح لسياسة الضيافة
 use Illuminate\Http\Request;
@@ -37,9 +39,11 @@ class AboutUsController extends Controller
         $aboutUs = AboutUs::first();
         $terms = Terms::first();
         $hosp = Hosp::first(); // جلب سجل سياسة الضيافة
+        $food = Food::first(); // جلب سجل سياسة الضيافة
+        $types = Types::first(); // جلب سجل سياسة الضيافة
 
         // قم بتمرير جميع المتغيرات إلى الـ View
-        return view('admin.about-us.index', compact('aboutUs', 'terms', 'hosp'));
+        return view('admin.about-us.index', compact('aboutUs', 'terms', 'hosp', 'food','types'));
     }
 
     // -----------------------------------------------------------

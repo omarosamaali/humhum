@@ -6,7 +6,6 @@
 
 :root {
   --primary: #e00000;
-  --primary-hover: #058f5e;
   --primary-dark: black;
   --secondary: #F6DBB3;
   --secondary-light: #fcf5ea;
@@ -13711,7 +13710,6 @@ a {
 a:hover, a:focus, a.active {
   text-decoration: none;
   outline: none;
-  color: var(--primary-hover);
 }
 
 .text-primary {
@@ -16467,7 +16465,7 @@ section {
   position: relative;
 }
 
-.header .notification-badge.badge-active::after {
+/* .header .notification-badge.badge-active::after {
   content: "";
   position: absolute;
   width: 16px;
@@ -16477,7 +16475,7 @@ section {
   border-radius: 20px;
   border: 2px solid var(--bg-white);
   background-color: var(--primary);
-}
+} */
 
 .header .sticky-header {
   position: fixed;
@@ -19112,8 +19110,6 @@ button:focus {
 }
 
 .btn-primary:active, .btn-primary:focus, .btn-primary:hover {
-  border-color: var(--primary-hover) !important;
-  background-color: var(--primary-hover) !important;
   box-shadow: none;
 }
 
@@ -19133,11 +19129,6 @@ button:focus {
 .btn-outline-primary {
   color: var(--primary);
   border-color: var(--primary);
-}
-
-.btn-outline-primary:hover {
-  border-color: var(--primary-hover);
-  background-color: var(--primary-hover);
 }
 
 .btn-outline-primary:focus {
@@ -25696,7 +25687,7 @@ label input {
 }
 
 .dz-categories-bx .title {
-  color: var(--primary);
+  color: black;
   margin: 0;
   font-weight: 500;
 }

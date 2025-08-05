@@ -39,7 +39,7 @@ class ChefAuthenticatedSessionController extends Controller
     
     public function createLogin(): \Illuminate\View\View
     {
-        return view('c1he3f.auth.sign-in');
+        return view('c1he3f.auth.welcome');
     }
 
     public function storeLogin(Request $request): RedirectResponse

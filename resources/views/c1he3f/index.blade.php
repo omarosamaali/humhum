@@ -61,13 +61,107 @@
             font-size: 37px;
         }
 
+        .challenge-link {
+            color: white;
+            text-decoration: none;
+        }
+
+        .swiper-slide {
+            position: relative;
+        }
+
+        .dz-categories-bx {
+            padding: 0px !important;
+            height: 79px;
+            margin-top: 40px;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .before-challenge {
+            width: 50%;
+            height: 100%;
+            padding: 10px 20px;
+            border-top-right-radius: 15px;
+            border-bottom-right-radius: 15px;
+            background-color: #a50707;
+            color: white;
+        }
+
+        .before-challenge p {
+            margin-bottom: 0px;
+        }
+
+        .before-challenge h3 {
+            z-index: 999999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            top: 9px;
+            position: relative;
+            font-size: 15px;
+            color: rgb(255, 255, 255);
+            font-weight: normal;
+            margin: 0;
+        }
+
+        .before-challenge h3 span {
+            font-size: 28px;
+        }
+
+        .vs-icon-container {
+            left: 50%;
+            transform: translate(-50%, 3%);
+            position: absolute;
+            top: -10px;
+            z-index: 9;
+        }
+
+        .vs-icon {
+            width: 78px;
+            height: 98px;
+        }
+
+        .challenge-title {
+            width: 50%;
+            padding: 10.5px 20px;
+            border-top-left-radius: 15px;
+            border-bottom-left-radius: 15px;
+            background-color: black;
+            color: white;
+        }
+
+        .challenge-title-text {
+            align-items: center;
+            justify-content: center;
+            display: flex;
+        }
+
+        .challenge-title p {
+            text-align: center;
+            margin-bottom: 0px;
+        }
+
+        .challenge-timer {
+            font-size: 15px;
+            color: rgb(255, 255, 255);
+            font-weight: bold;
+        }
+
+        .challenge-users {
+            align-items: center;
+            justify-content: center;
+            display: flex;
+            font-size: 12px;
+        }
+
     </style>
 </head>
 
 <body>
     <div class="page-wrapper">
-
-        <!-- Preloader -->
         <div id="preloader">
             <div class="loader">
                 <div class="spinner-border text-primary" role="status">
@@ -75,9 +169,6 @@
                 </div>
             </div>
         </div>
-        <!-- Preloader end-->
-
-        <!-- Sidebar -->
         <div class="sidebar dz-floting-sidebar">
             <div class="sidebar-header">
                 <div class="app-logo">
@@ -164,15 +255,13 @@
                 </div>
                 <div class="app-info">
                     <h6 class="name">هم هم - الشريك</h6>
-                    <span class="ver-info">الإصدار 1.1</span>
+                    <span class="ver-info">v.4.0.0</span>
                 </div>
             </div>
         </div>
-        <!-- Sidebar End -->
 
-        <!-- Nav Floting Start -->
+
         <div class="dz-nav-floting">
-            <!-- Header -->
             <header class="header py-2 mx-auto" style="position: fixed; width: 100%;">
                 <div class="header-content">
                     <div class="left-content">
@@ -184,10 +273,21 @@
                     <div class="mid-content"></div>
                     <div class="right-content d-flex align-items-center gap-4">
                         @if($delivery_locations->isNotEmpty())
-                        <a href="{{ route('c1he3f.my-products') }}" class="notification-badge font-20 badge-active">
-                            <i class="fi fi-rr-shopping-cart" style="color: #e00000;"></i>
+                        <a href="{{ route('c1he3f.my-products') }}" class="notification-badge font-20">
+                            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24" height="24" viewBox="0 0 451 458" fill="none">
+                                <rect width="451" height="458" fill="url(#pattern0_7518_7)" />
+                                <defs>
+                                    <pattern id="pattern0_7518_7" patternContentUnits="objectBoundingBox" width="1" height="1">
+                                        <use xlink:href="#image0_7518_7" transform="scale(0.00221729 0.00218341)" />
+                                    </pattern>
+                                    <image id="image0_7518_7" width="451" height="458" preserveAspectRatio="none" xlink:href="data:image/png;base64,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" />
+                                </defs>
+                            </svg>
                         </a>
                         @endif
+                        <a href="{{ route('challenge.vs') }}" style="width: 29px; height: 29px;">
+                            <img src="{{ asset('assets/images/hat.png') }}" alt="">
+                        </a>
                         <a href="javascript:void(0);" class="icon dz-floating-toggler">
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <rect y="2" width="20" height="3" rx="1.5" fill="#5F5F5F" />
@@ -198,9 +298,6 @@
                     </div>
                 </div>
             </header>
-            <!-- Header -->
-
-            <!-- Main Content Start -->
             <main class="page-content bg-white p-b60" style="margin-top: 100px;">
                 <div class="container">
                     <div class="search-box">
@@ -210,6 +307,80 @@
                         <img style="width: 100%;" src="{{ asset('path/to/default-image.jpg') }}" alt="Default Banner">
                         @endif
                     </div>
+                    @if($activeChallenge)
+                    <a href="{{ route('challenge.vs2', ['type' => 'vs']) }}" class="challenge-link">
+                        <div class="swiper-slide">
+                            <div class="dz-categories-bx">
+                                <div class="before-challenge">
+                                    <p>
+                                        <h3>
+                                            قبل التحدي
+                                            @if ($activeChallenge)
+                                            <span>&nbsp;{{ $activeChallenge?->responses->count() ?? 0 }}</span>
+                                            @else
+                                            <span>&nbsp;0</span>
+                                            @endif
+                                        </h3>
+                                    </p>
+                                </div>
+                                <div>
+                                    <div class="vs-icon-container">
+                                        <img src="{{ asset('assets/images/vs-icon.png') }}" class="vs-icon" alt="">
+                                    </div>
+                                </div>
+                                <div class="challenge-title">
+                                    <span class="challenge-title-text">
+                                        {{ $activeChallenge?->message }}
+                                    </span>
+                                    <p>
+                                        <sub class="challenge-timer" @if ($activeChallenge) data-end-date="{{ $activeChallenge->end_date }}" data-end-time="{{ $activeChallenge->end_time }}" @endif>
+                                            -- : -- : -- : --
+                                        </sub>
+                                    </p>
+                                    <span class="challenge-users">
+                                        @if ($activeChallenge)
+                                        {{ $activeChallenge?->challenge_type == 'users' ? 'للمستخدمين' : 'للطهاة' }}
+                                        @else
+                                        --
+                                        @endif
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                    @endif
+                    <script>
+                        document.addEventListener('DOMContentLoaded', function() {
+                            const challengeTimerElement = document.querySelector('.challenge-timer');
+                            if (challengeTimerElement && challengeTimerElement.dataset.endDate && challengeTimerElement.dataset.endTime) {
+                                const endDateStr = challengeTimerElement.dataset.endDate;
+                                const endTimeStr = challengeTimerElement.dataset.endTime;
+                                const endDateTimeCombined = `${endDateStr} ${endTimeStr}`;
+                                const endDate = new Date(endDateTimeCombined).getTime();
+                                function updateCountdownDisplay() {
+                                    const now = new Date().getTime();
+                                    const distance = endDate - now;
+                                    if (distance < 0) {
+                                        challengeTimerElement.textContent = 'انتهى التحدي';
+                                        clearInterval(countdownInterval); // Stop the interval
+                                        return;
+                                    }
+                                    const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                                    const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                                    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                                    const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+                                    challengeTimerElement.textContent =
+                                        `${String(days).padStart(2, '0')} : ${String(hours).padStart(2, '0')} : ${String(minutes).padStart(2, '0')} : ${String(seconds).padStart(2, '0')}`;
+                                }
+                                updateCountdownDisplay();
+                                const countdownInterval = setInterval(updateCountdownDisplay, 1000);
+                            } else {
+                                if (challengeTimerElement) {
+                                    challengeTimerElement.textContent = 'لا يوجد تحدي حالي';
+                                }
+                            }
+                        });
+                    </script>
                     <div class="title-bar mb-0">
                         <h5 class="title">التصنيفات</h5>
                     </div>
@@ -232,7 +403,7 @@
                             @foreach ($mainCategories as $mainCategorie)
                             <div class="swiper-slide">
                                 <a id="videoLink" href="{{ $isProfileComplete ? route('c1he3f.category.show', $mainCategorie->id) : '#' }}" class="{{ !$isProfileComplete ? 'disabled-link' : '' }}" {{ !$isProfileComplete ? 'onclick="alert(\'من فضلك، أكمل بيانات ملفك الشخصي أولاً.\'); return false;"' : '' }}>
-                                    <div class="dz-categories-bx">
+                                    <div class="dz-categories-bx" style="padding: 15px !important;">
                                         <div class="icon-bx">
                                             <img src="{{ asset('storage/' . $mainCategorie->image) }}" style="border-radius: 50%; width: 50px; height: 50px;" alt="">
                                         </div>
@@ -250,15 +421,12 @@
                             @endforeach
                         </div>
                     </div>
-                    <!-- Categories Swiper -->
                     <div class="title-bar">
                         <h5 class="title" style="margin-right: 0px !important;">اخر إستخدمات وصفات</h5>
                         <a id="favoritesLink" href="{{ route('c1he3f.coming-soon') }}">الجميع</a>
                     </div>
                 </div>
             </main>
-            <!-- Main Content End -->
-
             <div class="menubar-area footer-fixed">
                 @php
                 $user = Auth::user();

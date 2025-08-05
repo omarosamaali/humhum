@@ -35,6 +35,9 @@ class Hosp extends Model
         'description_ne',
         'description_ps',
         'status',
+        'calc_nutrition_image',
+        'nutrition_label_image',
+
     ];
 
     public function getMainImageUrlAttribute()

@@ -16576,7 +16576,7 @@ section {
   position: relative;
 }
 
-.header .notification-badge.badge-active::after {
+/* .header .notification-badge.badge-active::after {
   content: "";
   position: absolute;
   width: 16px;
@@ -16586,7 +16586,7 @@ section {
   border-radius: 20px;
   border: 2px solid var(--bg-white);
   background-color: var(--primary);
-}
+} */
 
 .header .sticky-header {
   position: fixed;

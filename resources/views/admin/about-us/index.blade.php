@@ -196,7 +196,7 @@
 {{-- --------------------------------- قسم اتفاقية الاستخدام --------------------------------- --}}
 <div class="card shadow mb-4 mt-5">
     <div class="card-header py-3 d-flex justify-content-between align-items-center">
-        <h6 class="m-0 font-weight-bold text-primary">الضيافة</h6>
+        <h6 class="m-0 font-weight-bold text-primary"> كيفية حساب المعلومات الغذائية للمواد الغذائية</h6>
         @if (!$hosp)
         <a href="{{ route('admin.hosp.create') }}" class="btn btn-success btn-sm">إضافة الضيافة</a>
         @endif
@@ -209,7 +209,7 @@
                     <tr>
                         <th>#</th>
                         <th>تاريخ الإضافة</th>
-                        <th>العنوان (عربي)</th>
+                        <th>المعلومات الغذائية</th>
                         <th>الحالة</th>
                         <th>الإجراءات</th>
                     </tr>
@@ -255,6 +255,130 @@
     </div>
 </div>
 
+{{-- --------------------------------- قسم 1. كيفية فهم واستخدام ملصق المعلومات الغذائية --------------------------------- --}}
+<div class="card shadow mb-4 mt-5">
+    <div class="card-header py-3 d-flex justify-content-between align-items-center">
+        <h6 class="m-0 font-weight-bold text-primary">كيفية فهم واستخدام ملصق المعلومات الغذائية</h6>
+        @if (!$food)
+        <a href="{{ route('admin.food.create') }}" class="btn btn-success btn-sm">إضافة ملصق المعلومات</a>
+
+        @endif
+    </div>
+    <div class="card-body">
+        @if ($food)
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>تاريخ الإضافة</th>
+                        <th>المعلومات الغذائية</th>
+                        <th>الحالة</th>
+                        <th>الإجراءات</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1</td>
+                        <td>{{ optional($food->created_at)->format('d/m/Y') ?? 'N/A' }}</td>
+
+                        {{-- هنا استخدمنا 'title' بناءً على migration جدول 'terms_of_use' --}}
+                        <td>{{ $food->title_ar ?? 'لا يوجد عنوان' }}</td>
+                        <td>
+                            {{-- هنا استخدمنا 'is_active' بناءً على migration جدول 'terms_of_use' --}}
+                            <span class="badge {{ $food->status_badge_class }}">
+                                {{ $food->status_text }}
+                            </span>
+                        </td>
+                        <td>
+                            <div class="action-buttons">
+                                {{-- الـ Routes هنا يجب أن تشير إلى ميثودات Terms في الكنترولر --}}
+                                <a href="{{ route('admin.food.show', $food) }}" class="btn btn-info btn-sm" title="عرض">
+
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                                <a href="{{ route('admin.food.edit', $food) }}" class="btn btn-warning btn-sm" title="تعديل">
+
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <button class="btn btn-danger btn-sm" title="حذف" onclick="confirmDeleteModal('food', {{ $food->id }})">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        @else
+        <div class="text-center py-4">
+            <i class="fas fa-info-circle text-muted" style="font-size: 3rem;"></i>
+            <p class="text-muted mt-2">لا توجد بيانات </p>
+
+        </div>
+        @endif
+    </div>
+</div>
+
+{{-- --------------------------------- ما هي أنواع الطهاة؟ شرح التسلسل الهرمي في المطبخ --------------------------------- --}}
+
+<div class="card shadow mb-4 mt-5">
+    <div class="card-header py-3 d-flex justify-content-between align-items-center">
+        <h6 class="m-0 font-weight-bold text-primary">ما هي أنواع الطهاة؟ شرح التسلسل الهرمي في المطبخ</h6>
+        @if (!$types)
+        <a href="{{ route('admin.types.create') }}" class="btn btn-success btn-sm">إضافة أنواع الطهاه</a>
+        @endif
+    </div>
+    <div class="card-body">
+        @if ($types)
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>تاريخ الإضافة</th>
+                        <th>أنواع الطهاه</th>
+                        <th>الحالة</th>
+                        <th>الإجراءات</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1</td>
+                        <td>{{ optional($types->created_at)->format('d/m/Y') ?? 'N/A' }}</td>
+                        <td>{{ $types->title_ar ?? 'لا يوجد عنوان' }}</td>
+                        <td>
+                            <span class="badge {{ $types->status_badge_class }}">
+                                {{ $types->status_text }}
+                            </span>
+                        </td>
+                        <td>
+                            <div class="action-buttons">
+                                <a href="{{ route('admin.types.show', $types) }}" class="btn btn-info btn-sm" title="عرض">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                                <a href="{{ route('admin.types.edit', $types) }}" class="btn btn-warning btn-sm" title="تعديل">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <button class="btn btn-danger btn-sm" title="حذف" onclick="confirmDeleteModal('types', {{ $types->id }})">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        @else
+        <div class="text-center py-4">
+            <i class="fas fa-info-circle text-muted" style="font-size: 3rem;"></i>
+            <p class="text-muted mt-2">لا توجد بيانات </p>
+
+        </div>
+        @endif
+    </div>
+</div>
+
 {{-- Modal for Delete Confirmation --}}
 <div class="modal fade" id="deleteModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog">
@@ -281,10 +405,6 @@
 
 @push('scripts')
 <script>
-    // الدوال الخاصة بمعاينة الصور (إذا كنت تستخدم هذا الـ view للإضافة/التعديل، ولكن غالباً هذا الـ view للعرض فقط)
-    // تم حذف هذا الجزء من السكربت لتجنب الازدواجية حيث أن هذا الـ view هو لعرض البيانات فقط.
-    // إذا كنت تحتاج هذه الوظائف، يجب أن تكون في view الإضافة/التعديل.
-
     function confirmDeleteModal(type, id) {
         const deleteForm = document.getElementById('deleteForm');
         const deleteModalBody = document.getElementById('deleteModalBody');

@@ -144,7 +144,7 @@
                 </div>
                 <div class="app-info">
                     <h6 class="name">هم هم - الشريك</h6>
-                    <span class="ver-info">الإصدار 1.1</span>
+                    <span class="ver-info">v.4.0.0</span>
                 </div>
             </div>
         </div>

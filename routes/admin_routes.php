@@ -11,6 +11,8 @@ use App\Http\Controllers\Admin\SubCategoryController;
 use App\Http\Controllers\Admin\KitchensController;
 use App\Http\Controllers\Admin\TermsController;
 use App\Http\Controllers\Admin\HospController;
+use App\Http\Controllers\Admin\TypesController;
+use App\Http\Controllers\Admin\FoodController;
 use App\Http\Controllers\Admin\FamiliesController;
 use App\Http\Controllers\Admin\NewsController;
 use App\Http\Controllers\Admin\AboutUsController;
@@ -20,7 +22,6 @@ use App\Http\Controllers\Admin\RecipesController;
 use App\Http\Middleware\CheckUserStatus;
 use App\Http\Middleware\AdminRole;
 use App\Http\Controllers\MessageController;
-
 
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/messages', [MessageController::class, 'adminIndex'])->name('messages.index');
@@ -47,6 +48,8 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::resource('about-us', AboutUsController::class);
     Route::resource('terms', TermsController::class);
     Route::resource('hosp', HospController::class);
+    Route::resource('types', TypesController::class);
+    Route::resource('food', FoodController::class);
     Route::resource('faqs', FaqController::class);
     Route::resource('banners', BannerController::class);
     Route::resource('recipes', RecipesController::class);

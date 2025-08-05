@@ -46,12 +46,13 @@
     <style>
         .delete-btn {
             border: 0px;
-            background: red;
-            color: white;
+    border: 1px solid black;
+    background: white;
+    color: black;           
             font-weight: bold;
             border-radius: 10px;
             height: 48px;
-            min-width: 94px;
+            min-width: 118px;
         }
 
     </style>
@@ -158,7 +159,7 @@
                 </div>
                 <div class="app-info">
                     <h6 class="name">هم هم - الشريك</h6>
-                    <span class="ver-info">الإصدار 1.1</span>
+                    <span class="ver-info">v.4.0.0</span>
                 </div>
             </div>
         </div>
@@ -263,6 +264,10 @@
 
                                 </p>
                             </div>
+                                <div style="margin-top: 10px;">
+                                    <button class="delete-btn" id="deleteAccountBtn">🗑️ حذف حسابي</button>
+                                </div>
+
                         </div>
                         <div class="widget_getintuch pb-15 profile">
                             <ul>
@@ -296,9 +301,7 @@
                                 <a href="{{ route('c1he3f.profile.profileDisplayed') }}" class="btn btn-primary" style="width: 100% !important;
 							margin-bottom: 20px;
 							">كيف يرى عملائك ملفك</a>
-                                <div>
-                                    <button class="delete-btn" id="deleteAccountBtn">🗑️ حذف حسابي</button>
-                                </div>
+                            
                                 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
                                 <script>
                                     document.addEventListener('DOMContentLoaded', function() {

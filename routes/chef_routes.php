@@ -13,6 +13,220 @@ use App\Models\Kitchens;
 use App\Models\MainCategories;
 use App\Models\SubCategory;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\ChallengeController;
+use App\Models\Challenge;
+use Carbon\Carbon;
+use App\Models\ChallengeResponse;
+use Illuminate\Http\Request;
+use App\Models\User;
+use App\Models\Banner;
+use App\Models\Recipe;
+use App\Models\Hosp;
+use App\Models\Food;
+use App\Models\Types;
+use App\Models\Terms;
+// 
+use App\Models\ChallengeReview; // Add this import
+
+Route::get('c1he3f/auth/sign-in', function () {
+    $kitchens = Kitchens::all();
+    foreach ($kitchens as $kitchen) {
+        $kitchen->kitchen_count = Recipe::where('kitchen_type_id', $kitchen->id)->count();
+    }
+    $users = User::where('role', 'طاه')->withCount('recipes')->get();
+    foreach ($users as $user) {
+        $user->recipes_count = Recipe::where('user_id', $user->id)->count();
+    }
+    $banner = Banner::where('display_location', 'mobile_app')
+        ->where('status', 1)
+        ->where('start_date', '<=', now())
+        ->where('end_date', '>=', now())
+        ->latest()
+        ->first();
+    $hosp = Hosp::first();
+    $food = Food::first();
+    $types = Types::first();
+    return view('c1he3f.auth.sign-in', compact('banner', 'users', 'kitchens', 'hosp', 'food', 'types'));
+})->name('c1he3f.auth.sign-in');
+
+Route::get('c1he3f/challenge.order', function () {
+    return view('c1he3f.challenge.order');
+})->name('challenge.order');
+
+Route::get('c1he3f/challenge.vs', function () {
+    $chef_id = Auth::id();
+    $now = Carbon::now('Africa/Cairo');
+
+    $chefChallenges = collect();
+    $userChallenges = collect();
+    $myCookings = collect();
+
+    if (Auth::check()) {
+        $chefChallenges = Challenge::with('chef', 'recipe')
+            ->where('challenge_type', 'chefs')
+            ->where('chef_id', '!=', $chef_id)
+            ->get();
+
+        $userChallenges = Challenge::with('chef', 'recipe')
+            ->where('challenge_type', 'users')
+            ->where('chef_id', '!=', $chef_id)
+            ->get();
+
+        $myCookings = ChallengeResponse::with('challenge.recipe', 'challenge.chef')
+            ->where('user_id', $chef_id)
+            ->get();
+
+        // Get IDs of challenges the current user has responded to
+        $respondedChallengeIds = ChallengeResponse::where('user_id', $chef_id)
+            ->pluck('challenge_id')
+            ->toArray();
+    } else {
+        $respondedChallengeIds = []; // No user logged in, no responses
+    }
+
+    $chefChallenges = $chefChallenges->map(function ($challenge) use ($now, $respondedChallengeIds) {
+        $start = Carbon::parse($challenge->start_at, 'Africa/Cairo');
+        $end = Carbon::parse($challenge->end_at, 'Africa/Cairo');
+        $challenge->is_active = $challenge->status === 'active' && $now->between($start, $end);
+        // Add a flag to indicate if the user has responded to this challenge
+        $challenge->has_responded = in_array($challenge->id, $respondedChallengeIds);
+        return $challenge;
+    });
+
+    $userChallenges = $userChallenges->map(function ($challenge) use ($now, $respondedChallengeIds) {
+        $start = Carbon::parse($challenge->start_at, 'Africa/Cairo');
+        $end = Carbon::parse($challenge->end_at, 'Africa/Cairo');
+        $challenge->is_active = $challenge->status === 'active' && $now->between($start, $end);
+        // Add a flag to indicate if the user has responded to this challenge
+        $challenge->has_responded = in_array($challenge->id, $respondedChallengeIds);
+        return $challenge;
+    });
+
+    return view('c1he3f.challenge.vs', compact('chefChallenges', 'userChallenges', 'myCookings'));
+})->name('challenge.vs');
+
+
+Route::get('c1he3f/challenge/review/{challenge_response_id}', function ($challenge_response_id) {
+    if (!Auth::check()) {
+        return redirect()->route('c1he3f.auth.welcome')->with('error', 'يجب تسجيل الدخول أولاً.');
+    }
+
+    $chef_id = Auth::id();
+    // dd($chef_id, $challenge_response_id); // أضف هذا السطر مؤقتاً
+    try {
+        $challengeResponse = ChallengeResponse::with(['challenge', 'user.chefProfile'])
+            ->where('id', $challenge_response_id)
+            ->whereHas('challenge', function ($query) use ($chef_id) {
+                $query->where('chef_id', $chef_id);
+            })
+            ->firstOrFail();
+    } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+        // dd('ChallengeResponse not found or not owned by chef', $e->getMessage()); // أضف هذا السطر مؤقتاً
+        abort(404); // أو يمكنك إرجاع رسالة خطأ أكثر وضوحًا
+    }
+
+
+    return view('c1he3f.challenge.review', compact('challengeResponse'));
+})->name('c1he3f.challenge.review');
+
+Route::post('c1he3f/challenge/review/{challenge_response_id}', function (Request $request, $challenge_response_id) {
+    if (!Auth::check()) {
+        return response()->json(['success' => false, 'message' => 'يجب تسجيل الدخول أولاً.'], 401);
+    }
+
+    $chef_id = Auth::id();
+
+    // Validate that the challenge response exists and belongs to the chef
+    $challengeResponse = ChallengeResponse::with('challenge')
+        ->where('id', $challenge_response_id)
+        ->whereHas('challenge', function ($query) use ($chef_id) {
+            $query->where('chef_id', $chef_id);
+        })
+        ->firstOrFail();
+
+    // Validate the request data
+    $validated = $request->validate([
+        'rating' => 'required|integer|min:1|max:5',
+        'chef_message_response' => 'nullable|string|max:1000',
+    ]);
+
+    // Create or update the ChallengeReview
+    ChallengeReview::updateOrCreate(
+        [
+            'challenge_response_id' => $challenge_response_id,
+            'chef_id' => $chef_id,
+        ],
+        [
+            'rating' => $validated['rating'],
+            'chef_message_response' => $validated['chef_message_response'],
+        ]
+    );
+
+    // Redirect with success message
+    return redirect()->route('c1he3f.challenge.review', $challenge_response_id)
+        ->with('success', 'تم تقييم الرد وإرسال رسالتك بنجاح!');
+})->name('chef.challenge_response.submit_review');
+
+Route::get('c1he3f/challenge/{challenge_id}/vs-show', function ($challenge_id) {
+    $challenge = Challenge::with(['challengeResponses.user.chefProfile'])->findOrFail($challenge_id);
+    $responses = $challenge->challengeResponses;
+    $totalResponses = $responses->count();
+    return view('c1he3f.challenge.vs-show', compact('challenge', 'responses', 'totalResponses'));
+})->name('challenge.vs-show');
+Route::get('c1he3f/challenge-response/{response_id}/images-vs', [ChallengeController::class, 'showResponseImages'])->name('challenge.image-vs');
+
+Route::get('c1he3f/challenge/{challenge_id}/add-vs', function ($challenge_id) {
+    $challenge = Challenge::with('chefProfile')->findOrFail($challenge_id);
+    return view('c1he3f.challenge.add-vs', compact('challenge'));
+})->name('challenge.add-vs');
+
+Route::post('c1he3f/challenge/{challenge_id}/submit-response', [ChallengeController::class, 'submitResponse'])->name('challenge.submit-response');
+
+
+Route::get('c1he3f/challenge.vs2', function () {
+    $chef_id = Auth::id();
+
+    $userChallengesCount = Challenge::where('chef_id', $chef_id)
+        ->where('challenge_type', 'users')
+        ->count();
+
+    $chefChallengesCount = Challenge::where('chef_id', $chef_id)
+        ->where('challenge_type', 'chefs')
+        ->count();
+
+    $challenges = Challenge::where('chef_id', $chef_id)->get();
+
+    // حساب عدد القابلين للتحدي لكل تحدي
+    $acceptedChallengesCount = DB::table('challenge_responses')
+        ->whereIn('challenge_id', $challenges->pluck('id'))
+        ->count();
+
+    // أو إذا كنت تريد عدد القابلين لكل تحدي منفصل
+    $challengesWithAcceptedCount = $challenges->map(function ($challenge) {
+        $challenge->accepted_count = DB::table('challenge_responses')
+            ->where('challenge_id', $challenge->id)
+            ->count();
+        return $challenge;
+    });
+
+    return view('c1he3f.challenge.vs2', compact(
+        'challenges',
+        'userChallengesCount',
+        'chefChallengesCount',
+        'acceptedChallengesCount',
+        'challengesWithAcceptedCount'
+    ));
+})->name('challenge.vs2');
+
+Route::get('c1he3f/challenge/create', [ChallengeController::class, 'create'])->name('challenge.create');
+Route::post('c1he3f/challenge/store', [ChallengeController::class, 'store'])->name('challenge.store');
+Route::get('c1he3f/challenge.all-vs', [ChallengeController::class, 'index'])->name('challenge.all-vs');
+Route::get('c1he3f/challenge.all-vs2', [ChallengeController::class, 'index'])->name('challenge.all-vs2');
+Route::get('c1he3f/challenge/{id}', [ChallengeController::class, 'show'])->name('challenge.show');
+Route::get('c1he3f/challenge/{id}/edit', [ChallengeController::class, 'edit'])->name('challenge.edit');
+Route::put('c1he3f/challenge/{id}', [ChallengeController::class, 'update'])->name('challenge.update');
+
+
 
 Route::get('/c1he3f/my-products', [ProductController::class, 'index'])->name('c1he3f.my-products');
 Route::get('/c1he3f/products/create', [ProductController::class, 'create'])->name('c1he3f.products.create');
@@ -21,9 +235,6 @@ Route::get('/c1he3f/products/{product}', [ProductController::class, 'show'])->na
 Route::get('/c1he3f/products/{product}/edit-product', [ProductController::class, 'edit'])->name('c1he3f.products.edit-product');
 Route::put('/c1he3f/products/{product}', [ProductController::class, 'update'])->name('c1he3f.products.update');
 Route::delete('/c1he3f/products/{product}', [ProductController::class, 'destroy'])->name('c1he3f.products.destroy');
-
-// يمكنك استخدام Route::resource لتعريف كل الـ routes السابقة بشكل مختصر
-// Route::resource('/c1he3f/products', ProductController::class)->names('c1he3f.products');
 
 Route::get('/c1he3f/new-message', [MessageController::class, 'create'])->name('c1he3f.new-message');
 Route::post('/c1he3f/messages', [MessageController::class, 'store'])->name('c1he3f.messages.store');
@@ -70,10 +281,10 @@ Route::group(['prefix' => 'c1he3f', 'as' => 'c1he3f.', 'middleware' => ['auth']]
 // -----------------------------------------------------------------------------
 Route::middleware('guest')->group(function () {
     // لعرض فورم تسجيل الدخول للطهاة (معدل لاستخدام الدالة الجديدة)
-    Route::get('c1he3f/auth/sign-in', [ChefAuthenticatedSessionController::class, 'createLogin'])->name('c1he3f.auth.sign-in');
+    Route::get('c1he3f/auth/welcome', [ChefAuthenticatedSessionController::class, 'createLogin'])->name('c1he3f.auth.welcome');
 
     // لمعالجة تسجيل الدخول للطهاة بعد إدخال البيانات (معدل لاستخدام الدالة الجديدة)
-    Route::post('c1he3f/auth/sign-in', [ChefAuthenticatedSessionController::class, 'storeLogin'])->name('c1he3f.auth.sign-in.post');
+    Route::post('c1he3f/auth/welcome', [ChefAuthenticatedSessionController::class, 'storeLogin'])->name('c1he3f.auth.welcome.post');
 
     // لعرض فورم التسجيل للطاهي (هذه ما زالت تستخدم دالة create الأصلية لـ ChefAuthenticatedSessionController)
     Route::get('c1he3f/auth/sign-up', [ChefAuthenticatedSessionController::class, 'create'])->name('c1he3f.auth.sign-up');
@@ -122,7 +333,9 @@ Route::middleware(['auth'])->prefix('c1he3f/profile')->name('c1he3f.profile.')->
     })->name('transfer');
     Route::post('/updateTransfer', [UserController::class, 'updateTransfer'])->name('updateTransfer');
     Route::get('/agrem', function () {
-        return view('c1he3f/profile/agrem');
+        $terms = Terms::first();
+
+        return view('c1he3f/profile/agrem', compact('terms'));
     })->name('agrem');
     Route::get('/agryType', function () {
         return view('c1he3f/profile/agryType');
@@ -176,10 +389,10 @@ Route::group(['prefix' => 'chefThree', 'as' => 'chefThree.', 'middleware' => ['a
 // -----------------------------------------------------------------------------
 Route::middleware('guest')->group(function () {
     // لعرض فورم تسجيل الدخول للطهاة (معدل لاستخدام الدالة الجديدة)
-    Route::get('chefThree/auth/sign-in', [ChefAuthenticatedSessionController::class, 'createLogin'])->name('chefThree.auth.sign-in');
+    Route::get('chefThree/auth/welcome', [ChefAuthenticatedSessionController::class, 'createLogin'])->name('chefThree.auth.welcome');
 
     // لمعالجة تسجيل الدخول للطهاة بعد إدخال البيانات (معدل لاستخدام الدالة الجديدة)
-    Route::post('chefThree/auth/sign-in', [ChefAuthenticatedSessionController::class, 'storeLogin'])->name('chefThree.auth.sign-in.post');
+    Route::post('chefThree/auth/welcome', [ChefAuthenticatedSessionController::class, 'storeLogin'])->name('chefThree.auth.welcome.post');
 
     // لعرض فورم التسجيل للطاهي (هذه ما زالت تستخدم دالة create الأصلية لـ ChefAuthenticatedSessionController)
     Route::get('chefThree/auth/sign-up', [ChefAuthenticatedSessionController::class, 'create'])->name('chefThree.auth.sign-up');
@@ -228,7 +441,8 @@ Route::middleware(['auth'])->prefix('chefThree/profile')->name('chefThree.profil
     })->name('transfer');
     Route::post('/updateTransfer', [UserController::class, 'updateTransfer'])->name('updateTransfer');
     Route::get('/agrem', function () {
-        return view('chefThree/profile/agrem');
+        $terms = Terms::first();
+        return view('chefThree/profile/agrem', compact('terms'));
     })->name('agrem');
     Route::get('/agryType', function () {
         return view('chefThree/profile/agryType');

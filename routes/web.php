@@ -16,6 +16,9 @@ use App\Models\Snap;
 use App\Models\Banner;
 use App\Http\Controllers\C1he3f\Auth\ChefAuthenticatedSessionController;
 use App\Models\DeliveryLocation;
+use App\Models\Challenge;
+use Carbon\Carbon;
+
 
 Route::middleware(['auth'])->group(function () {
     Route::post('/delete-account', [ProfileController::class, 'deleteAccount'])->name('account.delete');
@@ -37,20 +40,24 @@ Route::prefix('c1he3f')->middleware(['auth'])->group(function () {
     })->name('c1he3f.index');
 });
 Route::get('/', function () {
-    if (!Auth::check()) {
-        return redirect()->route('login');
-    }
-    $user = Auth::user();
-    switch ($user->role) {
-        case 'مدير':
-            return redirect()->route('admin.dashboard');
-        case 'طاه':
-            return redirect()->route('c1he3f.index');
-        default:
-            Auth::logout();
-            return redirect()->route('login')->with('error', 'حدث خطأ في تحديد نوع الحساب');
-    }
+    return view('welcome');
 });
+
+// Route::get('/', function () {
+//     if (!Auth::check()) {
+//         return redirect()->route('welcome');
+//     }
+//     $user = Auth::user();
+//     switch ($user->role) {
+//         case 'مدير':
+//             return redirect()->route('admin.dashboard');
+//         case 'طاه':
+//             return redirect()->route('c1he3f.index');
+//         default:
+//             Auth::logout();
+//             return redirect()->route('login')->with('error', 'حدث خطأ في تحديد نوع الحساب');
+//     }
+// });
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/admin/get-subcategories', [App\Http\Controllers\Admin\RecipesController::class, 'getSubCategories']);});
@@ -87,11 +94,19 @@ Route::get('/c1he3f/about', function () {
     $about = AboutUs::latest()->first();
     return view('/c1he3f/about', compact('about'));
 })->name('c1he3f.about');
-
+Route::get('/c1he3f/aboutGuest', function () {
+    $about = AboutUs::latest()->first();
+    return view('/c1he3f/aboutGuest', compact('about'));
+})->name('c1he3f.aboutGuest');
+Route::get('/c1he3f/faqGuest', function () {
+    $faqs = Faq::whereIn('place', ['chef', 'both'])->get();
+    return view('/c1he3f/faqGuest', compact('faqs'));
+})->name('c1he3f.faqGuest');
 Route::get('/c1he3f/faq', function () {
     $faqs = Faq::whereIn('place', ['chef', 'both'])->get();
     return view('/c1he3f/faq', compact('faqs'));
 })->name('c1he3f.faq');
+
 
 
 require __DIR__ . '/auth.php';
@@ -108,7 +123,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
 Route::get('c1he3f/category/{category}', function ($categoryId) {
     if (!Auth::check()) {
-        return redirect()->route('c1he3f.auth.sign-in')->with('error', 'يجب تسجيل الدخول كطاهٍ أولاً.');
+        return redirect()->route('c1he3f.auth.welcome')->with('error', 'يجب تسجيل الدخول كطاهٍ أولاً.');
     }
     $chefId = Auth::id();
     $selectedCategory = MainCategories::findOrFail($categoryId);
@@ -126,11 +141,16 @@ Route::get('c1he3f/category/{category}', function ($categoryId) {
 
 Route::get('c1he3f/recipe/{id}', [RecipesController::class, 'showFrontend'])->name('c1he3f.recipe.show');
 Route::post('chef/logout', [ChefAuthenticatedSessionController::class, 'destroy'])->name('chef.logout');
-
 Route::get('c1he3f/index', function () {
     if (!Auth::check()) {
-        return redirect()->route('c1he3f.auth.sign-in')->with('error', 'يجب تسجيل الدخول أولاً.');
+        return redirect()->route('c1he3f.auth.welcome')->with('error', 'يجب تسجيل الدخول أولاً.');
     }
+    $chef_id = Auth::id();
+    $activeChallenge = Challenge::where('chef_id', $chef_id)
+        ->where('end_date', '>=', Carbon::now()->toDateString()) // التاريخ لم ينتهِ بعد
+        ->whereRaw('CONCAT(end_date, " ", end_time) >= ?', [Carbon::now()]) // التأكد من أن الوقت لم ينتهِ بعد
+        ->orderByRaw('CONCAT(end_date, " ", end_time) ASC') // جلب الأقرب للانتهاء
+        ->first(); // جلب تحدي واحد فقط
 
     $banner = Banner::where('display_location', 'mobile_app')
         ->where('status', 1)
@@ -138,24 +158,35 @@ Route::get('c1he3f/index', function () {
         ->where('end_date', '>=', now())
         ->latest()
         ->first();
-    $userId = Auth::id();
 
     $mainCategories = MainCategories::with([
-        'recipes' => function ($query) use ($userId) {
-            $query->where('user_id', $userId); // افترض ان ال recipes ليها عمود user_id
+        'recipes' => function ($query) use ($chef_id) { // استخدم $chef_id هنا
+            $query->where('chef_id', $chef_id);
         }
     ])
-        ->withCount(['recipes' => function ($query) use ($userId) {
-            $query->where('user_id', $userId)->where('status', 1);
+        ->withCount(['recipes' => function ($query) use ($chef_id) { // واستخدمها هنا أيضًا
+            $query->where('chef_id', $chef_id)->where('status', 1);
         }])
         ->get();
+
     $recipes = Recipe::with(['kitchen', 'chef', 'mainCategories', 'subCategories'])
         ->where('status', 1)
         ->latest()
         ->get();
+
     $delivery_locations = DeliveryLocation::where('user_id', Auth::user()->id)->get();
-    return view('c1he3f.index', compact('recipes', 'mainCategories', 'banner', 'delivery_locations'));
-})->name('c1he3f.index');
+
+    return view('c1he3f.index', compact(
+        'recipes',
+        'mainCategories',
+        'banner',
+        'delivery_locations',
+        'activeChallenge' // **تمرير التحدي الفعال إلى الـ View**
+    ));
+})->name('c1he3f.index'); // ملاحظة: اسم الراوت هنا هو 'challenge.vs' وليس 'challenge.vs2'
+
+
+
 
 Route::post('/chefThree/snaps/store-snap', [SnapController::class, 'store'])->name('chefThree.snaps.store-snap');
 Route::get('/chefThree/snaps/edit-snap/{snap}', [SnapController::class, 'edit'])->name('chefThree.snaps.edit-snap');
@@ -241,3 +272,5 @@ Route::get('chefThree/index', function () {
 
     return view('chefThree.index', compact('recipes', 'mainCategories', 'banner'));
 })->name('chefThree.index');
+
+

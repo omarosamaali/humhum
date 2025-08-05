@@ -132,9 +132,14 @@ class User extends Authenticatable implements MustVerifyEmail
         };
     }
 
+    public function challengeReviews()
+    {
+        return $this->hasMany(ChallengeReview::class, 'chef_id');
+    }
     public function recipes()
     {
-        return $this->hasMany(Recipe::class, 'chef_id', 'user_id');
+        // return $this->hasMany(Recipe::class, 'chef_id', 'user_id');
+        return $this->hasMany(Recipe::class, 'chef_id', 'id');
     }
 
     public function chefProfile()
@@ -147,5 +152,4 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany(DeliveryLocation::class);
     }
 
-    
 }
