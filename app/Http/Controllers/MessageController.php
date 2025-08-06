@@ -45,7 +45,7 @@ class MessageController extends Controller
     // عرض قائمة الرسائل (للمستخدمين)
     public function index()
     {
-        $messages = Message::latest()->get();
+        $messages = Message::where('user_id', Auth::id())->latest()->get();
         return view('c1he3f.messages', compact('messages'));
     }
 

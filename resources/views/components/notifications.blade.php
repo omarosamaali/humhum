@@ -78,7 +78,7 @@
 </button>
 <div id="notificationModal" class="fixed inset-0 z-50 hidden items-center justify-center modal-overlay">
     <div class="mb-[60px] bg-white rounded-2xl shadow-2xl w-full max-w-2xl mx-4 max-h-[90vh] overflow-hidden transform transition-all duration-300">
-        <div class="flex justify-between items-center p-6 border-b border-gray-200 gradient-bg">
+        <div class="flex justify-between items-center p-3 border-b border-gray-200 gradient-bg">
             <h2 class="text-xl font-bold text-white">الإشعارات</h2>
             <button id="closeModal" class="text-white hover:text-gray-200 transition-colors p-2 rounded-full hover:bg-white hover:bg-opacity-20">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">

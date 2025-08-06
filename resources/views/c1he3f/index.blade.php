@@ -287,9 +287,30 @@
                             </svg>
                         </a>
                         @endif
+
+                        @php
+                        $user = Auth::user();
+                        $chefProfile = $user->chefProfile;
+                        $isProfileComplete = false;
+                        if ($user && $user->role === 'طاه' && $chefProfile) {
+                        $isOfficialImageComplete = !empty($chefProfile->official_image);
+                        $isContractTypeComplete = !empty($chefProfile->contract_type);
+                        $isBioComplete = !empty($chefProfile->bio);
+                        $isContractSigned = !empty($user->contract_signed_at);
+                        if ($isOfficialImageComplete && $isContractTypeComplete && $isBioComplete && $isContractSigned) {
+                        $isProfileComplete = true;
+                        }
+                        }
+                        @endphp
+                        @if(!$isProfileComplete)
+                        <button onclick="openModal();" style="width: 29px; height: 29px;">
+                            <img src="{{ asset('assets/images/hat.png') }}" alt="">
+                        </button>
+                        @else
                         <a href="{{ route('challenge.vs') }}" style="width: 29px; height: 29px;">
                             <img src="{{ asset('assets/images/hat.png') }}" alt="">
                         </a>
+                        @endif
                         <a href="javascript:void(0);" class="icon dz-floating-toggler">
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <rect y="2" width="20" height="3" rx="1.5" fill="#5F5F5F" />
@@ -300,6 +321,18 @@
                     </div>
                 </div>
             </header>
+
+            <script>
+                function openModal() {
+                    Swal.fire({
+                        title: "نأسف!"
+                        , text: " قم باستكمال بياناتك الشخصية أولا!"
+                        , confirmButtonText: "حسناً"
+                        , icon: "warning"
+                    , });
+                }
+
+            </script>
             <main class="page-content bg-white p-b60" style="margin-top: 100px;">
                 <div class="container">
                     <div class="search-box">
@@ -447,7 +480,8 @@
                 }
                 @endphp
                 <div class="toolbar-inner menubar-nav">
-                    <a href="{{ route('c1he3f.index') }}" class="nav-link {{ !$isProfileComplete ? 'disabled' : '' }}" {{ !$isProfileComplete ? 'onclick="return false;"' : '' }}>
+                    <a href="{{ route('c1he3f.index') }}" class="nav-link 
+                    {{ !$isProfileComplete ? 'disabled' : '' }}" {{ !$isProfileComplete ? 'onclick="return false;"' : '' }}>
                         <i class="fi fi-rr-home"></i>
                     </a>
                     <a href="{{ route('c1he3f.coming-soon') }}" class="nav-link {{ !$isProfileComplete ? 'disabled' : '' }}" {{ !$isProfileComplete ? 'onclick="return false;"' : '' }}>
