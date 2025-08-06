@@ -25,8 +25,8 @@ use App\Models\Hosp;
 use App\Models\Food;
 use App\Models\Types;
 use App\Models\Terms;
-// 
-use App\Models\ChallengeReview; // Add this import
+use Illuminate\Support\Facades\DB;
+use App\Models\ChallengeReview;
 
 Route::get('c1he3f/auth/sign-in', function () {
     $kitchens = Kitchens::all();
