@@ -22,6 +22,7 @@ use App\Http\Controllers\Admin\RecipesController;
 use App\Http\Middleware\CheckUserStatus;
 use App\Http\Middleware\AdminRole;
 use App\Http\Controllers\MessageController;
+use App\Models\Contact;
 
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/messages', [MessageController::class, 'adminIndex'])->name('messages.index');
@@ -31,6 +32,84 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::post('/messages/{message}/reply', [MessageController::class, 'adminReply'])->name('messages.reply');
     Route::get('/messages/{message}', [MessageController::class, 'adminShowAndReply'])->name('messages.message-show');
     Route::post('/messages/{message}/update-status-and-reply', [MessageController::class, 'adminUpdateStatusAndReply'])->name('messages.update-status-and-reply');
+});
+
+// Admin routes
+Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
+    // List contacts
+    Route::get('/contacts', function () {
+        $contacts = Contact::latest()->paginate(10); // Changed variable to $contacts for consistency
+        return view('admin.contacts.index', compact('contacts'));
+    })->name('contacts.index');
+
+    // Show contact details
+    Route::get('/contacts/{id}', function ($id) {
+        $contact = Contact::findOrFail($id);
+        return view('admin.contacts.show', compact('contact'));
+    })->name('contacts.show');
+
+    // Mark as read
+    Route::patch('/contacts/{id}/mark-read', function ($id) {
+        $contact = Contact::findOrFail($id);
+        $contact->update(['status' => 'read']);
+
+        if (request()->ajax()) {
+            return response()->json(['success' => true, 'message' => 'تم تعليم الرسالة كمقروءة']);
+        }
+
+        return redirect()->back()->with('success', 'تم تعليم الرسالة كمقروءة');
+    })->name('contacts.mark-read');
+
+    // Mark as unread
+    Route::patch('/contacts/{id}/mark-unread', function ($id) {
+        $contact = Contact::findOrFail($id);
+        $contact->update(['status' => 'unread']);
+
+        if (request()->ajax()) {
+            return response()->json(['success' => true, 'message' => 'تم تعليم الرسالة كغير مقروءة']);
+        }
+
+        return redirect()->back()->with('success', 'تم تعليم الرسالة كغير مقروءة');
+    })->name('contacts.mark-unread');
+
+    // Delete contact
+    Route::delete('/contacts/{id}', function ($id) {
+        $contact = Contact::findOrFail($id);
+        $contact->delete();
+
+        return redirect()->route('admin.contacts.index')->with('success', 'تم حذف الرسالة بنجاح');
+    })->name('contacts.destroy');
+
+    // Bulk update
+    Route::patch('/contacts/bulk-update', function () {
+        $ids = request('ids', []);
+        $action = request('action');
+
+        if (empty($ids) || !$action) {
+            return redirect()->back()->with('error', 'يرجى اختيار رسائل وإجراء');
+        }
+
+        $statusMap = [
+            'mark_read' => 'read',
+            'mark_unread' => 'unread',
+        ];
+
+        if (isset($statusMap[$action])) {
+            Contact::whereIn('id', $ids)->update(['status' => $statusMap[$action]]);
+            $message = match ($action) {
+                'mark_read' => 'تم تعليم الرسائل المحددة كمقروءة',
+                'mark_unread' => 'تم تعليم الرسائل المحددة كغير مقروءة',
+            };
+            return redirect()->back()->with('success', $message);
+        }
+
+        if ($action === 'delete') {
+            Contact::whereIn('id', $ids)->delete();
+            return redirect()->back()->with('success', 'تم حذف الرسائل المحددة');
+        }
+
+        return redirect()->back()->with('error', 'إجراء غير صحيح');
+    })->name('contacts.bulk-update');
 });
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', function () {

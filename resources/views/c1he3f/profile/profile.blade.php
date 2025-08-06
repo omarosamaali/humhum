@@ -46,9 +46,9 @@
     <style>
         .delete-btn {
             border: 0px;
-    border: 1px solid black;
-    background: white;
-    color: black;           
+            border: 1px solid black;
+            background: white;
+            color: black;
             font-weight: bold;
             border-radius: 10px;
             height: 48px;
@@ -264,9 +264,9 @@
 
                                 </p>
                             </div>
-                                <div style="margin-top: 10px;">
-                                    <button class="delete-btn" id="deleteAccountBtn">🗑️ حذف حسابي</button>
-                                </div>
+                            <div style="margin-top: 10px;">
+                                <button class="delete-btn" id="deleteAccountBtn">🗑️ حذف حسابي</button>
+                            </div>
 
                         </div>
                         <div class="widget_getintuch pb-15 profile">
@@ -281,7 +281,92 @@
                                     <div class="dz-content">
                                         <p class="sub-title">الدولة</p>
                                         <h6 class="title">
-                                            {{ Auth::user()->chefProfile ? Auth::user()->chefProfile->country : 'غير محدد' }}
+                                            @php
+                                            $countryName = '';
+                                            switch (strtolower($chefProfile->country)) {
+
+                                            case 'sa':
+                                            $countryName = 'المملكة العربية السعودية';
+                                            break;
+                                            case 'ae':
+                                            $countryName = 'الإمارات العربية المتحدة';
+                                            break;
+                                            case 'qa':
+                                            $countryName = 'قطر';
+                                            break;
+                                            case 'kw':
+                                            $countryName = 'الكويت';
+                                            break;
+                                            case 'bh':
+                                            $countryName = 'البحرين';
+                                            break;
+                                            case 'om':
+                                            $countryName = 'سلطنة عُمان';
+                                            break;
+                                            case 'ye':
+                                            $countryName = 'اليمن';
+                                            break;
+                                            case 'iq':
+                                            $countryName = 'العراق';
+                                            break;
+                                            case 'sy':
+                                            $countryName = 'سوريا';
+                                            break;
+                                            case 'jo':
+                                            $countryName = 'الأردن';
+                                            break;
+                                            case 'lb':
+                                            $countryName = 'لبنان';
+                                            break;
+                                            case 'ps':
+                                            $countryName = 'فلسطين';
+                                            break;
+                                            case 'eg':
+                                            $countryName = 'مصر';
+                                            break;
+                                            case 'sd':
+                                            $countryName = 'السودان';
+                                            break;
+                                            case 'ly':
+                                            $countryName = 'ليبيا';
+                                            break;
+                                            case 'tn':
+                                            $countryName = 'تونس';
+                                            break;
+                                            case 'dz':
+                                            $countryName = 'الجزائر';
+                                            break;
+                                            case 'ma':
+                                            $countryName = 'المغرب';
+                                            break;
+                                            case 'mr':
+                                            $countryName = 'موريتانيا';
+                                            break;
+                                            case 'dj':
+                                            $countryName = 'جيبوتي';
+                                            break;
+                                            case 'so':
+                                            $countryName = 'الصومال';
+                                            break;
+                                            case 'km':
+                                            $countryName = 'جزر القمر';
+                                            break;
+                                            default:
+                                            $countryName = 'غير محدد';
+                                            break;
+                                            }
+                                            @endphp
+                                            @if (Auth::user()->chefProfile)
+                                            <p><strong></strong> {{ $countryName }}</p>
+                                            {{-- <img src="https://flagcdn.com/24x18/{{ strtolower($chefProfile->country) ?: 'default' }}.png" 
+                                            alt="علم {{ $countryName }}" style="width: 24px; height: 18px; vertical-align: middle;"> --}}
+                                            @else
+                                            <p>لا يوجد ملف شخصي.</p>
+                                            @endif 
+                                        </h6>
+
+
+                                        {{-- {{ Auth::user()->chefProfile ? Auth::user()->chefProfile->country : 'غير محدد' }} --}}
                                         </h6>
                                     </div>
                                 </li>
@@ -301,7 +386,7 @@
                                 <a href="{{ route('c1he3f.profile.profileDisplayed') }}" class="btn btn-primary" style="width: 100% !important;
 							margin-bottom: 20px;
 							">كيف يرى عملائك ملفك</a>
-                            
+
                                 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
                                 <script>
                                     document.addEventListener('DOMContentLoaded', function() {

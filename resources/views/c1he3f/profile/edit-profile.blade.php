@@ -119,36 +119,41 @@
                                 <div class="error-message">{{ $message }}</div>
                             @enderror
                         </div>
+@if($user->role == 'طاه') {{-- عرض هذا القسم إذا كان المستخدم المحرر شيف --}}
+<div id="chef-fields" class="chef-fields">
+    <div class="col-md-12" style="text-align: center;">
+        <div class="mb-3">
+            <label class="form-label" for="country">الدولة</label>
+            <select class="form-select" id="country" name="country" required style="width: 100%; text-align: center;">
+                <option value="" {{ !old('country') && !$user->chefProfile?->country ? 'selected' : '' }}>اختر الدولة</option>
+                <option value="sa" {{ old('country', $user->chefProfile?->country) == 'sa' ? 'selected' : '' }}>المملكة العربية السعودية</option>
+                <option value="ae" {{ old('country', $user->chefProfile?->country) == 'ae' ? 'selected' : '' }}>الإمارات العربية المتحدة</option>
+                <option value="qa" {{ old('country', $user->chefProfile?->country) == 'qa' ? 'selected' : '' }}>قطر</option>
+                <option value="kw" {{ old('country', $user->chefProfile?->country) == 'kw' ? 'selected' : '' }}>الكويت</option>
+                <option value="bh" {{ old('country', $user->chefProfile?->country) == 'bh' ? 'selected' : '' }}>البحرين</option>
+                <option value="om" {{ old('country', $user->chefProfile?->country) == 'om' ? 'selected' : '' }}>سلطنة عُمان</option>
+                <option value="ye" {{ old('country', $user->chefProfile?->country) == 'ye' ? 'selected' : '' }}>اليمن</option>
+                <option value="iq" {{ old('country', $user->chefProfile?->country) == 'iq' ? 'selected' : '' }}>العراق</option>
+                <option value="sy" {{ old('country', $user->chefProfile?->country) == 'sy' ? 'selected' : '' }}>سوريا</option>
+                <option value="jo" {{ old('country', $user->chefProfile?->country) == 'jo' ? 'selected' : '' }}>الأردن</option>
+                <option value="lb" {{ old('country', $user->chefProfile?->country) == 'lb' ? 'selected' : '' }}>لبنان</option>
+                <option value="ps" {{ old('country', $user->chefProfile?->country) == 'ps' ? 'selected' : '' }}>فلسطين</option>
+                <option value="eg" {{ old('country', $user->chefProfile?->country) == 'eg' ? 'selected' : '' }}>مصر</option>
+                <option value="sd" {{ old('country', $user->chefProfile?->country) == 'sd' ? 'selected' : '' }}>السودان</option>
+                <option value="ly" {{ old('country', $user->chefProfile?->country) == 'ly' ? 'selected' : '' }}>ليبيا</option>
+                <option value="tn" {{ old('country', $user->chefProfile?->country) == 'tn' ? 'selected' : '' }}>تونس</option>
+                <option value="dz" {{ old('country', $user->chefProfile?->country) == 'dz' ? 'selected' : '' }}>الجزائر</option>
+                <option value="ma" {{ old('country', $user->chefProfile?->country) == 'ma' ? 'selected' : '' }}>المغرب</option>
+                <option value="mr" {{ old('country', $user->chefProfile?->country) == 'mr' ? 'selected' : '' }}>موريتانيا</option>
+                <option value="dj" {{ old('country', $user->chefProfile?->country) == 'dj' ? 'selected' : '' }}>جيبوتي</option>
+                <option value="so" {{ old('country', $user->chefProfile?->country) == 'so' ? 'selected' : '' }}>الصومال</option>
+                <option value="km" {{ old('country', $user->chefProfile?->country) == 'km' ? 'selected' : '' }}>جزر القمر</option>
+            </select>
+        </div>
+    </div>
+</div>
+@endif @if(session('error'))
 
-                        @if(Auth::user()->role === 'طاه') {{-- عرض هذا القسم فقط إذا كان المستخدم شيف --}}
-                            <div id="chef-fields" class="chef-fields">
-                                <div class="col-md-12" style="text-align: center;">
-                                    <div class="mb-3">
-                                        <label class="form-label" for="country">الدولة</label>
-                                        <select class="form-select" name="country" id="country" style="width: 100%; text-align: center;">
-                                            <option value="">اختر الدولة</option>
-                                            @php
-                                                $selectedCountry = old('country', Auth::user()->chefProfile?->country);
-                                            @endphp
-                                            <option value="مصر" {{ $selectedCountry == 'مصر' ? 'selected' : '' }}>مصر</option>
-                                            <option value="السعودية" {{ $selectedCountry == 'السعودية' ? 'selected' : '' }}>السعودية</option>
-                                            <option value="الإمارات" {{ $selectedCountry == 'الإمارات' ? 'selected' : '' }}>الإمارات</option>
-                                            <option value="الأردن" {{ $selectedCountry == 'الأردن' ? 'selected' : '' }}>الأردن</option>
-                                            <option value="المغرب" {{ $selectedCountry == 'المغرب' ? 'selected' : '' }}>المغرب</option>
-                                            <option value="الجزائر" {{ $selectedCountry == 'الجزائر' ? 'selected' : '' }}>الجزائر</option>
-                                            <option value="السودان" {{ $selectedCountry == 'السودان' ? 'selected' : '' }}>السودان</option>
-                                            <option value="تونس" {{ $selectedCountry == 'تونس' ? 'selected' : '' }}>تونس</option>
-                                            <option value="لبنان" {{ $selectedCountry == 'لبنان' ? 'selected' : '' }}>لبنان</option>
-                                            <option value="قطر" {{ $selectedCountry == 'قطر' ? 'selected' : '' }}>قطر</option>
-                                        </select>
-                                    </div>
-                                    @error('country')
-                                        <div class="error-message">{{ $message }}</div>
-                                    @enderror
-                                </div>
-                            </div>
-                        @endif
-                        @if(session('error'))
                             <div class="error-message text-center mt-3">{{ session('error') }}</div>
                         @endif
 

@@ -17,9 +17,14 @@ use App\Models\Banner;
 use App\Http\Controllers\C1he3f\Auth\ChefAuthenticatedSessionController;
 use App\Models\DeliveryLocation;
 use App\Models\Challenge;
+use App\Models\ChefProfile;
+use App\Http\Controllers\ContactController;
 use Carbon\Carbon;
 
-
+Route::post('/contacts', [ContactController::class, 'store'])->name('contacts.store');
+Route::get('/contacts', [ContactController::class, 'index'])->name('contacts.index');
+Route::patch('/contacts/{id}/read', [ContactController::class, 'markAsRead'])->name('contacts.read');
+Route::patch('/contacts/{id}/replied', [ContactController::class, 'markAsReplied'])->name('contacts.replied');
 Route::middleware(['auth'])->group(function () {
     Route::post('/delete-account', [ProfileController::class, 'deleteAccount'])->name('account.delete');
     Route::post('/check-email-availability', [ProfileController::class, 'checkEmailAvailability'])->name('email.check');
@@ -39,25 +44,27 @@ Route::prefix('c1he3f')->middleware(['auth'])->group(function () {
         return view('chef.index');
     })->name('c1he3f.index');
 });
-Route::get('/', function () {
-    return view('welcome');
-});
-
 // Route::get('/', function () {
-//     if (!Auth::check()) {
-//         return redirect()->route('welcome');
-//     }
-//     $user = Auth::user();
-//     switch ($user->role) {
-//         case 'مدير':
-//             return redirect()->route('admin.dashboard');
-//         case 'طاه':
-//             return redirect()->route('c1he3f.index');
-//         default:
-//             Auth::logout();
-//             return redirect()->route('login')->with('error', 'حدث خطأ في تحديد نوع الحساب');
-//     }
+//     $chefs = ChefProfile::all();
+//     $kitchens = Kitchens::all();
+//     return view('welcome', compact('chefs', 'kitchens'));
 // });
+
+Route::get('/', function () {
+    if (!Auth::check()) {
+        return redirect()->route('welcome');
+    }
+    $user = Auth::user();
+    switch ($user->role) {
+        case 'مدير':
+            return redirect()->route('admin.dashboard');
+        case 'طاه':
+            return redirect()->route('c1he3f.index');
+        default:
+            Auth::logout();
+            return redirect()->route('login')->with('error', 'حدث خطأ في تحديد نوع الحساب');
+    }
+});
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/admin/get-subcategories', [App\Http\Controllers\Admin\RecipesController::class, 'getSubCategories']);});

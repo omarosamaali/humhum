@@ -259,6 +259,7 @@
             transform: translateY(-2px);
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
         }
+
     </style>
 
     @stack('styles')
@@ -278,8 +279,7 @@
             </a>
             <!-- قائمة الإعدادات -->
             <div class="dropdown">
-                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
-                    aria-expanded="false">
+                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                     <i class="fas fa-book"></i>
                     الوصفات
                 </a>
@@ -319,96 +319,99 @@
 
             {{-- قائمة الإعدادات --}}
             @can('isAdmin')
-                <div class="dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
-                        aria-expanded="false">
-                        <i class="fas fa-cog"></i>
-                        الإعدادات
-                    </a>
-                    <ul class="dropdown-menu">
-                        <li>
-                            <a class="dropdown-item" href="{{ route('admin.users.index') }}">
-                                <i class="fas fa-users"></i>
-                                المستخدمين
-                            </a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item" href="{{ route('admin.languages.index') }}">
-                                <i class="fas fa-globe"></i>
-                                اللغات
-                            </a>
-                        </li>
-                        <li>
-                            {{-- 3. الباقات --}}
-                            <a class="dropdown-item" href="{{ route('admin.packages.index') }}">
-                                <i class="fas fa-box-open"></i> الباقات
-                            </a>
-                        </li>
-                        <li>
-                            {{-- 4. الخطط --}}
-                            <a class="dropdown-item" href="{{ route('admin.plans.index') }}">
-                                <i class="fas fa-clipboard-list"></i> الخطط
-                            </a>
-                        </li>
-                        <li>
-                            {{-- 5. التصنيف الرئيسي --}}
-                            <a class="dropdown-item" href="{{ route('admin.mainCategories.index') }}">
-                                <i class="fas fa-sitemap"></i> التصنيف الرئيسي
-                            </a>
-                        </li>
-                        <li>
-                            {{-- 6. التصنيف الفرعي --}}
-                            <a class="dropdown-item" href="{{ route('admin.subCategories.index') }}">
-                                <i class="fas fa-indent"></i> التصنيف الفرعي
-                            </a>
-                        </li>
-                        <li>
-                            {{-- 7. أنواع المطابخ --}}
-                            <a class="dropdown-item" href="{{ route('admin.kitchens.index') }}">
-                                <i class="fas fa-utensils"></i> أنواع المطابخ
-                            </a>
-                        </li>
-                        <li>
-                            {{-- 8. صور العائلة --}}
-                            <a class="dropdown-item" href="{{ route('admin.families.index') }}">
-                                <i class="fas fa-images"></i> صور العائلة
-                            </a>
-                        </li>
-                        <li>
-                            {{-- 9. الأخبار --}}
-                            <a class="dropdown-item" href="{{ route('admin.news.index') }}">
-                                <i class="fas fa-newspaper"></i> الأخبار
-                            </a>
-                        </li>
-                        <li>
-                            {{-- 10. معلومات عنا --}}
-                            <a class="dropdown-item" href="{{ route('admin.about-us.index') }}">
-                                <i class="fas fa-info-circle"></i> معلومات عنا
-                            </a>
-                        </li>
-                        <li>
-                            {{-- 11. الأسئلة الشائعة --}}
-                            <a class="dropdown-item" href="{{ route('admin.faqs.index') }}">
-                                <i class="fas fa-question-circle"></i> الأسئلة الشائقة
-                            </a>
-                        </li>
-                        <li>
-                            {{-- 12. البنرات --}}
-                            <a class="dropdown-item" href="{{ route('admin.banners.index') }}">
-                                <i class="fas fa-image"></i> البنرات
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            @endcan 
-            
+            <div class="dropdown">
+                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="fas fa-cog"></i>
+                    الإعدادات
+                </a>
+                <ul class="dropdown-menu">
+                    <li>
+                        <a class="dropdown-item" href="{{ route('admin.users.index') }}">
+                            <i class="fas fa-users"></i>
+                            المستخدمين
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item" href="{{ route('admin.languages.index') }}">
+                            <i class="fas fa-globe"></i>
+                            اللغات
+                        </a>
+                    </li>
+                    <li>
+                        {{-- 3. الباقات --}}
+                        <a class="dropdown-item" href="{{ route('admin.packages.index') }}">
+                            <i class="fas fa-box-open"></i> الباقات
+                        </a>
+                    </li>
+                    <li>
+                        {{-- 4. الخطط --}}
+                        <a class="dropdown-item" href="{{ route('admin.plans.index') }}">
+                            <i class="fas fa-clipboard-list"></i> الخطط
+                        </a>
+                    </li>
+                    <li>
+                        {{-- 5. التصنيف الرئيسي --}}
+                        <a class="dropdown-item" href="{{ route('admin.mainCategories.index') }}">
+                            <i class="fas fa-sitemap"></i> التصنيف الرئيسي
+                        </a>
+                    </li>
+                    <li>
+                        {{-- 6. التصنيف الفرعي --}}
+                        <a class="dropdown-item" href="{{ route('admin.subCategories.index') }}">
+                            <i class="fas fa-indent"></i> التصنيف الفرعي
+                        </a>
+                    </li>
+                    <li>
+                        {{-- 7. أنواع المطابخ --}}
+                        <a class="dropdown-item" href="{{ route('admin.kitchens.index') }}">
+                            <i class="fas fa-utensils"></i> أنواع المطابخ
+                        </a>
+                    </li>
+                    <li>
+                        {{-- 8. صور العائلة --}}
+                        <a class="dropdown-item" href="{{ route('admin.families.index') }}">
+                            <i class="fas fa-images"></i> صور العائلة
+                        </a>
+                    </li>
+                    <li>
+                        {{-- 9. الأخبار --}}
+                        <a class="dropdown-item" href="{{ route('admin.news.index') }}">
+                            <i class="fas fa-newspaper"></i> الأخبار
+                        </a>
+                    </li>
+                    <li>
+                        {{-- 10. معلومات عنا --}}
+                        <a class="dropdown-item" href="{{ route('admin.about-us.index') }}">
+                            <i class="fas fa-info-circle"></i> معلومات عنا
+                        </a>
+                    </li>
+                    <li>
+                        {{-- 11. الأسئلة الشائعة --}}
+                        <a class="dropdown-item" href="{{ route('admin.faqs.index') }}">
+                            <i class="fas fa-question-circle"></i> الأسئلة الشائقة
+                        </a>
+                    </li>
+                    <li>
+                        {{-- 12. البنرات --}}
+                        <a class="dropdown-item" href="{{ route('admin.banners.index') }}">
+                            <i class="fas fa-image"></i> البنرات
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            @endcan
+
             <a class="nav-link" href="{{ route('admin.messages.index') }}">
                 <i class="fas fa-message"></i>
                 الرسائل
             </a>
+            <a class="nav-link" href="{{ route('admin.contacts.index') }}">
 
-            <a class="nav-link" href="{{ route('logout') }}"
-                onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                <i class="fas fa-message"></i>
+                رسائل الموقع 
+            </a>
+
+            <a class="nav-link" href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                 <i class="fas fa-sign-out-alt"></i>
                 تسجيل الخروج
             </a>

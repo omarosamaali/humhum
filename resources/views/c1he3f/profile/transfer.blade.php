@@ -94,9 +94,7 @@
                                         تحويل الأرباح</label>
                                     <textarea placeholder="أدخل بيانات التحويل البنكي او حساب الباي بال"
                                         style="text-align: center; margin: auto; width: 95%" class="form-control" name="profit_transfer_details"
-                                        style="text-align: center;" rows="4">
-                                    {{ old('profit_transfer_details', Auth::user()->chefProfile->profit_transfer_details ?? '') }}
-                                    </textarea>
+                                        style="text-align: center;" rows="4">{{ old('profit_transfer_details', Auth::user()->chefProfile->profit_transfer_details ?? '') }}</textarea>
                                     <div class="instructions container-box mt-4 mx-4" style="padding-bottom: 5px;">
                                         <p><strong>إرشادات تزويد بحساب الباي بال</strong></p>
                                         <p><strong>تزويدنا بالبريد الألكتروني</strong></p>
@@ -114,7 +112,9 @@
                                             <li><strong>اسم المستفيد الكامل</strong>: يرجى كتابة الاسم كما هو مسجل في
                                                 الحساب
                                                 البنكي باللغة
-                                                الإنجليزية (حسب متطلبات البنك). مثال: Tarek Bn Kalban.</li>
+                                                الإنجليزية (حسب متطلبات البنك). مثال:
+                                                <br/>
+                                                Ahmed Mohamed.</li>
                                             <li><strong>اسم البنك</strong>: اذكر الاسم الكامل للبنك الذي يحتضن الحساب.
                                                 مثال:
                                                 البنك الأهلي السعودي.</li>

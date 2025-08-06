@@ -134,7 +134,7 @@
                                 <div>
                                     <div class="dz-categories-bx" style="padding: 15px !important; width: 220px;">
                                         <div class="icon-bx">
-                                            <img src="{{ asset('storage/' . $user->chefProfile->official_image) }}" style="border-radius: 50%; width: 50px; height: 50px;" alt="">
+                                            <img src="{{ asset('storage/' . $user->chefProfile?->official_image) }}" style="border-radius: 50%; width: 50px; height: 50px;" alt="">
                                         </div>
                                         <div class="dz-content" style="display: flex; align-items: center;">
                                             <h6 class="title">

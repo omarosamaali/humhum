@@ -1049,7 +1049,6 @@
                         <div class="text-danger mt-1">{{ $message }}</div>
                         @enderror
                     </div>
-                    {{ Auth::user()->chefProfile->contract_type }}
                     <div class="footer-fixed-btn bottom-0 bg-white">
                         <button type="submit" class="btn btn-lg btn-thin btn-primary w-100 rounded-xl">حفظ</button>
                     </div>

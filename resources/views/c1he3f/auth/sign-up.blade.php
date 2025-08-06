@@ -135,29 +135,31 @@
                                         <label class="form-label">الدولة</label>
 <select class="form-select" id="country" name="country" required value="{{ old('country') }}" style="width: 100%; text-align: center;">
     <option value="" selected>اختر الدولة</option>
-    <option value="المملكة العربية السعودية" {{ old('country') == 'المملكة العربية السعودية' ? 'selected' : '' }}>المملكة العربية السعودية</option>
-    <option value="الإمارات العربية المتحدة" {{ old('country') == 'الإمارات العربية المتحدة' ? 'selected' : '' }}>الإمارات العربية المتحدة</option>
-    <option value="قطر" {{ old('country') == 'قطر' ? 'selected' : '' }}>قطر</option>
-    <option value="الكويت" {{ old('country') == 'الكويت' ? 'selected' : '' }}>الكويت</option>
-    <option value="البحرين" {{ old('country') == 'البحرين' ? 'selected' : '' }}>البحرين</option>
-    <option value="سلطنة عُمان" {{ old('country') == 'سلطنة عُمان' ? 'selected' : '' }}>سلطنة عُمان</option>
-    <option value="اليمن" {{ old('country') == 'اليمن' ? 'selected' : '' }}>اليمن</option>
-    <option value="العراق" {{ old('country') == 'العراق' ? 'selected' : '' }}>العراق</option>
-    <option value="سوريا" {{ old('country') == 'سوريا' ? 'selected' : '' }}>سوريا</option>
-    <option value="الأردن" {{ old('country') == 'الأردن' ? 'selected' : '' }}>الأردن</option>
-    <option value="لبنان" {{ old('country') == 'لبنان' ? 'selected' : '' }}>لبنان</option>
-    <option value="فلسطين" {{ old('country') == 'فلسطين' ? 'selected' : '' }}>فلسطين</option>
-    <option value="مصر" {{ old('country') == 'مصر' ? 'selected' : '' }}>مصر</option>
-    <option value="السودان" {{ old('country') == 'السودان' ? 'selected' : '' }}>السودان</option>
-    <option value="ليبيا" {{ old('country') == 'ليبيا' ? 'selected' : '' }}>ليبيا</option>
-    <option value="تونس" {{ old('country') == 'تونس' ? 'selected' : '' }}>تونس</option>
-    <option value="الجزائر" {{ old('country') == 'الجزائر' ? 'selected' : '' }}>الجزائر</option>
-    <option value="المغرب" {{ old('country') == 'المغرب' ? 'selected' : '' }}>المغرب</option>
-    <option value="موريتانيا" {{ old('country') == 'موريتانيا' ? 'selected' : '' }}>موريتانيا</option>
-    <option value="جيبوتي" {{ old('country') == 'جيبوتي' ? 'selected' : '' }}>جيبوتي</option>
-    <option value="الصومال" {{ old('country') == 'الصومال' ? 'selected' : '' }}>الصومال</option>
-    <option value="جزر القمر" {{ old('country') == 'جزر القمر' ? 'selected' : '' }}>جزر القمر</option>
-</select> @error('country')
+    <option value="sa" {{ old('country') == 'sa' ? 'selected' : '' }}>المملكة العربية السعودية</option>
+    <option value="ae" {{ old('country') == 'ae' ? 'selected' : '' }}>الإمارات العربية المتحدة</option>
+    <option value="qa" {{ old('country') == 'qa' ? 'selected' : '' }}>قطر</option>
+    <option value="kw" {{ old('country') == 'kw' ? 'selected' : '' }}>الكويت</option>
+    <option value="bh" {{ old('country') == 'bh' ? 'selected' : '' }}>البحرين</option>
+    <option value="om" {{ old('country') == 'om' ? 'selected' : '' }}>سلطنة عُمان</option>
+    <option value="ye" {{ old('country') == 'ye' ? 'selected' : '' }}>اليمن</option>
+    <option value="iq" {{ old('country') == 'iq' ? 'selected' : '' }}>العراق</option>
+    <option value="sy" {{ old('country') == 'sy' ? 'selected' : '' }}>سوريا</option>
+    <option value="jo" {{ old('country') == 'jo' ? 'selected' : '' }}>الأردن</option>
+    <option value="lb" {{ old('country') == 'lb' ? 'selected' : '' }}>لبنان</option>
+    <option value="ps" {{ old('country') == 'ps' ? 'selected' : '' }}>فلسطين</option>
+    <option value="eg" {{ old('country') == 'eg' ? 'selected' : '' }}>مصر</option>
+    <option value="sd" {{ old('country') == 'sd' ? 'selected' : '' }}>السودان</option>
+    <option value="ly" {{ old('country') == 'ly' ? 'selected' : '' }}>ليبيا</option>
+    <option value="tn" {{ old('country') == 'tn' ? 'selected' : '' }}>تونس</option>
+    <option value="dz" {{ old('country') == 'dz' ? 'selected' : '' }}>الجزائر</option>
+    <option value="ma" {{ old('country') == 'ma' ? 'selected' : '' }}>المغرب</option>
+    <option value="mr" {{ old('country') == 'mr' ? 'selected' : '' }}>موريتانيا</option>
+    <option value="dj" {{ old('country') == 'dj' ? 'selected' : '' }}>جيبوتي</option>
+    <option value="so" {{ old('country') == 'so' ? 'selected' : '' }}>الصومال</option>
+    <option value="km" {{ old('country') == 'km' ? 'selected' : '' }}>جزر القمر</option>
+</select>
+
+ @error('country')
 
                                             <div class="text-danger">{{ $message }}</div>
                                         @enderror
