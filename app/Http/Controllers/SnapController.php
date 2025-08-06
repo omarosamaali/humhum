@@ -56,10 +56,11 @@ class SnapController extends Controller
         $snap->save();
 
         if ($request->has('subCategory_ids') && is_array($request->subCategory_ids)) {
-            $snap->subCategories()->sync($request->subCategory_ids); // استخدام sync بدلاً من attach لتجنب التكرار
+            $snap->subCategories()->sync($request->subCategory_ids);
         }
 
-        return redirect()->route('c1he3f.snaps.all-snap')->with('success', 'تم إضافة السناب بنجاح!');
+        // إرجاع استجابة JSON للـ AJAX
+        return response()->json(['success' => true, 'message' => 'تم إضافة السناب بنجاح!']);
     }
     // app/Http/Controllers/SnapController.php
     public function getSubcategoryDetails($subCategoryId)
@@ -135,25 +136,87 @@ class SnapController extends Controller
     
     /**
      * Handle AJAX request for subcategories.
+     */ /**
+     * Handle AJAX request for subcategories.
      */
     public function getSubcategories($mainCategoryId)
     {
+        // إضافة debugging logs
+        \Log::info("=== Starting getSubcategories ===");
+        \Log::info("Received mainCategoryId: " . $mainCategoryId);
+
         try {
+            // التحقق من المعرف
             if (!is_numeric($mainCategoryId) || $mainCategoryId <= 0) {
                 \Log::error("Invalid mainCategoryId: {$mainCategoryId}");
                 return response()->json(['error' => 'Invalid category ID'], 400);
             }
-            $subCategories = SubCategory::where('category_id', $mainCategoryId)->get();
-            if ($subCategories->isEmpty()) {
-                \Log::info("No subcategories found for mainCategoryId: {$mainCategoryId}");
+
+            // التحقق من وجود التصنيف الرئيسي
+            $mainCategoryExists = \DB::table('main_categories')->where('id', $mainCategoryId)->exists();
+            \Log::info("Main category exists: " . ($mainCategoryExists ? 'Yes' : 'No'));
+
+            if (!$mainCategoryExists) {
+                \Log::error("Main category not found for ID: {$mainCategoryId}");
+                return response()->json(['error' => 'Main category not found'], 404);
             }
+
+            // جلب التصنيفات الفرعية باستخدام DB مباشرة للتأكد
+            $subCategories = \DB::table('sub_categories')
+                ->where('category_id', $mainCategoryId)
+                ->select('id', 'name_ar', 'category_id')
+                ->get();
+
+            \Log::info("Found subcategories count: " . $subCategories->count());
+            \Log::info("Subcategories data: " . json_encode($subCategories));
+
+            // محاولة أيضاً مع Model
+            try {
+                $modelSubCategories = SubCategory::where('category_id', $mainCategoryId)->get();
+                \Log::info("Model subcategories count: " . $modelSubCategories->count());
+            } catch (\Exception $e) {
+                \Log::error("Model query failed: " . $e->getMessage());
+            }
+
+            // التحقق من أسماء الأعمدة
+            $tableSchema = \DB::select("DESCRIBE sub_categories");
+            \Log::info("Sub_categories table schema: " . json_encode($tableSchema));
+
             return response()->json($subCategories);
         } catch (\Exception $e) {
-            \Log::error("Error fetching subcategories: " . $e->getMessage());
-            return response()->json(['error' => 'Internal Server Error'], 500);
+            \Log::error("Exception in getSubcategories: " . $e->getMessage());
+            \Log::error("Stack trace: " . $e->getTraceAsString());
+
+            return response()->json([
+                'error' => 'Server error',
+                'message' => $e->getMessage()
+            ], 500);
         }
     }
 
+    // دالة إضافية للتشخيص
+    public function debugDatabase()
+    {
+        \Log::info("=== Database Debug ===");
+
+        // فحص جداول قاعدة البيانات
+        $tables = \DB::select("SHOW TABLES");
+        \Log::info("Available tables: " . json_encode($tables));
+
+        // فحص التصنيفات الرئيسية
+        $mainCategories = \DB::table('main_categories')->get();
+        \Log::info("Main categories: " . json_encode($mainCategories));
+
+        // فحص التصنيفات الفرعية
+        $subCategories = \DB::table('sub_categories')->get();
+        \Log::info("Sub categories: " . json_encode($subCategories));
+
+        return response()->json([
+            'main_categories' => $mainCategories,
+            'sub_categories' => $subCategories
+        ]);
+    }
+    
     public function destroy(Snap $snap)
     {
         // هنا ممكن تضيف كود لحذف الفيديو المرتبط بالـ snap من التخزين لو كان موجود

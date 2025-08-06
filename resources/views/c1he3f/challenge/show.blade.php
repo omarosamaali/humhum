@@ -78,8 +78,10 @@
                                 <div class="price" style="flex-direction: column; align-items: center;">
                                     <div>
                                         <sub>
-                                            <i class="fa fa-users" style="font-size: 14px; margin-left: 5px; "></i></sub>38
-                                    </div>
+                                            <i class="fa fa-users" style="font-size: 14px; margin-left: 5px; "></i></sub>
+                                        {{$challenge->responses_count }}
+
+                                  </div>
                                     <div style="width: fit-content; font-size: 12px; color: gray; border-radius: 5px;">
                                         عدد المتحديين
                                     </div>
@@ -97,39 +99,39 @@
                                         باقي علي نهاية التحدي
                                     </div>
                                 </div>
-<script>
-    // Countdown Timer
-    function startCountdown(endDate, endTime) {
-        const end = new Date(`${endDate} ${endTime} UTC`).getTime();
-        const interval = setInterval(() => {
-            const now = new Date().getTime();
-            const distance = end - now;
+                                <script>
+                                    // Countdown Timer
+                                    function startCountdown(endDate, endTime) {
+                                        const end = new Date(`${endDate} ${endTime} UTC`).getTime();
+                                        const interval = setInterval(() => {
+                                            const now = new Date().getTime();
+                                            const distance = end - now;
 
-            if (distance < 0) {
-                clearInterval(interval);
-                document.getElementById('countdown').innerHTML = 'انتهى التحدي';
-                return;
-            }
+                                            if (distance < 0) {
+                                                clearInterval(interval);
+                                                document.getElementById('countdown').innerHTML = 'انتهى التحدي';
+                                                return;
+                                            }
 
-            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+                                            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                                            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                                            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                                            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
 
-            document.getElementById('countdown').innerHTML = `${days} : ${hours} : ${minutes} : ${seconds}`;
-        }, 1000);
-    }
+                                            document.getElementById('countdown').innerHTML = `${days} : ${hours} : ${minutes} : ${seconds}`;
+                                        }, 1000);
+                                    }
 
-    // Start countdown with challenge end date and time
-    const endDate = '{{ $challenge->end_date }}';
-    const endTime = '{{ $challenge->end_time }}';
-    if (endDate && endTime) {
-        startCountdown(endDate, endTime);
-    } else {
-        document.getElementById('countdown').innerHTML = 'تاريخ النهاية غير محدد';
-    }
+                                    // Start countdown with challenge end date and time
+                                    const endDate = '{{ $challenge->end_date }}';
+                                    const endTime = '{{ $challenge->end_time }}';
+                                    if (endDate && endTime) {
+                                        startCountdown(endDate, endTime);
+                                    } else {
+                                        document.getElementById('countdown').innerHTML = 'تاريخ النهاية غير محدد';
+                                    }
 
-</script>
+                                </script>
 
                                 <div class="price" style="flex-direction: column; align-items: center;">
                                     <div>

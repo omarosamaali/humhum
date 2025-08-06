@@ -35,6 +35,22 @@ class Challenge extends Model
         // Assuming 'chef_id' in challenges table points to 'id' in users table
         return $this->belongsTo(User::class, 'chef_id');
     }
+    // public function reviews()
+    // {
+    //     return $this->hasMany(ChallengeReview::class);
+    // }
+    public function reviews()
+    {
+        return $this->hasManyThrough(
+            ChallengeReview::class,
+            ChallengeResponse::class,
+            'challenge_id', // المفتاح الأجنبي في جدول challenge_responses
+            'challenge_response_id', // المفتاح الأجنبي في جدول challenge_reviews
+            'id', // المفتاح المحلي في جدول challenges
+            'id' // المفتاح المحلي في جدول challenge_responses
+        );
+    }
+
     public function challengeResponses()
     {
         // A Challenge has many ChallengeResponses

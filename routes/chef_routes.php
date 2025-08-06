@@ -63,11 +63,13 @@ Route::get('c1he3f/challenge.vs', function () {
 
     if (Auth::check()) {
         $chefChallenges = Challenge::with('chef', 'recipe')
+            ->withCount('responses') // إضافة عدد الردود
             ->where('challenge_type', 'chefs')
             ->where('chef_id', '!=', $chef_id)
             ->get();
 
         $userChallenges = Challenge::with('chef', 'recipe')
+            ->withCount('responses') // إضافة عدد الردود
             ->where('challenge_type', 'users')
             ->where('chef_id', '!=', $chef_id)
             ->get();
@@ -88,7 +90,6 @@ Route::get('c1he3f/challenge.vs', function () {
         $start = Carbon::parse($challenge->start_at, 'Africa/Cairo');
         $end = Carbon::parse($challenge->end_at, 'Africa/Cairo');
         $challenge->is_active = $challenge->status === 'active' && $now->between($start, $end);
-        // Add a flag to indicate if the user has responded to this challenge
         $challenge->has_responded = in_array($challenge->id, $respondedChallengeIds);
         return $challenge;
     });
@@ -97,7 +98,6 @@ Route::get('c1he3f/challenge.vs', function () {
         $start = Carbon::parse($challenge->start_at, 'Africa/Cairo');
         $end = Carbon::parse($challenge->end_at, 'Africa/Cairo');
         $challenge->is_active = $challenge->status === 'active' && $now->between($start, $end);
-        // Add a flag to indicate if the user has responded to this challenge
         $challenge->has_responded = in_array($challenge->id, $respondedChallengeIds);
         return $challenge;
     });
@@ -167,12 +167,22 @@ Route::post('c1he3f/challenge/review/{challenge_response_id}', function (Request
         ->with('success', 'تم تقييم الرد وإرسال رسالتك بنجاح!');
 })->name('chef.challenge_response.submit_review');
 
+
 Route::get('c1he3f/challenge/{challenge_id}/vs-show', function ($challenge_id) {
     $challenge = Challenge::with(['challengeResponses.user.chefProfile'])->findOrFail($challenge_id);
     $responses = $challenge->challengeResponses;
     $totalResponses = $responses->count();
-    return view('c1he3f.challenge.vs-show', compact('challenge', 'responses', 'totalResponses'));
+    
+    // Check if the current user has reviewed this challenge
+    $userHasReviewed = false;
+    if (Auth::check()) {
+        $user = Auth::user();
+        $userHasReviewed = $challenge->reviews()->where('user_id', $user->id)->exists();
+    }
+    
+    return view('c1he3f.challenge.vs-show', compact('challenge', 'responses', 'totalResponses', 'userHasReviewed'));
 })->name('challenge.vs-show');
+
 Route::get('c1he3f/challenge-response/{response_id}/images-vs', [ChallengeController::class, 'showResponseImages'])->name('challenge.image-vs');
 
 Route::get('c1he3f/challenge/{challenge_id}/add-vs', function ($challenge_id) {

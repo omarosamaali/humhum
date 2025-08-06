@@ -33,11 +33,11 @@ class Snap extends Model
     {
         return $this->belongsToMany(SubCategory::class, 'snap_sub_category', 'snap_id', 'sub_category_id');
     }
+
     public function mainCategory()
     {
         return $this->belongsTo(MainCategories::class, 'main_category_id');
     }
-
     public function recipe()
     {
         return $this->belongsTo(Recipe::class);

@@ -67,7 +67,6 @@ Route::get('/', function () {
             return redirect()->route('login')->with('error', 'حدث خطأ في تحديد نوع الحساب');
     }
 });
-
 Route::middleware(['auth'])->group(function () {
     Route::get('/admin/get-subcategories', [App\Http\Controllers\Admin\RecipesController::class, 'getSubCategories']);});
 Route::post('/c1he3f/snaps/store-snap', [SnapController::class, 'store'])->name('c1he3f.snaps.store-snap');
@@ -77,11 +76,18 @@ Route::get('/c1he3f/snaps/edit-snap/{snap}', [SnapController::class, 'edit'])->n
 Route::get('/c1he3f/snaps/lens-show/{snap}', function(Snap $snap){
     return view('c1he3f.snaps.lens-show', compact('snap'));
 })->name('c1he3f.snaps.lens-show');
+
+// Route للتشخيص (احذفه بعد الانتهاء من التشخيص)
+Route::get('/c1he3f/debug-database', [SnapController::class, 'debugDatabase'])
+    ->name('c1he3f.debug.database');
+Route::get('/c1he3f/subcategories/{mainCategoryId}', [SnapController::class, 'getSubcategories']);
 Route::put('/c1he3f/snaps/update-snap/{snap}', [SnapController::class, 'update'])->name('c1he3f.snaps.update-snap');
 Route::delete('/c1he3f/snaps/delete/{snap}', [SnapController::class, 'destroy'])->name('c1he3f.snaps.delete');
 Route::get('/c1he3f/snaps/all-snap', function () {
-    $publishedSnaps = Snap::where('status', 'published')->with(['mainCategory', 'subCategories'])->get();
-    $draftSnaps = Snap::where('status', 'draft')->with(['mainCategory', 'subCategories'])->get();
+    $publishedSnaps = Snap::where('status', 'published')
+    ->where('user_id', auth()->user()->id)->with(['mainCategory', 'subCategories'])->get();
+    $draftSnaps = Snap::where('status', 'draft')
+        ->where('user_id', auth()->user()->id)->with(['mainCategory', 'subCategories'])->get();
     $mainCategories = MainCategories::all();
     $subCategories = SubCategory::all();
     return view('c1he3f.snaps.all-snap', compact('publishedSnaps', 'draftSnaps', 'mainCategories', 'subCategories'));

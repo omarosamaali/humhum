@@ -336,6 +336,7 @@
         </div>
         @endif
 
+
         {{-- النموذج الخاص بإرسال استجابة التحدي --}}
         {{-- ستحتاج إلى تعريف route جديد لهذه الـ form (مثل challenge.submit-response) --}}
         <form action="{{ route('challenge.submit-response', $challenge->id) }}" method="POST" enctype="multipart/form-data">
@@ -356,9 +357,11 @@
                     {{-- عرض عنوان التحدي --}}
                     <span style="align-items: center; justify-content: center; display: flex;">{{ $challenge->name ?? 'عنوان التحدي' }}</span>
                     <p style="text-align: center; font-size: 12px; margin-bottom: 0px;">
-                        تاريخ البدء: {{ \Carbon\Carbon::parse($challenge->start_at)->translatedFormat('d M Y - H:i') }}
+                        تاريخ البدء: {{ \Carbon\Carbon::parse($challenge->start_at)->format('Y-m-d') }}
+
                         <br>
-                        تاريخ الانتهاء: {{ \Carbon\Carbon::parse($challenge->end_at)->translatedFormat('d M Y - H:i') }}
+                        تاريخ الانتهاء: {{ \Carbon\Carbon::parse($challenge->end_date)->format('Y-m-d') }}
+
                     </p>
                     {{-- يمكنك عرض عد تنازلي هنا باستخدام JavaScript --}}
                 </div>

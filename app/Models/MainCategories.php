@@ -51,8 +51,9 @@ class MainCategories extends Model
     // العلاقة الصحيحة مع التصنيفات الفرعية
     public function subCategories()
     {
-        return $this->hasMany(SubCategory::class, 'category_id'); // تأكد من اسم العمود الصحيح
+        return $this->hasMany(SubCategory::class, 'category_id');
     }
+
 
     public function recipes()
     {

@@ -92,65 +92,8 @@
                                 <ul class="featured-list">
                                     @foreach ($chefChallenges as $challenge)
                                     <li>
-                                        <div class="dz-card list">
-                                            <div class="dz-media">
-                                                @php
-                                                $fullPath = asset('storage/' . $challenge->announcement_path);
-                                                $fileExtension = pathinfo($challenge->announcement_path, PATHINFO_EXTENSION);
-                                                $isVideo = in_array($fileExtension, ['mp4', 'mov', 'ogg', 'webm', 'avi']);
-                                                @endphp
-                                                @if($isVideo)
-                                                <video controls style="height: 186px; object-fit: contain; border-radius: 20px; max-width: 100%; max-height: 100%;">
-                                                    <source src="{{ Storage::url($challenge->announcement_path) }}" type="video/{{ $fileExtension }}">
-                                                    متصفحك لا يدعم الفيديو.
-                                                </video>
-                                                @else
-                                                <img src="{{ $fullPath }}" alt="صورة التحدي" style="max-width: 100%; max-height: 100%; object-fit: contain;">
-                                                @endif
-                                            </div>
-                                            <div class="dz-content">
-                                                <div class="dz-head">
-                                                    <h6 class="title">
-                                                        <a href="{{ route('challenge.show', $challenge->id) }}">{{ $challenge->message }}</a>
-                                                    </h6>
-                                                    <ul class="tag-list">
-                                                        <li>
-                                                            <a href="javascript:void(0);" style="flex-direction: row-reverse; display: flex; align-items: center; gap: 5px;">
-                                                                {{ \Carbon\Carbon::parse($challenge->start_at)->format('Y-m-d h:i A') }}
-                                                                <i class="feather icon-calendar"></i>
-                                                            </a>
-                                                            <a href="javascript:void(0);" style="flex-direction: row-reverse; display: flex; align-items: center; gap: 5px;">
-                                                                {{ \Carbon\Carbon::parse($challenge->end_at)->format('Y-m-d h:i A') }}
-                                                                <i class="feather icon-calendar"></i>
-                                                            </a>
-                                                        </li>
-                                                    </ul>
-                                                    <ul class="tag-list">
-                                                        <li class="dz-price" style="text-align: center; font-size: 14px;">
-                                                            <i class="fa-solid fa-user" style="color: var(--primary);"></i>
-                                                            {{ $challenge->challenge_type == 'users' ? 'للمستخدمين' : 'للطهاة' }}
-                                                        </li>
-                                                    </ul>
-                                                    @if($challenge->recipe)
-                                                    <ul class="tag-list">
-                                                        <li class="dz-price" style="text-align: center; font-size: 14px;">
-                                                            <i class="fa-solid fa-utensils" style="color: var(--primary);"></i>
-                                                            {{ $challenge->recipe?->title }}
-                                                        </li>
-                                                    </ul>
-                                                    @endif
-                                                    @if ($challenge->has_responded)
-                                                    <span class="accepted-challenge-text accept-challenge">تم قبول التحدي</span>
-                                                    @else
-                                                    <a href="{{ route('challenge.add-vs', $challenge->id) }}" id="accept-challenge-{{ $challenge->id }}" class="accept-challenge dz-btn">
-                                                        إقبل التحدي
-                                                    </a>
-                                                    @endif
-                                                </div>
-                                            </div>
-                                        </div>
                                         <div class="swiper-slide" style="position: relative;">
-                                            <a href="cheif-vs.html" style="color: white;">
+                                            <a href="{{ route('challenge.show', $challenge->id) }}" style="color: white;">
                                                 <div class="dz-categories-bx" style="padding: 0px !important; height: 112px; margin-top: 40px; margin-bottom: 30px; display: flex; justify-content: space-between; align-items: center;">
                                                     <div style="height: 100%; padding: 10px 20px;
 											border-top-right-radius: 15px;
@@ -167,21 +110,13 @@
 													top: 9px;
 												position: relative;
 													font-size: 15px; color: rgb(255, 255, 255); font-weight: normal;">
-                                                            <p style="font-size: 28px;"> 15 </p>
+                                                            <p style="font-size: 28px;"> {{ $challenge->responses_count }} </p>
+
                                                             <span>قبل التحدي</span>
                                                         </h3>
                                                         <p></p>
                                                     </div>
-                                                    <!-- <div style="    right: 138px;
-																	    background-color: #a50707;
-																	    height: 98%;
-																	    position: absolute;
-																	    width: 30%;
-																	    top: 1px;
-																	    z-index: 1;
-																	
-																								">
-							</div> -->
+
                                                     <div>
                                                         <div style="    left: 37%;
     position: absolute;
@@ -347,25 +282,84 @@
 											background-color: black; color: white;     z-index: 99999;
 ">
 
+
                                                         <div style="display: flex; justify-content: center;">
                                                             <div class="dz-item-rating" style="border-radius: 50px; background-color: #e00000; font-size: 17px; overflow: hidden; line-height: unset; border: 2px solid #e00000;">
-                                                                <img src="./assets/images/chef.jpeg" style="
+                                                                <img src="{{ asset('storage/' . $challenge->chef->chefProfile->official_image) }}" style="
+
 																	width: 30px; 
 																					height: 30px;" alt="">
                                                             </div>
                                                             <h5 style="font-size: 10px; color: gray; text-align: center; align-items: center; justify-content: center; display: flex; margin-right: 10px;">
-                                                                عبدالرحمن الحارثي</h5>
+                                                                {{ $challenge->chef->name }}</h5>
                                                         </div>
                                                         <span style="align-items: center; justify-content: center; 
-										display: flex;">عنوان
-                                                            التحدي</span>
-                                                        <p style="margin-bottom: 0px;     text-align: center;">
-                                                            <sub style="font-size: 15px; color: rgb(255, 255, 255); font-weight: bold;">
-                                                                10 : 60 : 59 : 50
-                                                            </sub>
+										display: flex;">{{ $challenge->name }}</span>
+                                                        <p style="margin-bottom: 14px;
+    margin-top: 18px;
+
+    text-align: center;"><style>
+        .countdown {
+            font-size: 15px;
+            color: rgb(255, 255, 255);
+            font-weight: bold;
+            background-color: #000;
+            /* لمحاكاة الخلفية المظلمة في الصورة */
+            padding: 5px 10px;
+            border-radius: 5px;
+            display: inline-block;
+        }
+
+    </style>
+
+                                                            {{-- <sub style="font-size: 15px; color: rgb(255, 255, 255); font-weight: bold;">
+                                                                10 : 60 : 59 : 50 --}}
+                                                                <sub id="countdown-timer" style="font-size: 15px;">جاري الحساب...</sub>
+
+<script>
+    // تمرير end_date من Laravel Blade
+    const endDateStr = "{{ $challenge->end_date }}T23:59:59"; // أضف وقتًا افتراضيًا (11:59:59 مساءً)
+    const endDate = new Date(endDateStr).getTime();
+
+    // التحقق من صحة التاريخ
+    if (isNaN(endDate)) {
+        document.getElementById("countdown-timer").innerHTML = "تاريخ غير صحيح";
+        throw new Error("تاريخ الانتهاء غير صالح: " + endDateStr);
+    }
+
+    // تحديث العداد كل ثانية
+    const countdownTimer = setInterval(() => {
+        const now = new Date().getTime();
+        const distance = endDate - now;
+
+        // إذا انتهى الوقت
+        if (distance < 0) {
+            clearInterval(countdownTimer);
+            document.getElementById("countdown-timer").innerHTML = "انتهى الوقت";
+            return;
+        }
+
+        // الحسابات
+        const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+        // عرض الوقت بنفس التنسيق
+        document.getElementById("countdown-timer").innerHTML =
+            `${days} : ${hours.toString().padStart(2, '0')} : ${minutes.toString().padStart(2, '0')} : ${seconds.toString().padStart(2, '0')}`;
+    }, 1000);
+
+</script>
+
+                                                            {{-- </sub> --}}
                                                         </p>
                                                         <span style="align-items: center; justify-content: center; display: flex; font-size: 12px;">
-                                                            للمستخدمين</span>
+                                                            {{-- {{ $challenge->challenge_type = 'users' ? 'للمستخدمين' : 'للطهاه' }} --}}
+                                                            {{ $challenge->challenge_type == 'users' ? 'للمستخدمين' : 'للطهاة' }}
+
+                                                        </span>
+
 
                                                     </div>
                                                 </div>
@@ -373,9 +367,12 @@
                                         </div>
 
                                         <div class="swiper-slide" style="position: relative;">
-                                            <a href="vs-show.html" style="color: white;">
+                                            <a href="{{ route('challenge.show', $challenge->id) }}" style="color: white;">
+
+
                                                 <div class="dz-categories-bx" style="padding: 0px !important; background-color: transparent; height: 50px; margin-top: -40px; margin-bottom: 30px; display: flex; justify-content: space-between; align-items: center;">
-                                                    <div style="height: 100%; padding: 10px 20px;
+                                                    <a href="{{ route('challenge.show', $challenge->id) }}" style="height: 100%; padding: 10px 20px;
+
 							width: 50%;     justify-content: center;
     display: flex
 ;
@@ -393,10 +390,10 @@
 																				position: relative;
 																					font-size: 15px; color: rgb(255, 255, 255); font-weight: normal;">
                                                             <p style="font-size: 17px;">
-                                                                <a href="vs-show.html" style="color: white; position: relative; top: 10px;">عرض التحديات </a>
+                                                                <div style="color: white; position: relative; top: 10px;">عرض التحديات </div>
                                                             </p>
                                                         </h3>
-                                                    </div>
+                                                    </a>
 
 
                                                     <div style="padding: 10px 20px;
@@ -410,7 +407,7 @@
 																			background-color: black; color: white;     z-index: 99999;
 								">
                                                         <p style="font-size: 17px; position:relative; top: 9px;">
-                                                            <a href="add-vs.html" style="color: white;">إقبل التحدي </a>
+                                                            <a href="{{ route('challenge.add-vs', $challenge->id) }}" style="color: white;">إقبل التحدي </a>
                                                         </p>
                                                     </div>
                                                 </div>
@@ -467,6 +464,7 @@
                                                         <li class="dz-price" style="text-align: center; font-size: 14px;">
                                                             <i class="fa-solid fa-user" style="color: var(--primary);"></i>
                                                             {{ $challenge->challenge_type == 'users' ? 'للمستخدمين' : 'للطهاة' }}
+                                                            
                                                         </li>
                                                     </ul>
                                                     @if($challenge->recipe)

@@ -197,7 +197,7 @@
                                             <div class="dz-head">
                                                 <h6 class="title"> <a href="{{ route('c1he3f.snaps.lens-show', $snap) }}">
                                                         {{ $snap->name }}</a></h6>
-                                                <div style="display: flex;">
+                                                <div style="display: flex; flex-direction: column;">
                                                     <h6 class="title" style="font-size: 13px; background-color: green; color: white; width: fit-content; padding: 3px; border-radius: 5px; ">
                                                         {{ $snap->mainCategory->name_ar ?? 'غير محدد' }}
                                                     </h6>

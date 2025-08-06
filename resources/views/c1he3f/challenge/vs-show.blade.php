@@ -141,8 +141,7 @@
                                     <div class="icon-bx" style="margin-left: unset !important;">
                                         <a href="profileDisplayed.html">
                                             <img class="img-fluid" id="header-user-image" style="justify-content: flex-start; display: flex; text-align: center; border-radius: 50%; 
-                                                margin: auto; width: 50px; height: 50px; display: flex; text-align: center;" 
-                                                src="{{ asset('storage/' . ($challenge->user->chefProfile->official_image ?? 'default_profile.jpeg')) }}" alt>
+                                                margin: auto; width: 50px; height: 50px; display: flex; text-align: center;" src="{{ asset('storage/' . ($challenge->user->chefProfile->official_image ?? 'default_profile.jpeg')) }}" alt>
                                         </a>
                                     </div>
                                     <div class="dz-content">
@@ -152,9 +151,117 @@
                                             </a>
                                         </h6>
                                         <h6 class="title">
-                                            <a href="profileDisplayed.html"  style="color: white;">
-                                                {{ $challenge->user->chefProfile->country }}
-                                            </a>
+                                            <div style="color: white;">
+                                         @php
+                                         $countryName = '';
+                                         $flagUrl = ''; // لتخزين رابط العلم الخارجي
+                                         switch (strtolower($challenge->user->chefProfile->country ?? '')) {
+                                         case 'sa':
+                                         $countryName = 'المملكة العربية السعودية';
+                                         $flagUrl = 'https://flagcdn.com/16x12/sa.png';
+                                         break;
+                                         case 'ae':
+                                         $countryName = 'الإمارات العربية المتحدة';
+                                         $flagUrl = 'https://flagcdn.com/16x12/ae.png';
+                                         break;
+                                         case 'qa':
+                                         $countryName = 'قطر';
+                                         $flagUrl = 'https://flagcdn.com/16x12/qa.png';
+                                         break;
+                                         case 'kw':
+                                         $countryName = 'الكويت';
+                                         $flagUrl = 'https://flagcdn.com/16x12/kw.png';
+                                         break;
+                                         case 'bh':
+                                         $countryName = 'البحرين';
+                                         $flagUrl = 'https://flagcdn.com/16x12/bh.png';
+                                         break;
+                                         case 'om':
+                                         $countryName = 'سلطنة عُمان';
+                                         $flagUrl = 'https://flagcdn.com/16x12/om.png';
+                                         break;
+                                         case 'ye':
+                                         $countryName = 'اليمن';
+                                         $flagUrl = 'https://flagcdn.com/16x12/ye.png';
+                                         break;
+                                         case 'iq':
+                                         $countryName = 'العراق';
+                                         $flagUrl = 'https://flagcdn.com/16x12/iq.png';
+                                         break;
+                                         case 'sy':
+                                         $countryName = 'سوريا';
+                                         $flagUrl = 'https://flagcdn.com/16x12/sy.png';
+                                         break;
+                                         case 'jo':
+                                         $countryName = 'الأردن';
+                                         $flagUrl = 'https://flagcdn.com/16x12/jo.png';
+                                         break;
+                                         case 'lb':
+                                         $countryName = 'لبنان';
+                                         $flagUrl = 'https://flagcdn.com/16x12/lb.png';
+                                         break;
+                                         case 'ps':
+                                         $countryName = 'فلسطين';
+                                         $flagUrl = 'https://flagcdn.com/16x12/ps.png';
+                                         break;
+                                         case 'eg':
+                                         $countryName = 'مصر';
+                                         $flagUrl = 'https://flagcdn.com/16x12/eg.png';
+                                         break;
+                                         case 'sd':
+                                         $countryName = 'السودان';
+                                         $flagUrl = 'https://flagcdn.com/16x12/sd.png';
+                                         break;
+                                         case 'ly':
+                                         $countryName = 'ليبيا';
+                                         $flagUrl = 'https://flagcdn.com/16x12/ly.png';
+                                         break;
+                                         case 'tn':
+                                         $countryName = 'تونس';
+                                         $flagUrl = 'https://flagcdn.com/16x12/tn.png';
+                                         break;
+                                         case 'dz':
+                                         $countryName = 'الجزائر';
+                                         $flagUrl = 'https://flagcdn.com/16x12/dz.png';
+                                         break;
+                                         case 'ma':
+                                         $countryName = 'المغرب';
+                                         $flagUrl = 'https://flagcdn.com/16x12/ma.png';
+                                         break;
+                                         case 'mr':
+                                         $countryName = 'موريتانيا';
+                                         $flagUrl = 'https://flagcdn.com/16x12/mr.png';
+                                         break;
+                                         case 'dj':
+                                         $countryName = 'جيبوتي';
+                                         $flagUrl = 'https://flagcdn.com/16x12/dj.png';
+                                         break;
+                                         case 'so':
+                                         $countryName = 'الصومال';
+                                         $flagUrl = 'https://flagcdn.com/16x12/so.png';
+                                         break;
+                                         case 'km':
+                                         $countryName = 'جزر القمر';
+                                         $flagUrl = 'https://flagcdn.com/16x12/km.png';
+                                         break;
+                                         default:
+                                         $countryName = 'غير محدد';
+                                         $flagUrl = 'https://flagcdn.com/16x12/xx.png'; // رمز افتراضي لدولة غير معروفة
+                                         break;
+                                         }
+                                         @endphp
+
+                                         @if ($challenge->user->chefProfile->country ?? false)
+                                         <p style="display: flex; align-items: center; gap: 4px;">
+                                             <img src="{{ $flagUrl }}" alt="{{ $countryName }} Flag" style="width: 20px; height: 15px; margin-right: 5px; vertical-align: middle;">
+                                             <strong>{{ $countryName }}</strong>
+                                         </p>
+                                         @else
+                                         <p>لا يوجد ملف شخصي.</p>
+                                         @endif
+
+
+                                            </div>
                                         </h6>
                                     </div>
                                 </div>
@@ -201,13 +308,128 @@
                             <div style="margin-bottom: 10px; direction: rtl;">
                                 <div style="display: flex; gap: 10px; align-items: end;">
                                     {{-- Using $response->user for the profile image and name --}}
-                                    <img class="user-profile-image" style="height: 50px; width: 50px; border-radius: 50%;" 
-                                    src="{{ asset('storage/' . ($response->user->chefProfile->official_image ?? 'default_profile.jpeg')) }}" alt="">
+                                    <img class="user-profile-image" style="height: 50px; width: 50px; border-radius: 50%;" src="{{ asset('storage/' . ($response->user->chefProfile->official_image ?? 'default_profile.jpeg')) }}" alt="">
                                     <div style="display: flex; flex-direction: column;">
                                         <p class="user-name" style="color: white; font-size: 14px; margin-bottom: 0px;">
                                             {{ $response->user->name ?? 'اسم الشيف' }}</p>
                                         <p class="user-name" style="color: white; font-size: 14px; margin-bottom: 0px;">
-                                            {{ $response->user->chefProfile->country}}</p>
+                                            {{-- {{ $response->user->chefProfile->country}}</p> --}}
+
+
+
+@php
+$countryName = '';
+$flagUrl = ''; // لتخزين رابط العلم الخارجي
+switch (strtolower($response->user->chefProfile->country ?? '')) {
+case 'sa':
+$countryName = 'المملكة العربية السعودية';
+$flagUrl = 'https://flagcdn.com/16x12/sa.png';
+break;
+case 'ae':
+$countryName = 'الإمارات العربية المتحدة';
+$flagUrl = 'https://flagcdn.com/16x12/ae.png';
+break;
+case 'qa':
+$countryName = 'قطر';
+$flagUrl = 'https://flagcdn.com/16x12/qa.png';
+break;
+case 'kw':
+$countryName = 'الكويت';
+$flagUrl = 'https://flagcdn.com/16x12/kw.png';
+break;
+case 'bh':
+$countryName = 'البحرين';
+$flagUrl = 'https://flagcdn.com/16x12/bh.png';
+break;
+case 'om':
+$countryName = 'سلطنة عُمان';
+$flagUrl = 'https://flagcdn.com/16x12/om.png';
+break;
+case 'ye':
+$countryName = 'اليمن';
+$flagUrl = 'https://flagcdn.com/16x12/ye.png';
+break;
+case 'iq':
+$countryName = 'العراق';
+$flagUrl = 'https://flagcdn.com/16x12/iq.png';
+break;
+case 'sy':
+$countryName = 'سوريا';
+$flagUrl = 'https://flagcdn.com/16x12/sy.png';
+break;
+case 'jo':
+$countryName = 'الأردن';
+$flagUrl = 'https://flagcdn.com/16x12/jo.png';
+break;
+case 'lb':
+$countryName = 'لبنان';
+$flagUrl = 'https://flagcdn.com/16x12/lb.png';
+break;
+case 'ps':
+$countryName = 'فلسطين';
+$flagUrl = 'https://flagcdn.com/16x12/ps.png';
+break;
+case 'eg':
+$countryName = 'مصر';
+$flagUrl = 'https://flagcdn.com/16x12/eg.png';
+break;
+case 'sd':
+$countryName = 'السودان';
+$flagUrl = 'https://flagcdn.com/16x12/sd.png';
+break;
+case 'ly':
+$countryName = 'ليبيا';
+$flagUrl = 'https://flagcdn.com/16x12/ly.png';
+break;
+case 'tn':
+$countryName = 'تونس';
+$flagUrl = 'https://flagcdn.com/16x12/tn.png';
+break;
+case 'dz':
+$countryName = 'الجزائر';
+$flagUrl = 'https://flagcdn.com/16x12/dz.png';
+break;
+case 'ma':
+$countryName = 'المغرب';
+$flagUrl = 'https://flagcdn.com/16x12/ma.png';
+break;
+case 'mr':
+$countryName = 'موريتانيا';
+$flagUrl = 'https://flagcdn.com/16x12/mr.png';
+break;
+case 'dj':
+$countryName = 'جيبوتي';
+$flagUrl = 'https://flagcdn.com/16x12/dj.png';
+break;
+case 'so':
+$countryName = 'الصومال';
+$flagUrl = 'https://flagcdn.com/16x12/so.png';
+break;
+case 'km':
+$countryName = 'جزر القمر';
+$flagUrl = 'https://flagcdn.com/16x12/km.png';
+break;
+default:
+$countryName = 'غير محدد';
+$flagUrl = 'https://flagcdn.com/16x12/xx.png'; // رمز افتراضي لدولة غير معروفة
+break;
+}
+@endphp
+
+@if ($response->user->chefProfile->country ?? false)
+<p style="display: flex
+;
+    gap: 7px;
+    align-items: center;">
+
+    <img src="{{ $flagUrl }}" alt="{{ $countryName }} Flag" style="width: 20px; height: 15px; margin-right: 5px; vertical-align: middle;">
+    <strong>{{ $countryName }}</strong>
+</p>
+@else
+<p>لا يوجد ملف شخصي.</p>
+@endif
+
+
                                     </div>
                                 </div>
                             </div>
@@ -232,22 +454,29 @@
 
                             <ul class="dz-meta" style="direction: rtl; display: flex; gap: 15px; margin-bottom: 10px;">
                                 <li class="dz-price" style="text-align: center; font-size: 14px;">
-                                    <i class="fa-solid fa-clock"></i>  {{ \Carbon\Carbon::parse($response->created_at)->diffForHumans() }}
+                                    <i class="fa-solid fa-clock"></i> {{ \Carbon\Carbon::parse($response->created_at)->diffForHumans() }}
                                 </li>
                                 <li class="dz-price" style="text-align: center; font-size: 14px;">
                                     <i class="fa-solid fa-eye"></i> {{ $response->views ?? '0' }}
                                 </li>
                             </ul>
-    @php
-    $firstResponse = $challenge->challengeResponses->first();
-    @endphp
+                            @php
+                            $firstResponse = $challenge->challengeResponses->first();
+                            @endphp
 
 
-                            <div style="display: flex; gap: 1px;">
-                                <a href="{{ route('c1he3f.challenge.review', $firstResponse->id) }}" class="myBtn" style="background-color: var(--primary); text-align: center; width: 100%; border-radius: 15px; height: 42px; text-align: center; align-items: center; justify-content: center; display: flex; color: white;">
-                                    قيم الطبخة
-                                </a>
-                            </div>
+                       <div style="display: flex; gap: 1px;">
+                           @if ($userHasReviewed)
+                           <a href="#" class="myBtn" style="background-color: #808080; text-align: center; width: 100%; border-radius: 15px; height: 42px; text-align: center; align-items: center; justify-content: center; display: flex; color: white; cursor: not-allowed;">
+                               تم التقييم
+                           </a>
+                           @else
+                           <a href="{{ route('c1he3f.challenge.review', $firstResponse->id) }}" class="myBtn" style="background-color: var(--primary); text-align: center; width: 100%; border-radius: 15px; height: 42px; text-align: center; align-items: center; justify-content: center; display: flex; color: white;">
+                               قيم الطبخة
+                           </a>
+                           @endif
+                       </div>
+
                         </div>
                     </div>
                 </div>
@@ -298,7 +527,7 @@
             clearInterval(countdownInterval);
         }
 
-        const currentVideo = videos?.[currentVideoIndex];
+        const currentVideo = videos ? . [currentVideoIndex];
         if (!currentVideo) {
             console.warn('No current video found to update countdown.');
             return;
@@ -332,7 +561,7 @@
 
         const calculateAndDisplayTime = () => {
             const now = new Date().getTime();
-            const distance = endDate-now;
+            const distance = endDate - now;
 
             if (distance < 0) {
                 countdownTimerElement.textContent = 'انتهى التحدي';

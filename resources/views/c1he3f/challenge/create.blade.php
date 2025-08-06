@@ -170,10 +170,20 @@
                         </div>
 
                         <div class="form-group">
-                            <input type="number" step="0.01" style="margin-top: 10px;" name="price" id="price" class="form-control @if(!old('price') && (!isset($challenge) || !$challenge->price)) hidden @endif" placeholder="أدخل سعر الوصفة" value="{{ old('price', isset($challenge) ? $challenge->price : '') }}">
+                            @if($recipe->price == null)
+                            <input type="number" step="0.01" style="margin-top: 10px;" name="price" id="price" class="form-control 
+                        "
+
+
+                            
+                            placeholder="أدخل سعر الوصفة" 
+                            value="{{ old('price',  $recipe->price) }}">
+
+
                             @error('price')
                             <div class="error-message">{{ $message }}</div>
                             @enderror
+                            @endif
                         </div>
                     </div>
 
