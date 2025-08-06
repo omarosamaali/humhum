@@ -149,43 +149,72 @@
                         <label for="recipe-select" style="text-align: center; display: block; margin-bottom: 5px; margin-top: 15px;">اختر الوصفة</label>
                         <div class="form-group">
                             {{-- تغيير name و id ليتناسب مع recipe_id --}}
-                            <select class="form-control" style="text-align: center;" id="recipe-select" name="recipe_id">
-                                <option value="">إختر الوصفة</option>
-                                @foreach($recipes as $recipe)
-                                {{-- تعديل شرط الـ 'selected' --}}
-                                <option value="{{ $recipe->id }}" @if(isset($challenge) && $challenge->recipe_id == $recipe->id)
-                                    selected
-                                    @elseif(old('recipe_id') == $recipe->id)
-                                    selected
-                                    @endif
-                                    >
-                                    {{ $recipe->title }}
-                                </option>
-                                @endforeach
-                            </select>
-                            {{-- تعديل @error --}}
+<select class="form-control" style="text-align: center;" id="recipe-select" name="recipe_id">
+    <option value="">إختر الوصفة</option>
+    @foreach($recipes as $recipe)
+    <option value="{{ $recipe->id }}" data-price="{{ $recipe->price }}" ...>
+        {{ $recipe->title }}
+    </option>
+    @endforeach
+</select>
+
+
+<script>
+    document.getElementById('recipe-select').addEventListener('change', function() {
+        const selectedOption = this.options[this.selectedIndex];
+        const priceInput = document.getElementById('price');
+
+        // جلب السعر من الـ data attribute
+        const selectedPrice = selectedOption.dataset.price;
+
+        if (selectedPrice === 'null') { // إذا كان السعر null
+            priceInput.value = '';
+            priceInput.placeholder = 'أدخل سعر الوصفة';
+            priceInput.style.display = 'block'; // إظهار حقل السعر
+        } else {
+            priceInput.value = selectedPrice;
+            priceInput.style.display = 'none'; // إخفاء حقل السعر
+        }
+    });
+
+    // تشغيل الدالة مرة واحدة عند تحميل الصفحة في حالة وجود قيمة قديمة
+    document.addEventListener('DOMContentLoaded', function() {
+        const selectElement = document.getElementById('recipe-select');
+        const selectedOption = selectElement.options[selectElement.selectedIndex];
+        if (selectedOption && selectedOption.dataset.price) {
+            const priceInput = document.getElementById('price');
+            const selectedPrice = selectedOption.dataset.price;
+
+            if (selectedPrice === 'null') {
+                priceInput.value = '';
+                priceInput.placeholder = 'أدخل سعر الوصفة';
+                priceInput.style.display = 'block';
+            } else {
+                priceInput.value = selectedPrice;
+                priceInput.style.display = 'none';
+            }
+        }
+    });
+
+</script>
+
+{{-- تعديل @error --}}
+
+
                             @error('recipe_id')
                             <div class="error-message">{{ $message }}</div>
                             @enderror
                         </div>
 
-                        <div class="form-group">
-                            @if($recipe->price == null)
-                            <input type="number" step="0.01" style="margin-top: 10px;" name="price" id="price" class="form-control 
-                        "
+{{-- حذف الشرط القديم @if($recipe?->price == null) --}}
+<div class="form-group">
+    <input type="number" step="0.01" style="margin-top: 10px; display: none;" name="price" id="price" class="form-control" placeholder="أدخل سعر الوصفة" value="{{ old('price') }}">
+    @error('price')
+    <div class="error-message">{{ $message }}</div>
+    @enderror
+</div>
+</div>
 
-
-                            
-                            placeholder="أدخل سعر الوصفة" 
-                            value="{{ old('price',  $recipe->price) }}">
-
-
-                            @error('price')
-                            <div class="error-message">{{ $message }}</div>
-                            @enderror
-                            @endif
-                        </div>
-                    </div>
 
 
                     <!-- Challenge Type -->

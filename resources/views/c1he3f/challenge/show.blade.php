@@ -81,7 +81,7 @@
                                             <i class="fa fa-users" style="font-size: 14px; margin-left: 5px; "></i></sub>
                                         {{$challenge->responses_count }}
 
-                                  </div>
+                                    </div>
                                     <div style="width: fit-content; font-size: 12px; color: gray; border-radius: 5px;">
                                         عدد المتحديين
                                     </div>
@@ -154,11 +154,24 @@
         </main>
         <!-- Main Content End -->
         @if(Auth::check() && Auth::user()->id == $challenge->user_id)
+        {{-- هنا بنتحقق: هل التحدي مقبول من حد تاني؟ --}}
+        @if ($challengeAccepted)
+        {{-- لو التحدي اتقبل، هنعرض رسالة --}}
+        <div class="footer-fixed-btn bottom-0 bg-white">
+            <div class="alert alert-info text-center" style="font-weight: bold;">
+                التحدي قُبل، لا يمكن التعديل عليه الآن.
+            </div>
+        </div>
+        @else
+        {{-- لو لسه ما اتقبلش، هنعرض زر التعديل --}}
         <div class="footer-fixed-btn bottom-0 bg-white">
             <a href="{{ route('challenge.edit', $challenge->id) }}" class="btn btn-lg btn-thin btn-primary w-100 rounded-xl">
-                تعديل</a>
+                تعديل
+            </a>
         </div>
         @endif
+        @endif
+
     </div>
 </body>
 

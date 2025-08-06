@@ -80,7 +80,11 @@
                 <div class="list style-3 bg-white border-bottom" style="display: flex; align-items: center; padding-top: 33px; padding-bottom: 87px;">
                     <div class="media-100 me-3" style="margin-left: 1em;">
                         @if ($challengeResponse->user && $challengeResponse->user->chefProfile && $challengeResponse->user->chefProfile->official_image)
-                        <img style="width: 100px; height: 150px;" class="rounded" src="{{ asset('storage/' . $challengeResponse->user->chefProfile->official_image) }}" alt="صورة المتحدي">
+                        <img style="    width: 100px;
+    border-radius: 50% !important;
+    height: 100px;
+
+" src="{{ asset('storage/' . $challengeResponse->user->chefProfile->official_image) }}" alt="صورة المتحدي">
                         @else
                         <img class="rounded" src="{{ asset('assets/images/placeholder.jpg') }}" alt="صورة افتراضية">
                         @endif
@@ -94,8 +98,97 @@
                             </h6>
                         </div>
                         <ul class="tag-list">
-                            <li><a href="javascript:void(0);" style="color: #776e6e;">
-                                    {{ $challengeResponse->user->chefProfile?->country }}
+                            <li><a href="javascript:void(0);" style="    display: flex
+;
+    align-items: center;
+    gap: 8px;color: #776e6e;">
+
+                                    {{-- {{ $challengeResponse->user->chefProfile?->country }} --}}
+                                    @php
+                                    $countryName = '';
+                                    switch (strtolower($challengeResponse->user->chefProfile?->country)) {
+
+                                    case 'sa':
+                                    $countryName = 'المملكة العربية السعودية';
+                                    break;
+                                    case 'ae':
+                                    $countryName = 'الإمارات العربية المتحدة';
+                                    break;
+                                    case 'qa':
+                                    $countryName = 'قطر';
+                                    break;
+                                    case 'kw':
+                                    $countryName = 'الكويت';
+                                    break;
+                                    case 'bh':
+                                    $countryName = 'البحرين';
+                                    break;
+                                    case 'om':
+                                    $countryName = 'سلطنة عُمان';
+                                    break;
+                                    case 'ye':
+                                    $countryName = 'اليمن';
+                                    break;
+                                    case 'iq':
+                                    $countryName = 'العراق';
+                                    break;
+                                    case 'sy':
+                                    $countryName = 'سوريا';
+                                    break;
+                                    case 'jo':
+                                    $countryName = 'الأردن';
+                                    break;
+                                    case 'lb':
+                                    $countryName = 'لبنان';
+                                    break;
+                                    case 'ps':
+                                    $countryName = 'فلسطين';
+                                    break;
+                                    case 'eg':
+                                    $countryName = 'مصر';
+                                    break;
+                                    case 'sd':
+                                    $countryName = 'السودان';
+                                    break;
+                                    case 'ly':
+                                    $countryName = 'ليبيا';
+                                    break;
+                                    case 'tn':
+                                    $countryName = 'تونس';
+                                    break;
+                                    case 'dz':
+                                    $countryName = 'الجزائر';
+                                    break;
+                                    case 'ma':
+                                    $countryName = 'المغرب';
+                                    break;
+                                    case 'mr':
+                                    $countryName = 'موريتانيا';
+                                    break;
+                                    case 'dj':
+                                    $countryName = 'جيبوتي';
+                                    break;
+                                    case 'so':
+                                    $countryName = 'الصومال';
+                                    break;
+                                    case 'km':
+                                    $countryName = 'جزر القمر';
+                                    break;
+                                    default:
+                                    $countryName = 'غير محدد';
+                                    break;
+                                    }
+                                    @endphp
+
+                                    <!-- Display the Arabic country name -->
+
+
+                                    الدولة:
+                                    <img src="https://flagcdn.com/24x18/{{ $challengeResponse->user->chefProfile?->country }}.png" alt="علم {{ $challengeResponse->country }}" style="width: 24px; height: 18px; vertical-align: middle;"> </span>
+                                    {{ $countryName }}
+
+
+
                                 </a></li>
                         </ul>
                     </div>
@@ -141,7 +234,7 @@
 
                         @if(!$challengeResponse->chefReview || !$challengeResponse->chefReview->rating)
                         <div class="footer fixed bg-transparent">
-                            <div class="container">
+                            <div class="container" style="background: white;">
                                 <button type="submit" class="btn btn-primary rounded-xl btn-lg btn-thin w-100 gap-2">إرسال</button>
                             </div>
                         </div>
@@ -263,6 +356,6 @@
 
     </script>
 
-    @endsection
 
 </body>
+@endsection

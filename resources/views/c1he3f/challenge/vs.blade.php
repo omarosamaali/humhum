@@ -285,7 +285,7 @@
 
                                                         <div style="display: flex; justify-content: center;">
                                                             <div class="dz-item-rating" style="border-radius: 50px; background-color: #e00000; font-size: 17px; overflow: hidden; line-height: unset; border: 2px solid #e00000;">
-                                                                <img src="{{ asset('storage/' . $challenge->chef->chefProfile->official_image) }}" style="
+                                                                <img src="{{ asset('storage/' . $challenge->chef->chefProfile?->official_image) }}" style="
 
 																	width: 30px; 
 																					height: 30px;" alt="">
@@ -407,8 +407,14 @@
 																			background-color: black; color: white;     z-index: 99999;
 								">
                                                         <p style="font-size: 17px; position:relative; top: 9px;">
-                                                            <a href="{{ route('challenge.add-vs', $challenge->id) }}" style="color: white;">إقبل التحدي </a>
-                                                        </p>
+@if ($challenge->challengeResponses->isEmpty())
+{{-- إذا لم يتم قبول التحدي بعد --}}
+<a href="{{ route('challenge.add-vs', $challenge->id) }}" style="color: white;">إقبل التحدي</a>
+@else
+{{-- إذا تم قبول التحدي --}}
+<span style="color: green; font-weight: bold;">تم قبول التحدي</span>
+@endif </p>
+
                                                     </div>
                                                 </div>
                                         </div>
@@ -479,16 +485,27 @@
                                                     <span class="accepted-challenge-text">تم قبول التحدي</span>
                                                     @else
                                                     {{-- Check if it's a 'users' challenge --}}
-                                                    @if ($challenge->challenge_type == 'users')
-                                                    <a href="javascript:void(0);" class="dz-btn prevent-user-challenge-acceptance accept-challenge" data-challenge-id="{{ $challenge->id }}">
+                             {{-- الكود اللي بيعرض الزر --}}
+                             @if (Auth::check() && Auth::user()->id != $challenge->user_id)
+                             {{-- لو التحدي لسه ما اتقبلش --}}
+                             @if ($challenge->challengeResponses->isEmpty())
+                             @if ($challenge->challenge_type == 'users')
+                             <a href="javascript:void(0);" class="dz-btn prevent-user-challenge-acceptance accept-challenge" data-challenge-id="{{ $challenge->id }}">
+                                 إقبل التحدي
+                             </a>
+                             @else
+                             <a href="{{ route('challenge.add-vs', $challenge->id) }}" id="accept-challenge-{{ $challenge->id }}" class="accept-challenge dz-btn accept-challenge">
+                                 إقبل التحدي
+                             </a>
+                             @endif
+                             @else
+                             {{-- لو التحدي اتقبل بالفعل، نعرض الرسالة --}}
+                             <a href="javascript:void(0);" class="dz-btn accepted-challenge-btn">
+                                 تم قبول التحدي
+                             </a>
+                             @endif
+                             @endif
 
-                                                        إقبل التحدي
-                                                    </a>
-                                                    @else
-                                                    <a href="{{ route('challenge.add-vs', $challenge->id) }}" id="accept-challenge-{{ $challenge->id }}" class="accept-challenge dz-btn accept-challenge">
-                                                        إقبل التحدي
-                                                    </a>
-                                                    @endif
                                                     @endif
                                                 </div>
                                             </div>

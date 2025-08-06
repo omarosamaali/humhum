@@ -95,7 +95,7 @@
         }
 
         .before-challenge h3 {
-            z-index: 999999;
+            z-index: 9;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -259,8 +259,6 @@
                 </div>
             </div>
         </div>
-
-
         <div class="dz-nav-floting">
             <header class="header py-2 mx-auto" style="position: fixed; width: 100%;">
                 <div class="header-content">
@@ -272,6 +270,10 @@
                     </div>
                     <div class="mid-content"></div>
                     <div class="right-content d-flex align-items-center gap-4">
+                        {{-- Start Notifications --}}
+                        <x-notifications :notifications="$notifications" :notificationsCount="$notificationsCount" />
+
+                        {{-- End Notifications --}}
                         @if($delivery_locations->isNotEmpty())
                         <a href="{{ route('c1he3f.my-products') }}" class="notification-badge font-20">
                             <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24" height="24" viewBox="0 0 451 458" fill="none">
@@ -357,6 +359,7 @@
                                 const endTimeStr = challengeTimerElement.dataset.endTime;
                                 const endDateTimeCombined = `${endDateStr} ${endTimeStr}`;
                                 const endDate = new Date(endDateTimeCombined).getTime();
+
                                 function updateCountdownDisplay() {
                                     const now = new Date().getTime();
                                     const distance = endDate - now;
@@ -380,6 +383,7 @@
                                 }
                             }
                         });
+
                     </script>
                     <div class="title-bar mb-0">
                         <h5 class="title">التصنيفات</h5>

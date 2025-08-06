@@ -18,6 +18,7 @@ use App\Http\Controllers\C1he3f\Auth\ChefAuthenticatedSessionController;
 use App\Models\DeliveryLocation;
 use App\Models\Challenge;
 use App\Models\ChefProfile;
+use App\Models\ChallengeReview;
 use App\Http\Controllers\ContactController;
 use Carbon\Carbon;
 
@@ -156,6 +157,7 @@ Route::get('c1he3f/category/{category}', function ($categoryId) {
 
 Route::get('c1he3f/recipe/{id}', [RecipesController::class, 'showFrontend'])->name('c1he3f.recipe.show');
 Route::post('chef/logout', [ChefAuthenticatedSessionController::class, 'destroy'])->name('chef.logout');
+
 Route::get('c1he3f/index', function () {
     if (!Auth::check()) {
         return redirect()->route('c1he3f.auth.welcome')->with('error', 'يجب تسجيل الدخول أولاً.');
@@ -190,18 +192,18 @@ Route::get('c1he3f/index', function () {
         ->get();
 
     $delivery_locations = DeliveryLocation::where('user_id', Auth::user()->id)->get();
-
+    $notifications = ChallengeReview::where('chef_id', Auth::user()->id)->get();
+    $notificationsCount = ChallengeReview::where('chef_id', Auth::user()->id)->count();
     return view('c1he3f.index', compact(
         'recipes',
         'mainCategories',
         'banner',
         'delivery_locations',
-        'activeChallenge' // **تمرير التحدي الفعال إلى الـ View**
+        'activeChallenge',
+        'notifications',
+        'notificationsCount'
     ));
-})->name('c1he3f.index'); // ملاحظة: اسم الراوت هنا هو 'challenge.vs' وليس 'challenge.vs2'
-
-
-
+})->name('c1he3f.index');
 
 Route::post('/chefThree/snaps/store-snap', [SnapController::class, 'store'])->name('chefThree.snaps.store-snap');
 Route::get('/chefThree/snaps/edit-snap/{snap}', [SnapController::class, 'edit'])->name('chefThree.snaps.edit-snap');

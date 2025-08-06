@@ -202,7 +202,9 @@ class ChallengeController extends Controller
     public function show($id)
     {
         $challenge = Challenge::with('chefProfile', 'recipe')->withCount('responses')->findOrFail($id);
-        return view('c1he3f.challenge.show', compact('challenge'));
+        $challengeAccepted = $challenge->responses()->exists();
+
+        return view('c1he3f.challenge.show', compact('challenge', 'challengeAccepted'));
     }
     public function edit($id)
     {

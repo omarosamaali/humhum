@@ -161,26 +161,32 @@ Route::post('c1he3f/challenge/review/{challenge_response_id}', function (Request
             'chef_message_response' => $validated['chef_message_response'],
         ]
     );
+    $challengeId = $challengeResponse->challenge_id;
 
     // Redirect with success message
-    return redirect()->route('c1he3f.challenge.review', $challenge_response_id)
-        ->with('success', 'تم تقييم الرد وإرسال رسالتك بنجاح!');
-})->name('chef.challenge_response.submit_review');
+
+    // جلب الـ ID الخاص بالتحدي من استجابة التحدي
+    $challengeId = $challengeResponse->challenge_id;
+
+    // التوجيه إلى صفحة 'vs-show' باستخدام الـ ID الصحيح
+    return redirect()->route('challenge.vs-show', ['challenge_id' => $challengeId])
+        ->with('success', 'تم تقييم الرد وإرسال رسالتك بنجاح!');})->name('chef.challenge_response.submit_review');
 
 
 Route::get('c1he3f/challenge/{challenge_id}/vs-show', function ($challenge_id) {
     $challenge = Challenge::with(['challengeResponses.user.chefProfile'])->findOrFail($challenge_id);
     $responses = $challenge->challengeResponses;
     $totalResponses = $responses->count();
-    
-    // Check if the current user has reviewed this challenge
-    $userHasReviewed = false;
+
     if (Auth::check()) {
         $user = Auth::user();
-        $userHasReviewed = $challenge->reviews()->where('user_id', $user->id)->exists();
+        // قم بتحميل التقييمات الخاصة بالمستخدم الحالي لكل رد
+        $responses->each(function ($response) use ($user) {
+            $response->userHasReviewed = $response->reviews()->where('chef_id', $user->id)->exists();
+        });
     }
-    
-    return view('c1he3f.challenge.vs-show', compact('challenge', 'responses', 'totalResponses', 'userHasReviewed'));
+
+    return view('c1he3f.challenge.vs-show', compact('challenge', 'responses', 'totalResponses'));
 })->name('challenge.vs-show');
 
 Route::get('c1he3f/challenge-response/{response_id}/images-vs', [ChallengeController::class, 'showResponseImages'])->name('challenge.image-vs');
