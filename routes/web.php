@@ -52,7 +52,9 @@ Route::prefix('c1he3f')->middleware(['auth'])->group(function () {
 
 Route::get('/', function () {
     if (!Auth::check()) {
-        return redirect()->route('welcome');
+        $chefs = ChefProfile::all();
+        $kitchens = Kitchens::all();
+        return view('welcome', compact('chefs', 'kitchens'));
     }
     $user = Auth::user();
     switch ($user->role) {
