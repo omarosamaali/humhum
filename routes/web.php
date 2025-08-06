@@ -11,7 +11,7 @@ use App\Models\SubCategory;
 use App\Models\Recipe;
 use App\Models\Kitchens;
 use App\Http\Controllers\Admin\RecipesController;
-use App\Http\Controllers\SnapController; // Import your SnapController
+use App\Http\Controllers\SnapController;
 use App\Models\Snap;
 use App\Models\Banner;
 use App\Http\Controllers\C1he3f\Auth\ChefAuthenticatedSessionController;
