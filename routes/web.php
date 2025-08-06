@@ -21,7 +21,7 @@ use App\Models\ChefProfile;
 use App\Models\ChallengeReview;
 use App\Http\Controllers\ContactController;
 use Carbon\Carbon;
-// test
+
 Route::post('/contacts', [ContactController::class, 'store'])->name('contacts.store');
 Route::get('/contacts', [ContactController::class, 'index'])->name('contacts.index');
 Route::patch('/contacts/{id}/read', [ContactController::class, 'markAsRead'])->name('contacts.read');
