@@ -21,7 +21,7 @@ use App\Models\ChefProfile;
 use App\Models\ChallengeReview;
 use App\Http\Controllers\ContactController;
 use Carbon\Carbon;
-// Test
+
 Route::post('/contacts', [ContactController::class, 'store'])->name('contacts.store');
 Route::get('/contacts', [ContactController::class, 'index'])->name('contacts.index');
 Route::patch('/contacts/{id}/read', [ContactController::class, 'markAsRead'])->name('contacts.read');
@@ -45,11 +45,6 @@ Route::prefix('c1he3f')->middleware(['auth'])->group(function () {
         return view('chef.index');
     })->name('c1he3f.index');
 });
-// Route::get('/', function () {
-//     $chefs = ChefProfile::all();
-//     $kitchens = Kitchens::all();
-//     return view('welcome', compact('chefs', 'kitchens'));
-// });
 
 Route::get('/', function () {
     if (!Auth::check()) {
@@ -68,6 +63,7 @@ Route::get('/', function () {
             return redirect()->route('login')->with('error', 'حدث خطأ في تحديد نوع الحساب');
     }
 });
+
 Route::middleware(['auth'])->group(function () {
     Route::get('/admin/get-subcategories', [App\Http\Controllers\Admin\RecipesController::class, 'getSubCategories']);});
 Route::post('/c1he3f/snaps/store-snap', [SnapController::class, 'store'])->name('c1he3f.snaps.store-snap');
@@ -78,7 +74,6 @@ Route::get('/c1he3f/snaps/lens-show/{snap}', function(Snap $snap){
     return view('c1he3f.snaps.lens-show', compact('snap'));
 })->name('c1he3f.snaps.lens-show');
 
-// Route للتشخيص (احذفه بعد الانتهاء من التشخيص)
 Route::get('/c1he3f/debug-database', [SnapController::class, 'debugDatabase'])
     ->name('c1he3f.debug.database');
 Route::get('/c1he3f/subcategories/{mainCategoryId}', [SnapController::class, 'getSubcategories']);
@@ -123,8 +118,6 @@ Route::get('/c1he3f/faq', function () {
     return view('/c1he3f/faq', compact('faqs'));
 })->name('c1he3f.faq');
 
-
-
 require __DIR__ . '/auth.php';
 
 require __DIR__ . '/chef_routes.php';
@@ -164,10 +157,10 @@ Route::get('c1he3f/index', function () {
     }
     $chef_id = Auth::id();
     $activeChallenge = Challenge::where('chef_id', $chef_id)
-        ->where('end_date', '>=', Carbon::now()->toDateString()) // التاريخ لم ينتهِ بعد
-        ->whereRaw('CONCAT(end_date, " ", end_time) >= ?', [Carbon::now()]) // التأكد من أن الوقت لم ينتهِ بعد
-        ->orderByRaw('CONCAT(end_date, " ", end_time) ASC') // جلب الأقرب للانتهاء
-        ->first(); // جلب تحدي واحد فقط
+        ->where('end_date', '>=', Carbon::now()->toDateString())
+        ->whereRaw('CONCAT(end_date, " ", end_time) >= ?', [Carbon::now()])
+        ->orderByRaw('CONCAT(end_date, " ", end_time) ASC')
+        ->first();
 
     $banner = Banner::where('display_location', 'mobile_app')
         ->where('status', 1)
@@ -177,11 +170,11 @@ Route::get('c1he3f/index', function () {
         ->first();
 
     $mainCategories = MainCategories::with([
-        'recipes' => function ($query) use ($chef_id) { // استخدم $chef_id هنا
+        'recipes' => function ($query) use ($chef_id) {
             $query->where('chef_id', $chef_id);
         }
     ])
-        ->withCount(['recipes' => function ($query) use ($chef_id) { // واستخدمها هنا أيضًا
+        ->withCount(['recipes' => function ($query) use ($chef_id) {
             $query->where('chef_id', $chef_id)->where('status', 1);
         }])
         ->get();
@@ -240,13 +233,6 @@ Route::get('/chefThree/faq', function () {
     $faqs = Faq::whereIn('place', ['chef', 'both'])->get();
     return view('/chefThree/faq', compact('faqs'));
 })->name('chefThree.faq');
-
-require __DIR__ . '/auth.php';
-
-require __DIR__ . '/chef_routes.php';
-
-require __DIR__ . '/admin_routes.php';
-
 
 Route::get('chefThree/category/{category}', function ($categoryId) {
     if (!Auth::check()) {
