@@ -126,7 +126,7 @@
 
         .challenge-title {
             width: 50%;
-            padding: 10.5px 20px;
+            padding: 8.5px 20px;
             border-top-left-radius: 15px;
             border-bottom-left-radius: 15px;
             background-color: black;
