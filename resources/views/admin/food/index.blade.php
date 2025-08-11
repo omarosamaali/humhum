@@ -157,7 +157,7 @@
                         <td>1</td>
                         <td>{{ optional($terms->created_at)->format('d/m/Y') ?? 'N/A' }}</td>
                         {{-- هنا استخدمنا 'title' بناءً على migration جدول 'terms_of_use' --}}
-                        <td>{{ $terms->title_ar ?? 'لا يوجد عنوان' }}</td>
+                        <td>{{ $terms?->title_ar ?? 'لا يوجد عنوان' }}</td>
                         <td>
                             {{-- هنا استخدمنا 'is_active' بناءً على migration جدول 'terms_of_use' --}}
                             <span class="badge {{ $terms->status_badge_class }}">

@@ -842,7 +842,7 @@
                     <h4 class="title">تعديل المكونات</h4>
                 </div>
                 <div class="left-content">
-                    <a href="javascript:history.back()" class="back-btn">
+                    <a href="{{ url()->previous() }}" class="back-btn">
                         <i class="feather icon-arrow-left"></i>
                     </a>
                 </div>
@@ -854,15 +854,18 @@
         <main class="page-content" style="margin-top: 15px;">
             <div id="success-message" class="alert alert-success" style="display: none;"></div>
             <div id="error-message" class="alert alert-danger" style="display: none;"></div>
-            <form id="ingredientsForm" method="POST" action="{{ route('c1he3f.recpies.updateIngredients', $recipe->id) }}">
-                @csrf
-                @method('PUT')
-                <div id="ingredients-list" class="ingredients-container"></div>
-                <input type="hidden" name="ingredients_data" id="ingredients_data">
-                <button type="button" class="btn btn-primary" id="add-ingredient">
-                    <i class="fas fa-plus"></i> إضافة مكون جديد
-                </button>
-            </form>
+     <form id="ingredientsForm" method="POST" action="{{ route('c1he3f.recpies.updateIngredients', $recipe->id) }}">
+         @csrf
+         @method('PUT')
+         <input type="hidden" name="redirect_url" value="{{ url()->previous() }}">
+         <div id="ingredients-list" class="ingredients-container"></div>
+         <input type="hidden" name="ingredients_data" id="ingredients_data">
+         <button type="button" class="btn btn-primary" id="add-ingredient">
+             <i class="fas fa-plus"></i> إضافة مكون جديد
+         </button>
+     </form>
+
+
         </main>
 
         <div class="footer-fixed-btn">
@@ -985,20 +988,50 @@
                 , update: function(event, ui) {}
             });
 
-            $('#ingredientsForm').on('submit', function(e) {
-                const ingredients = [];
-                $('#ingredients-list .ingredient-item').each(function() {
-                    const description = $(this).find('.ingredient-text').val();
-                    const isHeading = $(this).find('.is-heading-input').val() === '1';
-                    if (description.trim()) {
-                        ingredients.push({
-                            description: description
-                            , is_heading: isHeading
-                        });
-                    }
-                });
-                $('#ingredients_data').val(JSON.stringify(ingredients));
-            });
+$('#ingredientsForm').on('submit', function(e) {
+e.preventDefault(); // منع الإرسال الافتراضي
+const ingredients = [];
+$('#ingredients-list .ingredient-item').each(function() {
+const description = $(this).find('.ingredient-text').val();
+const isHeading = $(this).find('.is-heading-input').val() === '1';
+if (description.trim()) {
+ingredients.push({
+description: description,
+is_heading: isHeading
+});
+}
+});
+const ingredientsData = JSON.stringify(ingredients);
+
+$.ajax({
+url: $(this).attr('action'),
+method: 'PUT',
+data: {
+_token: $('input[name="_token"]').val(),
+ingredients_data: ingredientsData,
+redirect_url: $('input[name="redirect_url"]').val() // أضف هذا لتمرير عنوان الإعادة
+},
+success: function(response) {
+if (response.success) {
+// $('#success-message').text(response.message).show();
+// إعادة التوجيه بعد عرض الرسالة لمدة 2 ثوانٍ
+if (response.redirect) {
+setTimeout(function() {
+window.location.href = response.redirect;
+}, 000); // تأخير 2 ثوانٍ للسماح برؤية الرسالة
+}
+} else {
+$('#error-message').text(response.message).show();
+}
+},
+error: function(xhr) {
+const errorMessage = xhr.responseJSON?.message || 'حدث خطأ أثناء حفظ المكونات.';
+$('#error-message').text(errorMessage).show();
+}
+});
+});
+
+
 
             // *********************************************************************
             // * تعديل هذا الجزء لتحويل النص من قاعدة البيانات إلى مصفوفة JSON    *

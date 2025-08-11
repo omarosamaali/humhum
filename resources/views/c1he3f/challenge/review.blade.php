@@ -226,6 +226,8 @@
                                 <div class="rating-text" id="ratingText">اختر تقييمك</div>
                             </div>
                             <input type="hidden" name="rating" id="rating-input" value="{{ $challengeResponse->chefReview->rating ?? $challengeResponse->chef_rating ?? '0' }}">
+                            <input type="hidden" name="chef_id" value="{{ $challengeResponse->user_id }}">
+
                         </div>
 
                         <div class="mb-3">

@@ -60,7 +60,7 @@ class SnapController extends Controller
         }
 
         // إرجاع استجابة JSON للـ AJAX
-        return response()->json(['success' => true, 'message' => 'تم إضافة السناب بنجاح!']);
+        return redirect()->route('c1he3f.snaps.all-vs')->with('success', 'تم إضافة السناب بنجاح!')->response()->json(['success' => true, 'message' => 'تم إضافة السناب بنجاح!']);
     }
     // app/Http/Controllers/SnapController.php
     public function getSubcategoryDetails($subCategoryId)

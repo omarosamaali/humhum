@@ -102,9 +102,12 @@ Route::get('c1he3f/challenge.vs', function () {
         return $challenge;
     });
 
-    return view('c1he3f.challenge.vs', compact('chefChallenges', 'userChallenges', 'myCookings'));
-})->name('challenge.vs');
+    $allChallenges = $chefChallenges->merge($userChallenges);
+    $activeChallenge = $allChallenges->where('is_active', true)->first();
+    $challenge = $activeChallenge ?? $allChallenges->first();
 
+    return view('c1he3f.challenge.vs', compact('chefChallenges', 'userChallenges', 'myCookings', 'challenge'));
+})->name('challenge.vs');
 
 Route::get('c1he3f/challenge/review/{challenge_response_id}', function ($challenge_response_id) {
     if (!Auth::check()) {

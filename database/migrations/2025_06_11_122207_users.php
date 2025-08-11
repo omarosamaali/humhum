@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             $table->enum('role', ['مدير', 'مشرف', 'مدخل بيانات'])->default('مدخل بيانات')->after('email');
-            $table->enum('status', ['فعال', 'غير فعال', 'بانتظار التفعيل'])->default('فعال')->change();
+            // $table->enum('status', ['فعال', 'غير فعال', 'بانتظار التفعيل'])->default('فعال')->change();
                 });
     }
 

@@ -66,6 +66,11 @@
                 </div>
             </div>
         </header>
+        @if(session('success'))
+        <div class="alert alert-success">
+            {{ session('success') }}
+        </div>
+        @endif
         <main class="page-content space-top">
             <div class="container">
                 <div class="dz-custom-swiper">

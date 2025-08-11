@@ -272,9 +272,10 @@
                     <div class="right-content d-flex align-items-center gap-4">
                         {{-- Start Notifications --}}
                         <x-notifications :notifications="$notifications" :notificationsCount="$notificationsCount" />
-
                         {{-- End Notifications --}}
-                        @if($delivery_locations->isNotEmpty())
+                        @if($delivery_locations->isNotEmpty() && $delivery_locations->contains('has_market', 1))
+
+
                         <a href="{{ route('c1he3f.my-products') }}" class="notification-badge font-20">
                             <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24" height="24" viewBox="0 0 451 458" fill="none">
                                 <rect width="451" height="458" fill="url(#pattern0_7518_7)" />

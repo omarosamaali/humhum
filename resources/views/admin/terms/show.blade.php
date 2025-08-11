@@ -62,14 +62,14 @@
     <div class="detail-section">
         <h5 class="mb-4">
             <i class="fas fa-info-circle ms-2 text-primary" style="margin-left: 10px; font-size: 1rem;"></i>
-            تفاصيل صفحة معلومات عنا: {{ $terms->title_ar }}
+            تفاصيل صفحة معلومات عنا: {{ $terms?->title_ar }}
         </h5>
 
         <div class="row">
             <div class="col-md-6">
                 <div class="detail-item">
                     <strong class="text-black">العنوان (عربي):</strong>
-                    <span>{{ $terms->title_ar }}</span>
+                    <span>{{ $terms?->title_ar }}</span>
                 </div>
                 <div class="detail-item">
                     <strong class="text-black">الوصف (عربي):</strong>

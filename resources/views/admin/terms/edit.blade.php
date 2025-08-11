@@ -82,7 +82,7 @@
     <div class="add-section">
         <h5 class="mb-4">
             <i class="fas fa-info-circle ms-2 text-primary" style="margin-left: 10px; font-size: 1rem;"></i>
-            تعديل صفحة معلومات عنا: {{ $terms->title_ar }}
+            تعديل صفحة معلومات عنا: {{ $terms?->title_ar }}
         </h5>
 
         @if ($errors->any())
@@ -104,7 +104,7 @@
                     <div class="mb-3">
                         <label for="title_ar" class="form-label font-bold">العنوان (بالعربية)</label>
                         <input type="text" class="form-control" id="title_ar" name="title_ar"
-                            value="{{ old('title_ar', $terms->title_ar) }}" required>
+                            value="{{ old('title_ar', $terms?->title_ar) }}" required>
                         @error('title_ar')
                             <div class="text-black">{{ $message }}</div>
                         @enderror

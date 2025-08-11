@@ -256,8 +256,8 @@
         <main class="page-content space-top">
             <div class="container">
                 <h5 stlye="text-align: center; margin:auto; display: flex; flex-direction: row;">
-                    <h5>تحديات للمستخدمين {{ $userChallengesCount }}</h5>
-                    <h5>تحديات للطهاه {{ $chefChallengesCount }}</h5>
+                    <h5 style="display: inline-flex;">تحديات للمستخدمين {{ $userChallengesCount }}</h5> / 
+                    <h5 style="display: inline-flex;">تحديات للطهاه {{ $chefChallengesCount }}</h5>
                 </h5>
 
                 @foreach($challenges as $challenge)

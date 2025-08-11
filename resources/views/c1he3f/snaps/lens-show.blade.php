@@ -262,26 +262,30 @@
                                 {{ $snap->name }}
                             </h1>
                             <div style="margin-bottom: 10px; direction: rtl;">
+                                @if ($snap->kitchen)
+
                                 <div style="display: flex; gap: 10px; align-items: end;">
-                                    <img style="height: 50px; width: 50px; border-radius: 50%;" src="{{ Storage::url($snap->kitchen->image) }}" alt="">
+                                    <img style="height: 50px; width: 50px; border-radius: 50%;" src="{{ Storage::url($snap->kitchen?->image) }}" alt="">
                                     <p style="color: white; font-size: 14px; margin-bottom: 0px;">
-                                        {{ $snap->kitchen->name_ar }}
+                                        {{ $snap->kitchen?->name_ar }}
                                     </p>
                                 </div>
+                                @endif
                             </div>
                             <div style="margin-bottom: 10px; direction: rtl;">
                                 <div style="display: flex; gap: 10px; align-items: end;">
-
+                                    @if ($snap->mainCategory)
                                     <p style="background-color: var(--primary); padding: 5px; border-radius: 5px; color: white; font-size: 14px; margin-bottom: 0px;">
-                                        {{ $snap->mainCategory->name_ar }}
-
+                                        {{ $snap->mainCategory?->name_ar }}
                                     </p>
+                                    @endif
+                                    @if($snap->subCategories)
                                     <p style="background-color: rgb(0, 102, 255); padding: 5px; border-radius: 5px; color: white; font-size: 14px; margin-bottom: 0px;">
                                         @for ($i = 0; $i < $snap->subCategories->count(); $i++) {{ $snap->subCategories[$i]->name_ar }}
                                             @if ($i + 1 != $snap->subCategories->count()) , @endif
                                             @endfor
                                     </p>
-
+                                    @endif
                                 </div>
                             </div>
                             <ul class="dz-meta" style="direction: rtl; display: flex; gap: 15px; margin-bottom: 10px;">

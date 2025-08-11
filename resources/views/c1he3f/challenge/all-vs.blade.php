@@ -53,7 +53,7 @@
                     <h4 class="title">جميع التحديات</h4>
                 </div>
                 <div class="left-content">
-                    <a href="{{ url('/') }}" class="back-btn">
+                    <a href="{{ route('c1he3f.index') }}" class="back-btn">
                         <i class="feather icon-arrow-left"></i>
                     </a>
                 </div>
@@ -92,7 +92,7 @@
                                                 $isVideo = in_array($fileExtension, ['mp4', 'mov', 'ogg', 'webm', 'avi']); // أضف امتدادات الفيديو التي تدعمها
                                                 @endphp
                                                 @if($isVideo)
-                                                <video controls style="height: 186px; object-fit: contain; border-radius: 20px; max-width: 100%; max-height: 100%; object-fit: contain;">
+                                                <video  style="height: 186px; object-fit: contain; border-radius: 20px; max-width: 100%; max-height: 100%; object-fit: contain;">
                                                     <source src="{{ $fullPath }}" type="video/{{ $fileExtension }}">
                                                     متصفحك لا يدعم الفيديو.
                                                 </video>

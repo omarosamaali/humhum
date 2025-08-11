@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\User;
 use App\Models\ChefProfile;
-use App\Models\Recipe; // Don't forget to import the Recipe model!
+use App\Models\Recipe;
 
 class Challenge extends Model
 {
@@ -19,12 +19,15 @@ class Challenge extends Model
         'start_time',
         'end_date',
         'end_time',
-        'recipe_id', // Changed from 'recipe' to 'recipe_id'
+        'recipe_id',
         'price',
         'challenge_type',
         'status',
         'user_id',
         'chef_id',
+        'prize_type',        // New field
+        'prize_name',
+        'prize_image',
     ];
 
     /**
@@ -32,65 +35,69 @@ class Challenge extends Model
      */
     public function chef()
     {
-        // Assuming 'chef_id' in challenges table points to 'id' in users table
         return $this->belongsTo(User::class, 'chef_id');
     }
-    // public function reviews()
-    // {
-    //     return $this->hasMany(ChallengeReview::class);
-    // }
+
     public function reviews()
     {
         return $this->hasManyThrough(
             ChallengeReview::class,
             ChallengeResponse::class,
-            'challenge_id', // المفتاح الأجنبي في جدول challenge_responses
-            'challenge_response_id', // المفتاح الأجنبي في جدول challenge_reviews
-            'id', // المفتاح المحلي في جدول challenges
-            'id' // المفتاح المحلي في جدول challenge_responses
+            'challenge_id',
+            'challenge_response_id',
+            'id',
+            'id'
         );
     }
 
     public function challengeResponses()
     {
-        // A Challenge has many ChallengeResponses
-        // The foreign key (challenge_id) is expected in the challenge_responses table
-        return $this->hasMany(ChallengeResponse::class, 'challenge_id');
-    }
-    public function responses()
-    {
-        // افترض أن اسم موديل الاستجابات هو ChallengeResponse
-        // وأن الـ foreign key في جدول الـ responses هو challenge_id
         return $this->hasMany(ChallengeResponse::class, 'challenge_id');
     }
 
-    /**
-     * Get the chef profile associated with the challenge.
-     * Note: This relationship seems a bit unusual (user_id to user_id on ChefProfile).
-     * If 'user_id' in challenges refers to the challenge creator (a user),
-     * and ChefProfile's 'user_id' is its foreign key to the User model,
-     * then this might be correct. Otherwise, you might need to adjust.
-     */
+    public function responses()
+    {
+        return $this->hasMany(ChallengeResponse::class, 'challenge_id');
+    }
+
     public function chefProfile()
     {
         return $this->belongsTo(ChefProfile::class, 'user_id', 'user_id');
     }
 
-    /**
-     * Get the user who created the challenge.
-     * Assuming 'user_id' in challenges table points to 'id' in users table.
-     */
     public function user()
     {
         return $this->belongsTo(User::class);
     }
 
-    /**
-     * Get the recipe that the challenge is associated with.
-     */
     public function recipe()
     {
-        return $this->belongsTo(Recipe::class); // Assumes recipe_id in challenges table
-        // points to 'id' in recipes table
+        return $this->belongsTo(Recipe::class);
+    }
+
+    /**
+     * Check if the challenge has a prize
+     */
+    public function hasPrize()
+    {
+        return $this->prize_type !== 'none';
+    }
+
+    /**
+     * Get the prize type description in Arabic
+     */
+    public function getPrizeTypeDescriptionAttribute()
+    {
+        switch ($this->prize_type) {
+            case 'highest_rating':
+                return 'لأعلى تقييم';
+            case 'top_three':
+                return 'لأعلى ثلاث تقييمات';
+            case 'all_participants':
+                return 'لجميع المشاركين';
+            case 'none':
+            default:
+                return 'لا توجد جائزة';
+        }
     }
 }

@@ -64,16 +64,6 @@
             </div>
         </header>
 
-        {{-- @if($errors->any())
-        <div class="alert alert-danger" style="margin: 20px; margin-top: 105px;">
-            <ul style="margin: 0; padding-right: 20px;">
-                @foreach($errors->all() as $error)
-                <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-        @endif --}}
-
         @if(session('success'))
         <div class="alert alert-success" style="margin: 20px;">
             {{ session('success') }}
@@ -190,7 +180,7 @@
                         <label for="recipe-select" style="text-align: center; display: block; margin-bottom: 5px; margin-top: 15px;">اختر الوصفة</label>
                         <div class="form-group">
                             {{-- Ensured name is 'recipe_id' for consistency with validation --}}
-                            <select class="form-control" style="text-align: center;" id="recipe-select" name="recipe_id" required>
+                            <select class="form-control" style="text-align: center;" id="recipe-select" name="recipe_id">
                                 <option value="">إختر الوصفة</option>
                                 @foreach($recipes as $recipe)
                                 <option value="{{ $recipe->id }}" @if(old('recipe_id', $challenge->recipe_id) == $recipe->id) selected @endif>
@@ -211,6 +201,89 @@
                             @enderror
                         </div>
                     </div>
+
+                    <h6 class="dz-title my-2" style="text-align: center;">تفاصيل الجائزة (اختياري)</h6>
+                    <div class="my-3">
+                        <label for="prize_name" class="dz-title my-2" style="text-align: center; display: block;">اسم الجائزة</label>
+                        <input type="text" name="prize_name" id="prize_name" value="{{ old('prize_name', $challenge->prize_name) }}" style="text-align: center; color: #000000;" placeholder="أدخل اسم الجائزة" class="form-control">
+                        @error('prize_name')
+                        <div class="error-message">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <div class="my-3" id="prizeImageSection">
+                        <label for="prize_image" class="dz-title my-2" style="text-align: center; display: block;">صورة الجائزة</label>
+                        <div class="bg-cookpad-gray-9gi p-6h1 text-center" style="height: 150px; border-radius: 15px; display: flex; align-items: center; justify-content: center; cursor: pointer; position: relative;">
+
+                            @if($challenge->prize_image)
+                            <img id="prizeImagePreview" src="{{ asset('storage/' . $challenge->prize_image) }}" alt="صورة الجائزة الحالية" style="max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 15px; display: block;">
+                            <p id="prizeImageText" class="text-x8v font-9s7 mt-mnq" style="position: absolute; bottom: 10px; width: 100%; text-align: center; background: rgba(255,255,255,0.7); padding: 5px;">لتغيير الصورة، اختر ملفًا جديدًا.</p>
+                            @else
+                            <div id="prizeImageDefault" class="text-center" style="position: absolute;">
+                                <img class="w-8so mx-33j pointer-events-j3t" src="https://global-web-assets.cpcdn.com/assets/camera-f90eec676af2f051ccca0255d3874273a419172412e3a6d2884f963f6ec5a2c3.png">
+                                <p id="prizeImageText" class="text-x8v font-9s7 mt-mnq">أضف صورة الجائزة</p>
+                            </div>
+                            @endif
+
+                            <input type="file" name="prize_image" id="prize_image" accept="image/*" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer;">
+                        </div>
+                        @error('prize_image')
+                        <div class="error-message">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <script>
+                        document.addEventListener('DOMContentLoaded', function() {
+                            // ... Other scripts ...
+
+                            const prizeImageContainer = document.querySelector('#prizeImageSection .bg-cookpad-gray-9gi');
+                            const prizeImageInput = document.getElementById('prize_image');
+                            const prizeImageText = document.getElementById('prizeImageText');
+                            const prizeImageDefault = document.getElementById('prizeImageDefault');
+                            let prizeImagePreview = document.getElementById('prizeImagePreview');
+
+                            prizeImageContainer.addEventListener('click', function() {
+                                prizeImageInput.click();
+                            });
+
+                            prizeImageInput.addEventListener('change', function() {
+                                const file = this.files[0];
+                                if (file) {
+                                    const reader = new FileReader();
+                                    reader.onload = function(e) {
+                                        if (prizeImagePreview) {
+                                            prizeImagePreview.src = e.target.result;
+                                            prizeImagePreview.style.display = 'block';
+                                        } else {
+                                            // If no preview exists, create it
+                                            prizeImagePreview = document.createElement('img');
+                                            prizeImagePreview.id = 'prizeImagePreview';
+                                            prizeImagePreview.src = e.target.result;
+                                            prizeImagePreview.alt = 'صورة الجائزة الجديدة';
+                                            prizeImagePreview.style.cssText = 'max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 15px; display: block;';
+                                            prizeImageContainer.prepend(prizeImagePreview);
+                                        }
+
+                                        // Hide default icon and show new text
+                                        if (prizeImageDefault) prizeImageDefault.style.display = 'none';
+                                        prizeImageText.style.display = 'block';
+                                        prizeImageText.textContent = `تم اختيار الملف: ${file.name}`;
+                                    }
+                                    reader.readAsDataURL(file);
+                                } else {
+                                    // If user cancels file selection, revert to original state
+                                    if (prizeImagePreview) {
+                                        prizeImagePreview.style.display = 'block';
+                                        prizeImageText.textContent = 'لتغيير الصورة، اختر ملفًا جديدًا.';
+                                    } else {
+                                        if (prizeImageDefault) prizeImageDefault.style.display = 'block';
+                                        prizeImageText.textContent = 'أضف صورة الجائزة';
+                                    }
+                                }
+                            });
+                        });
+
+                    </script>
 
                     <h6 class="dz-title my-2" style="text-align: center;">نوع التحدي</h6>
                     <div class="d-flex flex-wrap gap-2" style="justify-content: center;">

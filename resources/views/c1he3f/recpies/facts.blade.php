@@ -919,7 +919,7 @@
         <header class="header header-fixed border-bottom">
             <div class="header-content">
                 <div class="left-content">
-                    <a href="javascript:void(0);" class="back-btn">
+                    <a href="{{ url()->previous() }}" class="back-btn">
                         <i class="feather icon-arrow-left"></i>
                     </a>
                 </div>

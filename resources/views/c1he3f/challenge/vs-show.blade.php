@@ -419,21 +419,14 @@
                                         break;
                                         }
                                         @endphp
-
                                         @if ($response->user->chefProfile->country ?? false)
-                                        <p style="display: flex
-;
-    gap: 7px;
-    align-items: center;">
-
+                                        <p style="display: flex; gap: 7px; align-items: center;">
                                             <img src="{{ $flagUrl }}" alt="{{ $countryName }} Flag" style="width: 20px; height: 15px; margin-right: 5px; vertical-align: middle;">
                                             <strong>{{ $countryName }}</strong>
                                         </p>
                                         @else
                                         <p>لا يوجد ملف شخصي.</p>
                                         @endif
-
-
                                     </div>
                                 </div>
                             </div>
@@ -441,7 +434,7 @@
                             <div style="margin-bottom: 10px; direction: rtl;">
                                 <div style="display: flex; gap: 10px; align-items: end;">
                                     <p style="background-color: var(--primary); padding: 5px; border-radius: 5px; color: white; font-size: 14px; margin-bottom: 0px;">
-                                        {{ $challenge->challenge_type ?? 'users' == 'users' ? 'للمستخدمين' : 'للطهاة' }}
+                                        {{ $challenge->challenge_type == 'chefs' ? 'للطهاه' : 'للمستخدمين' }}
                                     </p>
                                 </div>
                             </div>

@@ -12,6 +12,7 @@ use App\Models\Recipe;
 use App\Models\Kitchens;
 use App\Http\Controllers\Admin\RecipesController;
 use App\Http\Controllers\SnapController;
+use App\Http\Controllers\ChallengeReviewChatController;
 use App\Models\Snap;
 use App\Models\Banner;
 use App\Http\Controllers\C1he3f\Auth\ChefAuthenticatedSessionController;
@@ -185,8 +186,23 @@ Route::get('c1he3f/index', function () {
         ->get();
 
     $delivery_locations = DeliveryLocation::where('user_id', Auth::user()->id)->get();
-    $notifications = ChallengeReview::where('chef_id', Auth::user()->id)->get();
-    $notificationsCount = ChallengeReview::where('chef_id', Auth::user()->id)->count();
+    $notifications = ChallengeReview::where(function ($query) {
+        // الشرط الأول: المستخدم هو صاحب التحدي
+        $query->whereHas('challengeResponse', function ($q) {
+            $q->where('user_id', Auth::id());
+        });
+    })
+        ->orWhere('chef_id', Auth::id()) // الشرط الثاني: المستخدم هو الشيف
+        ->with(['chef.chefProfile', 'challengeResponse.user'])
+        ->get();
+
+    $notificationsCount = $notifications->count();
+
+    // $notificationsCount = ChallengeReview::whereHas('challengeResponse', function ($query) {
+    //     $query->where('user_id', Auth::user()->id);
+    // })->count(); 
+    
+    
     return view('c1he3f.index', compact(
         'recipes',
         'mainCategories',
@@ -198,3 +214,19 @@ Route::get('c1he3f/index', function () {
     ));
 })->name('c1he3f.index');
 
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/challenge-review-chat/{reviewId}', [ChallengeReviewChatController::class, 'show'])
+        ->name('challenge.review.chat');
+    Route::post('/challenge-review-chat/{reviewId}/send', [ChallengeReviewChatController::class, 'sendMessage'])
+        ->name('challenge.review.chat.send');
+    Route::get('/challenge-review-chat/{reviewId}/messages', [ChallengeReviewChatController::class, 'getMessages'])
+        ->name('challenge.review.chat.messages');
+});
+Route::middleware(['auth'])->group(function () {
+    Route::get('/challenge-review-chat/{reviewId}', [ChallengeReviewChatController::class, 'show'])
+        ->name('challenge.review.chat');
+    // روت جلب الرسائل (للتحديث التلقائي)
+    Route::get('/challenge-review-chat/{reviewId}/messages', [ChallengeReviewChatController::class, 'getMessages'])
+        ->name('challenge.review.chat.messages');
+});

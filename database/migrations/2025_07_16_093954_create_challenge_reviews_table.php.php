@@ -16,7 +16,6 @@ return new class extends Migration
             $table->integer('rating')->unsigned()->comment('من 1 إلى 5');
             $table->text('chef_message_response')->nullable();
             $table->timestamps();
-
             $table->unique(['challenge_response_id', 'chef_id']);
         });
     }

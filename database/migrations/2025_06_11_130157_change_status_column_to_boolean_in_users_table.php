@@ -13,18 +13,18 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->boolean('is_active')->default(true)->after('status');
+            // $table->boolean('is_active')->default(true)->after('status');
         });
 
-        DB::table('users')->where('status', 'فعال')->update(['is_active' => true]);
-        DB::table('users')->where('status', 'غير فعال')->update(['is_active' => false]);
+        // DB::table('users')->where('status', 'فعال')->update(['is_active' => true]);
+        // DB::table('users')->where('status', 'غير فعال')->update(['is_active' => false]);
 
         Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn('status');
+            // $table->dropColumn('status');
         });
 
         Schema::table('users', function (Blueprint $table) {
-            $table->renameColumn('is_active', 'status');
+            // $table->renameColumn('is_active', 'status');
         });
     }
 

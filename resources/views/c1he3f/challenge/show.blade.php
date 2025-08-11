@@ -149,6 +149,22 @@
                             </div>
                         </div>
                     </div>
+                    @if($challenge->prize_name || $challenge->prize_image)
+                    <div class="award-section mt-4 text-center">
+                        <h5 class="text-xl font-bold mb-2">🎉 الجائزة 🎉</h5>
+
+                        @if($challenge->prize_name)
+                        <p class="award-name text-lg text-gray-700 font-semibold">{{ $challenge->prize_name }}</p>
+                        @endif
+                        @if($challenge->prize_image)
+                        <div class="award-image-container mb-2" style="max-width: 200px; margin: auto; border: 2px solid #ffcc00; border-radius: 10px; overflow: hidden;">
+                            <img src="{{ asset('storage/' . $challenge->prize_image) }}" alt="صورة الجائزة" style="width: 100%; height: auto; display: block;">
+                        </div>
+                        @endif
+
+                    </div>
+                    @endif
+
                 </div>
             </div>
         </main>

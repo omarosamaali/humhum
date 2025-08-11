@@ -85,8 +85,8 @@
                 <div class="" style="text-align: center;">
                     <div class="clearfix">
                         <div class="container-box">
-                            <h1>{{ $terms->title_ar }}</h1>
-                            <p style="white-space: pre-wrap;">{{ $terms->description_ar }}</p>
+                            <h1>{{ $terms?->title_ar }}</h1>
+                            <p style="white-space: pre-wrap;">{{ $terms?->description_ar }}</p>
                         </div>
                     </div>
                 </div>

@@ -773,20 +773,13 @@
                                     break;
                                     }
                                     @endphp
-
                                     <!-- Display the Arabic country name -->
                                     الدولة: {{ $countryName }}
-
-
                                     <img src="https://flagcdn.com/24x18/{{ $chef->country }}.png" alt="علم {{ $chef->country }}" style="width: 24px; height: 18px; vertical-align: middle;"> </span>
-
-
-
                                 <br />
-                                <a style="display: block;" href="chef-details.html">
+                                <div style="display: block;">
                                     <h4>{{ $chef->user->name }} / الشيف </h4>
-
-                                </a>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -1216,4 +1209,3 @@
 </body>
 
 </html>
-

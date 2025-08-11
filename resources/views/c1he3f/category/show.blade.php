@@ -61,11 +61,6 @@
         <!-- Header -->
         <header class="header header-fixed">
             <div class="header-content">
-                <!-- <div class="right-content d-flex align-items-center gap-4">
-     <a href="javascript:void(0);" class="font-24">
-      <i class="font-w700 feather icon-more-vertical-"></i>
-     </a>
-    </div> -->
                 <div class="mid-content">
                     <h4 class="title">التصنيفات</h4>
                 </div>
@@ -93,7 +88,73 @@
                     </div>
                 </div>
                 <!-- SearchBox -->
+<script>
+    // إضافة وظيفة البحث
+    document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.querySelector('.search-box input[type="search"]');
 
+    if (searchInput) {
+    searchInput.addEventListener('input', function() {
+    const searchTerm = this.value.toLowerCase().trim();
+    filterRecipes(searchTerm);
+    });
+    }
+
+    function filterRecipes(searchTerm) {
+    // البحث في جميع الوصفات
+    const recipeCards = document.querySelectorAll('.dz-card.list');
+    let hasVisibleResults = false;
+
+    recipeCards.forEach(function(card) {
+    const title = card.querySelector('.title a') ? card.querySelector('.title a').textContent.toLowerCase() : '';
+    const tags = card.querySelectorAll('.tag-list a');
+    let tagText = '';
+
+    tags.forEach(tag => {
+    tagText += tag.textContent.toLowerCase() + ' ';
+    });
+
+    const shouldShow = searchTerm === '' ||
+    title.includes(searchTerm) ||
+    tagText.includes(searchTerm);
+
+    const listItem = card.closest('li');
+    if (listItem) {
+    listItem.style.display = shouldShow ? 'block' : 'none';
+    if (shouldShow) hasVisibleResults = true;
+    }
+    });
+
+    // إخفاء/إظهار رسالة "لا توجد نتائج"
+    showNoResultsMessage(!hasVisibleResults && searchTerm !== '');
+    }
+
+    function showNoResultsMessage(show) {
+    // إزالة رسائل "لا توجد نتائج" السابقة
+    const existingMessage = document.querySelector('.no-results-message');
+    if (existingMessage) {
+    existingMessage.remove();
+    }
+
+    if (show) {
+    const productsLists = document.querySelectorAll('.products-list');
+    productsLists.forEach(list => {
+    const noResultsMsg = document.createElement('li');
+    noResultsMsg.className = 'no-results-message';
+    noResultsMsg.innerHTML = `
+    <div class="dz-card list">
+        <div class="dz-content">
+            <h6 class="title">لا توجد وصفات تطابق البحث</h6>
+        </div>
+    </div>
+    `;
+    list.appendChild(noResultsMsg);
+    });
+    }
+    }
+    });
+
+</script>
                 <!-- Products Area -->
                 <div class="dz-custom-swiper">
                     <div thumbsSlider="" class="swiper mySwiper dz-tabs-swiper">

@@ -83,6 +83,8 @@
 
         <form action="{{ route('challenge.store') }}" method="POST" enctype="multipart/form-data" id="challengeForm">
             @csrf
+            <input type="text" name="user_id" value="{{ Auth::user()->id }}">
+            <input type="text" name="chef_id" value="{{ Auth::user()->id }}">
             <main class="page-content space-top p-b100" style="direction: rtl;">
                 <div class="container">
                     <div class="bg-cookpad-gray-9gi p-6h1" style="height: 40vh; width: 80%; margin: auto; border-radius: 15px;">
@@ -149,56 +151,56 @@
                         <label for="recipe-select" style="text-align: center; display: block; margin-bottom: 5px; margin-top: 15px;">اختر الوصفة</label>
                         <div class="form-group">
                             {{-- تغيير name و id ليتناسب مع recipe_id --}}
-<select class="form-control" style="text-align: center;" id="recipe-select" name="recipe_id">
-    <option value="">إختر الوصفة</option>
-    @foreach($recipes as $recipe)
-    <option value="{{ $recipe->id }}" data-price="{{ $recipe->price }}" ...>
-        {{ $recipe->title }}
-    </option>
-    @endforeach
-</select>
+                            <select class="form-control" style="text-align: center;" id="recipe-select" name="recipe_id">
+                                <option value="">إختر الوصفة</option>
+                                @foreach($recipes as $recipe)
+                                <option value="{{ $recipe->id }}" data-price="{{ $recipe->price }}" ...>
+                                    {{ $recipe->title }}
+                                </option>
+                                @endforeach
+                            </select>
 
 
-<script>
-    document.getElementById('recipe-select').addEventListener('change', function() {
-        const selectedOption = this.options[this.selectedIndex];
-        const priceInput = document.getElementById('price');
+                            <script>
+                                document.getElementById('recipe-select').addEventListener('change', function() {
+                                    const selectedOption = this.options[this.selectedIndex];
+                                    const priceInput = document.getElementById('price');
 
-        // جلب السعر من الـ data attribute
-        const selectedPrice = selectedOption.dataset.price;
+                                    // جلب السعر من الـ data attribute
+                                    const selectedPrice = selectedOption.dataset.price;
 
-        if (selectedPrice === 'null') { // إذا كان السعر null
-            priceInput.value = '';
-            priceInput.placeholder = 'أدخل سعر الوصفة';
-            priceInput.style.display = 'block'; // إظهار حقل السعر
-        } else {
-            priceInput.value = selectedPrice;
-            priceInput.style.display = 'none'; // إخفاء حقل السعر
-        }
-    });
+                                    if (selectedPrice === 'null') { // إذا كان السعر null
+                                        priceInput.value = '';
+                                        priceInput.placeholder = 'أدخل سعر الوصفة';
+                                        priceInput.style.display = 'block'; // إظهار حقل السعر
+                                    } else {
+                                        priceInput.value = selectedPrice;
+                                        priceInput.style.display = 'none'; // إخفاء حقل السعر
+                                    }
+                                });
 
-    // تشغيل الدالة مرة واحدة عند تحميل الصفحة في حالة وجود قيمة قديمة
-    document.addEventListener('DOMContentLoaded', function() {
-        const selectElement = document.getElementById('recipe-select');
-        const selectedOption = selectElement.options[selectElement.selectedIndex];
-        if (selectedOption && selectedOption.dataset.price) {
-            const priceInput = document.getElementById('price');
-            const selectedPrice = selectedOption.dataset.price;
+                                // تشغيل الدالة مرة واحدة عند تحميل الصفحة في حالة وجود قيمة قديمة
+                                document.addEventListener('DOMContentLoaded', function() {
+                                    const selectElement = document.getElementById('recipe-select');
+                                    const selectedOption = selectElement.options[selectElement.selectedIndex];
+                                    if (selectedOption && selectedOption.dataset.price) {
+                                        const priceInput = document.getElementById('price');
+                                        const selectedPrice = selectedOption.dataset.price;
 
-            if (selectedPrice === 'null') {
-                priceInput.value = '';
-                priceInput.placeholder = 'أدخل سعر الوصفة';
-                priceInput.style.display = 'block';
-            } else {
-                priceInput.value = selectedPrice;
-                priceInput.style.display = 'none';
-            }
-        }
-    });
+                                        if (selectedPrice === 'null') {
+                                            priceInput.value = '';
+                                            priceInput.placeholder = 'أدخل سعر الوصفة';
+                                            priceInput.style.display = 'block';
+                                        } else {
+                                            priceInput.value = selectedPrice;
+                                            priceInput.style.display = 'none';
+                                        }
+                                    }
+                                });
 
-</script>
+                            </script>
 
-{{-- تعديل @error --}}
+                            {{-- تعديل @error --}}
 
 
                             @error('recipe_id')
@@ -206,16 +208,14 @@
                             @enderror
                         </div>
 
-{{-- حذف الشرط القديم @if($recipe?->price == null) --}}
-<div class="form-group">
-    <input type="number" step="0.01" style="margin-top: 10px; display: none;" name="price" id="price" class="form-control" placeholder="أدخل سعر الوصفة" value="{{ old('price') }}">
-    @error('price')
-    <div class="error-message">{{ $message }}</div>
-    @enderror
-</div>
-</div>
-
-
+                        {{-- حذف الشرط القديم @if($recipe?->price == null) --}}
+                        <div class="form-group">
+                            <input type="number" step="0.01" style="margin-top: 10px; display: none;" name="price" id="price" class="form-control" placeholder="أدخل سعر الوصفة" value="{{ old('price') }}">
+                            @error('price')
+                            <div class="error-message">{{ $message }}</div>
+                            @enderror
+                        </div>
+                    </div>
 
                     <!-- Challenge Type -->
                     <h6 class="dz-title my-2" style="text-align: center;">نوع التحدي</h6>
@@ -232,6 +232,51 @@
                     @error('filterRadio')
                     <div class="error-message">{{ $message }}</div>
                     @enderror
+
+<h6 class="dz-title my-2" style="text-align: center;">هل يوجد جائزة للتحدي؟</h6>
+<div class="d-flex flex-wrap gap-2" style="justify-content: center;">
+    <div class="form-check style-2">
+        <input class="form-check-input" type="radio" name="prize_type" id="prizeType1" value="none" {{ old('prize_type', 'none') == 'none' ? 'checked' : '' }}>
+        <label class="form-check-label" for="prizeType1">لا</label>
+    </div>
+    <div class="form-check style-2">
+        <input class="form-check-input" type="radio" name="prize_type" id="prizeType2" value="highest_rating" {{ old('prize_type') == 'highest_rating' ? 'checked' : '' }}>
+        <label class="form-check-label" for="prizeType2">نعم لأعلى تقييم</label>
+    </div>
+    <div class="form-check style-2">
+        <input class="form-check-input" type="radio" name="prize_type" id="prizeType3" value="top_three" {{ old('prize_type') == 'top_three' ? 'checked' : '' }}>
+        <label class="form-check-label" for="prizeType3">نعم لأعلى ثلاث تقييمات</label>
+    </div>
+    <div class="form-check style-2">
+        <input class="form-check-input" type="radio" name="prize_type" id="prizeType4" value="all_participants" {{ old('prize_type') == 'all_participants' ? 'checked' : '' }}>
+        <label class="form-check-label" for="prizeType4">نعم لجميع المشاركين</label>
+    </div>
+</div>
+
+
+
+                    <div id="prizeDetails" style="display: none;">
+                        <div class="my-3">
+                            <input type="text" name="prize_name" id="prize_name" style="height: 50px; text-align: center; color: #000000;" placeholder="اسم الجائزة" class="form-control" value="{{ old('prize_name') }}">
+                            @error('prize_name')
+                            <div class="error-message">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="my-3">
+                            <label for="prize_image" class="dz-title my-2" style="text-align: center; display: block;">صورة الجائزة</label>
+                            <div class="bg-cookpad-gray-9gi p-6h1 text-center" style="height: 150px; border-radius: 15px; display: flex; align-items: center; justify-content: center; cursor: pointer;">
+                                <div class="text-center">
+                                    <img class="w-8so mx-33j pointer-events-j3t" src="https://global-web-assets.cpcdn.com/assets/camera-f90eec676af2f051ccca0255d3874273a419172412e3a6d2884f963f6ec5a2c3.png">
+                                    <p class="text-x8v font-9s7 mt-mnq">أضف صورة الجائزة</p>
+                                </div>
+                                <input type="file" name="prize_image" id="prize_image" accept="image/*" style="display: none;">
+                            </div>
+                            @error('prize_image')
+                            <div class="error-message">{{ $message }}</div>
+                            @enderror
+                        </div>
+                    </div>
 
                     <!-- Challenge Status -->
                     <h6 class="dz-title my-2" style="text-align: center;">حالة التحدي</h6>
@@ -256,86 +301,59 @@
         </form>
     </div>
 
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const prizeTypeRadios = document.querySelectorAll('input[name="prize_type"]');
+        const prizeDetailsDiv = document.getElementById('prizeDetails');
+        const prizeImageInput = document.getElementById('prize_image');
+        const prizeImageContainer = document.querySelector('#prizeDetails .bg-cookpad-gray-9gi');
 
+        // Handle prize image container click
+        if (prizeImageContainer) {
+            prizeImageContainer.addEventListener('click', function() {
+                prizeImageInput.click();
+            });
+        }
 
-    <script>
-        flatpickr("#bsMaterialDatePicker", {
-            dateFormat: "Y-m-d"
-            , locale: "ar"
-            , enableTime: false
-            , allowInput: false
-            , minDate: "today"
-        });
-
-        flatpickr("#bsMaterialTimePicker", {
-            enableTime: true
-            , noCalendar: true
-            , dateFormat: "H:i"
-            , locale: "ar"
-            , allowInput: false
-        });
-
-        flatpickr("#bsMaterialDatePicker1", {
-            dateFormat: "Y-m-d"
-            , locale: "ar"
-            , enableTime: false
-            , allowInput: false
-            , minDate: "today"
-        });
-
-        flatpickr("#bsMaterialTimePicker1", {
-            enableTime: true
-            , noCalendar: true
-            , dateFormat: "H:i"
-            , locale: "ar"
-            , allowInput: false
-        });
-
-    const selectElement = document.getElementById('recipe-select'); // تغيير الـ ID
-    const priceInput = document.getElementById('price');
-
-    // دالة للتحقق من حالة حقل السعر
-    function togglePriceInputVisibility() {
-    if (selectElement.value !== '') {
-    priceInput.classList.remove('hidden');
-    priceInput.classList.add('visible');
-    } else {
-    priceInput.classList.remove('visible');
-    priceInput.classList.add('hidden');
-    priceInput.value = ''; // مسح القيمة عند الإخفاء
-    }
-    }
-
-    // استدعاء الدالة عند تحميل الصفحة للحالة الأولية
-    document.addEventListener('DOMContentLoaded', togglePriceInputVisibility);
-
-    // استدعاء الدالة عند تغيير قيمة السلكت
-    selectElement.addEventListener('change', togglePriceInputVisibility);
-
-
-        document.getElementById('challengeForm').addEventListener('submit', function(e) {
-            const submitBtn = document.getElementById('submitBtn');
-            submitBtn.disabled = true;
-            submitBtn.textContent = 'جاري الحفظ...';
-        });
-
-        document.getElementById('fil-ttd').addEventListener('change', function(e) {
-            const file = e.target.files[0];
+        // Handle prize image file selection
+        prizeImageInput.addEventListener('change', function() {
+            const file = this.files[0];
+            const textElement = this.closest('.bg-cookpad-gray-9gi').querySelector('p');
             if (file) {
-                const fileSize = file.size / 1024 / 1024;
-                if (fileSize > 50) {
-                    alert('حجم الملف كبير جداً. يجب أن يكون أقل من 50 ميجابايت.');
-                    this.value = '';
-                    return;
-                }
-
-                const textElement = document.querySelector('.text-x8v.font-9s7');
-                if (textElement) {
-                    textElement.textContent = `تم اختيار الملف: ${file.name}`;
-                }
+                textElement.textContent = `تم اختيار الملف: ${file.name}`;
+            } else {
+                textElement.textContent = 'أضف صورة الجائزة';
             }
         });
 
-    </script>
+        // Function to toggle prize details visibility
+        function togglePrizeDetails() {
+            const selectedPrizeType = document.querySelector('input[name="prize_type"]:checked');
+
+            if (selectedPrizeType && selectedPrizeType.value !== 'none') {
+                prizeDetailsDiv.style.display = 'block';
+                // Make prize fields required when prize is selected
+                document.getElementById('prize_name').setAttribute('required', 'required');
+                prizeImageInput.setAttribute('required', 'required');
+            } else {
+                prizeDetailsDiv.style.display = 'none';
+                // Remove required attribute when no prize is selected
+                document.getElementById('prize_name').removeAttribute('required');
+                prizeImageInput.removeAttribute('required');
+            }
+        }
+
+        // Call the function on page load
+        togglePrizeDetails();
+
+        // Add event listener to all prize type radio buttons
+        prizeTypeRadios.forEach(function(radio) {
+            radio.addEventListener('change', togglePrizeDetails);
+        });
+    });
+
+</script>
+
+
 </body>
 @endsection

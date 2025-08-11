@@ -135,11 +135,14 @@ class ChallengeController extends Controller
             'bsMaterialDatePicker' => 'required|date_format:Y-m-d',
             'bsMaterialTimePicker' => 'required|date_format:H:i',
             'bsMaterialDatePicker1' => 'required|date_format:Y-m-d|after_or_equal:bsMaterialDatePicker',
-            'bsMaterialTimePicker1' => 'required|date_format:H:i', // You might need more complex validation here to ensure end time is after start time
+            'bsMaterialTimePicker1' => 'required|date_format:H:i',
             'recipe_id' => 'nullable|exists:recipes,id',
-            'price' => 'nullable|numeric|min:0.01', // Add validation if recipe_id is present
+            'price' => 'nullable|numeric|min:0.01',
             'filterRadio' => 'required|in:users,chefs',
             'status' => ['required', 'in:active,inactive', new NoMoreThanOneActiveChallenge()],
+            'prize_type' => 'required|in:none,highest_rating,top_three,all_participants',
+            'prize_name' => 'required_unless:prize_type,none|string|max:255',
+            'prize_image' => 'required_unless:prize_type,none|image|max:10000',
         ]);
 
         // Combine date and time for start and end
@@ -167,23 +170,20 @@ class ChallengeController extends Controller
         if ($request->hasFile('file')) {
             $file = $request->file('file');
             $fileName = time() . '_' . $file->getClientOriginalName();
-            $filePath = $file->storeAs('challenges', $fileName, 'public'); // Store in storage/app/public/challenges
+            $filePath = $file->storeAs('challenges', $fileName, 'public');
         }
 
-        // 4. Create the new challenge
+        // Handle prize image upload
+        $prizeImagePath = null;
+        if ($request->hasFile('prize_image') && $request->input('prize_type') !== 'none') {
+            $prizeImageFile = $request->file('prize_image');
+            $prizeImageName = time() . '_prize_' . Str::random(10) . '_' . $prizeImageFile->getClientOriginalName();
+            $prizeImagePath = $prizeImageFile->storeAs('challenges/prizes', $prizeImageName, 'public');
+        }
+
         $challenge = new Challenge();
-        // $challenge->message = $validated['name'];
-        // $challenge->start_date = $validated['bsMaterialDatePicker'];
-        // $challenge->start_time = $validated['bsMaterialTimePicker'];
-        // $challenge->end_date = $validated['bsMaterialDatePicker1'];
-        // $challenge->end_time = $validated['bsMaterialTimePicker1'];
-        // $challenge->recipe_id = $validated['recipe_id']; // Update the recipe_id
-        // $challenge->price = $validated['price'] ?? null;
-        // $challenge->challenge_type = $validated['filterRadio'];
-        // $challenge->status = $validated['status']; // Directly use 'status' from validation
-        #
         $challenge->user_id = Auth::id();
-        $challenge->chef_id = Auth::id(); // Assign the authenticated chef's ID
+        $challenge->chef_id = Auth::id();
         $challenge->announcement_path = $filePath;
         $challenge->message = $request->input('name');
         $challenge->start_date = $request->input('bsMaterialDatePicker');
@@ -192,8 +192,21 @@ class ChallengeController extends Controller
         $challenge->end_time = $request->input('bsMaterialTimePicker1');
         $challenge->recipe_id = $request->input('recipe_id');
         $challenge->price = $request->input('price');
-        $challenge->challenge_type = $request->input('filterRadio'); // 'users' or 'chefs'
+        $challenge->challenge_type = $request->input('filterRadio');
         $challenge->status = $request->input('status');
+
+        // Handle prize data based on prize_type
+        $prizeType = $request->input('prize_type');
+        if ($prizeType !== 'none') {
+            $challenge->prize_type = $prizeType;
+            $challenge->prize_name = $request->input('prize_name');
+            $challenge->prize_image = $prizeImagePath;
+        } else {
+            $challenge->prize_type = 'none';
+            $challenge->prize_name = null;
+            $challenge->prize_image = null;
+        }
+
         $challenge->save();
 
         return redirect('c1he3f/challenge.all-vs')->with('success', 'تم إنشاء التحدي بنجاح!');
@@ -206,6 +219,7 @@ class ChallengeController extends Controller
 
         return view('c1he3f.challenge.show', compact('challenge', 'challengeAccepted'));
     }
+
     public function edit($id)
     {
         $challenge = Challenge::findOrFail($id);
@@ -223,17 +237,22 @@ class ChallengeController extends Controller
 
             $validated = $request->validate([
                 'file' => 'nullable|file|mimes:mp4,mov,avi,jpg,jpeg,png|max:51200',
-                'message' => 'required|string|max:500', // Changed 'name' to 'message'
-                'start_date' => 'required|date', // Changed 'bsMaterialDatePicker' to 'start_date'
-                'start_time' => 'required|string', // Changed 'bsMaterialTimePicker' to 'start_time'
-                'end_date' => 'required|date|after_or_equal:start_date', // Changed 'bsMaterialDatePicker1' to 'end_date'
-                'end_time' => 'required|string', // Changed 'bsMaterialTimePicker1' to 'end_time'
-                'recipe_id' => 'required|exists:recipes,id', // Matches 'name' in Blade
+                'message' => 'required|string|max:500',
+                'start_date' => 'required|date',
+                'start_time' => 'required|string',
+                'end_date' => 'required|date|after_or_equal:start_date',
+                'end_time' => 'required|string',
+                'recipe_id' => 'nullable|exists:recipes,id',
                 'price' => 'nullable|numeric|min:0',
-                'challenge_type' => 'required|in:users,chefs', // Changed 'filterRadio' to 'challenge_type'
-                'status' => ['required', 'in:active,inactive', new NoMoreThanOneActiveChallenge()],
+                'challenge_type' => 'required|in:users,chefs',
+                'status' => ['required', 'in:active,inactive'],
+
+                // ✅ إضافة قواعد التحقق الجديدة للجوائز
+                'prize_name' => 'nullable|string|max:255',
+                'prize_image' => 'nullable|image|max:10000',
             ]);
 
+            // 1. معالجة وتحديث ملف الإعلان
             if ($request->hasFile('file')) {
                 if ($challenge->announcement_path) {
                     Storage::disk('public')->delete($challenge->announcement_path);
@@ -245,6 +264,19 @@ class ChallengeController extends Controller
                 \Log::info('New file uploaded successfully for update:', ['path' => $filePath]);
             }
 
+            // 2. معالجة وتحديث صورة الجائزة
+            if ($request->hasFile('prize_image')) {
+                if ($challenge->prize_image) {
+                    Storage::disk('public')->delete($challenge->prize_image);
+                }
+                $prizeImageFile = $request->file('prize_image');
+                $prizeImageName = time() . '_prize_' . $prizeImageFile->getClientOriginalName();
+                $prizeImagePath = $prizeImageFile->storeAs('challenges/prizes', $prizeImageName, 'public');
+                $challenge->prize_image = $prizeImagePath;
+                \Log::info('New prize image uploaded successfully:', ['path' => $prizeImagePath]);
+            }
+
+            // 3. تحديث الحقول الأخرى
             $challenge->message = $validated['message'];
             $challenge->start_date = $validated['start_date'];
             $challenge->start_time = $validated['start_time'];
@@ -254,6 +286,9 @@ class ChallengeController extends Controller
             $challenge->price = $validated['price'] ?? null;
             $challenge->challenge_type = $validated['challenge_type'];
             $challenge->status = $validated['status'];
+
+            // ✅ تحديث اسم الجائزة
+            $challenge->prize_name = $request->input('prize_name');
 
             $challenge->save();
 
@@ -268,7 +303,6 @@ class ChallengeController extends Controller
             return back()->with('error', 'حدث خطأ أثناء تحديث التحدي. يرجى المحاولة مرة أخرى.')->withInput();
         }
     }
-
     public function destroy($id)
     {
         $challenge = Challenge::findOrFail($id);

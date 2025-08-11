@@ -193,7 +193,6 @@
         cursor: pointer;
     }
 </style>
-</head>
 
 <body>
     <header class="header header-fixed border-bottom">
@@ -202,8 +201,7 @@
                 <h4 class="title">الخطوات </h4>
             </div>
             <div class="left-content">
-                <a href="javascript:history.back()" class="back-btn">
-
+                <a href="{{ url()->previous() }}" class="back-btn">
                     <i class="feather icon-arrow-left"></i>
                 </a>
             </div>

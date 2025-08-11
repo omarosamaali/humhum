@@ -23,14 +23,26 @@ class RecipesController extends Controller
     public function allRecipes()
     {
         $user = Auth::user();
-        if ($user && $user->role === 'طاه') {
-            $allRecipes = Recipe::where('user_id', $user->id)->get();
+
+        if ($user && $user->role == 'طاه') {
+            // جلب الوصفات النشطة مع العلاقات
+            $activeRecipes = Recipe::where('user_id', $user->id)
+                ->where('status', 1)
+                ->with(['mainCategories', 'subCategories']) // تحميل العلاقات مسبقاً
+                ->get();
+
+            // جلب الوصفات غير النشطة مع العلاقات    
+            $inactiveRecipes = Recipe::where('user_id', $user->id)
+                ->where('status', 0)
+                ->with(['mainCategories', 'subCategories'])
+                ->get();
         } else {
-            $allRecipes = collect();
+            $activeRecipes = collect();
+            $inactiveRecipes = collect();
         }
+
         $mainCategories = MainCategories::select('id', 'name_ar')->get();
-        $activeRecipes = $allRecipes->where('status', 1);
-        $inactiveRecipes = $allRecipes->where('status', 0);
+
         return view('c1he3f.recpies.all_recipes', [
             'activeRecipes' => $activeRecipes,
             'inactiveRecipes' => $inactiveRecipes,
@@ -127,37 +139,35 @@ class RecipesController extends Controller
         $ingredientsData = $recipe->ingredients ?? [];
         return view('c1he3f.recpies.ingredients', compact('recipe', 'ingredientsData'));
     }
-
     public function updateIngredients(Request $request, Recipe $recipe)
     {
         Log::info('Update Ingredients Request received for recipe ID: ' . $recipe->id);
+
         $request->validate([
             'ingredients_data' => 'nullable|string',
+            'redirect_url' => 'nullable|string', // تحقق من حقل إعادة التوجيه
         ]);
+
         $ingredientsDataString = $request->input('ingredients_data');
         $formattedIngredients = ''; // Initialize as empty string
 
         if (!empty($ingredientsDataString)) {
-            // Attempt to decode the JSON string from the frontend
             $ingredientsArray = json_decode($ingredientsDataString, true);
 
-            // Check if JSON decoding was successful and it's an array
             if (json_last_error() === JSON_ERROR_NONE && is_array($ingredientsArray)) {
                 $lines = [];
                 foreach ($ingredientsArray as $item) {
                     $description = trim($item['description'] ?? '');
-                    // Ensure is_heading is treated as a boolean (it might come as "1" or "0" string)
                     $isHeading = filter_var($item['is_heading'] ?? false, FILTER_VALIDATE_BOOLEAN);
 
                     if (!empty($description)) {
                         if ($isHeading) {
-                            $lines[] = '##' . $description; // Prepend '##' for headings
+                            $lines[] = '##' . $description;
                         } else {
-                            $lines[] = $description; // No '##' for regular ingredients
+                            $lines[] = $description;
                         }
                     }
                 }
-                // Join all the processed lines into a single string with newlines
                 $formattedIngredients = implode("\n", $lines);
                 Log::info('Formatted ingredients string for saving:', ['string' => $formattedIngredients]);
             } else {
@@ -165,29 +175,52 @@ class RecipesController extends Controller
                     'json_error' => json_last_error_msg(),
                     'input_data' => $ingredientsDataString
                 ]);
+
+                if ($request->expectsJson()) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'حدث خطأ في معالجة بيانات المكونات (JSON). الرجاء المحاولة مرة أخرى.'
+                    ], 422);
+                }
+
                 return back()->with('error', 'حدث خطأ في معالجة بيانات المكونات (JSON). الرجاء المحاولة مرة أخرى.');
             }
         } else {
-            // If ingredients_data is empty, it means no ingredients or all were removed.
-            // So, save an empty string to the database.
             Log::info('ingredients_data was empty. Saving empty string to database.');
         }
 
-        // Assign the correctly formatted string to the recipe's ingredients attribute
         $recipe->ingredients = $formattedIngredients;
 
-        // Save the recipe
         try {
             $recipe->save();
             Log::info('Recipe ingredients updated successfully for ID: ' . $recipe->id);
-            return redirect()->back()->with('success', 'تم تحديث المكونات بنجاح!');
+
+            $redirectUrl = $request->input('redirect_url', url()->previous());
+
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'تم تحديث المكونات بنجاح!',
+                    'redirect' => $redirectUrl  // أضف هذا لإرجاع عنوان الإعادة إلى JS
+                ]);
+            }
+
+            return redirect($redirectUrl)->with('success', 'تم تحديث المكونات بنجاح!');
         } catch (\Exception $e) {
             Log::error('Database save error for recipe ID: ' . $recipe->id, [
-                'error' => $e->getMessage(),
-                'sql' => $e->getSql(), // This might not be available directly on all exceptions
-                'bindings' => $e->getBindings() // Same as above
+                'error' => $e->getMessage()
             ]);
-            return back()->with('error', 'حدث خطأ أثناء حفظ المكونات في قاعدة البيانات: ' . $e->getMessage());
+
+            $errorMessage = 'حدث خطأ أثناء حفظ المكونات في قاعدة البيانات: ' . $e->getMessage();
+
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => $errorMessage
+                ], 500);
+            }
+
+            return back()->with('error', $errorMessage);
         }
     }
 
