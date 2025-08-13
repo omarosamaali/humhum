@@ -215,7 +215,7 @@
         }
 
         .sidebar .navbar-nav li>a {
-            color: white !important;
+            color: rgb(0, 0, 0) !important;
         }
 
     </style>
@@ -233,7 +233,8 @@
         </div>
 
         <!-- Sidebar -->
-        <div class="sidebar dz-floting-sidebar" style="color: rgb(255, 255, 255); background-color: rgb(0, 0, 0);">
+        <div class="sidebar dz-floting-sidebar" style="background-color: rgb(255, 255, 255); color: rgb(0, 0, 0);">
+
             <div class="sidebar-header">
                 <div class="app-logo">
                     <div class="mid-content">

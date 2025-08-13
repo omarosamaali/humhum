@@ -132,7 +132,8 @@
                                                         </li>
                                                     </ul>
                                                     @endif
-                                                    <a href="" class="dz-btn accept-challenge">
+                                                    
+                                                    <a href="{{ route('challenge.vs-show', $challenge->id) }}" class="dz-btn accept-challenge">
                                                         تقييم المتحديين
                                                     </a>
                                                 </div>

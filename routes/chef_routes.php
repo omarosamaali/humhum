@@ -178,15 +178,12 @@ Route::get('c1he3f/challenge/{challenge_id}/vs-show', function ($challenge_id) {
     $challenge = Challenge::with(['challengeResponses.user.chefProfile'])->findOrFail($challenge_id);
     $responses = $challenge->challengeResponses;
     $totalResponses = $responses->count();
-
     if (Auth::check()) {
         $user = Auth::user();
-        // قم بتحميل التقييمات الخاصة بالمستخدم الحالي لكل رد
         $responses->each(function ($response) use ($user) {
             $response->userHasReviewed = $response->reviews()->where('chef_id', $user->id)->exists();
         });
     }
-
     return view('c1he3f.challenge.vs-show', compact('challenge', 'responses', 'totalResponses'));
 })->name('challenge.vs-show');
 
