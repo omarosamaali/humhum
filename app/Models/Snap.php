@@ -17,7 +17,22 @@ class Snap extends Model
         'kitchen_id',
         'main_category_id',
         'recipe_id',
+        'views',
+        'likes',
+        'bookmarks',
+        'viewed_by',
+        'liked_by',
+        'bookmarked_by',
     ];
+
+    protected $casts = [
+        'viewed_by' => 'array',
+        'liked_by' => 'array',
+        'bookmarked_by' => 'array',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+    ];
+    
 
     public function user()
     {

@@ -25,11 +25,12 @@ class ChallengeResponse extends Model
         'status',            // حالة الاستجابة (مثل 'pending', 'accepted', 'rejected')
     ];
 
-    
+
 
     /**
      * Get the challenge that owns the response.
      */
+
     public function challenge()
     {
         return $this->belongsTo(Challenge::class);
@@ -43,7 +44,10 @@ class ChallengeResponse extends Model
     {
         return $this->hasOne(ChallengeReview::class)->where('chef_id', Auth::id());
     }
-
+    public function chef()
+    {
+        return $this->belongsTo(User::class, 'chef_id');
+    }
     /**
      * Get the user (who submitted the response) that owns the response.
      */

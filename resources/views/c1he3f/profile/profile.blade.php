@@ -206,7 +206,8 @@
                         <div class="author-bx">
                             <div class="dz-media">
                                 @if (Auth::user()->chefProfile && Auth::user()->chefProfile->official_image)
-                                <img class="img-fluid" style="border-radius: 50%; width: 100px; height: 100px;" src="{{ asset('storage/' . Auth::user()->chefProfile->official_image) }}" alt>
+                                <img class="img-fluid" style="border-radius: 50%; width: 100px; height: 100px;" 
+                                src="{{ asset('storage/' . Auth::user()->chefProfile->official_image) }}" alt>
                                 @else
                                 <img class="img-fluid" style="border-radius: 50%; width: 100px; height: 100px;" src="{{ asset('assets/images/chef (3).png') }}" alt>
                                 @endif

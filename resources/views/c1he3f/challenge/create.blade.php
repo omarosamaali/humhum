@@ -3,6 +3,7 @@
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://npmcdn.com/flatpickr/dist/l10n/ar.js"></script>
 
 <style>
     .alert {
@@ -32,6 +33,16 @@
 
     .hidden {
         display: none;
+    }
+
+    /* تحسين مظهر Flatpickr للغة العربية */
+    .flatpickr-calendar {
+        direction: ltr !important;
+        font-family: 'Cairo', sans-serif;
+    }
+
+    .flatpickr-time {
+        direction: ltr !important;
     }
 
 </style>
@@ -150,7 +161,6 @@
                     <div class="form-group">
                         <label for="recipe-select" style="text-align: center; display: block; margin-bottom: 5px; margin-top: 15px;">اختر الوصفة</label>
                         <div class="form-group">
-                            {{-- تغيير name و id ليتناسب مع recipe_id --}}
                             <select class="form-control" style="text-align: center;" id="recipe-select" name="recipe_id">
                                 <option value="">إختر الوصفة</option>
                                 @foreach($recipes as $recipe)
@@ -160,26 +170,23 @@
                                 @endforeach
                             </select>
 
-
                             <script>
                                 document.getElementById('recipe-select').addEventListener('change', function() {
                                     const selectedOption = this.options[this.selectedIndex];
                                     const priceInput = document.getElementById('price');
 
-                                    // جلب السعر من الـ data attribute
                                     const selectedPrice = selectedOption.dataset.price;
 
-                                    if (selectedPrice === 'null') { // إذا كان السعر null
+                                    if (selectedPrice === 'null') {
                                         priceInput.value = '';
                                         priceInput.placeholder = 'أدخل سعر الوصفة';
-                                        priceInput.style.display = 'block'; // إظهار حقل السعر
+                                        priceInput.style.display = 'block';
                                     } else {
                                         priceInput.value = selectedPrice;
-                                        priceInput.style.display = 'none'; // إخفاء حقل السعر
+                                        priceInput.style.display = 'none';
                                     }
                                 });
 
-                                // تشغيل الدالة مرة واحدة عند تحميل الصفحة في حالة وجود قيمة قديمة
                                 document.addEventListener('DOMContentLoaded', function() {
                                     const selectElement = document.getElementById('recipe-select');
                                     const selectedOption = selectElement.options[selectElement.selectedIndex];
@@ -200,15 +207,11 @@
 
                             </script>
 
-                            {{-- تعديل @error --}}
-
-
                             @error('recipe_id')
                             <div class="error-message">{{ $message }}</div>
                             @enderror
                         </div>
 
-                        {{-- حذف الشرط القديم @if($recipe?->price == null) --}}
                         <div class="form-group">
                             <input type="number" step="0.01" style="margin-top: 10px; display: none;" name="price" id="price" class="form-control" placeholder="أدخل سعر الوصفة" value="{{ old('price') }}">
                             @error('price')
@@ -233,27 +236,25 @@
                     <div class="error-message">{{ $message }}</div>
                     @enderror
 
-<h6 class="dz-title my-2" style="text-align: center;">هل يوجد جائزة للتحدي؟</h6>
-<div class="d-flex flex-wrap gap-2" style="justify-content: center;">
-    <div class="form-check style-2">
-        <input class="form-check-input" type="radio" name="prize_type" id="prizeType1" value="none" {{ old('prize_type', 'none') == 'none' ? 'checked' : '' }}>
-        <label class="form-check-label" for="prizeType1">لا</label>
-    </div>
-    <div class="form-check style-2">
-        <input class="form-check-input" type="radio" name="prize_type" id="prizeType2" value="highest_rating" {{ old('prize_type') == 'highest_rating' ? 'checked' : '' }}>
-        <label class="form-check-label" for="prizeType2">نعم لأعلى تقييم</label>
-    </div>
-    <div class="form-check style-2">
-        <input class="form-check-input" type="radio" name="prize_type" id="prizeType3" value="top_three" {{ old('prize_type') == 'top_three' ? 'checked' : '' }}>
-        <label class="form-check-label" for="prizeType3">نعم لأعلى ثلاث تقييمات</label>
-    </div>
-    <div class="form-check style-2">
-        <input class="form-check-input" type="radio" name="prize_type" id="prizeType4" value="all_participants" {{ old('prize_type') == 'all_participants' ? 'checked' : '' }}>
-        <label class="form-check-label" for="prizeType4">نعم لجميع المشاركين</label>
-    </div>
-</div>
-
-
+                    <h6 class="dz-title my-2" style="text-align: center;">هل يوجد جائزة للتحدي؟</h6>
+                    <div class="d-flex flex-wrap gap-2" style="justify-content: center;">
+                        <div class="form-check style-2">
+                            <input class="form-check-input" type="radio" name="prize_type" id="prizeType1" value="none" {{ old('prize_type', 'none') == 'none' ? 'checked' : '' }}>
+                            <label class="form-check-label" for="prizeType1">لا</label>
+                        </div>
+                        <div class="form-check style-2">
+                            <input class="form-check-input" type="radio" name="prize_type" id="prizeType2" value="highest_rating" {{ old('prize_type') == 'highest_rating' ? 'checked' : '' }}>
+                            <label class="form-check-label" for="prizeType2">نعم لأعلى تقييم</label>
+                        </div>
+                        <div class="form-check style-2">
+                            <input class="form-check-input" type="radio" name="prize_type" id="prizeType3" value="top_three" {{ old('prize_type') == 'top_three' ? 'checked' : '' }}>
+                            <label class="form-check-label" for="prizeType3">نعم لأعلى ثلاث تقييمات</label>
+                        </div>
+                        <div class="form-check style-2">
+                            <input class="form-check-input" type="radio" name="prize_type" id="prizeType4" value="all_participants" {{ old('prize_type') == 'all_participants' ? 'checked' : '' }}>
+                            <label class="form-check-label" for="prizeType4">نعم لجميع المشاركين</label>
+                        </div>
+                    </div>
 
                     <div id="prizeDetails" style="display: none;">
                         <div class="my-3">
@@ -301,59 +302,118 @@
         </form>
     </div>
 
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const prizeTypeRadios = document.querySelectorAll('input[name="prize_type"]');
-        const prizeDetailsDiv = document.getElementById('prizeDetails');
-        const prizeImageInput = document.getElementById('prize_image');
-        const prizeImageContainer = document.querySelector('#prizeDetails .bg-cookpad-gray-9gi');
+    <!-- تحميل Flatpickr فقط -->
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://npmcdn.com/flatpickr/dist/l10n/ar.js"></script>
 
-        // Handle prize image container click
-        if (prizeImageContainer) {
-            prizeImageContainer.addEventListener('click', function() {
-                prizeImageInput.click();
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const prizeTypeRadios = document.querySelectorAll('input[name="prize_type"]');
+            const prizeDetailsDiv = document.getElementById('prizeDetails');
+            const prizeImageInput = document.getElementById('prize_image');
+            const prizeImageContainer = document.querySelector('#prizeDetails .bg-cookpad-gray-9gi');
+
+            // إعداد Flatpickr للتواريخ
+            flatpickr("#bsMaterialDatePicker", {
+                dateFormat: "Y-m-d"
+                , locale: "ar"
+                , allowInput: true
+                , placeholder: "اختر التاريخ"
+                , minDate: "today"
             });
-        }
 
-        // Handle prize image file selection
-        prizeImageInput.addEventListener('change', function() {
-            const file = this.files[0];
-            const textElement = this.closest('.bg-cookpad-gray-9gi').querySelector('p');
-            if (file) {
-                textElement.textContent = `تم اختيار الملف: ${file.name}`;
-            } else {
-                textElement.textContent = 'أضف صورة الجائزة';
+            flatpickr("#bsMaterialDatePicker1", {
+                dateFormat: "Y-m-d"
+                , locale: "ar"
+                , allowInput: true
+                , placeholder: "اختر التاريخ"
+                , minDate: "today"
+                , onChange: function(selectedDates, dateStr, instance) {
+                    // تأكد إن تاريخ الانتهاء بعد تاريخ البدء
+                    const startDateInput = document.getElementById('bsMaterialDatePicker');
+                    if (startDateInput.value && dateStr < startDateInput.value) {
+                        alert('تاريخ الانتهاء يجب أن يكون بعد تاريخ البدء');
+                        instance.clear();
+                    }
+                }
+            });
+
+            // إعداد Flatpickr للأوقات
+            flatpickr("#bsMaterialTimePicker", {
+                enableTime: true
+                , noCalendar: true
+                , dateFormat: "H:i"
+                , time_24hr: true
+                , allowInput: true
+                , placeholder: "اختر الوقت"
+            });
+
+            flatpickr("#bsMaterialTimePicker1", {
+                enableTime: true
+                , noCalendar: true
+                , dateFormat: "H:i"
+                , time_24hr: true
+                , allowInput: true
+                , placeholder: "اختر الوقت"
+            });
+
+            // ربط تاريخ البدء مع تاريخ الانتهاء
+            document.getElementById('bsMaterialDatePicker').addEventListener('change', function() {
+                const endDatePicker = document.querySelector('#bsMaterialDatePicker1')._flatpickr;
+                if (endDatePicker) {
+                    endDatePicker.set('minDate', this.value);
+                    // إذا كان تاريخ الانتهاء أقل من تاريخ البدء، امسحه
+                    if (endDatePicker.selectedDates.length > 0 && endDatePicker.selectedDates[0] < new Date(this.value)) {
+                        endDatePicker.clear();
+                    }
+                }
+            });
+
+            // Handle prize image container click
+            if (prizeImageContainer) {
+                prizeImageContainer.addEventListener('click', function() {
+                    prizeImageInput.click();
+                });
             }
+
+            // Handle prize image file selection
+            if (prizeImageInput) {
+                prizeImageInput.addEventListener('change', function() {
+                    const file = this.files[0];
+                    const textElement = this.closest('.bg-cookpad-gray-9gi').querySelector('p');
+                    if (file) {
+                        textElement.textContent = `تم اختيار الملف: ${file.name}`;
+                    } else {
+                        textElement.textContent = 'أضف صورة الجائزة';
+                    }
+                });
+            }
+
+            // Function to toggle prize details visibility
+            function togglePrizeDetails() {
+                const selectedPrizeType = document.querySelector('input[name="prize_type"]:checked');
+
+                if (selectedPrizeType && selectedPrizeType.value !== 'none') {
+                    prizeDetailsDiv.style.display = 'block';
+                    document.getElementById('prize_name').setAttribute('required', 'required');
+                    prizeImageInput.setAttribute('required', 'required');
+                } else {
+                    prizeDetailsDiv.style.display = 'none';
+                    document.getElementById('prize_name').removeAttribute('required');
+                    prizeImageInput.removeAttribute('required');
+                }
+            }
+
+            // Call the function on page load
+            togglePrizeDetails();
+
+            // Add event listener to all prize type radio buttons
+            prizeTypeRadios.forEach(function(radio) {
+                radio.addEventListener('change', togglePrizeDetails);
+            });
         });
 
-        // Function to toggle prize details visibility
-        function togglePrizeDetails() {
-            const selectedPrizeType = document.querySelector('input[name="prize_type"]:checked');
-
-            if (selectedPrizeType && selectedPrizeType.value !== 'none') {
-                prizeDetailsDiv.style.display = 'block';
-                // Make prize fields required when prize is selected
-                document.getElementById('prize_name').setAttribute('required', 'required');
-                prizeImageInput.setAttribute('required', 'required');
-            } else {
-                prizeDetailsDiv.style.display = 'none';
-                // Remove required attribute when no prize is selected
-                document.getElementById('prize_name').removeAttribute('required');
-                prizeImageInput.removeAttribute('required');
-            }
-        }
-
-        // Call the function on page load
-        togglePrizeDetails();
-
-        // Add event listener to all prize type radio buttons
-        prizeTypeRadios.forEach(function(radio) {
-            radio.addEventListener('change', togglePrizeDetails);
-        });
-    });
-
-</script>
-
+    </script>
 
 </body>
 @endsection

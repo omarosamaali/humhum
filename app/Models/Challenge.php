@@ -33,6 +33,14 @@ class Challenge extends Model
     /**
      * Get the chef associated with the challenge.
      */
+
+    protected $casts = [
+        'viewed_by' => 'array',
+        'liked_by' => 'array', // أضف هذا السطر
+        'bookmarked_by' => 'array',
+
+    ];
+
     public function chef()
     {
         return $this->belongsTo(User::class, 'chef_id');

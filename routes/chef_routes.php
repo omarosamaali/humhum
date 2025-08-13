@@ -153,7 +153,7 @@ Route::post('c1he3f/challenge/review/{challenge_response_id}', function (Request
         'chef_message_response' => 'nullable|string|max:1000',
     ]);
 
-    // Create or update the ChallengeReview
+    // Create or update the ChallengeReview - أضف sender_id هنا
     ChallengeReview::updateOrCreate(
         [
             'challenge_response_id' => $challenge_response_id,
@@ -162,19 +162,17 @@ Route::post('c1he3f/challenge/review/{challenge_response_id}', function (Request
         [
             'rating' => $validated['rating'],
             'chef_message_response' => $validated['chef_message_response'],
+            'sender_id' => Auth::user()->id, // ✅ أضف هذا السطر
         ]
-    );
+    ); 
+
     $challengeId = $challengeResponse->challenge_id;
 
     // Redirect with success message
-
-    // جلب الـ ID الخاص بالتحدي من استجابة التحدي
-    $challengeId = $challengeResponse->challenge_id;
-
-    // التوجيه إلى صفحة 'vs-show' باستخدام الـ ID الصحيح
     return redirect()->route('challenge.vs-show', ['challenge_id' => $challengeId])
-        ->with('success', 'تم تقييم الرد وإرسال رسالتك بنجاح!');})->name('chef.challenge_response.submit_review');
-
+        ->with('success', 'تم تقييم الرد وإرسال رسالتك بنجاح!');
+})
+    ->name('chef.challenge_response.submit_review');
 
 Route::get('c1he3f/challenge/{challenge_id}/vs-show', function ($challenge_id) {
     $challenge = Challenge::with(['challengeResponses.user.chefProfile'])->findOrFail($challenge_id);
@@ -200,6 +198,8 @@ Route::get('c1he3f/challenge/{challenge_id}/add-vs', function ($challenge_id) {
 })->name('challenge.add-vs');
 
 Route::post('c1he3f/challenge/{challenge_id}/submit-response', [ChallengeController::class, 'submitResponse'])->name('challenge.submit-response');
+Route::post('chef_lens/challenge/{challenge_id}/submit-response', [ChallengeController::class, 'submitResponseUser'])
+->name('chef_lens.submit-response');
 
 
 Route::get('c1he3f/challenge.vs2', function () {

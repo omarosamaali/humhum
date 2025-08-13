@@ -17,9 +17,6 @@ class ChallengeReviewChatController extends Controller
             'messages.sender'
         ])->findOrFail($reviewId);
 
-        // Debug: تحقق من البيانات (احذف هذا السطر بعد التأكد)
-        // dd($review->challengeResponse->user);
-
         // التحقق من صلاحية الوصول
         $currentUserId = Auth::id();
         $canAccess = ($review->chef_id == $currentUserId) ||
@@ -35,16 +32,16 @@ class ChallengeReviewChatController extends Controller
             // المستخدم الحالي هو الشيف، الطرف الآخر هو المتحدي
             $challengerUser = $review->challengeResponse->user;
 
-            // Debug: اطبع بيانات المتحدي (احذف هذا بعد التأكد)
-            // dd($challengerUser->toArray());
-
-            // جرب أسماء أعمدة مختلفة للصورة
-            $challengerImage = $review->chef->chefProfile->official_image;
+            // ✅ استخدم صورة المتحدي الحقيقية، ليس صورة الشيف
+            $challengerImage = $challengerUser->profile_image
+                ?? $challengerUser->avatar
+                ?? $challengerUser->image
+                ?? 'default-avatar.png';
 
             $otherParticipant = [
                 'id' => $review->challengeResponse->user_id,
                 'name' => $challengerUser->name,
-                'image' => $challengerImage,
+                'image' => $challengerImage, // ✅ صورة المتحدي الحقيقية
                 'type' => 'challenger'
             ];
         } else {
@@ -98,15 +95,19 @@ class ChallengeReviewChatController extends Controller
         // تحديد معلومات المرسل
         $senderInfo = [
             'name' => $message->sender->name,
-            'image' => null
+            'image' => 'default-avatar.png'
         ];
 
         if ($message->sender_id == $review->chef_id) {
             // المرسل هو الشيف
-            $senderInfo['image'] = $review->chef->chefProfile->official_image;
+            $senderInfo['image'] = $review->chef->chefProfile->official_image ?? 'default-avatar.png';
         } else {
-            // المرسل هو المتحدي - استخدم صورة المتحدي وليس الشيف
-            $senderInfo['image'] = $review->chef->chefProfile->official_image;
+            // المرسل هو المتحدي - ✅ استخدم صورة المتحدي الحقيقية
+            $challengerUser = $review->challengeResponse->user;
+            $senderInfo['image'] = $challengerUser->profile_image
+                ?? $challengerUser->avatar
+                ?? $challengerUser->image
+                ?? 'default-avatar.png';
         }
 
         return response()->json([
@@ -148,10 +149,14 @@ class ChallengeReviewChatController extends Controller
                 $senderImage = 'default-avatar.png';
                 if ($message->sender_id == $review->chef_id) {
                     // المرسل هو الشيف
-                    $senderImage = $review->chef->chefProfile->official_image ?? $review->chef->chefProfile->official_image;
+                    $senderImage = $review->chef->chefProfile->official_image ?? 'default-avatar.png';
                 } else {
-                    // المرسل هو المتحدي - تحقق من عدة أعمدة محتملة للصورة
-                    $senderImage = $review->chef->chefProfile->official_image;
+                    // المرسل هو المتحدي - ✅ استخدم صورة المتحدي الحقيقية
+                    $challengerUser = $review->challengeResponse->user;
+                    $senderImage = $challengerUser->profile_image
+                        ?? $challengerUser->avatar
+                        ?? $challengerUser->image
+                        ?? 'default-avatar.png';
                 }
 
                 return [

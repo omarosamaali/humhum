@@ -44,7 +44,19 @@ class User extends Authenticatable implements MustVerifyEmail
         'otp',
         'otp_expires_at', // Make sure this is in fillable if you set it directly
         'contract_signed_at',
+        'avatar'
     ];
+    public function challenges()
+    {
+        return $this->hasMany(Challenge::class);
+    }
+
+    // Define the relationship with the Snap model
+    public function snaps()
+    {
+        return $this->hasMany(Snap::class);
+    }
+
 
     /**
      * The attributes that should be hidden for serialization.

@@ -12,7 +12,8 @@ class ChallengeReview extends Model
         'challenge_response_id',
         'chef_id',
         'rating',
-        'chef_message_response'
+        'chef_message_response',
+        'sender_id',
     ];
 
     public function challengeResponse(): BelongsTo

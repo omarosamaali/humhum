@@ -16,6 +16,22 @@ use App\Models\ChefProfile;
 
 class ChallengeController extends Controller
 {
+    public function challengesOwn()
+    {
+        $userId = Auth::id();
+
+        // The fix is here:
+        // We load the challenge relationship and then apply withCount
+        $challengeResponses = ChallengeResponse::where('user_id', $userId)
+            ->with(['challenge' => function ($query) {
+                $query->withCount('responses');
+            }, 'challenge.chef.chefProfile'])
+            ->get();
+
+        return view('chef_lens.challenges.challenges-own', compact('challengeResponses'));
+    }
+
+
     public function showResponseImages($response_id)
     {
         $response = ChallengeResponse::with('user.chefProfile')->findOrFail($response_id);
@@ -105,6 +121,57 @@ class ChallengeController extends Controller
 
         return redirect()->route('challenge.vs')->with('success', 'تم إرسال استجابتك للتحدي بنجاح!');
     }
+
+
+    public function submitResponseUser(Request $request, $challenge_id)
+    {
+        // 1. التحقق من صلاحية المستخدم والتحدي
+        if (!Auth::check()) {
+            return redirect()->route('login')->with('error', 'يجب تسجيل الدخول لقبول التحديات.');
+        }
+
+        $challenge = Challenge::findOrFail($challenge_id);
+
+        // يمكنك إضافة منطق للتحقق مما إذا كان المستخدم قد قبل هذا التحدي من قبل
+        // أو إذا كان التحدي لا يزال نشطًا.
+        if (Auth::id() === $challenge->chef_id) {
+            return back()->with('error', 'لا يمكنك قبول التحدي الخاص بك.');
+        }
+
+        // 2. التحقق من صحة البيانات المرسلة
+        $request->validate([
+            'recipe_image' => 'nullable|image|max:5120', // 5MB
+            'challenge_video' => 'required|file|mimes:mp4,mov,avi|max:307200', // 300MB (3 دقائق تقريبًا)
+            'message_to_chef' => 'nullable|string|max:500',
+        ]);
+
+        // 3. معالجة رفع الملفات
+        $recipeImagePath = null;
+        if ($request->hasFile('recipe_image')) {
+            $recipeImagePath = $request->file('recipe_image')->store('challenge_responses/images', 'public');
+        }
+
+        $challengeVideoPath = null;
+        if ($request->hasFile('challenge_video')) {
+            $challengeVideoPath = $request->file('challenge_video')->store('challenge_responses/videos', 'public');
+        }
+
+        // 4. حفظ بيانات الاستجابة في قاعدة البيانات
+        // ستحتاج إلى موديل وجدول جديد لـ ChallengeResponse
+        // يحتوي على challenge_id, user_id (المستخدم الذي قبل التحدي),
+        // recipe_image_path, challenge_video_path, message_to_chef, status, created_at, updated_at
+        ChallengeResponse::create([
+            'challenge_id' => $challenge->id,
+            'user_id' => Auth::id(), // المستخدم الذي قبل التحدي
+            'recipe_image_path' => $recipeImagePath,
+            'challenge_video_path' => $challengeVideoPath,
+            'message_to_chef' => $request->input('message_to_chef'),
+            'status' => 'pending', // أو أي حالة أولية (مثال: waiting_for_review)
+        ]);
+
+        return redirect()->route('chef_lens')->with('success', 'تم إرسال استجابتك للتحدي بنجاح!');
+    }
+
 
     public function index()
     {

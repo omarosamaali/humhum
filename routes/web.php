@@ -23,6 +23,8 @@ use App\Models\ChallengeReview;
 use App\Http\Controllers\ContactController;
 use Carbon\Carbon;
 
+require __DIR__ . '/auth.php';
+
 Route::post('/contacts', [ContactController::class, 'store'])->name('contacts.store');
 Route::get('/contacts', [ContactController::class, 'index'])->name('contacts.index');
 Route::patch('/contacts/{id}/read', [ContactController::class, 'markAsRead'])->name('contacts.read');
@@ -118,12 +120,6 @@ Route::get('/c1he3f/faq', function () {
     $faqs = Faq::whereIn('place', ['chef', 'both'])->get();
     return view('/c1he3f/faq', compact('faqs'));
 })->name('c1he3f.faq');
-
-require __DIR__ . '/auth.php';
-
-require __DIR__ . '/chef_routes.php';
-
-require __DIR__ . '/admin_routes.php';
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -230,3 +226,13 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/challenge-review-chat/{reviewId}/messages', [ChallengeReviewChatController::class, 'getMessages'])
         ->name('challenge.review.chat.messages');
 });
+
+
+
+require __DIR__ . '/auth_chef_lens.php';
+
+require __DIR__ . '/chef_lens.php';
+
+require __DIR__ . '/chef_routes.php';
+
+require __DIR__ . '/admin_routes.php';

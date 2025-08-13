@@ -91,9 +91,7 @@
     <!-- Header -->
     <div class="bg-black text-white p-4 sticky top-0 z-10 shadow-lg">
         <div class="flex items-center justify-between">
-            <button onclick="goBack()" class="p-2 hover:bg-white hover:bg-opacity-20 rounded-full transition-colors">
-                <i class="fas fa-arrow-right text-xl"></i>
-            </button>
+            <div class="p-2"></div>
 
             <div class="flex flex-col items-center gap-2">
                 <h1 class="text-lg font-bold">محادثة التقييم</h1>
@@ -130,8 +128,10 @@
                     </div>
                 </div>
             </div>
+            <button onclick="goBack()" class="p-2 hover:bg-white hover:bg-opacity-20 rounded-full transition-colors">
+                <i class="fas fa-arrow-left text-xl"></i>
+            </button>
 
-            <div class="p-2"></div>
         </div>
     </div>
 
@@ -230,15 +230,23 @@
                 </button>
             </div>
             {{-- <div class="text-center mt-2"> --}}
-                <span style="top: 34px; position: absolute; left: 80px;" class="text-xs text-gray-500" id="charCount">0/500</span>
+            <span style="top: 34px; position: absolute; left: 80px;" class="text-xs text-gray-500" id="charCount">0/500</span>
             {{-- </div> --}}
         </div>
     </div>
 
     <script>
-        const reviewId = {{ $review->id }};
+        const reviewId = {
+            {
+                $review - > id
+            }
+        };
 
-        const currentUserId = {{ Auth::id() }};
+        const currentUserId = {
+            {
+                Auth::id()
+            }
+        };
         const otherParticipant = @json($otherParticipant);
 
         const messageInput = document.getElementById('messageInput');
