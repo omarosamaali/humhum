@@ -397,7 +397,7 @@
                 <div class="header-content">
                     <div class="left-content">
                     </div>
-                    <div class="mid-content">
+                    <div class="mid-content" style="display: flex; align-items: center; justify-content: center;">
                         <img src="./assets/images/Isolation_Mode.png" style="height: 53px; position: relative; right: 11px;" alt="">
                     </div>
                     {{-- Start Notifications --}}

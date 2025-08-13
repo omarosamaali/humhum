@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl">
 
 <head>
-    <title>Ombe- Coffee Shop Mobile App Template (Bootstrap + PWA) | DexignZone</title>
+    <title>المحفوظات</title>
 
     <meta charset="utf-8">
 
@@ -375,7 +375,7 @@
                 <div class="header-content">
                     <div class="left-content"></div>
                     <div class="mid-content">
-                        <span style="font-weight: bold; font-size: 16px; color: #ffffff;">عدسة الطاه</span>
+                        <span style="font-weight: bold; font-size: 16px; color: #ffffff;">المحفوظات</span>
                     </div>
                     <div class="right-content">
                         <a href="{{ route('chef_lens') }}" class="back--btn">
@@ -403,6 +403,7 @@
                                 <i class="fa-solid fa-utensils"></i>
                             </h5>
                         </div>
+                        
                     </div>
                 </div>
 

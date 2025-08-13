@@ -69,7 +69,7 @@
 </style>
 
 <button id="notificationBtn" class="relative">
-    <i class="fa-solid fa-bell"></i>
+    <i class="fa-solid fa-bell" style=""></i>
     @if($notificationsCount > 0)
     <span id="notificationCount" class="absolute -top-2 -left-2 bg-red-500 text-white text-xs font-bold rounded-full w-6 h-6 flex items-center justify-center">
         {{ $notificationsCount }}
