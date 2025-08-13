@@ -282,7 +282,10 @@
                                     </div>
                                     <h5 class="chef-name" style="margin-right: 5px;">{{ $challenge->chef->name }}</h5>
                                 </div>
-                                <span class="challenge-title-text">{{ $challenge->message ?? 'عنوان التحدي' }}</span>
+                            
+
+                                <span class="challenge-title-text">{{ Str::limit($challenge->message, 10) }}</span>
+
                                 <p class="challenge-timer-container">
                                     <sub class="challenge-timer">
                                         @php

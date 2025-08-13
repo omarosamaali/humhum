@@ -301,7 +301,7 @@
                 <li>
                     <a class="nav-link" href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                         <span class="dz-icon">
-                         <i class="fa-solid fa-right-to-bracket"></i>
+                            <i class="fa-solid fa-right-to-bracket"></i>
 
                         </span>
                         <span>تسجيل خروج</span>

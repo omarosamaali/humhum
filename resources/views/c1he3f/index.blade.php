@@ -345,7 +345,7 @@
                     <a href="{{ route('challenge.vs2', ['type' => 'vs']) }}" class="challenge-link">
                         <div class="swiper-slide">
                             <div class="dz-categories-bx">
-                                <div class="before-challenge">
+                                <div class="before-challenge" style="height: 80px;">
                                     <p>
                                         <h3>
                                             قبل التحدي
@@ -356,6 +356,15 @@
                                             @endif
                                         </h3>
                                     </p>
+                                    <span class="challenge-users">
+                                        @if ($activeChallenge)
+                                        {{ $activeChallenge?->challenge_type == 'users' ? 'للمستخدمين' : 'للطهاة' }}
+                                        @else
+                                        --
+                                        @endif
+                                    </span>
+
+
                                 </div>
                                 <div>
                                     <div class="vs-icon-container">
@@ -364,20 +373,16 @@
                                 </div>
                                 <div class="challenge-title">
                                     <span class="challenge-title-text">
-                                        {{ $activeChallenge?->message }}
+                                        {{
+                                        Str::limit($activeChallenge->message, 10)}}
                                     </span>
                                     <p>
+                                        <span style="font-size: 10px;">يوم - أسبوع - دقيقة - ثانية</span>
+                                        <br />
                                         <sub class="challenge-timer" @if ($activeChallenge) data-end-date="{{ $activeChallenge->end_date }}" data-end-time="{{ $activeChallenge->end_time }}" @endif>
                                             -- : -- : -- : --
                                         </sub>
                                     </p>
-                                    <span class="challenge-users">
-                                        @if ($activeChallenge)
-                                        {{ $activeChallenge?->challenge_type == 'users' ? 'للمستخدمين' : 'للطهاة' }}
-                                        @else
-                                        --
-                                        @endif
-                                    </span>
                                 </div>
                             </div>
                         </div>
