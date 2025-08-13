@@ -301,11 +301,8 @@
                 <li>
                     <a class="nav-link" href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                         <span class="dz-icon">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M17 16L21 12L17 8" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-                                <path d="M12 12H21" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-                                <path d="M13 16V17C13 18.6569 11.6569 20 10 20C8.34315 20 7 18.6569 7 17V7C7 5.34315 8.34315 4 10 4C11.6569 4 13 5.34315 13 7V8" stroke="#FF8484" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-                            </svg>
+                         <i class="fa-solid fa-right-to-bracket"></i>
+
                         </span>
                         <span>تسجيل خروج</span>
                     </a>
