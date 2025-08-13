@@ -37,6 +37,11 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700;800;900&family=Raleway:wght@300;400;500&display=swap" rel="stylesheet">
 
     <style>
+        .input-group:focus-within .input-group-text,
+        .input-group:focus-within .form-control {
+            border-color: #5a5c77;
+        }
+
         .section-head .title,
         .section-head p,
         .section-head h3,
@@ -75,6 +80,9 @@
             background-size: cover;
         }
 
+        ::selection {
+            background: #5a5c77;
+        }
     </style>
     <script src="https://cdn.tailwindcss.com"></script>
 
@@ -85,7 +93,7 @@
         <!-- Preloader -->
         <div id="preloader">
             <div class="loader">
-                <div class="spinner-border text-primary" role="status">
+                <div class="spinner-border text-primary" style="color: #5a5c77 !important;" role="status">
                     <span class="visually-hidden">جارٍ التحميل...</span>
                 </div>
             </div>
@@ -107,8 +115,8 @@
                         </div>
                     </div>
                     <div class="section-head" style="margin-top: 68px;">
-                        <h3 class="title">إنشاء حساب جديد</h3>
-                        <p>نرحب بإنضمامك لإسرة تطبيق عدسة الطاهي</p>
+                        {{-- <h3 class="title">إنشاء حساب جديد</h3> --}}
+                        <p>مرحب بك <br /> في أول تطبيق تواصل اجتماعي خاص بالطهاه</p>
                     </div>
                     <div class="account-section">
                         <form class="m-b20" action="{{ route('chef_lens.register') }}" method="POST" enctype="multipart/form-data">

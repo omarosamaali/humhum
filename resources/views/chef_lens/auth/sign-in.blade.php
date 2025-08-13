@@ -76,6 +76,14 @@
             background-size: cover;
         }
 
+        .input-group:focus-within .input-group-text,
+        .input-group:focus-within .form-control {
+            border-color: #5a5c77;
+        }
+        
+        ::selection {
+        background: #5a5c77;
+        }
     </style>
     <script src="https://cdn.tailwindcss.com"></script>
 
@@ -86,7 +94,7 @@
         <!-- Preloader -->
         <div id="preloader">
             <div class="loader">
-                <div class="spinner-border text-primary" role="status">
+                <div class="spinner-border text-primary" style="color: #5a5c77 !important;" role="status">
                     <span class="visually-hidden">جارٍ التحميل...</span>
                 </div>
             </div>
@@ -105,8 +113,8 @@
                         </div>
                     </div>
                     <div class="section-head" style="margin-top: 68px;">
-                        <h3 class="title">تسجيل دخول</h3>
-                        <p>نرحب بإنضمامك لإسرة تطبيق عدسة الطاهي</p>
+                        {{-- <h3 class="title">تسجيل دخول</h3> --}}
+                        <p>مرحب بك <br /> في أول تطبيق تواصل اجتماعي خاص بالطهاه</p>
                     </div>
                     <div class="account-section">
                         <form class="m-b30" action="{{ route('chef_lens.login.post') }}" method="POST">

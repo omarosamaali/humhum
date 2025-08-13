@@ -37,6 +37,11 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700;800;900&family=Raleway:wght@300;400;500&display=swap" rel="stylesheet">
 
     <style>
+        .input-group:focus-within .input-group-text,
+        .input-group:focus-within .form-control {
+            border-color: #5a5c77;
+        }
+
         .section-head .title,
         .section-head p,
         .section-head h3,
@@ -75,6 +80,9 @@
             background-size: cover;
         }
 
+        ::selection {
+            background: #5a5c77;
+        }
     </style>
     <script src="https://cdn.tailwindcss.com"></script>
 
@@ -85,7 +93,7 @@
         <!-- Preloader -->
         <div id="preloader">
             <div class="loader">
-                <div class="spinner-border text-primary" role="status">
+                <div class="spinner-border text-primary" style="color: #5a5c77 !important;" role="status">
                     <span class="visually-hidden">جارٍ التحميل...</span>
                 </div>
             </div>
@@ -111,63 +119,78 @@
                         <p>يجب أن تكون كلمة المرور الجديدة مختلفة عن كلمة المرور السابقة.</p>
                     </div>
                     <div class="account-section">
-<form action="{{ route('chef_lens.change-password.post') }}" method="POST">
-    @csrf
-    <div class="account-section">
-        <input type="hidden" name="email" value="{{ session('otp_email') }}">
+                        <form action="{{ route('chef_lens.change-password.post') }}" method="POST">
+                            @csrf
+                            <div class="account-section">
+                                <input type="hidden" name="email" value="{{ session('otp_email') }}">
 
-        <div class="mb-4">
-            <label class="form-label" for="password">كلمة المرور الجديدة</label>
-            <div class="input-group input-group-icon input-mini input-lg">
-                <input type="password" id="password" name="password" class="form-control dz-password">
-                <span class="input-group-text show-pass">
-                    <i style="color: #5a5c77;" class="icon feather icon-eye-off eye-close"></i>
-                    <i style="color: #5a5c77;" class="icon feather icon-eye eye-open"></i>
-                </span>
-            </div>
-            @error('password')
-            <span class="text-danger">{{ $message }}</span>
-            @enderror
-        </div>
-        <div>
-            <label class="form-label" for="password_confirmation">تأكيد كلمة المرور</label>
-            <div class="input-group input-group-icon input-mini input-lg">
-                <input type="password" id="password_confirmation" name="password_confirmation" class="form-control dz-password">
-                <span class="input-group-text show-pass">
-                    <i style="color: #5a5c77;" class="icon feather icon-eye-off eye-close"></i>
-                    <i style="color: #5a5c77;" class="icon feather icon-eye eye-open"></i>
-                </span>
-            </div>
-        </div>
-    </div>
+                                <div class="mb-4">
+                                    <label class="form-label" for="password">كلمة المرور الجديدة</label>
+                                    <div class="input-group input-group-icon input-mini input-lg">
+                                        <input type="password" id="password" name="password" class="form-control dz-password">
+                                        <span class="input-group-text show-pass">
+                                            <i style="color: #5a5c77;" class="icon feather icon-eye-off eye-close"></i>
+                                            <i style="color: #5a5c77;" class="icon feather icon-eye eye-open"></i>
+                                        </span>
+                                    </div>
+                                    @error('password')
+                                    <span class="text-danger">{{ $message }}</span>
+                                    @enderror
+                                </div>
+                                <div>
+                                    <label class="form-label" for="password_confirmation">تأكيد كلمة المرور</label>
+                                    <div class="input-group input-group-icon input-mini input-lg">
+                                        <input type="password" id="password_confirmation" name="password_confirmation" class="form-control dz-password">
+                                        <span class="input-group-text show-pass">
+                                            <i style="color: #5a5c77;" class="icon feather icon-eye-off eye-close"></i>
+                                            <i style="color: #5a5c77;" class="icon feather icon-eye eye-open"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
 
-    <div class="bottom-btn pb-3">
-        <button type="submit" class="btn btn-thin btn-lg w-100 custom-btn rounded-xl" style="color: black; background-color: #5a5c77 !important; color:white;">
-            متابعة
-        </button>
-        <div class="text-center mt-3 form-text">
-            العودة إلى <a style="color: rgb(0, 0, 0);" href="{{ route('chef_lens.login') }}" class="text-underline link">تسجيل الدخول</a>
-        </div>
-    </div>
-</form>
-</div>
+                            <div class="bottom-btn pb-3">
+                                <button type="submit" class="btn btn-thin btn-lg w-100 custom-btn rounded-xl" style="color: black; background-color: #5a5c77 !important; color:white;">
+                                    متابعة
+                                </button>
+                                <div class="text-center mt-3 form-text">
+                                    العودة إلى <a style="color: rgb(0, 0, 0);" href="{{ route('chef_lens.login') }}" class="text-underline link">تسجيل الدخول</a>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
 
                     {{-- <div class="bottom-btn pb-3">
-                        <a href="{{ route('chef_lens.login') }}" class="btn btn-thin btn-lg w-100 custom-btn rounded-xl" style="color: black; 
-                        background-color: #5a5c77 !important; color:white;">متابعة</a>
-                        <div class="text-center mt-3 form-text">العودة إلى
-                            <a style="color: rgb(0, 0, 0);" href="sign-in.html" class="text-underline link">تسجيل
-                                الدخول
-                            </a>
-                        </div>
-                    </div> --}}
+                        <a href="{{ route('chef_lens.login') }}" class="btn btn-thin btn-lg w-100 custom-btn rounded-xl" style="color: black;
+                    background-color: #5a5c77 !important; color:white;">متابعة</a>
+                    <div class="text-center mt-3 form-text">العودة إلى
+                        <a style="color: rgb(0, 0, 0);" href="sign-in.html" class="text-underline link">تسجيل
+                            الدخول
+                        </a>
+                    </div>
+                </div> --}}
 
-                </div>
             </div>
-        </main>
-        <!-- Main Content End  -->
+    </div>
+    </main>
+    <!-- Main Content End  -->
 
-        <script>
+    <script>
+        function toggleFields() {
+            console.log(roleSelect.value)
+            const isChef = roleSelect.value === 'طاه';
+            chefFields.style.display = isChef ? 'block' : 'none';
+            subscriptionFields.style.display = isChef && contractTypeSelect.value === 'annual_subscription' ?
+                'block' : 'none';
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const roleSelect = document.getElementById('role');
+            const chefFields = document.getElementById('chef-fields');
+            const contractTypeSelect = document.getElementById('contract_type');
+            const subscriptionFields = document.getElementById('subscription-fields');
+
+            // دالة لإظهار/إخفاء حقول الطاه وحقول الاشتراك
             function toggleFields() {
                 console.log(roleSelect.value)
                 const isChef = roleSelect.value === 'طاه';
@@ -176,40 +199,25 @@
                     'block' : 'none';
             }
 
-            document.addEventListener('DOMContentLoaded', function() {
-                const roleSelect = document.getElementById('role');
-                const chefFields = document.getElementById('chef-fields');
-                const contractTypeSelect = document.getElementById('contract_type');
-                const subscriptionFields = document.getElementById('subscription-fields');
+            // دالة لتأكيد الحذف باستخدام Bootstrap Modal
+            window.confirmDelete = function(userId) {
+                const deleteForm = document.getElementById('deleteForm');
+                deleteForm.action = `/admin/users/${userId}`;
+                const deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
+                deleteModal.show();
+            };
 
-                // دالة لإظهار/إخفاء حقول الطاه وحقول الاشتراك
-                function toggleFields() {
-                    console.log(roleSelect.value)
-                    const isChef = roleSelect.value === 'طاه';
-                    chefFields.style.display = isChef ? 'block' : 'none';
-                    subscriptionFields.style.display = isChef && contractTypeSelect.value === 'annual_subscription' ?
-                        'block' : 'none';
-                }
+            // إعداد الحالة الأولية عند تحميل الصفحة
+            toggleFields();
 
-                // دالة لتأكيد الحذف باستخدام Bootstrap Modal
-                window.confirmDelete = function(userId) {
-                    const deleteForm = document.getElementById('deleteForm');
-                    deleteForm.action = `/admin/users/${userId}`;
-                    const deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
-                    deleteModal.show();
-                };
+            // مستمع لتغيير الدور
+            roleSelect.addEventListener('change', toggleFields);
 
-                // إعداد الحالة الأولية عند تحميل الصفحة
-                toggleFields();
+            // مستمع لتغيير نوع التعاقد
+            contractTypeSelect.addEventListener('change', toggleFields);
+        });
 
-                // مستمع لتغيير الدور
-                roleSelect.addEventListener('change', toggleFields);
-
-                // مستمع لتغيير نوع التعاقد
-                contractTypeSelect.addEventListener('change', toggleFields);
-            });
-
-        </script>
+    </script>
 
     </div>
     <!--**********************************

@@ -37,6 +37,11 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700;800;900&family=Raleway:wght@300;400;500&display=swap" rel="stylesheet">
 
     <style>
+        .input-group:focus-within .input-group-text,
+        .input-group:focus-within .form-control {
+            border-color: #5a5c77;
+        }
+
         .section-head .title,
         .section-head p,
         .section-head h3,
@@ -75,6 +80,9 @@
             background-size: cover;
         }
 
+        ::selection {
+            background: #5a5c77;
+        }
     </style>
     <script src="https://cdn.tailwindcss.com"></script>
 
@@ -85,7 +93,7 @@
         <!-- Preloader -->
         <div id="preloader">
             <div class="loader">
-                <div class="spinner-border text-primary" role="status">
+                <div class="spinner-border text-primary" style="color: #5a5c77 !important;" role="status">
                     <span class="visually-hidden">جارٍ التحميل...</span>
                 </div>
             </div>
@@ -111,44 +119,58 @@
                         <p>أدخل بريدك الإلكتروني المرتبط بحسابك وسنرسل لك بريدًا إلكترونيًا لإعادة تعيين كلمة المرور</p>
                     </div>
                     <div class="account-section">
-<form class="m-b30" action="{{ route('chef_lens.forgot-password.send') }}" method="POST">
-    @csrf
-    <div class="account-section">
-        <div class="mb-4">
-            <label style="color: rgb(0, 0, 0);" class="form-label" for="email">عنوان البريد الإلكتروني</label>
-            <div class="input-group input-mini input-lg">
-                <input type="email" id="email" name="email" class="form-control">
-            </div>
-            @error('email')
-            <span class="text-danger">{{ $message }}</span>
-            @enderror
-        </div>
-    </div>
+                        <form class="m-b30" action="{{ route('chef_lens.forgot-password.send') }}" method="POST">
+                            @csrf
+                            <div class="account-section">
+                                <div class="mb-4">
+                                    <label style="color: rgb(0, 0, 0);" class="form-label" for="email">عنوان البريد الإلكتروني</label>
+                                    <div class="input-group input-mini input-lg">
+                                        <input type="email" id="email" name="email" class="form-control">
+                                    </div>
+                                    @error('email')
+                                    <span class="text-danger">{{ $message }}</span>
+                                    @enderror
+                                </div>
+                            </div>
 
-    <div class="bottom-btn pb-3">
-        <button type="submit" class="btn btn-thin btn-lg w-100 rounded-xl custom-btn" style="color: white; background-color: #5a5c77 !important;">
-            إرسال بريد
-        </button>
-        <div class="text-center mt-3 form-text">
-            الرجوع إلى <a href="{{ route('chef_lens.login') }}" class="text-underline link" style="color: rgb(0, 0, 0);">تسجيل الدخول</a>
-        </div>
-    </div>
-</form>
-</div>
+                            <div class="bottom-btn pb-3">
+                                <button type="submit" class="btn btn-thin btn-lg w-100 rounded-xl custom-btn" style="color: white; background-color: #5a5c77 !important;">
+                                    إرسال بريد
+                                </button>
+                                <div class="text-center mt-3 form-text">
+                                    الرجوع إلى <a href="{{ route('chef_lens.login') }}" class="text-underline link" style="color: rgb(0, 0, 0);">تسجيل الدخول</a>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
 
 
                     {{-- <div class="bottom-btn pb-3">
                         <a href="{{ route('chef_lens.otp-confirm') }}" class="btn btn-thin btn-lg w-100 rounded-xl custom-btn" style="color: white; background-color: #5a5c77 !important;">إرسال بريد</a>
-                        <div class="text-center mt-3 form-text">الرجوع إلى <a href="sign-in.html" class="text-underline link" 
-							style="color: rgb(0, 0, 0);">تسجيل الدخول</a></div>
-                    </div> --}}
+                    <div class="text-center mt-3 form-text">الرجوع إلى <a href="sign-in.html" class="text-underline link" style="color: rgb(0, 0, 0);">تسجيل الدخول</a></div>
+                </div> --}}
 
-                </div>
             </div>
-        </main>
-        <!-- Main Content End  -->
+    </div>
+    </main>
+    <!-- Main Content End  -->
 
-        <script>
+    <script>
+        function toggleFields() {
+            console.log(roleSelect.value)
+            const isChef = roleSelect.value === 'طاه';
+            chefFields.style.display = isChef ? 'block' : 'none';
+            subscriptionFields.style.display = isChef && contractTypeSelect.value === 'annual_subscription' ?
+                'block' : 'none';
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const roleSelect = document.getElementById('role');
+            const chefFields = document.getElementById('chef-fields');
+            const contractTypeSelect = document.getElementById('contract_type');
+            const subscriptionFields = document.getElementById('subscription-fields');
+
+            // دالة لإظهار/إخفاء حقول الطاه وحقول الاشتراك
             function toggleFields() {
                 console.log(roleSelect.value)
                 const isChef = roleSelect.value === 'طاه';
@@ -157,40 +179,25 @@
                     'block' : 'none';
             }
 
-            document.addEventListener('DOMContentLoaded', function() {
-                const roleSelect = document.getElementById('role');
-                const chefFields = document.getElementById('chef-fields');
-                const contractTypeSelect = document.getElementById('contract_type');
-                const subscriptionFields = document.getElementById('subscription-fields');
+            // دالة لتأكيد الحذف باستخدام Bootstrap Modal
+            window.confirmDelete = function(userId) {
+                const deleteForm = document.getElementById('deleteForm');
+                deleteForm.action = `/admin/users/${userId}`;
+                const deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
+                deleteModal.show();
+            };
 
-                // دالة لإظهار/إخفاء حقول الطاه وحقول الاشتراك
-                function toggleFields() {
-                    console.log(roleSelect.value)
-                    const isChef = roleSelect.value === 'طاه';
-                    chefFields.style.display = isChef ? 'block' : 'none';
-                    subscriptionFields.style.display = isChef && contractTypeSelect.value === 'annual_subscription' ?
-                        'block' : 'none';
-                }
+            // إعداد الحالة الأولية عند تحميل الصفحة
+            toggleFields();
 
-                // دالة لتأكيد الحذف باستخدام Bootstrap Modal
-                window.confirmDelete = function(userId) {
-                    const deleteForm = document.getElementById('deleteForm');
-                    deleteForm.action = `/admin/users/${userId}`;
-                    const deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
-                    deleteModal.show();
-                };
+            // مستمع لتغيير الدور
+            roleSelect.addEventListener('change', toggleFields);
 
-                // إعداد الحالة الأولية عند تحميل الصفحة
-                toggleFields();
+            // مستمع لتغيير نوع التعاقد
+            contractTypeSelect.addEventListener('change', toggleFields);
+        });
 
-                // مستمع لتغيير الدور
-                roleSelect.addEventListener('change', toggleFields);
-
-                // مستمع لتغيير نوع التعاقد
-                contractTypeSelect.addEventListener('change', toggleFields);
-            });
-
-        </script>
+    </script>
 
     </div>
     <!--**********************************

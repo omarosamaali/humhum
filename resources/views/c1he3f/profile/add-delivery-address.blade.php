@@ -72,95 +72,107 @@
     </style>
 </head>
 <body style="direction: ltr;">
-        <div class="page-wrapper">
+    <div class="page-wrapper">
 
-            <!-- Preloader -->
-            <div id="preloader">
-                <div class="loader">
-                    <div class="spinner-border text-primary" role="status">
-                        <span class="visually-hidden">Loading...</span>
-                    </div>
+        <!-- Preloader -->
+        <div id="preloader">
+            <div class="loader">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Loading...</span>
                 </div>
             </div>
-            <!-- Preloader end-->
-
-            <!-- Header -->
-            <header class="header header-fixed border-bottom onepage">
-                <div class="header-content">
-                    <div class="left-content">
-                        <a href="javascript:void(0);" class="back-btn">
-                            <i class="feather icon-arrow-left"></i>
-                        </a>
-                    </div>
-                    <div class="mid-content">
-                        <h4 class="title">إضافة مكان</h4>
-                    </div>
-                    <div class="right-content"></div>
-                </div>
-            </header>
-            <!-- Header -->
-
-    <main class="page-content space-top" style="margin-top: 50px;">
-        <div class="container">
-            <form action="{{ route('c1he3f.profile.store-delivery-address') }}" method="POST">
-                @csrf
-
-                <div class="mb-3">
-                    <label class="form-label">الدولة</label>
-                    <select class="form-select" name="country" style="font-family: 'cairo'; width: 100%; text-align: center; color: black;">
-                        <option value="">اختر الدولة</option>
-                        <option value="مصر" {{ old('country') == 'مصر' ? 'selected' : '' }}>مصر</option>
-                        <option value="السعودية" {{ old('country') == 'السعودية' ? 'selected' : '' }}>السعودية</option>
-                        <option value="الإمارات" {{ old('country') == 'الإمارات' ? 'selected' : '' }}>الإمارات</option>
-                        <option value="الأردن" {{ old('country') == 'الأردن' ? 'selected' : '' }}>الأردن</option>
-                        <option value="المغرب" {{ old('country') == 'المغرب' ? 'selected' : '' }}>المغرب</option>
-                        <option value="الجزائر" {{ old('country') == 'الجزائر' ? 'selected' : '' }}>الجزائر</option>
-                        <option value="السودان" {{ old('country') == 'السودان' ? 'selected' : '' }}>السودان</option>
-                        <option value="تونس" {{ old('country') == 'تونس' ? 'selected' : '' }}>تونس</option>
-                        <option value="لبنان" {{ old('country') == 'لبنان' ? 'selected' : '' }}>لبنان</option>
-                        <option value="قطر" {{ old('country') == 'قطر' ? 'selected' : '' }}>قطر</option>
-                    </select>
-                    @error('country')
-                    <div class="text-danger">{{ $message }}</div>
-                    @enderror
-                </div>
-
-                <div class="mb-3">
-                    <label class="form-label" for="city">المدينة</label>
-                    <input type="text" id="city" name="city" value="{{ old('city') }}" class="form-control" style="font-family: 'cairo'; text-align: center;">
-
-                    @error('city')
-                    <div class="text-danger">{{ $message }}</div>
-                    @enderror
-                </div>
-
-                <div class="mb-3">
-                    <label class="form-label" for="location">المنطقة</label>
-                    <input type="text" id="location" name="area" value="{{ old('area') }}" class="form-control" style="font-family: 'cairo'; text-align: center;">
-
-                    @error('area')
-                    <div class="text-danger">{{ $message }}</div>
-                    @enderror
-                </div>
-
-                <div class="mb-3">
-                    <label class="form-label" for="delivery_fee">سعر رسوم التوصيل</label>
-                    <input type="number" step="0.01" id="delivery_fee" name="delivery_fee" value="{{ old('delivery_fee') }}" class="form-control" placeholder="الأسعار بالدرهم الإماراتي" style="font-family: 'cairo'; text-align: center;">
-
-                    @error('delivery_fee')
-                    <div class="text-danger">{{ $message }}</div>
-                    @enderror
-                </div>
-
-                <div class="footer-fixed-btn bottom-0 bg-white">
-                    <button type="submit" class="btn btn-lg btn-thin btn-primary w-100 rounded-xl">حفظ</button>
-                </div>
-            </form>
         </div>
-    </main>
+        <!-- Preloader end-->
 
-    <script src="{{ asset('assets/js/jquery.js') }}"></script>
-    <script src="{{ asset('assets/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
-    <script src="{{ asset('assets/js/custom.js') }}"></script>
+        <!-- Header -->
+        <header class="header header-fixed border-bottom onepage">
+            <div class="header-content">
+                <div class="left-content">
+                    <a href="javascript:void(0);" class="back-btn">
+                        <i class="feather icon-arrow-left"></i>
+                    </a>
+                </div>
+                <div class="mid-content">
+                    <h4 class="title">إضافة مكان</h4>
+                </div>
+                <div class="right-content"></div>
+            </div>
+        </header>
+        <!-- Header -->
+
+        <main class="page-content space-top" style="margin-top: 50px;">
+            <div class="container">
+                <form action="{{ route('c1he3f.profile.store-delivery-address') }}" method="POST">
+                    @csrf
+
+                    <div class="mb-3">
+                        <label class="form-label">الدولة</label>
+                        <select class="form-select" id="country" name="country" required value="{{ old('country') }}" style=" width: 100%; font-family: cairo; text-align: center; color: black !important;">
+                            <option value="" selected>اختر الدولة</option>
+                            <option value="sa" {{ old('country') == 'sa' ? 'selected' : '' }}>المملكة العربية السعودية</option>
+                            <option value="ae" {{ old('country') == 'ae' ? 'selected' : '' }}>الإمارات العربية المتحدة</option>
+                            <option value="qa" {{ old('country') == 'qa' ? 'selected' : '' }}>قطر</option>
+                            <option value="kw" {{ old('country') == 'kw' ? 'selected' : '' }}>الكويت</option>
+                            <option value="bh" {{ old('country') == 'bh' ? 'selected' : '' }}>البحرين</option>
+                            <option value="om" {{ old('country') == 'om' ? 'selected' : '' }}>سلطنة عُمان</option>
+                            <option value="ye" {{ old('country') == 'ye' ? 'selected' : '' }}>اليمن</option>
+                            <option value="iq" {{ old('country') == 'iq' ? 'selected' : '' }}>العراق</option>
+                            <option value="sy" {{ old('country') == 'sy' ? 'selected' : '' }}>سوريا</option>
+                            <option value="jo" {{ old('country') == 'jo' ? 'selected' : '' }}>الأردن</option>
+                            <option value="lb" {{ old('country') == 'lb' ? 'selected' : '' }}>لبنان</option>
+                            <option value="ps" {{ old('country') == 'ps' ? 'selected' : '' }}>فلسطين</option>
+                            <option value="eg" {{ old('country') == 'eg' ? 'selected' : '' }}>مصر</option>
+                            <option value="sd" {{ old('country') == 'sd' ? 'selected' : '' }}>السودان</option>
+                            <option value="ly" {{ old('country') == 'ly' ? 'selected' : '' }}>ليبيا</option>
+                            <option value="tn" {{ old('country') == 'tn' ? 'selected' : '' }}>تونس</option>
+                            <option value="dz" {{ old('country') == 'dz' ? 'selected' : '' }}>الجزائر</option>
+                            <option value="ma" {{ old('country') == 'ma' ? 'selected' : '' }}>المغرب</option>
+                            <option value="mr" {{ old('country') == 'mr' ? 'selected' : '' }}>موريتانيا</option>
+                            <option value="dj" {{ old('country') == 'dj' ? 'selected' : '' }}>جيبوتي</option>
+                            <option value="so" {{ old('country') == 'so' ? 'selected' : '' }}>الصومال</option>
+                            <option value="km" {{ old('country') == 'km' ? 'selected' : '' }}>جزر القمر</option>
+                        </select> 
+                        @error('country')
+                        <div class="text-danger">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label" for="city">المدينة</label>
+                        <input type="text" id="city" name="city" value="{{ old('city') }}" class="form-control" style="font-family: 'cairo'; text-align: center;">
+
+                        @error('city')
+                        <div class="text-danger">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label" for="location">المنطقة</label>
+                        <input type="text" id="location" name="area" value="{{ old('area') }}" class="form-control" style="font-family: 'cairo'; text-align: center;">
+
+                        @error('area')
+                        <div class="text-danger">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label" for="delivery_fee">سعر رسوم التوصيل</label>
+                        <input type="number" step="0.01" id="delivery_fee" name="delivery_fee" value="{{ old('delivery_fee') }}" class="form-control" placeholder="الأسعار بالدرهم الإماراتي" style="font-family: 'cairo'; text-align: center;">
+
+                        @error('delivery_fee')
+                        <div class="text-danger">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <div class="footer-fixed-btn bottom-0 bg-white">
+                        <button type="submit" class="btn btn-lg btn-thin btn-primary w-100 rounded-xl">حفظ</button>
+                    </div>
+                </form>
+            </div>
+        </main>
+
+        <script src="{{ asset('assets/js/jquery.js') }}"></script>
+        <script src="{{ asset('assets/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+        <script src="{{ asset('assets/js/custom.js') }}"></script>
 </body>
 </html>

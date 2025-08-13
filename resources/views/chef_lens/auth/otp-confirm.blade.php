@@ -37,6 +37,11 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700;800;900&family=Raleway:wght@300;400;500&display=swap" rel="stylesheet">
 
     <style>
+        .input-group:focus-within .input-group-text,
+        .input-group:focus-within .form-control {
+            border-color: #5a5c77;
+        }
+
         .section-head .title,
         .section-head p,
         .section-head h3,
@@ -75,6 +80,9 @@
             background-size: cover;
         }
 
+        ::selection {
+            background: #5a5c77;
+        }
     </style>
     <script src="https://cdn.tailwindcss.com"></script>
 
@@ -85,7 +93,7 @@
         <!-- Preloader -->
         <div id="preloader">
             <div class="loader">
-                <div class="spinner-border text-primary" role="status">
+                <div class="spinner-border text-primary" style="color: #5a5c77 !important;" role="status">
                     <span class="visually-hidden">جارٍ التحميل...</span>
                 </div>
             </div>
@@ -108,71 +116,71 @@
                     </div>
                     <div class="section-head text-center" style="margin-top: 68px;">
                         <h3 class="title">أدخل الكود</h3>
-                        <p>تم إرسال رمز مصادقة 
+                        <p>تم إرسال رمز مصادقة
                         </p>
                     </div>
                     <div class="account-section">
-<form action="{{ route('chef_lens.otp-confirm.post') }}" method="POST">
-    @csrf
+                        <form action="{{ route('chef_lens.otp-confirm.post') }}" method="POST">
+                            @csrf
 
-    <div class="account-section">
-        <div id="otp" class="digit-group input-mini">
-            <input class="form-control" type="text" id="digit-1" name="digit-1" maxlength="1" data-next="digit-2">
-            <input class="form-control" type="text" id="digit-2" name="digit-2" maxlength="1" data-next="digit-3" data-previous="digit-1">
-            <input class="form-control" type="text" id="digit-3" name="digit-3" maxlength="1" data-next="digit-4" data-previous="digit-2">
-            <input class="form-control" type="text" id="digit-4" name="digit-4" maxlength="1" data-next="digit-5" data-previous="digit-3">
-            <input class="form-control" type="text" id="digit-5" name="digit-5" maxlength="1" data-next="digit-6" data-previous="digit-4">
-            <input class="form-control" type="text" id="digit-6" name="digit-6" maxlength="1" data-previous="digit-5">
-        </div>
+                            <div class="account-section">
+                                <div id="otp" class="digit-group input-mini">
+                                    <input class="form-control" type="text" id="digit-1" name="digit-1" maxlength="1" data-next="digit-2">
+                                    <input class="form-control" type="text" id="digit-2" name="digit-2" maxlength="1" data-next="digit-3" data-previous="digit-1">
+                                    <input class="form-control" type="text" id="digit-3" name="digit-3" maxlength="1" data-next="digit-4" data-previous="digit-2">
+                                    <input class="form-control" type="text" id="digit-4" name="digit-4" maxlength="1" data-next="digit-5" data-previous="digit-3">
+                                    <input class="form-control" type="text" id="digit-5" name="digit-5" maxlength="1" data-next="digit-6" data-previous="digit-4">
+                                    <input class="form-control" type="text" id="digit-6" name="digit-6" maxlength="1" data-previous="digit-5">
+                                </div>
 
-        <input type="hidden" name="otp" id="otp_hidden">
+                                <input type="hidden" name="otp" id="otp_hidden">
 
-        @if (session('error'))
-        <div class="alert alert-danger mt-3">{{ session('error') }}</div>
-        @endif
-    </div>
+                                @if (session('error'))
+                                <div class="alert alert-danger mt-3">{{ session('error') }}</div>
+                                @endif
+                            </div>
 
-    <div class="bottom-btn pb-3">
-        <button type="submit" class="btn btn-secondary btn-lg btn-thin rounded-xl w-100 custom-btn" style="background-color: #5a5c77 !important; color: white;">
-            التحقق والمتابعة
-        </button>
-        <div class="text-center mt-3 form-text">إذا لم تستلم الرمز! <a href="javascript:void(0);" class="text-underline link" style="color: rgb(0, 0, 0);">إعادة إرسال</a></div>
-    </div>
-</form>
+                            <div class="bottom-btn pb-3">
+                                <button type="submit" class="btn btn-secondary btn-lg btn-thin rounded-xl w-100 custom-btn" style="background-color: #5a5c77 !important; color: white;">
+                                    التحقق والمتابعة
+                                </button>
+                                <div class="text-center mt-3 form-text">إذا لم تستلم الرمز! <a href="javascript:void(0);" class="text-underline link" style="color: rgb(0, 0, 0);">إعادة إرسال</a></div>
+                            </div>
+                        </form>
 
-<script>
-    document.addEventListener("DOMContentLoaded", function() {
-        const otpInputs = document.querySelectorAll('#otp input');
-        const hiddenInput = document.getElementById('otp_hidden');
+                        <script>
+                            document.addEventListener("DOMContentLoaded", function() {
+                                const otpInputs = document.querySelectorAll('#otp input');
+                                const hiddenInput = document.getElementById('otp_hidden');
 
-        otpInputs.forEach(input => {
-            input.addEventListener('input', e => {
-                const combinedOtp = Array.from(otpInputs).map(input => input.value).join('');
-                hiddenInput.value = combinedOtp;
+                                otpInputs.forEach(input => {
+                                    input.addEventListener('input', e => {
+                                        const combinedOtp = Array.from(otpInputs).map(input => input.value).join('');
+                                        hiddenInput.value = combinedOtp;
 
-                if (input.value.length === 1 && input.dataset.next) {
-                    document.getElementById(input.dataset.next).focus();
-                }
-            });
+                                        if (input.value.length === 1 && input.dataset.next) {
+                                            document.getElementById(input.dataset.next).focus();
+                                        }
+                                    });
 
-            input.addEventListener('keydown', e => {
-                if (e.key === 'Backspace' && input.value.length === 0 && input.dataset.previous) {
-                    document.getElementById(input.dataset.previous).focus();
-                }
-            });
-        });
-    });
+                                    input.addEventListener('keydown', e => {
+                                        if (e.key === 'Backspace' && input.value.length === 0 && input.dataset.previous) {
+                                            document.getElementById(input.dataset.previous).focus();
+                                        }
+                                    });
+                                });
+                            });
 
-</script>
-</div>
+                        </script>
+                    </div>
 
                     <div class="bottom-btn pb-3">
-                        {{-- <a href="{{ route('chef_lens.change-password') }}" class="btn btn-secondary btn-lg 
+                        {{-- <a href="{{ route('chef_lens.change-password') }}" class="btn btn-secondary btn-lg
                         btn-thin rounded-xl w-100 custom-btn" style="background-color: #5a5c77 !important; color: white;">التحقق
 
-                            والمتابعة
-                            حساب
-                        </a>  --}}
+                        والمتابعة
+                        حساب
+                        </a> --}}
                     </div>
                 </div>
             </div>

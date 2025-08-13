@@ -162,7 +162,91 @@
                                     </div>
                                     <div class="list-content">
                                         <a href="#">
-                                            <h6 class="title">{{ $location->country }}</h6>
+                                        <h6 class="title">
+                                            @php
+                                            $countryName = '';
+                                            switch (strtolower($location->country)) {
+
+                                            case 'sa':
+                                            $countryName = 'المملكة العربية السعودية';
+                                            break;
+                                            case 'ae':
+                                            $countryName = 'الإمارات العربية المتحدة';
+                                            break;
+                                            case 'qa':
+                                            $countryName = 'قطر';
+                                            break;
+                                            case 'kw':
+                                            $countryName = 'الكويت';
+                                            break;
+                                            case 'bh':
+                                            $countryName = 'البحرين';
+                                            break;
+                                            case 'om':
+                                            $countryName = 'سلطنة عُمان';
+                                            break;
+                                            case 'ye':
+                                            $countryName = 'اليمن';
+                                            break;
+                                            case 'iq':
+                                            $countryName = 'العراق';
+                                            break;
+                                            case 'sy':
+                                            $countryName = 'سوريا';
+                                            break;
+                                            case 'jo':
+                                            $countryName = 'الأردن';
+                                            break;
+                                            case 'lb':
+                                            $countryName = 'لبنان';
+                                            break;
+                                            case 'ps':
+                                            $countryName = 'فلسطين';
+                                            break;
+                                            case 'eg':
+                                            $countryName = 'مصر';
+                                            break;
+                                            case 'sd':
+                                            $countryName = 'السودان';
+                                            break;
+                                            case 'ly':
+                                            $countryName = 'ليبيا';
+                                            break;
+                                            case 'tn':
+                                            $countryName = 'تونس';
+                                            break;
+                                            case 'dz':
+                                            $countryName = 'الجزائر';
+                                            break;
+                                            case 'ma':
+                                            $countryName = 'المغرب';
+                                            break;
+                                            case 'mr':
+                                            $countryName = 'موريتانيا';
+                                            break;
+                                            case 'dj':
+                                            $countryName = 'جيبوتي';
+                                            break;
+                                            case 'so':
+                                            $countryName = 'الصومال';
+                                            break;
+                                            case 'km':
+                                            $countryName = 'جزر القمر';
+                                            break;
+                                            default:
+                                            $countryName = 'غير محدد';
+                                            break;
+                                            }
+                                            @endphp
+                                            @if (Auth::user()->chefProfile)
+                                          {{ $countryName }}
+                                            {{-- <img src="https://flagcdn.com/24x18/{{ strtolower($chefProfile->country) ?: 'default' }}.png"
+                                            alt="علم {{ $countryName }}" style="width: 24px; height: 18px; vertical-align: middle;"> --}}
+                                            @else
+                                            <p>لا يوجد ملف شخصي.</p>
+                                            @endif
+                                        </h6>
+
                                         </a>
                                         <p class="active-status">
                                             {{ $location->city }} , {{ $location->area }}
