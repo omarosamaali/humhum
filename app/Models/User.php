@@ -44,7 +44,8 @@ class User extends Authenticatable implements MustVerifyEmail
         'otp',
         'otp_expires_at', // Make sure this is in fillable if you set it directly
         'contract_signed_at',
-        'avatar'
+        'avatar',
+        'system'
     ];
     public function challenges()
     {

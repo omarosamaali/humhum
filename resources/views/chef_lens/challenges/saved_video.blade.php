@@ -170,30 +170,29 @@
         .dz-custom-swiper {
             margin-top: 84px;
             padding: 20px;
+            margin-left: 0px;
+            margin-right: 0px;
+
         }
 
         .swiper-slide {
-            padding: 10px;
+            /* padding: 10px; */
         }
 
         .swiper-slide h5 {
             text-align: center;
             padding: 15px;
-            background: #000000;
-            border-radius: 10px;
             margin: 0;
             border: 2px solid transparent;
             transition: all 0.3s ease;
         }
 
         .swiper-slide-thumb-active h5 {
-            background: #007bff;
-            color: white;
-            border-color: #007bff;
+            border-bottom: 1px solid black;
         }
 
         .title i {
-            color: white;
+            color: rgb(0, 0, 0);
         }
 
         .featured-list {
@@ -371,22 +370,49 @@
             <div class="loader"></div>
         </div>
         <div class="dz-nav-floting">
-            <header class="header" style="position: fixed; width: 100%; top: 0px; background-color: rgb(0, 0, 0) !important; border-bottom: 1px solid #ffffff;">
+            <header class="header py-2 mx-auto" style="background-color: white; position: fixed; width: 100%;">
                 <div class="header-content">
-                    <div class="left-content"></div>
-                    <div class="mid-content">
-                        <span style="font-weight: bold; font-size: 16px; color: #ffffff;">المحفوظات</span>
+                    <div class="left-content">
+                        <i onclick="openAlert()" class="fa-solid fa-skull-crossbones" style="font-size: 22px; color: red;"></i>
                     </div>
-                    <div class="right-content">
-                        <a href="{{ route('chef_lens') }}" class="back--btn">
+                    <div class="mid-content">
+                        <img src="./assets/images/Isolation_Mode.png" style="height: 53px; position: relative; right: 11px;" alt="">
+                    </div>
+                    <div class="right-content d-flex align-items-center gap-4">
+                        <a href="javascript:void(0);" class="back-btn">
                             <i class="fa-solid fa-angle-left"></i>
                         </a>
                     </div>
                 </div>
             </header>
+            <script>
+                function openAlert() {
+                    Swal.fire({
+                        title: "بلاغ؟"
+                        , text: 'لماذا تقوم بالإبلاغ عن هذا الحساب؟'
+                        , showDenyButton: true
+                        , showCancelButton: true,
+                        // showCancelButton: "الغاء",
+                        confirmButtonText: "الإبلاغ عن المنشور أو الرسالة أو التعليق"
+                        , denyButtonText: "حساب وهمي"
+                        , cancelButtonText: "الغاء"
+                    , }).then((result) => {
+                        /* Read more about isConfirmed, isDenied below */
+                        if (result.isConfirmed) {
+                            Swal.fire("تم الإبلاغ!", "", "success");
+                        } else if (result.isDenied) {
+                            Swal.fire("تم الإبلاغ!", "", "success");
+                        }
+                    });
+
+                }
+
+            </script>
+
+
 
             <div class="dz-custom-swiper" style="background: white;">
-                <div class="swiper mySwiper">
+                <div class="swiper mySwiper" style="border-bottom: 1px solid var(--border-color);">
                     <div class="swiper-wrapper">
                         <div class="swiper-slide swiper-slide-active">
                             <h5 class="title">
@@ -403,11 +429,10 @@
                                 <i class="fa-solid fa-utensils"></i>
                             </h5>
                         </div>
-                        
                     </div>
                 </div>
 
-                <div class="swiper mySwiper2">
+                <div class="swiper mySwiper2" style="margin-top: 5px;">
                     <div class="swiper-wrapper">
                         <div class="swiper-slide">
                             <ul class="featured-list grid-layout" id="videos-list">
@@ -504,7 +529,6 @@
                 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
                 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
                 <script src="https://cdnjs.cloudflare.com/ajax/libs/Swiper/8.4.7/swiper-bundle.min.js"></script>
-
                 <script>
                     // Hide preloader when page loads
                     window.addEventListener('load', function() {
@@ -546,83 +570,85 @@
 
                     // تحديث دالة deleteItem في الـ JavaScript
 
-                function deleteItem(button, type, videoId) {
-                const listItem = button.closest('li');
+                    function deleteItem(button, type, videoId) {
+                        const listItem = button.closest('li');
 
-                // Validate type
-                if (!['challenge', 'snap'].includes(type)) {
-                Swal.fire({
-                title: 'خطأ!',
-                text: 'نوع الفيديو غير صالح',
-                icon: 'error'
-                });
-                return;
-                }
+                        // Validate type
+                        if (!['challenge', 'snap'].includes(type)) {
+                            Swal.fire({
+                                title: 'خطأ!'
+                                , text: 'نوع الفيديو غير صالح'
+                                , icon: 'error'
+                            });
+                            return;
+                        }
 
-                const parentList = button.closest('ul');
-                const listType = parentList.id === 'liked-list' ? 'liked' : 'saved';
-                const itemName = type === 'challenge' ? 'التحدي' : 'السناب';
+                        const parentList = button.closest('ul');
+                        const listType = parentList.id === 'liked-list' ? 'liked' : 'saved';
+                        const itemName = type === 'challenge' ? 'التحدي' : 'السناب';
 
-                Swal.fire({
-                title: 'هل أنت متأكد؟',
-                text: `سيتم حذف ${itemName} من القائمة`,
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#d33',
-                cancelButtonColor: '#3085d6',
-                confirmButtonText: 'نعم، احذف',
-                cancelButtonText: 'إلغاء',
-                reverseButtons: true
-                }).then((result) => {
-                if (result.isConfirmed) {
-                // Send delete request
-                fetch(`/videos/${videoId}/remove`, {
-                method: 'DELETE',
-                headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                },
-                body: JSON.stringify({
-                type: type,
-                list: listType // Add list context ('saved' or 'liked')
-                })
-                })
-                .then(response => response.json())
-                .then(data => {
-                if (data.success) {
-                listItem.classList.add('item-removing');
-                setTimeout(() => {
-                listItem.remove();
-                Swal.fire({
-                title: 'تم الحذف!',
-                text: data.message,
-                icon: 'success',
-                timer: 2000,
-                showConfirmButton: false
-                });
-                }, 500);
-                } else {
-                Swal.fire({
-                title: 'خطأ!',
-                text: data.error || 'حدث خطأ أثناء الحذف',
-                icon: 'error'
-                });
-                }
-                })
-                .catch(error => {
-                console.error('Error:', error);
-                Swal.fire({
-                title: 'خطأ!',
-                text: 'حدث خطأ في الاتصال بالخادم',
-                icon: 'error'
-                });
-                });
-                }
-                });
-                }
-
+                        Swal.fire({
+                            title: 'هل أنت متأكد؟'
+                            , text: `سيتم حذف ${itemName} من القائمة`
+                            , icon: 'warning'
+                            , showCancelButton: true
+                            , confirmButtonColor: '#d33'
+                            , cancelButtonColor: '#3085d6'
+                            , confirmButtonText: 'نعم، احذف'
+                            , cancelButtonText: 'إلغاء'
+                            , reverseButtons: true
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                // Send delete request
+                                fetch(`/videos/${videoId}/remove`, {
+                                        method: 'DELETE'
+                                        , headers: {
+                                            'Content-Type': 'application/json'
+                                            , 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                                        }
+                                        , body: JSON.stringify({
+                                            type: type
+                                            , list: listType // Add list context ('saved' or 'liked')
+                                        })
+                                    })
+                                    .then(response => response.json())
+                                    .then(data => {
+                                        if (data.success) {
+                                            listItem.classList.add('item-removing');
+                                            setTimeout(() => {
+                                                listItem.remove();
+                                                Swal.fire({
+                                                    title: 'تم الحذف!'
+                                                    , text: data.message
+                                                    , icon: 'success'
+                                                    , timer: 2000
+                                                    , showConfirmButton: false
+                                                });
+                                            }, 500);
+                                        } else {
+                                            Swal.fire({
+                                                title: 'خطأ!'
+                                                , text: data.error || 'حدث خطأ أثناء الحذف'
+                                                , icon: 'error'
+                                            });
+                                        }
+                                    })
+                                    .catch(error => {
+                                        console.error('Error:', error);
+                                        Swal.fire({
+                                            title: 'خطأ!'
+                                            , text: 'حدث خطأ في الاتصال بالخادم'
+                                            , icon: 'error'
+                                        });
+                                    });
+                            }
+                        });
+                    }
 
                 </script>
+            </div>
+        </div>
+    </div>
 </body>
 
 </html>

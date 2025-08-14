@@ -128,7 +128,16 @@ class ChefAuthenticatedSessionController extends Controller
     {
         $rules = [
             'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users', // <-- تبقى هنا لقواعد التسجيل
+            'email' => [
+                'required',
+                'string',
+                'email',
+                'max:255',
+                // التحقق من أن البريد الإلكتروني فريد فقط بين الطهاة
+                Rule::unique('users')->where(function ($query) {
+                    return $query->where('system', 'طاه');
+                }),
+            ],
             'password' => 'required|string|min:8',
             'role' => 'required|in:مدير,مشرف,مدخل بيانات,طاه',
             'status' => 'sometimes|in:فعال,غير فعال,بانتظار التفعيل',
@@ -166,6 +175,7 @@ class ChefAuthenticatedSessionController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'role' => $request->role,
+            'system' => 'طاه', // **إضافة هذا السطر لتحديد النظام**
             'status' => $request->status ?? 'بانتظار التفعيل',
             'email_verified_at' => null,
             'otp' => null,

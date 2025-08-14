@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 use Illuminate\View\View;
+use Illuminate\Validation\Rule;
 
 class RegisteredUserController extends Controller
 {
@@ -31,7 +32,16 @@ class RegisteredUserController extends Controller
     {
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
+            'email' => [
+                'required',
+                'string',
+                'lowercase',
+                'email',
+                'max:255',
+                Rule::unique('users')->where(function ($query) use ($request) {
+                    return $query->where('system', 'مدير');
+                }),
+            ],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
@@ -41,6 +51,7 @@ class RegisteredUserController extends Controller
             'password' => Hash::make($request->password),
             'role' => 'مدير',
             'status' => '0',
+            'system' => 'مدير', // إضافة هذا السطر لتعيين system كـ "مدير"
         ]);
 
         event(new Registered($user));

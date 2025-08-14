@@ -26,7 +26,7 @@ class RecipesController extends Controller
 
         if ($user && $user->role == 'طاه') {
             // جلب الوصفات النشطة مع العلاقات
-            $activeRecipes = Recipe::where('user_id', $user->id)
+            $activeRecipes = Recipe::where('user_id', Auth::user()->id)
                 ->where('status', 1)
                 ->with(['mainCategories', 'subCategories']) // تحميل العلاقات مسبقاً
                 ->get();

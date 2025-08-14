@@ -35,8 +35,7 @@ class UserController extends Controller
     public function index(Request $request)
     {
         $query = User::latest();
-        $query->with(['chefProfile' => function ($q) {
-        }]);
+        $query->with(['chefProfile' => function ($q) {}]);
         if ($request->has('role') && $request->role != '') {
             $query->where('role', $request->role);
         }
@@ -189,7 +188,15 @@ class UserController extends Controller
     {
         $rules = [
             'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
+            'email' => [
+                'required',
+                'string',
+                'email',
+                'max:255',
+                Rule::unique('users')->where(function ($query) {
+                    return $query->where('system', 'مدير');
+                }),
+            ],
             'password' => 'required|string|min:8',
             'role' => 'required|in:مدير,مشرف,مدخل بيانات,طاه',
             'status' => 'sometimes|in:فعال,غير فعال,بانتظار التفعيل',
@@ -223,6 +230,7 @@ class UserController extends Controller
 
         // إعداد بيانات المستخدم
         $userData = [
+            'system' => 'مدير', // **إضافة هذا السطر**
             'name' => $request->name, // الاسم الرئيسي (يفترض أنه باللغة العربية)
             'email' => $request->email,
             'password' => Hash::make($request->password),

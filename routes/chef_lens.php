@@ -9,6 +9,12 @@ use App\Models\Snap;
 use App\Models\Faq;
 use App\Http\Controllers\ChallengeController;
 
+
+Route::get('challenge/profileDisplayed', function () {
+    return view('chef_lens.challenges.profileDisplayed');
+})
+    ->name('chef_lens.profileDisplayed');
+
 Route::get('challenges-own', [ChallengeController::class, 'challengesOwn'])
     ->name('chef_lens.challenge.challenges-own');
 
