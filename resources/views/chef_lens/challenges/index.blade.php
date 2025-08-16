@@ -318,17 +318,15 @@
                 </ul>
 
                 <div class="button-container">
-           @if($video->challengeResponses->isEmpty())
-           <a href="{{ route('accpet-challenge', $video->id ?? '') }}" style="{{ $video->recipe_id ? '' : 'width: 100%; border-radius: 15px;' }}" class="myBtn order-now button-half">إقبل التحدي</a>
-           @elseif($video->challengeResponses->contains('user_id', auth()->id()))
-           <span style="width: 100%; border-radius: 15px;" class="myBtn order-now button-half">تم قبول التحدي</span>
-           @else
-           <span style="width: 100%; border-radius: 15px;" class="myBtn order-now button-half disabled">التحدي قيد التنفيذ</span>
-           @endif
-           @if($video->recipe_id)
-           <a href="{{ route('recipe.view', $video->recipe_id) }}" class="myBtn money-btn button-half">عرض الوصفة</a>
-           @endif
+                @if($video->challengeResponses()->where('user_id', auth()->id())->doesntExist())
+                <a href="{{ route('accpet-challenge', $video->id ?? '') }}" style="{{ $video->recipe_id ? '' : 'width: 100%; border-radius: 15px;' }}" class="myBtn order-now button-half">إقبل التحدي</a>
+                @else
+                <span style="width: 100%; border-radius: 15px;" class="myBtn order-now button-half">تم قبول التحدي</span>
+                @endif
 
+                    @if($video->recipe_id)
+                    <a href="{{ route('recipe.view', $video->recipe_id) }}" class="myBtn money-btn button-half">عرض الوصفة</a>
+                    @endif
                 </div>
             </div>
         </div>
