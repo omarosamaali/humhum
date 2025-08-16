@@ -126,7 +126,7 @@
                         <div class="col-12" style="display: flex; gap: 10px;">
                             <div class="mb-3 col-6">
                                 <label class="dz-title my-2" style="text-align: center;" for="bsMaterialDatePicker">تاريخ البدء</label>
-                                <input type="text" name="bsMaterialDatePicker" id="bsMaterialDatePicker" class="form-control" placeholder="اختر التاريخ" readonly required value="{{ old('bsMaterialDatePicker') }}">
+                                <input type="date" name="bsMaterialDatePicker" id="bsMaterialDatePicker" class="form-control" placeholder="اختر التاريخ" readonly required value="{{ old('bsMaterialDatePicker') }}">
                                 @error('bsMaterialDatePicker')
                                 <div class="error-message">{{ $message }}</div>
                                 @enderror
