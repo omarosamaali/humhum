@@ -318,7 +318,7 @@
                 </ul>
 
                 <div class="button-container">
-                    @if($video->challengeResponses->isEmpty() && Auth::user()->id !== $video->user_id)
+                    @if($video->challengeResponses->isEmpty() && Auth::user()->id == $video->user_id)
                     <a href="{{ route('accpet-challenge', $video->id ?? '') }}" style="{{ $video->recipe_id ? '' : 'width: 100%; border-radius: 15px;' }}" class="myBtn order-now button-half">إقبل التحدي</a>
                     @else
                     <span style="width: 100%; border-radius: 15px;" class="myBtn order-now button-half">تم قبول التحدي</span>
