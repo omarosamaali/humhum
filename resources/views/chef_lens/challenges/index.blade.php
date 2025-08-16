@@ -321,7 +321,8 @@
                 @if($video->challengeResponses()->where('user_id', auth()->id())->doesntExist())
                 <a href="{{ route('accpet-challenge', $video->id ?? '') }}" style="{{ $video->recipe_id ? '' : 'width: 100%; border-radius: 15px;' }}" class="myBtn order-now button-half">إقبل التحدي</a>
                 @else
-                <span style="width: 100%; border-radius: 15px;" class="myBtn order-now button-half">تم قبول التحدي</span>
+                <span style="{{ $video->recipe_id ? '' : 'width: 100%; border-radius: 15px;' }}" class="myBtn order-now button-half">تم قبول التحدي</span>
+
                 @endif
 
                     @if($video->recipe_id)
