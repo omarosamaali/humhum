@@ -721,7 +721,7 @@
     <section class="gap no-top">
         <div class="container">
             <div class="heading-two">
-                <h2 style="text-align: center; margin: 20px 0px; font-size: 25px;">الطهاة المسجلين لدينا</h2>
+                <h2 style="text-align: center; margin: 20px 0px; font-size: 25px; padding-top: 33px;">الطهاة المسجلين لدينا</h2>
                 <div class="line"></div>
             </div>
             <div class="swiper swiper-chefs">
