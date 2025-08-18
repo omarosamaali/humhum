@@ -370,16 +370,13 @@
             <div class="loader"></div>
         </div>
         <div class="dz-nav-floting">
-            <header class="header py-2 mx-auto" style="background-color: white; position: fixed; width: 100%;">
+            <header class="header py-2 mx-auto pt-3" style="background-color: white; position: fixed; width: 100%;">
                 <div class="header-content">
-                    <div class="left-content">
-                        <i onclick="openAlert()" class="fa-solid fa-skull-crossbones" style="font-size: 22px; color: red;"></i>
-                    </div>
                     <div class="mid-content">
                         <img src="./assets/images/Isolation_Mode.png" style="height: 53px; position: relative; right: 11px;" alt="">
                     </div>
                     <div class="right-content d-flex align-items-center gap-4">
-                        <a href="javascript:void(0);" class="back-btn">
+                        <a href="{{ route('chef_lens') }}" class="back-btn">
                             <i class="fa-solid fa-angle-left"></i>
                         </a>
                     </div>
@@ -416,12 +413,12 @@
                     <div class="swiper-wrapper">
                         <div class="swiper-slide swiper-slide-active">
                             <h5 class="title">
-                                <i class="fa-solid fa-bookmark"></i>
+                                <i class="fa-solid fa-video-camera"></i>
                             </h5>
                         </div>
                         <div class="swiper-slide">
                             <h5 class="title">
-                                <i class="fa-solid fa-thumbs-up"></i> </h5>
+                                <img class="img-fluid vs-icon" style="width: 30px; border-radius: 50%;" src="{{ asset('assets/images/hat.png') }}" alt="">
 
                         </div>
                         <div class="swiper-slide">

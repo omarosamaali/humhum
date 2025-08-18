@@ -401,14 +401,71 @@
             </div>
             @endcan
 
+            {{-- عدسة الطاه --}}
+            @can('isAdmin')
+
+            <div class="dropdown">
+                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="fas fa-cog"></i>
+                    عدسة الطاهي
+                </a>
+                <ul class="dropdown-menu">
+                    <li>
+                        <a class="dropdown-item" href="{{ route('admin.users.index') }}">
+                            <i class="fas fa-users"></i>
+                            المستخدمين
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item" href="{{ route('admin.reports.index') }}">
+                            <i class="fas fa-flag"></i>
+                            البلاغات
+                        </a>
+                    </li>
+                    <li>
+                        {{-- 3. الفيديوهات --}}
+                        <a class="dropdown-item" href="{{ route('admin.packages.index') }}">
+                            <i class="fas fa-box-open"></i> الفيديوهات
+                        </a>
+                    </li>
+                    <li>
+                        {{-- 4. سجل المحادثات --}}
+                        <a class="dropdown-item" href="{{ route('admin.plans.index') }}">
+                            <i class="fas fa-clipboard-list"></i> سجل المحادثات
+                        </a>
+                    </li>
+                    <li>
+                        {{-- 5. سجل التحديات --}}
+                        <a class="dropdown-item" href="{{ route('admin.mainCategories.index') }}">
+                            <i class="fas fa-sitemap"></i> سجل التحديات
+                        </a>
+                    </li>
+                    <li>
+                        {{-- 6. الاعلانات --}}
+                        <a class="dropdown-item" href="{{ route('admin.subCategories.index') }}">
+                            <i class="fas fa-indent"></i> الاعلانات
+                        </a>
+                    </li>
+                    <li>
+                        {{-- 7. السجل المالي --}}
+                        <a class="dropdown-item" href="{{ route('admin.kitchens.index') }}">
+                            <i class="fas fa-utensils"></i> السجل المالي
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            @endcan
+
+
             <a class="nav-link" href="{{ route('admin.messages.index') }}">
                 <i class="fas fa-message"></i>
                 الرسائل
             </a>
+
             <a class="nav-link" href="{{ route('admin.contacts.index') }}">
 
-                <i class="fas fa-message"></i>
-                رسائل الموقع 
+                <i class="fas fa-inbox"></i>
+                رسائل الموقع
             </a>
 
             <a class="nav-link" href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">

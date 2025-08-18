@@ -169,6 +169,29 @@
                             <h2 class="name" style="text-transform: capitalize">{{ Auth::user()->name }}</h2>
                         </div>
                         <div style="width: 100%;" class="swiper-slide">
+                            <div class="dz-card list style-4" style="margin-bottom: 20px; border-color: rgb(2, 45, 235) !important; display: flex !important;">
+                                <div class="dz-content" style="flex: 2;">
+                                    <h6 class="title">
+                                        <a href="#" onclick="soon()">حساب عام</a>
+                                        <script>
+                                            function soon() {
+                                                Swal.fire({
+                                                    title: "قريبا!"
+                                                    , text: "سيتم إضافة الميزة قريبا!"
+                                                    , icon: "success"
+                                                });
+                                            }
+
+                                        </script>
+                                        <p style="color: rgb(88, 88, 88); font-size: 12px;">لتغير نوع الحساب إضغط هنا
+                                        </p>
+                                    </h6>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div style="width: 100%;" class="swiper-slide">
                             <div class="dz-card list style-4" style="
 																								border-color: rgb(235, 2, 2) !important;
 																								display: flex !important;">
@@ -237,18 +260,24 @@
                     <div class="" style="display: flex; flex-direction: column; gap: 20px;">
                         <div style="display: flex; flex-direction: row; gap: 10px;">
 
-                            <div style="width: 48%;" class="swiper-slide">
-                                <div class="dz-card list style-4" style="border-color: green !important; display: flex !important;">
-                                    <div class="" style="flex: 1;">
-                                        <i style="color: green; font-size: 35px;" class="fa-solid fa-circle-check"></i>
-                                    </div>
-                                    <div class="dz-content" style="flex: 2;">
-                                        <h6 class="title">
-                                            <a href="{{ route('saved_video') }}">الحفظ</a>
-                                        </h6>
-                                    </div>
+                            <div class="dz-card list style-4" style="
+                                    {{ Auth::user()->contract_signed_at == null ? 'border-color: red !important;' : 'border-color: green !important;' }}
+									display: flex !important;">
+                                <div class="" style="flex: 1;">
+                                    <i style="
+                                            {{ Auth::user()->contract_signed_at == null ? 'color: red;' : 'color: green;' }}
+                                            font-size: 35px;" class="fa-solid fa-{{ Auth::user()->contract_signed_at == null ? 'circle-xmark' : 'circle-check' }}"></i>
+                                </div>
+
+                                <div class="dz-content" style="flex: 2;">
+                                    <h6 class="title">
+                                        <a href="{{ route('c1he3f.profile.agrem') }}">إتفاقية الإستخدام</a>
+                                        <a href="javascript:void(0);"><i style="color:black;" class="fa-solid fa-arrow-up-right-from-square"></i>
+                                        </a>
+                                    </h6>
                                 </div>
                             </div>
+
 
                             <div style="width: 48%;" class="swiper-slide">
                                 <div class="dz-card list style-4" style="border-color: green !important; display: flex !important;">
@@ -278,7 +307,7 @@
                                 </div>
                             </div>
 
-                            <div style="width: 48%;" class="swiper-slide">
+                            {{-- <div style="width: 48%;" class="swiper-slide">
                                 <div class="dz-card list style-4" style="border-color: green !important; display: flex !important;">
                                     <div class="" style="flex: 1;">
                                         <i style="color: green; font-size: 35px;" class="fa-solid fa-circle-check"></i>
@@ -289,7 +318,7 @@
                                         </h6>
                                     </div>
                                 </div>
-                            </div>
+                            </div> --}}
                         </div>
 
                     </div>

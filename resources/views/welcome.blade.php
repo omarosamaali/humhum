@@ -91,7 +91,7 @@
         /* Hero Section with Animated Background */
         .slider-hero {
             position: relative;
-            min-height: 100vh;
+            min-height: 70vh;
             background: linear-gradient(135deg, #eeeeee 0%, #c9c9c9 100%);
             overflow: hidden;
             display: flex;
@@ -229,7 +229,7 @@
             position: relative;
             z-index: 10;
             width: 100%;
-            padding: 60px 0;
+            /* padding: 145px 0; */
         }
 
         .app-card {
@@ -291,7 +291,7 @@
         }
 
         .app-title {
-            font-size: 24px;
+            font-size: 19px;
             font-weight: 700;
             color: #333;
             margin-bottom: 20px;
@@ -321,8 +321,8 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            width: 50px;
-            height: 50px;
+            width: 43px;
+            height: 42px;
             background: green;
             color: white;
             border-radius: 15px;
@@ -369,7 +369,7 @@
             }
 
             .app-title {
-                font-size: 20px;
+                font-size: 17px;
             }
 
             .shape {
@@ -507,6 +507,39 @@
         body {
             font-family: 'cairo' !important;
         }
+
+        .slider-hero {
+            max-height: 500px;
+        }
+
+        .hero-section {
+            margin-top: 121px;
+            padding: unset !important;
+            padding-top: 50px !important;
+        }
+
+        @media(max-width:1170px) {
+            .slider-hero {
+                max-height: 872px;
+            }
+
+            .hero-section {
+                padding: 29px 0;
+                margin-top: 66px;
+                padding: unset !important;
+                padding-top: 2px !important;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .slider-hero {
+                max-height: 1360px;
+            }
+            .hero-section {
+                max-height: unset !important;
+            }
+        }
+
 
     </style>
 </head>
@@ -688,7 +721,7 @@
     <section class="gap no-top">
         <div class="container">
             <div class="heading-two">
-                <h2 style="text-align: center; margin: 20px 0px; font-size: 40px;">الطهاة المسجلين لدينا</h2>
+                <h2 style="text-align: center; margin: 20px 0px; font-size: 25px;">الطهاة المسجلين لدينا</h2>
                 <div class="line"></div>
             </div>
             <div class="swiper swiper-chefs">
@@ -696,7 +729,8 @@
                     @foreach ($chefs as $chef)
                     <div class="swiper-slide">
                         <div class="chef">
-                            <img alt="الشيف {{ $chef->user->name }}" style="height: 600px; width: 400px;" src="{{ asset('storage/' . $chef->official_image) }}">
+                            <img alt="الشيف {{ $chef->user->name }}" style="height: 411px; width: 345px; object-fit: fill;" src="{{ asset('storage/' . $chef->official_image) }}">
+
                             <div class="chef-text" style="flex-direction: column;">
                                 <span style="display: block;">
                                     @php
@@ -798,14 +832,14 @@
     <section class="section-discover-menu">
         <div class="container">
             <div class="heading-two">
-                <h2>المطابخ</h2>
+                <h2 style="font-size: 40px !important;">المطابخ</h2>
                 <div class="line"></div>
             </div>
             <div class="swiper swiper-kitchens">
                 <div class="swiper-wrapper">
                     @foreach ($kitchens as $kitchen)
                     <div class="swiper-slide">
-                        <img style="height: 100px; width: 100%; object-fit: fill;" src="{{ asset('storage/' . $kitchen->image) }}" alt="المطبخ {{ $kitchen->name_ar }}">
+                        <img style="height: 100px; width: 100px; object-fit: fill;" src="{{ asset('storage/' . $kitchen->image) }}" alt="المطبخ {{ $kitchen->name_ar }}">
                         <p style="text-align: center; font-size: 19px; color: black;">{{ $kitchen->name_ar }}</p>
                     </div>
                     @endforeach
@@ -826,7 +860,7 @@
                 <div class="col-xl-6">
                     <div class="heading">
                         <!-- <span>Testimonials & Reviews</span> -->
-                        <h2 style="text-align: center;">مميزات هم هم</h2>
+                        <h2 style="text-align: center; font-size: 40px;">مميزات هم هم</h2>
                     </div>
                     <!DOCTYPE html>
                     <html lang="en">
@@ -1038,9 +1072,9 @@
                 </div>
                 <div class="col-xl-6">
                     <div class="bratlee-img">
-                        <img alt="bratlee-hamin2" class="bratlee-hamint-2" src="https://placehold.co/292x292">
-                        <img alt="bratlee-hamint" class="bratlee-hamint-1" src="https://placehold.co/292x292">
-                        <img alt="bratlee-hamin3" class="bratlee-hamint-3" src="https://placehold.co/292x292">
+                        <img alt="bratlee-hamin2" style="width: 200px;" class="bratlee-hamint-2" src="https://placehold.co/292x292">
+                        <img alt="bratlee-hamint" style="width: 200px;" class="bratlee-hamint-1" src="https://placehold.co/292x292">
+                        <img alt="bratlee-hamin3" style="width: 200px;" class="bratlee-hamint-3" src="https://placehold.co/292x292">
                     </div>
                 </div>
             </div>

@@ -1,7 +1,7 @@
 @media only screen and (max-width: 3220px) and (min-width: 1400px) {
   .hero-section {
     max-height: 710px;
-    min-height: 710px;
+    min-height: 513px;
   }
 
   header.three .mobile-nav.open.mobile-nav {
@@ -359,8 +359,8 @@
   }
 
   .chef-text {
-    width: 330px;
-    height: 330px;
+    width: 290px;
+    height: 290px;
   }
 
   .content-header svg {
@@ -536,9 +536,6 @@
     font-size: 18px;
   }
 
-  .hero-section {
-    padding-top: 120px;
-  }
 
   .about-text {
     width: 100%;
@@ -1983,7 +1980,7 @@
   }
 
   .hero-section {
-    max-height: 675px;
+    /* max-height: 675px; */
     min-height: 675px;
     padding-top: 50px;
   }
@@ -2296,7 +2293,7 @@
   }
 
   section.slider-hero {
-    margin-bottom: -30px;
+    /* margin-bottom: -30px; */
   }
 
   .heading-two .line {
@@ -3043,7 +3040,7 @@ figure {
 
 /* 5. hero-section */
 .hero-section {
-  padding-top: 170px;
+  /* padding-top: 170px; */
   padding-bottom: 40px;
   background-position: center;
   background-repeat: no-repeat;
@@ -3473,12 +3470,14 @@ section.slider-hero {
   position: relative;
   z-index: 11;
 }
+
 @media (max-width: 768px) {
   .reserve-table {
     padding: 30px !important;
   }
-  
+
 }
+
 .reserve-table-text h3 {
   width: 62%;
   font-size: 50px;
@@ -3754,7 +3753,7 @@ img.bratlee-hamint-3 {
 
 img.bratlee-hamint-1 {
   position: absolute;
-  right: 22%;
+  right: 32%;
   top: 0;
 }
 

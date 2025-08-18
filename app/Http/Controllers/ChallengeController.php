@@ -122,7 +122,77 @@ class ChallengeController extends Controller
         return redirect()->route('challenge.vs')->with('success', 'تم إرسال استجابتك للتحدي بنجاح!');
     }
 
+    public function submitResponseUserChef(Request $request, $challenge_id)
+    {
+        // 1. التحقق من صلاحية المستخدم
+        if (!Auth::check()) {
+            return redirect()->route('login')->with('error', 'يجب تسجيل الدخول لقبول التحديات.');
+        }
 
+        // 2. تحميل التحدي مع العلاقات المطلوبة
+        $challenge = Challenge::with(['chef', 'chefProfile'])->findOrFail($challenge_id);
+
+        // 3. التحقق من أن المستخدم لا يقبل تحديه الخاص
+        if (Auth::id() === $challenge->chef_id) {
+            return back()->with('error', 'لا يمكنك قبول التحدي الخاص بك.');
+        }
+
+        // 4. التحقق من أن المستخدم لم يرسل استجابة من قبل
+        $existingResponse = ChallengeResponse::where('challenge_id', $challenge_id)
+            ->where('user_id', Auth::id())
+            ->first();
+
+        if ($existingResponse) {
+            return back()->with('error', 'لقد أرسلت استجابة لهذا التحدي من قبل.');
+        }
+
+        // 5. التحقق من صحة البيانات
+        try {
+            $validatedData = $request->validate([
+                'recipe_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:5120', // 5MB
+                'challenge_video' => 'required|file|mimes:mp4,mov,avi,webm|max:307200', // 300MB
+                'message_to_chef' => 'nullable|string|max:500',
+            ]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            \Log::error('Validation failed in submitResponse', ['errors' => $e->errors()]);
+            return back()->withErrors($e->errors())->withInput();
+        }
+
+        try {
+            // 6. معالجة رفع الملفات
+            $recipeImagePath = null;
+            if ($request->hasFile('recipe_image')) {
+                $recipeImagePath = $request->file('recipe_image')->store('challenge_responses/images', 'public');
+            }
+
+            $challengeVideoPath = null;
+            if ($request->hasFile('challenge_video')) {
+                $challengeVideoPath = $request->file('challenge_video')->store('challenge_responses/videos', 'public');
+            }
+
+            // 7. إنشاء الاستجابة
+            $response = ChallengeResponse::create([
+                'challenge_id' => $challenge->id,
+                'user_id' => Auth::id(),
+                'recipe_image_path' => $recipeImagePath,
+                'challenge_video_path' => $challengeVideoPath,
+                'message_to_chef' => $request->input('message_to_chef'),
+                'status' => 'pending',
+            ]);
+
+            \Log::info('Challenge response created successfully', ['response_id' => $response->id]);
+
+            return redirect()->route('chef_lens')->with('success', 'تم إرسال استجابتك للتحدي بنجاح!');
+        } catch (\Exception $e) {
+            \Log::error('Error in submitResponse', [
+                'error' => $e->getMessage(),
+                'challenge_id' => $challenge_id,
+                'user_id' => Auth::id()
+            ]);
+
+            return back()->with('error', 'حدث خطأ أثناء إرسال الاستجابة. يرجى المحاولة مرة أخرى.')->withInput();
+        }
+    }
     public function submitResponseUser(Request $request, $challenge_id)
     {
         // 1. التحقق من صلاحية المستخدم والتحدي

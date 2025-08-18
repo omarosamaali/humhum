@@ -19,7 +19,7 @@ use App\Http\Controllers\Admin\AboutUsController;
 use App\Http\Controllers\Admin\FaqController;
 use App\Http\Controllers\Admin\BannerController;
 use App\Http\Controllers\Admin\RecipesController;
-use App\Http\Middleware\CheckUserStatus;
+use App\Http\Controllers\Admin\ReportController;
 use App\Http\Middleware\AdminRole;
 use App\Http\Controllers\MessageController;
 use App\Models\Contact;
@@ -116,6 +116,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
         return view('admin.dashboard');
     })->name('dashboard');
     Route::resource('users', UserController::class);
+    Route::resource('reports', ReportController::class);
     Route::resource('languages', LanguageController::class);
     Route::resource('packages', PackageController::class);
     Route::resource('plans', PlanController::class);

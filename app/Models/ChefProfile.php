@@ -80,4 +80,14 @@ class ChefProfile extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function followers()
+    {
+        return $this->belongsToMany(User::class, 'chef_profile_user', 'chef_profile_id', 'user_id')->withTimestamps();
+    }
+
+    public function isFollowedBy($user)
+    {
+        return $this->followers()->where('user_id', $user->id)->exists();
+    }
 }

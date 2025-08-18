@@ -195,9 +195,7 @@ Route::get('c1he3f/challenge/{challenge_id}/add-vs', function ($challenge_id) {
 })->name('challenge.add-vs');
 
 Route::post('c1he3f/challenge/{challenge_id}/submit-response', [ChallengeController::class, 'submitResponse'])->name('challenge.submit-response');
-Route::post('chef_lens/challenge/{challenge_id}/submit-response', [ChallengeController::class, 'submitResponseUser'])
-->name('chef_lens.submit-response');
-
+Route::post('chef_lens/challenge/{challenge_id}/submit-response', [ChallengeController::class, 'submitResponseUser'])->name('chef_lens.submit-response');
 
 Route::get('c1he3f/challenge.vs2', function () {
     $chef_id = Auth::id();
@@ -212,10 +210,8 @@ Route::get('c1he3f/challenge.vs2', function () {
 
     $challenges = Challenge::where('chef_id', $chef_id)->get();
     $acceptedChallengesCount = DB::table('challenge_responses')
-        ->whereIn('challenge_id', $challenges->pluck('id'))
-        ->count();
+->whereIn('challenge_id', $challenges->pluck('id'))->count();
 
-    // أو إذا كنت تريد عدد القابلين لكل تحدي منفصل
     $challengesWithAcceptedCount = $challenges->map(function ($challenge) {
         $challenge->accepted_count = DB::table('challenge_responses')
             ->where('challenge_id', $challenge->id)

@@ -43,8 +43,8 @@
         text-align: center;
         border-radius: 50%;
         margin: auto;
-        width: 50px;
-        height: 50px;
+        width: 50px !important;
+        height: 50px !important;
         object-fit: cover;
     }
 
@@ -230,8 +230,40 @@
         padding-bottom: 9px;
     }
 
-</style>
+    .chef-img.active {
+        border: 3px solid #EFBF04 !important;
+        border-radius: 50% !important;
+        transition: all 0.3s ease;
+        overflow: hidden !important;
+    }
 
+    .chef-img.active {
+        border: 3px solid #B8860B;
+        border-radius: 50%;
+        transition: all 0.3s ease;
+    }
+
+    .chef-img.active {
+        border: 3px solid;
+        border-color: #EFBF04;
+        border-radius: 50%;
+        transition: all 0.3s ease;
+    }
+
+    .chef-img {
+        border-radius: 50%;
+        object-fit: cover;
+        width: 80px;
+        height: 80px;
+        transition: all 0.3s ease;
+    }
+
+    .chef-img:not(.active):hover {
+        border: 2px solid #ddd;
+        transform: scale(1.05);
+    }
+
+</style>
 
 <div class="main-container">
     <div class="title-bar">
@@ -240,8 +272,7 @@
                 <div class="swiper-wrapper">
                     @foreach($chefs as $index => $chef)
                     <div class="swiper-slide">
-                        <a href="{{ route('chef_lens.profileDisplayed') }}" 
-                            style="flex-direction: column; border: 0px; padding: 0px; background-color: transparent; box-shadow: none;" class="dz-categories-bx chef-selector" data-chef-id="{{ $chef->id }}">
+                        <a href="{{ route('chef_lens.profileDisplayed', ['chefProfile' => $chef->id]) }}" style="flex-direction: column; border: 0px; padding: 0px; background-color: transparent; box-shadow: none;" class="dz-categories-bx chef-selector" data-chef-id="{{ $chef->id }}">
                             <div class="icon-bx">
                                 <img class="img-fluid chef-img {{ $index === 1 ? 'active' : '' }}" src="{{ $chef->official_image ? asset('storage/' . $chef->official_image) : asset('assets/images/default-chef.jpg') }}" alt="{{ $chef->name }}">
                             </div>
@@ -262,18 +293,21 @@
         <div>
             <div class="swiper categories-swiper dz-swiper">
                 <div class="swiper-wrapper">
-                    <div class="swiper-slide">
-                        <div class="dz-categories-bx" style=" flex-direction: column; border: 0px; padding: 0px; background-color: transparent; box-shadow: none;">
-                            <div class="icon-bx" style="padding-left: 2px;">
-                                <img class="img-fluid challenge-img" src="{{ asset('assets/images/hat.png') }}" alt="التحديات">
+                    <a href="{{ route('chef_lens.challenges') }}">
+                        <div class="swiper-slide">
+                            <div class="dz-categories-bx" style=" flex-direction: column; border: 0px; padding: 0px; background-color: transparent; box-shadow: none;">
+                                <div class="icon-bx" style="padding-left: 2px;">
+                                    <img class="img-fluid challenge-img" src="{{ asset('assets/images/hat.png') }}" alt="التحديات">
+                                </div>
+                                <div class="dz-content">
+                                    <h6 class="title">
+                                        <span class="chef-name">
+                                            التحديات
+                                        </span>
+                                    </h6>
+                                </div>
                             </div>
-                            <div class="dz-content">
-                                <h6 class="title">
-                                    <span class="chef-name">التحديات</span>
-                                </h6>
-                            </div>
-                        </div>
-                    </div>
+                    </a>
                 </div>
             </div>
         </div>
@@ -286,15 +320,13 @@
 
 <div class="video-reels-container" id="videoContainer">
     @foreach($challenges as $video)
-
     <div class="video-reel-item" data-video-id="{{ $video->id }}" data-chef-id="{{ $video->user->chefProfile->id ?? '' }}" data-video-type="challenge">
         <video class="myVideo video-reel" data-index="{{ $loop->index }}" autoplay preload="metadata" muted>
-
             <source src="{{ 'storage/' . $video->announcement_path }}" type="video/mp4">
             المتصفح لا يدعم HTML5 video.
         </video>
         <div class="content">
-            <div id="container--btns" style="margin-bottom: 48px;">
+            <div id="container--btns" style="margin-bottom: 48px; direction: ltr;">
                 <button class="myBtn video-btn bookmark-btn" onclick="toggleBookmark('challenge', {{ $video->id }}, this)">
                     <i class="fa-solid fa-bookmark bookmark-icon {{ Auth::check() && in_array(Auth::id(), $video->bookmarked_by ?? []) ? 'bookmarked' : '' }}"></i>
                     <span class="bookmark-count">{{ $video->bookmarks ?? 0 }}</span>
@@ -318,12 +350,12 @@
                 </ul>
 
                 <div class="button-container">
-                @if($video->challengeResponses()->where('user_id', auth()->id())->doesntExist())
-                <a href="{{ route('accpet-challenge', $video->id ?? '') }}" style="{{ $video->recipe_id ? '' : 'width: 100%; border-radius: 15px;' }}" class="myBtn order-now button-half">إقبل التحدي</a>
-                @else
-                <span style="{{ $video->recipe_id ? '' : 'width: 100%; border-radius: 15px;' }}" class="myBtn order-now button-half">تم قبول التحدي</span>
+                    @if($video->challengeResponses()->where('user_id', auth()->id())->doesntExist())
+                    <a href="{{ route('accpet-challenge', $video->id ?? '') }}" style="{{ $video->recipe_id ? '' : 'width: 100%; border-radius: 15px;' }}" class="myBtn order-now button-half">إقبل التحدي</a>
+                    @else
+                    <span style="{{ $video->recipe_id ? '' : 'width: 100%; border-radius: 15px;' }}" class="myBtn order-now button-half">تم قبول التحدي</span>
 
-                @endif
+                    @endif
 
                     @if($video->recipe_id)
                     <a href="{{ route('recipe.view', $video->recipe_id) }}" class="myBtn money-btn button-half">عرض الوصفة</a>
@@ -407,24 +439,26 @@
                 });
             };
         });
+    });
 
-        chefSelectors.forEach(chefSelector => {
-            chefSelector.addEventListener('click', (e) => {
-                e.preventDefault();
-                const selectedChefId = chefSelector.getAttribute('data-chef-id');
-                const targetVideoItem = document.querySelector(`.video-reel-item[data-chef-id="${selectedChefId}"]`);
-                if (targetVideoItem) {
-                    const videoIndex = Array.from(videos).findIndex(vid => vid.closest('.video-reel-item') === targetVideoItem);
-                    if (videoIndex !== -1 && videoIndex !== currentVideoIndex) {
-                        currentVideoIndex = videoIndex;
-                        videoReelsContainer.scrollTo({
-                            left: videoIndex * videoReelsContainer.clientWidth
-                            , behavior: 'smooth'
-                        });
-                        playCurrentVideo();
-                    }
+    chefSelectors.forEach(chefSelector => {
+        chefSelector.addEventListener('click', (e) => {
+            const selectedChefId = chefSelector.getAttribute('data-chef-id');
+            const targetVideoItem = document.querySelector(`.video-reel-item[data-chef-id="${selectedChefId}"]`);
+            if (targetVideoItem) {
+                const videoIndex = Array.from(videos).findIndex(vid => vid.closest('.video-reel-item') === targetVideoItem);
+                if (videoIndex !== -1 && videoIndex !== currentVideoIndex) {
+                    currentVideoIndex = videoIndex;
+                    videoReelsContainer.scrollTo({
+                        left: videoIndex * videoReelsContainer.clientWidth
+                        , behavior: 'smooth'
+                    });
+                    playCurrentVideo();
                 }
-            });
+            } else {
+                // السماح بتنشيط الرابط الافتراضي
+                window.location.href = chefSelector.getAttribute('href');
+            }
         });
     });
 
@@ -594,5 +628,4 @@
     }
 
 </script>
-
 @endsection

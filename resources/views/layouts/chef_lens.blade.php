@@ -282,7 +282,7 @@
                     </a>
                 </li>
                 <li>
-                    <a class="nav-link" href="about-us.html">
+                    <a class="nav-link" href="{{ route('chef_lens.about') }}">
                         <span class="dz-icon">
                             <i class="fi fi-rr-info text-dark"></i>
                         </span>
@@ -387,10 +387,7 @@
             }
 
         </style>
-
-
         <div class="dz-nav-floting">
-
             <header class="header py-2 mx-auto" style="background-color: transparent !important; position: fixed; width: 100%;">
                 <div class="header-content">
                     <div class="left-content">

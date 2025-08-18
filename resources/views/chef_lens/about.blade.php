@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ar" >
+<html lang="ar">
 
 <head>
     <title>إعرفنا</title>
@@ -12,33 +12,26 @@
     <meta name="format-detection" content="telephone=no">
 
     <meta name="twitter:title" content="Ombe- Coffee Shop Mobile App Template (Bootstrap + PWA) | DexignZone">
-    <meta name="twitter:description"
-        content="Discover the perfect blend of design and functionality with Ombe, a Coffee Shop Mobile App Template crafted with Bootstrap and enhanced with Progressive Web App (PWA) capabilities.">
+    <meta name="twitter:description" content="Discover the perfect blend of design and functionality with Ombe, a Coffee Shop Mobile App Template crafted with Bootstrap and enhanced with Progressive Web App (PWA) capabilities.">
 
     <meta name="twitter:image" content="{{ asset('assets/images/social-image.png') }}">
     <meta name="twitter:card" content="summary_large_image">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
-        integrity="sha512-LCY/8p2NaW6Bsmo1g3+6j+EkH0dY1o+2C73AVM0DIA3A92vN0bFz5H6uX3bM6+0F5a1g=="
-        crossorigin="anonymous" referrerpolicy="no-referrer" />
-    
-    <meta name="viewport"
-        content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, minimal-ui, viewport-fit=cover">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-LCY/8p2NaW6Bsmo1g3+6j+EkH0dY1o+2C73AVM0DIA3A92vN0bFz5H6uX3bM6+0F5a1g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, minimal-ui, viewport-fit=cover">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    
+
     <link rel="shortcut icon" type="image/x-icon" href="{{ asset('assets/images/app-logo/favicon.png') }}">
     <link rel="manifest" href="{{ asset('manifest.json') }}">
 
     <link href="{{ asset('assets/vendor/bootstrap-select/dist/css/bootstrap-select.min.css') }}" rel="stylesheet">
-    <link rel="stylesheet"
-        href="{{ asset('assets/vendor/bootstrap-touchspin/dist/jquery.bootstrap-touchspin.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/vendor/bootstrap-touchspin/dist/jquery.bootstrap-touchspin.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/vendor/swiper/swiper-bundle.min.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/style.css') }}">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700;800;900&family=Raleway:wght@300;400;500&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700;800;900&family=Raleway:wght@300;400;500&display=swap" rel="stylesheet">
 
     <style>
         .about-section {
@@ -66,8 +59,15 @@
         }
 
         @keyframes shimmer {
-            0%, 100% { background-position: -200% 0; }
-            50% { background-position: 200% 0; }
+
+            0%,
+            100% {
+                background-position: -200% 0;
+            }
+
+            50% {
+                background-position: 200% 0;
+            }
         }
 
         .about-title {
@@ -146,8 +146,15 @@
         }
 
         @keyframes float {
-            0%, 100% { transform: translateY(0px) rotate(0deg); }
-            50% { transform: translateY(-20px) rotate(180deg); }
+
+            0%,
+            100% {
+                transform: translateY(0px) rotate(0deg);
+            }
+
+            50% {
+                transform: translateY(-20px) rotate(180deg);
+            }
         }
 
         .info-icon {
@@ -166,9 +173,17 @@
         }
 
         @keyframes pulse {
-            0% { box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3); }
-            50% { box-shadow: 0 4px 25px rgba(0, 123, 255, 0.5); }
-            100% { box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3); }
+            0% {
+                box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3);
+            }
+
+            50% {
+                box-shadow: 0 4px 25px rgba(0, 123, 255, 0.5);
+            }
+
+            100% {
+                box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3);
+            }
         }
 
         .fade-in {
@@ -180,6 +195,7 @@
                 opacity: 0;
                 transform: translateY(30px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -191,16 +207,17 @@
                 margin: 15px 10px;
                 padding: 25px 15px;
             }
-            
+
             .about-title {
                 font-size: 1.8rem;
             }
-            
+
             .about-description {
                 font-size: 1rem;
                 padding: 0 5px;
             }
         }
+
     </style>
 </head>
 
@@ -216,20 +233,31 @@
         </div>
 
         <!-- Sidebar -->
-        <div class="sidebar dz-floting-sidebar">
+        <div class="sidebar dz-floting-sidebar" style="background-color: rgb(255, 255, 255); color: rgb(0, 0, 0);">
+
             <div class="sidebar-header">
                 <div class="app-logo">
-                    <img class="logo-dark" src="{{ asset('assets/images/app-logo/logo.png') }}" alt="logo">
-                    <img class="logo-white d-none" src="{{ asset('assets/images/app-logo/logo-white.png') }}" alt="logo">
+                    <div class="mid-content">
+                        <img src="./assets/images/logo.png" style="height: 111px; position: relative; right: 11px;" alt="">
+                    </div>
                 </div>
                 <div class="title-bar mb-0">
-                    <h4 class="title font-w600" style="visibility: collapse;">Main وصفة</h4>
                     <a href="javascript:void(0);" class="floating-close"><i class="feather icon-x"></i></a>
                 </div>
             </div>
             <ul class="nav navbar-nav" style="direction: ltr;">
                 <li>
-                    <a class="nav-link" href="{{ route('c1he3f.auth.sign-in') }}">
+                    <a class="nav-link" href="{{ route('chef_lens') }}">
+                        <span class="dz-icon">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="black" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M3 8.40002V21C3 21.2652 3.10536 21.5196 3.29289 21.7071C3.48043 21.8947 3.73478 22 4 22H20C20.2652 22 20.5196 21.8947 20.7071 21.7071C20.8946 21.5196 21 21.2652 21 21V8.40002C21.0001 8.23638 20.96 8.07523 20.8833 7.93069C20.8066 7.78616 20.6956 7.66265 20.56 7.57102L12.56 2.17102C12.3946 2.05924 12.1996 1.99951 12 1.99951C11.8004 1.99951 11.6054 2.05924 11.44 2.17102L3.44 7.57102C3.30443 7.66265 3.19342 7.78616 3.11671 7.93069C3.03999 8.07523 2.99992 8.23638 3 8.40002V8.40002ZM14 20H10V14H14V20ZM5 8.93202L12 4.20702L19 8.93202V20H16V13C16 12.7348 15.8946 12.4804 15.7071 12.2929C15.5196 12.1054 15.2652 12 15 12H9C8.73478 12 8.48043 12.1054 8.29289 12.2929C8.10536 12.4804 8 12.7348 8 13V20H5V8.93202Z" fill="black" />
+                            </svg>
+                        </span>
+                        <span>الرئيسية</span>
+                    </a>
+                </li>
+                <li>
+                    <a class="nav-link" href="{{ route('chef_lens.profile') }}">
                         <span class="dz-icon">
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <g clip-path="url(#clip0_329_300)">
@@ -246,21 +274,24 @@
                     </a>
                 </li>
                 <li>
-                    <a class="nav-link" href="{{ route('c1he3f.faqGuest') }}"> <span class="dz-icon">
+                    <a class="nav-link" href="{{ route('chef_lens.faq') }}">
+                        <span class="dz-icon">
                             <i class="fi fi-rr-comments text-dark"></i>
                         </span>
                         <span>الأسئلة الشائعة</span>
                     </a>
                 </li>
                 <li>
-                    <a class="nav-link" href="{{ route('c1he3f.aboutGuest') }}"> <span class="dz-icon">
+                    <a class="nav-link" href="{{ route('chef_lens.about') }}">
+                        <span class="dz-icon">
                             <i class="fi fi-rr-info text-dark"></i>
                         </span>
                         <span>إعرفنا</span>
                     </a>
                 </li>
                 <li>
-                    <a class="nav-link" href="{{ route('c1he3f.auth.sign-in') }}"> <span class="dz-icon">
+                    <a class="nav-link" href="contact-us.html">
+                        <span class="dz-icon">
                             <i class="feather icon-message-circle"></i>
                         </span>
                         <span>تواصل معنا</span>
@@ -268,34 +299,29 @@
                 </li>
 
                 <li>
-                    <a class="nav-link" href="{{ route('c1he3f.auth.sign-in') }}">
+                    <a class="nav-link" href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                         <span class="dz-icon">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M16.65 3.10008C16.5318 3.04157 16.4033 3.00692 16.2717 2.9981C16.1401 2.98928 16.0081 3.00646 15.8831 3.04866C15.7582 3.09087 15.6428 3.15727 15.5435 3.24407C15.4442 3.33088 15.363 3.43639 15.3045 3.55458C15.246 3.67277 15.2114 3.80132 15.2025 3.9329C15.1937 4.06448 15.2109 4.19652 15.2531 4.32146C15.2953 4.4464 15.3617 4.5618 15.4485 4.66108C15.5353 4.76036 15.6408 4.84157 15.759 4.90008C17.4682 5.74788 18.8405 7.14857 19.6532 8.87467C20.4659 10.6008 20.6712 12.5509 20.2358 14.4084C19.8004 16.2659 18.7499 17.9217 17.2548 19.1069C15.7597 20.292 13.9079 20.937 12 20.937C10.0922 20.937 8.24035 20.292 6.74526 19.1069C5.25018 17.9217 4.19964 16.2659 3.76424 14.4084C3.32885 12.5509 3.53417 10.6008 4.34687 8.87467C5.15956 7.14857 6.5319 5.74788 8.24102 4.90008C8.47972 4.78192 8.6617 4.57379 8.74694 4.32146C8.83217 4.06913 8.81368 3.79327 8.69553 3.55458C8.57737 3.31588 8.36924 3.1339 8.11691 3.04866C7.86458 2.96343 7.58872 2.98192 7.35002 3.10008C5.23724 4.14875 3.54096 5.88079 2.5366 8.01498C1.53223 10.1492 1.27875 12.5602 1.81731 14.8566C2.35587 17.153 3.65485 19.2 5.50334 20.6651C7.35184 22.1302 9.64131 22.9275 12 22.9275C14.3587 22.9275 16.6482 22.1302 18.4967 20.6651C20.3452 19.2 21.6442 17.153 22.1827 14.8566C22.7213 12.5602 22.4678 10.1492 21.4635 8.01498C20.4591 5.88079 18.7628 4.14875 16.65 3.10008V3.10008Z" fill="#FF8484" />
-                                <path d="M12 13.0001C12.2652 13.0001 12.5196 12.8948 12.7071 12.7072C12.8947 12.5197 13 12.2654 13 12.0001V2.00012C13 1.73491 12.8947 1.48055 12.7071 1.29302C12.5196 1.10548 12.2652 1.00012 12 1.00012C11.7348 1.00012 11.4804 1.10548 11.2929 1.29302C11.1054 1.48055 11 1.73491 11 2.00012V12.0001C11 12.2654 11.1054 12.5197 11.2929 12.7072C11.4804 12.8948 11.7348 13.0001 12 13.0001Z" fill="#FF8484" />
-                            </svg>
-                        </span>
-                        <span>تسجيل دخول</span>
-                    </a>
-                    <form id="sign-out-form" action="{{ route('chef.logout') }}" method="POST" class="d-none">
+                            <i class="fa-solid fa-right-to-bracket"></i>
 
+                        </span>
+                        <span>تسجيل خروج</span>
+                    </a>
+
+                    <form id="logout-form" action="{{ route('chef_lens.logout') }}" method="POST" style="display: none;">
                         @csrf
                     </form>
+
+
                 </li>
             </ul>
             <div class="sidebar-bottom" style="direction: ltr;">
-                <div class="dz-mode">
-                    <div class="theme-btn">
-                        <i class="feather icon-sun sun"></i>
-                        <i class="feather icon-moon moon"></i>
-                    </div>
-                </div>
                 <div class="app-info">
-                    <h6 class="name">هم هم - الشريك</h6>
-                    <span class="ver-info">v.4.0.0</span>
+                    <span class="ver-info">
+                        V 1.0.1</span>
                 </div>
             </div>
         </div>
+
 
         <!-- Sidebar End -->
         <div class="dz-nav-floting">
@@ -311,71 +337,70 @@
                             </svg>
                         </a>
 
+                    </div>
+                    <div class="mid-content">
+                        <h4 class="title">إعرفنا</h4>
+                    </div>
+                    <div class="right-content"></div>
                 </div>
-                <div class="mid-content">
-                    <h4 class="title">إعرفنا</h4>
-                </div>
-                <div class="right-content"></div>
-            </div>
-        </header>
+            </header>
 
-        <!-- Page Content Start -->
-        <main class="page-content space-top" style="margin-top: 50px;">
-            <div class="container">
-                <div class="about-section fade-in">
-                    <div class="decorative-elements"></div>
-                    <div class="decorative-elements"></div>
-                    
-                    <div class="text-center">
-                        <div class="info-icon">
-                            <i class="fas fa-info-circle"></i>
+            <!-- Page Content Start -->
+            <main class="page-content space-top" style="margin-top: 50px;">
+                <div class="container">
+                    <div class="about-section fade-in">
+                        <div class="decorative-elements"></div>
+                        <div class="decorative-elements"></div>
+
+                        <div class="text-center">
+                            <div class="info-icon">
+                                <i class="fas fa-info-circle"></i>
+                            </div>
+                        </div>
+
+                        <h1 class="about-title">{{ $about->title_ar }}</h1>
+
+                        <p class="about-description">{{ $about->description_ar }}</p>
+
+                        <div class="about-image-container">
+                            <img src="{{ asset('storage/' . $about->main_image) }}" alt="صورة تعريفية" class="about-image">
                         </div>
                     </div>
-                    
-                    <h1 class="about-title">{{ $about->title_ar }}</h1>
-                    
-                    <p class="about-description">{{ $about->description_ar }}</p>
-                    
-                    <div class="about-image-container">
-                        <img src="{{ asset('storage/' . $about->main_image) }}" 
-                             alt="صورة تعريفية" 
-                             class="about-image">
-                    </div>
                 </div>
-            </div>
-        </main>
-    </div>
+            </main>
+        </div>
 
-    <script src="{{ asset('assets/vendor/bootstrap-touchspin/dist/jquery.bootstrap-touchspin.min.js') }}"></script>
-    <script src="{{ asset('assets/js/jquery.js') }}"></script>
-    <script src="{{ asset('assets/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
-    <script src="{{ asset('assets/vendor/swiper/swiper-bundle.min.js') }}"></script>
-    <script src="{{ asset('assets/js/dz.carousel.js') }}"></script>
-    <script src="{{ asset('assets/js/settings.js') }}"></script>
-    <script src="{{ asset('assets/js/custom.js') }}"></script>
-    <script src="{{ asset('index.js') }}"></script>
+        <script src="{{ asset('assets/vendor/bootstrap-touchspin/dist/jquery.bootstrap-touchspin.min.js') }}"></script>
+        <script src="{{ asset('assets/js/jquery.js') }}"></script>
+        <script src="{{ asset('assets/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+        <script src="{{ asset('assets/vendor/swiper/swiper-bundle.min.js') }}"></script>
+        <script src="{{ asset('assets/js/dz.carousel.js') }}"></script>
+        <script src="{{ asset('assets/js/settings.js') }}"></script>
+        <script src="{{ asset('assets/js/custom.js') }}"></script>
+        <script src="{{ asset('index.js') }}"></script>
 
-    <script>
-        // إضافة تأثيرات تفاعلية
-        document.addEventListener('DOMContentLoaded', function() {
-            // إزالة البريلودر
-            const preloader = document.getElementById('preloader');
-            if (preloader) {
-                setTimeout(() => {
-                    preloader.style.display = 'none';
-                }, 1000);
-            }
+        <script>
+            // إضافة تأثيرات تفاعلية
+            document.addEventListener('DOMContentLoaded', function() {
+                // إزالة البريلودر
+                const preloader = document.getElementById('preloader');
+                if (preloader) {
+                    setTimeout(() => {
+                        preloader.style.display = 'none';
+                    }, 1000);
+                }
 
-            // تأثير التمرير السلس للصورة
-            const aboutImage = document.querySelector('.about-image');
-            if (aboutImage) {
-                aboutImage.addEventListener('load', function() {
-                    this.style.opacity = '1';
-                    this.style.transform = 'translateY(0)';
-                });
-            }
-        });
-    </script>
+                // تأثير التمرير السلس للصورة
+                const aboutImage = document.querySelector('.about-image');
+                if (aboutImage) {
+                    aboutImage.addEventListener('load', function() {
+                        this.style.opacity = '1';
+                        this.style.transform = 'translateY(0)';
+                    });
+                }
+            });
+
+        </script>
 
 </body>
 </html>

@@ -399,15 +399,15 @@
                             @endphp
                             <li>
                                 <div style="margin: 10px 20px; display: flex; align-items: center; justify-content: center; text-align: center;">
-                                    <a href="{{ route('chef_lens') }}" style="border-radius: 0px 12px 12px 0px; height: 129px; padding: 7px; width: 50%; background-color: #a50707; color: white;">
+                                    <a href="{{ route('chef_lens') }}" style="justify-content: center; display: flex; flex-direction: column; border-radius: 0px 12px 12px 0px; height: 129px; padding: 7px; width: 50%; background-color: #a50707; color: white;">
                                         <span style="font-size: 20px;">{{ $response->challenge->responses_count }}</span>
                                         <p style="font-size: 15px;">قبل التحدي</p>
-                                        <span style="font-size: 20px; position: relative; top: 12px;">عرض التحدي</span>
+                                        <span style="font-size: 15px; position: relative; top: 18px;">عرض التحدي</span>
                                     </a>
                                     <img style="position: absolute; width: 79px;" src="{{ asset('assets/images/vs-icon.png') }}" alt="">
-                                    <a href="#" style="justify-content: center; align-items: center; display: flex; flex-direction: column; border-radius: 12px 0px 0px 12px; height: 129px; padding: 7px; width: 50%; background-color: #ffffff; text-align: center;">
+                                    <a href="#" style="color: white; justify-content: center; align-items: center; display: flex; flex-direction: column; border-radius: 12px 0px 0px 12px; height: 129px; padding: 7px; width: 50%; background-color: #000000; text-align: center;">
                                         <div>
-                                            <img style="width: 40px; height: 40px; border-radius: 50%;" src="{{ asset('storage/' . $response->challenge->chef->chefProfile->official_image) }}" alt="">
+                                            <img style="margin:auto; width: 40px; height: 40px; border-radius: 50%;" src="{{ asset('storage/' . $response->challenge->chef->chefProfile->official_image) }}" alt="">
                                             <span>{{ $response->challenge->chef->name }}</span>
                                         </div>
                                         <span style="font-size: 15px;">
@@ -417,7 +417,7 @@
                                             {{ $remainingTime->d }} - {{ $remainingTime->h }} - {{ $remainingTime->i }} - {{ $remainingTime->s }}
                                             @endif
                                         </span>
-                                        <span style="font-size: 20px;">للمستخدمين</span>
+                                        <span style="font-size: 15px;">{{ $response->challenge->challenge_type == 'users' ? 'للمستخدمين' : 'للطهاة' }}</span>
                                     </a>
                                 </div>
                             </li>

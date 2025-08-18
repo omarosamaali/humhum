@@ -51,7 +51,9 @@ Route::prefix('c1he3f')->middleware(['auth'])->group(function () {
 
 Route::get('/', function () {
     if (!Auth::check()) {
-        $chefs = ChefProfile::all();
+        $chefs = ChefProfile::whereHas('user', function ($query) {
+            $query->where('status', 'فعال');
+        })->get();
         $kitchens = Kitchens::all();
         return view('welcome', compact('chefs', 'kitchens'));
     }
