@@ -589,7 +589,7 @@
             </div>
         </div>
 
-        <div class="hero-section">
+        <div class="hero-section" style="min-height: 503px;">
             <div class="container grid">
                 <div class="app-card">
                     <div class="app-icon-container">
