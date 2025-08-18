@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hum Hum | هم هم</title>
-    <link rel="icon" href="{{ asset('assets/images/app-logo/favicon.png') }}">
+    <link rel="icon" href="{{ asset('assets/images/app-logo/Group.png') }}">
     <!-- CSS only -->
     <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/bootstrap.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/owl.carousel.min.css') }}">
@@ -62,7 +62,7 @@
 
         .container.grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
             grid-gap: 30px;
             align-items: center;
         }
@@ -590,7 +590,7 @@
         </div>
 
         <div class="hero-section" style="min-height: 503px;">
-            <div class="container grid">
+            <div style="max-width: 1100px;" class="container grid">
                 <div class="app-card">
                     <div class="app-icon-container">
                         <img src="../assets/img/4.png" alt="تطبيق هم هم">
@@ -598,10 +598,10 @@
                     <h3 class="app-title">تطبيق هم هم</h3>
                     <div class="download-buttons">
                         <a href="#" class="download-btn">
-                            <i class="fa-brands fa-google-play"></i>
+                            <i style="font-size: 13px;" class="fa-brands fa-google-play"></i>
                         </a>
                         <a href="#" class="download-btn apple">
-                            <i class="fa-brands fa-apple"></i>
+                            <i style="font-size: 13px;" class="fa-brands fa-apple"></i>
                         </a>
                     </div>
                 </div>
@@ -613,10 +613,10 @@
                     <h3 class="app-title">تطبيق الشريك</h3>
                     <div class="download-buttons">
                         <a href="#" class="download-btn">
-                            <i class="fa-brands fa-google-play"></i>
+                            <i style="font-size: 13px;" class="fa-brands fa-google-play"></i>
                         </a>
                         <a href="#" class="download-btn apple">
-                            <i class="fa-brands fa-apple"></i>
+                            <i style="font-size: 13px;" class="fa-brands fa-apple"></i>
                         </a>
                     </div>
                 </div>
@@ -628,10 +628,10 @@
                     <h3 class="app-title">تطبيق الطهاه</h3>
                     <div class="download-buttons">
                         <a href="#" class="download-btn">
-                            <i class="fa-brands fa-google-play"></i>
+                            <i style="font-size: 13px;" class="fa-brands fa-google-play"></i>
                         </a>
                         <a href="#" class="download-btn apple">
-                            <i class="fa-brands fa-apple"></i>
+                            <i style="font-size: 13px;" class="fa-brands fa-apple"></i>
                         </a>
                     </div>
                 </div>
@@ -643,10 +643,10 @@
                     <h3 class="app-title">تطبيق عدسة الطهاه</h3>
                     <div class="download-buttons">
                         <a href="#" class="download-btn">
-                            <i class="fa-brands fa-google-play"></i>
+                            <i style="font-size: 13px;" class="fa-brands fa-google-play"></i>
                         </a>
                         <a href="#" class="download-btn apple">
-                            <i class="fa-brands fa-apple"></i>
+                            <i style="font-size: 13px;" class="fa-brands fa-apple"></i>
                         </a>
                     </div>
                 </div>
@@ -729,9 +729,9 @@
                     @foreach ($chefs as $chef)
                     <div class="swiper-slide">
                         <div class="chef">
-                            <img alt="الشيف {{ $chef->user->name }}" style="height: 411px; width: 345px; object-fit: fill;" src="{{ asset('storage/' . $chef->official_image) }}">
+                            <img alt="الشيف {{ $chef->user->name }}" style="height: 350px; width: 276px; object-fit: fill;" src="{{ asset('storage/' . $chef->official_image) }}">
 
-                            <div class="chef-text" style="flex-direction: column;">
+                            <div class="chef-text" style="width: 281px; height: 281px; flex-direction: column;">
                                 <span style="display: block;">
                                     @php
                                     $countryName = '';
@@ -1112,7 +1112,7 @@
                     <div class="col-xl-4">
                         <div class="reserve-table-text" style="    margin-bottom: 49px;
 ">
-                            <h3 style="width: 239px;">تواصل معنا</h3>
+                            <h3 style="width: 239px; font-size: 40px;">تواصل معنا</h3>
                         </div>
                     </div>
                     <div class="col-xl-8">
