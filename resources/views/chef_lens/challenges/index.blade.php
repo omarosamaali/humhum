@@ -318,7 +318,7 @@
 <span class="alert alert-success">{{ session('message') }}</span>
 @endif
 
-<div class="video-reels-container" id="videoContainer">
+<div class="video-reels-container" id="videoContainer" >
     @foreach($challenges as $video)
     <div class="video-reel-item" data-video-id="{{ $video->id }}" data-chef-id="{{ $video->user->chefProfile->id ?? '' }}" data-video-type="challenge">
         <video class="myVideo video-reel" data-index="{{ $loop->index }}" autoplay preload="metadata" muted>
@@ -374,7 +374,8 @@
             المتصفح لا يدعم HTML5 video.
         </video>
         <div class="content">
-            <div id="container--btns" style="margin-bottom: 48px;">
+            <div id="container--btns" style="direction: ltr; margin-bottom: 48px;">
+
                 <button class="myBtn video-btn bookmark-btn" onclick="toggleBookmark('snap', {{ $video->id }}, this)">
                     <i class="fa-solid fa-bookmark bookmark-icon {{ Auth::check() && in_array(Auth::id(), $video->bookmarked_by ?? []) ? 'bookmarked' : '' }}"></i>
                     <span class="bookmark-count">{{ $video->bookmarks ?? 0 }}</span>

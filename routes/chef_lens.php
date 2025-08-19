@@ -14,6 +14,20 @@ use App\Models\Report;
 use App\Models\AboutUs;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Admin\ReportController;
+use App\Http\Controllers\Admin\ChefLensUserController;
+use App\Http\Controllers\Admin\ChefLensVideosController;
+use App\Http\Controllers\Admin\ChefLensChallengesController;
+
+Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(
+    function () {
+        Route::get('/dashboard', function () {
+            return view('admin.dashboard');
+        })->name('dashboard');
+        Route::resource('chefLensUsers', ChefLensUserController::class);
+        Route::resource('chefLensVideos', ChefLensVideosController::class);
+        Route::resource('chefLensChallenges', ChefLensChallengesController::class);
+    }
+);
 
 Route::get('/chef_lens/about', function () {
     $about = AboutUs::latest()->first();
@@ -101,6 +115,7 @@ Route::post('chef-profile/report-by-user/{userId}', function (Request $request, 
     ]);
 })->name('chef.report.by.user');
 Route::get('challenge/profileDisplayed/{chefProfile}', function (ChefProfile $chefProfile) {
+
     $userReported = false;
     if (auth()->check()) {
         $userReported = Report::where('user_id', auth()->id())
@@ -115,7 +130,22 @@ Route::get('challenge/profileDisplayed/{chefProfile}', function (ChefProfile $ch
     $challanges = Challenge::where('user_id', $chefProfile->user_id)->get();
     $snapsCount = Snap::where('user_id', $chefProfile->user_id)->count();
 
-    return view('chef_lens.challenges.profileDisplayed', compact('userReported', 'snapsCount', 'challanges', 'snapsWithRecpies', 'snapsWithOutRecpies', 'chefProfile', 'challangeCount', 'likesCount'));
+    // Get social media links for the chef
+    $socialMedia = \App\Models\SocialMedia::where('user_id', $chefProfile->user_id)
+        ->where('is_active', true)
+        ->first();
+
+    return view('chef_lens.challenges.profileDisplayed', compact(
+        'userReported',
+        'snapsCount',
+        'challanges',
+        'snapsWithRecpies',
+        'snapsWithOutRecpies',
+        'chefProfile',
+        'challangeCount',
+        'likesCount',
+        'socialMedia'
+    ));
 })->name('chef_lens.profileDisplayed');
 Route::get('admin/reports/{report}', [ReportController::class, 'show'])->name('admin.reports.show');
 Route::get('challenges-own', [ChallengeController::class, 'challengesOwn'])
@@ -133,7 +163,31 @@ Route::get('chef_lens/edit-profile', function () {
 
 Route::get('chef_lens/profile', function () {
     $user = Auth::user();
-    return view('chef_lens.profile.index', compact('user'));
+
+    // Tab 1: Snaps اللي عملها لايك وميكنوش ليها وصفة مرتبطة
+    $snapsWithOutRecipes = Snap::whereJsonContains('liked_by', $user->id)
+        ->whereNull('recipe_id') // أو whereDoesntHave('recipe') لو عندك relation
+        ->whereNotNull('video_path')
+        ->get();
+
+    // Tab 2: التحديات اللي قبلها (من جدول challenges_responses)
+    $acceptedChallenges = Challenge::whereHas('responses', function ($query) use ($user) {
+        $query->where('user_id', $user->id);
+    })->whereNotNull('announcement_path')->get();
+
+    // Tab 3: Snaps مع الوصفات اللي عملها لايك
+    $snapsWithRecipes = Snap::whereJsonContains('liked_by', $user->id)
+        ->whereNotNull('recipe_id') // أو whereHas('recipe') لو عندك relation
+        ->whereNotNull('video_path')
+        ->with('recipe') // لجلب الوصفة المرتبطة
+        ->get();
+
+    return view('chef_lens.profile.index', compact(
+        'user',
+        'snapsWithOutRecipes',
+        'acceptedChallenges',
+        'snapsWithRecipes'
+    ));
 })->name('chef_lens.profile');
 
 Route::middleware('auth.chef')->group(

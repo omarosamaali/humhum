@@ -83,71 +83,36 @@
                     {{ $user->role }}</div>
             </div>
         </div>
-        <td>
-            @php
-            $statusDisplay = '';
-            $badgeClass = '';
-            switch ($user->status) {
-            case 'فعال':
-            $statusDisplay = 'فعال';
-            $badgeClass = 'success';
-            break;
-            case 'محذوف':
-            $statusDisplay = 'محذوف';
-            $badgeClass = 'danger';
-            break;
-            case 'غير فعال':
-            $statusDisplay = 'غير فعال';
-            $badgeClass = 'secondary';
-            break;
-            case 'بانتظار التفعيل':
-            $statusDisplay = 'بانتظار التفعيل';
-            $badgeClass = 'warning';
-            break;
-            default:
-            $statusDisplay = $user->status;
-            $badgeClass = 'secondary';
-            break;
-            }
-            if ($user->role === 'طاه' && $user->chefProfile) {
-            $chefProfile = $user->chefProfile;
-            $isOfficialImageComplete = !empty($chefProfile->official_image);
-            $isContractTypeComplete = !empty($chefProfile->contract_type);
-            $isBioComplete = !empty($chefProfile->bio);
-            $isContractSigned = !empty($user->contract_signed_at);
-            $isProfileDataComplete =
-            $isOfficialImageComplete &&
-            $isContractTypeComplete &&
-            $isBioComplete &&
-            $isContractSigned;
-            if ($isProfileDataComplete) {
-            if ($user->status === 'فعال') {
-            $statusDisplay = 'مفعل';
-            $badgeClass = 'success';
-            } elseif ($user->status === 'مرفوض') {
-            $statusDisplay = 'محذوف';
-            $badgeClass = 'danger';
-            } elseif ($user->status === 'محذوف') {
-            $statusDisplay = 'محذوف';
-            $badgeClass = 'danger';
-            } else {
-            $statusDisplay = 'جاهز للتفعيل';
-            $badgeClass = 'info';
-            }
-            } else {
-            $statusDisplay = 'بانتظار إستكمال البيانات';
-            $badgeClass = 'warning';
-            }
-            }
-            @endphp
-        </td>
+        @php
+        $statusName = '';
+        switch (strtolower($user->status)) {
+        case 'فعال':
+        $statusName = 'فعال';
+        break;
+        case 'غير فعال':
+        $statusName = 'غير فعال';
+        break;
+         case 'محذوف':
+         $statusName = 'محذوف';
+         break;
+
+        case 'بانتظار التفعيل':
+        $statusName = 'بانتظار استكمال البيانات';
+        break;
+        default:
+        $statusName = 'غير محدد';
+        break;
+        }
+        @endphp
+
         <div class="col-md-6">
             <div class="detail-item">
                 <span class="detail-label">الحالة:</span>
                 <div class="detail-value">
-                    <span class="badge {{ $user->getStatusBadgeClass() }}" style="color: black;">
-                        {{ $statusDisplay }}
+                    <span class="badge {{ $user->getStatusBadgeClass() }}" style="color: black;"> {{ $statusName }}
                     </span>
+
+
                 </div>
             </div>
         </div>
@@ -175,10 +140,13 @@
             <div class="detail-item">
                 <span class="detail-label">الدولة:</span>
                 <div class="detail-value">
+
+
                     <h6 class="title">
                         @php
                         $countryName = '';
                         switch (strtolower($user->chefProfile->country)) {
+
                         case 'sa':
                         $countryName = 'المملكة العربية السعودية';
                         break;
@@ -257,6 +225,7 @@
                         @endif
                     </h6>
                 </div>
+
             </div>
         </div>
 
@@ -284,6 +253,7 @@
         </div>
     </div>
 
+    {{-- إضافة حقول الاشتراك هنا --}}
     @if($user->chefProfile->contract_type === 'annual_subscription')
     <div class="row mt-3">
         <div class="col-md-12">
@@ -313,6 +283,7 @@
             </div>
         </div>
         @endif
+        {{-- إذا لم يتم تحديد أي سعر اشتراك، يمكنك عرض رسالة --}}
         @if(
         !$user->chefProfile->subscription_3_months_price &&
         !$user->chefProfile->subscription_6_months_price &&

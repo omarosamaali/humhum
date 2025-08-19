@@ -32,7 +32,6 @@ class Snap extends Model
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
     ];
-    
 
     public function user()
     {
@@ -53,6 +52,7 @@ class Snap extends Model
     {
         return $this->belongsTo(MainCategories::class, 'main_category_id');
     }
+
     public function recipe()
     {
         return $this->belongsTo(Recipe::class);

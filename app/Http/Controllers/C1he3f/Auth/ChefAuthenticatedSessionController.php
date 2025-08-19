@@ -36,7 +36,7 @@ class ChefAuthenticatedSessionController extends Controller
         'ne' => 'النيبالية',
         'ps' => 'الأفغانية',
     ];
-    
+
     public function createLogin(): \Illuminate\View\View
     {
         return view('c1he3f.auth.welcome');
@@ -55,6 +55,12 @@ class ChefAuthenticatedSessionController extends Controller
 
         // **التحقق الإضافي للدور (Role Check) قبل محاولة تسجيل الدخول**
         $user = User::where('email', $credentials['email'])->first();
+
+        if (!$user || $user->system !== 'طاه') {
+            return back()->withErrors([
+                'email' => 'هذا الحساب غير مسجل للدخول إلى هذا النظام.',
+            ])->onlyInput('email');
+        }
 
         // لو المستخدم مش موجود أو الـ role بتاعه مش 'طاه'، ارفض تسجيل الدخول
         if (!$user || $user->role !== 'طاه') {
@@ -112,9 +118,9 @@ class ChefAuthenticatedSessionController extends Controller
     }
 
 
-/**
- * Display the registration view. (For Chefs)
- */
+    /**
+     * Display the registration view. (For Chefs)
+     */
     public function create(): \Illuminate\View\View // <--- هذه لعرض فورم التسجيل
     {
         return view('c1he3f.auth.sign-up');

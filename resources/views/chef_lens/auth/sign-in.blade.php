@@ -80,10 +80,11 @@
         .input-group:focus-within .form-control {
             border-color: #5a5c77;
         }
-        
+
         ::selection {
-        background: #5a5c77;
+            background: #5a5c77;
         }
+
     </style>
     <script src="https://cdn.tailwindcss.com"></script>
 
@@ -117,6 +118,7 @@
                         <p>مرحب بك <br /> في أول تطبيق تواصل اجتماعي خاص بالطهاه</p>
                     </div>
                     <div class="account-section">
+
                         <form class="m-b30" action="{{ route('chef_lens.login.post') }}" method="POST">
                             @csrf
 
@@ -127,6 +129,7 @@
                                 </div>
                                 @error('email')
                                 <span class="text-danger">{{ $message }}</span>
+
                                 @enderror
                             </div>
 

@@ -27,6 +27,16 @@ use App\Models\Types;
 use App\Models\Terms;
 use Illuminate\Support\Facades\DB;
 use App\Models\ChallengeReview;
+use App\Http\Controllers\SocialMediaController;
+
+Route::group(['prefix' => 'c1he3f/profile'], function () {
+    Route::get('/social-media', [SocialMediaController::class, 'index'])->name('social-media.index');
+    Route::post('/social-media', [SocialMediaController::class, 'store'])->name('social-media.store');
+    Route::post('/social-media/toggle-status', [SocialMediaController::class, 'toggleStatus'])->name('social-media.toggle-status');
+});
+
+// API Routes for getting social media links
+Route::get('/api/social-media', [SocialMediaController::class, 'getSocialMediaLinks'])->name('api.social-media');
 
 Route::get('c1he3f/auth/sign-in', function () {
     $kitchens = Kitchens::all();

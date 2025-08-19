@@ -48,6 +48,7 @@
                     </div>
                 </div>
             </header>
+
             <div class="profile-section">
                 <div class="profile-container">
                     <div class="profile-info">
@@ -150,15 +151,61 @@
                 <span class="country">{{ $countryName }}</span>
                 @endif
                 <img class="flag" src="https://flagcdn.com/24x18/{{ strtolower($chefProfile->country) ?: 'default' }}.png" alt="">
+            </div>
+<!-- عرض أنظف - يظهر فقط الروابط المتاحة -->
+@if($socialMedia && $socialMedia->hasAnyLink())
+<div class="video-reels-container-icons">
+    @if($socialMedia->youtube)
+    <div>
+        <a href="{{ $socialMedia->youtube }}" target="_blank" rel="noopener noreferrer" title="YouTube">
+            <i class="fa-brands fa-youtube"></i>
+        </a>
+    </div>
+    @endif
 
-            </div>
-            <div class="video-reels-container-icons">
-                <div><i class="fa-brands fa-youtube"></i></div>
-                <div><i class="fa-brands fa-tiktok"></i></div>
-                <div><i class="fa-brands fa-instagram"></i></div>
-                <div><i class="fa-brands fa-snapchat"></i></div>
-                <div><i class="fa-brands fa-facebook"></i></div>
-            </div>
+    @if($socialMedia->tiktok)
+    <div>
+        <a href="{{ $socialMedia->tiktok }}" target="_blank" rel="noopener noreferrer" title="TikTok">
+            <i class="fa-brands fa-tiktok"></i>
+        </a>
+    </div>
+    @endif
+
+    @if($socialMedia->instagram)
+    <div>
+        <a href="{{ $socialMedia->instagram }}" target="_blank" rel="noopener noreferrer" title="Instagram">
+            <i class="fa-brands fa-instagram"></i>
+        </a>
+    </div>
+    @endif
+
+    @if($socialMedia->snapchat)
+    <div>
+        <a href="{{ $socialMedia->snapchat }}" target="_blank" rel="noopener noreferrer" title="Snapchat">
+            <i class="fa-brands fa-snapchat"></i>
+        </a>
+    </div>
+    @endif
+
+    @if($socialMedia->facebook)
+    <div>
+        <a href="{{ $socialMedia->facebook }}" target="_blank" rel="noopener noreferrer" title="Facebook">
+            <i class="fa-brands fa-facebook"></i>
+        </a>
+    </div>
+    @endif
+</div>
+@endif
+
+<!-- أو إذا كنت تريد رسالة عند عدم وجود روابط -->
+@if(!$socialMedia || !$socialMedia->hasAnyLink())
+<div class="no-social-media">
+    <p style="text-align: center; color: #999; font-size: 14px;">
+        لا توجد روابط تواصل اجتماعي
+    </p>
+</div>
+@endif
+
             <p class="bio-paragraph">
                 {{ $chefProfile->bio }}
             </p>

@@ -273,7 +273,7 @@
 </div>
 @endif
 
-<div class="mb-4 filter-buttons d-flex justify-content-center">
+{{-- <div class="mb-4 filter-buttons d-flex justify-content-center">
     <a href="{{ route('admin.users.index') }}" class="btn {{ request()->get('role') == '' ? 'btn-primary' : 'btn-outline-primary' }}">
         عرض الجميع
     </a>
@@ -289,7 +289,7 @@
     <a href="{{ route('admin.users.index', ['role' => 'طاه']) }}" class="btn {{ request()->get('role') == 'طاه' ? 'btn-primary' : 'btn-outline-primary' }}">
         الطهاة
     </a>
-</div>
+</div> --}}
 
 <div class="table-responsive">
     <table class="table table-hover">
@@ -299,7 +299,7 @@
                 <th>تاريخ الإضافة</th>
                 <th>الاسم</th>
                 <th>البريد الإلكتروني</th>
-                <th>النظام</th>
+                <th>نظام</th>
                 <th>الصلاحية</th>
                 <th>الحالة</th>
                 <th>الإجراءات</th>
@@ -312,14 +312,7 @@
                 <td>{{ $user->created_at->format('d/m/Y') }}</td>
                 <td>{{ $user->name }}</td>
                 <td>{{ $user->email }}</td>
-                <?php
-                    $systemPlurals = [
-                        'مستخدم' => 'المستخدمين',
-                        'مدير' => 'المدراء',
-                        'طاه' => 'الطهاة',
-                    ]
-                ?>
-                <td>{{ $systemPlurals[$user->system] ?? $user->system }}</td>
+                <td>المستخدمين</td>
                 <td>
                     <span class="badge {{ $user->getRoleBadgeClass() }}">
                         {{ $user->role }}

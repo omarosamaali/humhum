@@ -4,6 +4,10 @@
 @import url("./../icons/themify-icons/css/themify-icons.css");
 @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@200..1000&family=Cairo:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
 
+body.theme-dark main.page-content {
+  background: #101010;
+}
+
 :root {
   --primary: #e00000;
   --primary-dark: black;
@@ -123,7 +127,7 @@
   --bs-link-color: #e00000;
   --bs-link-color-rgb: 4, 118, 78;
   --bs-link-decoration: underline;
-  --bs-link-hover-color: #035e3e;
+  --bs-link-hover-color: #e00000;
   --bs-link-hover-color-rgb: 3, 94, 62;
   --bs-code-color: #ff0081;
   --bs-highlight-color: #1B1B1B;
@@ -3387,12 +3391,12 @@ fieldset:disabled .btn {
   --bs-btn-bg: #e00000;
   --bs-btn-border-color: #e00000;
   --bs-btn-hover-color: #fff;
-  --bs-btn-hover-bg: #036442;
-  --bs-btn-hover-border-color: #035e3e;
+  --bs-btn-hover-bg: #e00000;
+  --bs-btn-hover-border-color: #e00000;
   --bs-btn-focus-shadow-rgb: 42, 139, 105;
   --bs-btn-active-color: #fff;
-  --bs-btn-active-bg: #035e3e;
-  --bs-btn-active-border-color: #03593b;
+  --bs-btn-active-bg: #e00000;
+  --bs-btn-active-border-color: #e00000;
   --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
   --bs-btn-disabled-color: #fff;
   --bs-btn-disabled-bg: #e00000;
@@ -26131,8 +26135,7 @@ label input {
   margin: auto;
   top: 0px;
   height: 81px;
-  z-index: 9999999999;
-
+  z-index: 9;
 }
 
 .dz-authentication-area .main-logo .back-btn {
@@ -26596,7 +26599,7 @@ label input {
 
 .profile-area .author-bx {
   text-align: center;
-  padding: 30px 0;
+  padding: 13px 0;
 }
 
 .profile-area .author-bx .dz-media {

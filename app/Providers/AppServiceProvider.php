@@ -25,46 +25,40 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        View::composer('layouts.chef_lens', function ($view) {
-            if (Auth::check()) {
-                $user = Auth::user();
+        View::composer(['layouts.chef_lens', 'chef_lens.profile.index'], function ($view) {
+            $user = Auth::user();
 
-                // Count saved Challenges and Snaps
-                $savedChallengesCount = Challenge::whereJsonContains('bookmarked_by', $user->id)
-                    ->whereNotNull('announcement_path')
-                    ->count();
+            // Count saved Challenges and Snaps
+            $savedChallengesCount = Challenge::whereJsonContains('bookmarked_by', $user->id)
+                ->whereNotNull('announcement_path')
+                ->count();
 
-                $savedSnapsCount = Snap::whereJsonContains('bookmarked_by', $user->id)
-                    ->whereNotNull('video_path')
-                    ->count();
+            $savedSnapsCount = Snap::whereJsonContains('bookmarked_by', $user->id)
+                ->whereNotNull('video_path')
+                ->count();
 
-                $savedVideosCount = $savedChallengesCount + $savedSnapsCount;
+            $savedVideosCount = $savedChallengesCount + $savedSnapsCount;
 
-                // Count liked Challenges and Snaps
-                $likedChallengesCount = Challenge::whereJsonContains('liked_by', $user->id)
-                    ->whereNotNull('announcement_path')
-                    ->count();
+            // Count liked Challenges and Snaps
+            $likedChallengesCount = Challenge::whereJsonContains('liked_by', $user->id)
+                ->whereNotNull('announcement_path')
+                ->count();
 
-                $likedSnapsCount = Snap::whereJsonContains('liked_by', $user->id)
-                    ->whereNotNull('video_path')
-                    ->count();
+            $likedSnapsCount = Snap::whereJsonContains('liked_by', $user->id)
+                ->whereNotNull('video_path')
+                ->count();
 
-                $likedVideosCount = $likedChallengesCount + $likedSnapsCount;
+            $likedVideosCount = $likedChallengesCount;
 
-                $acceptedChallengesCount = ChallengeResponse::where('user_id', Auth::user()->id)->count();
+            $snapsCcount = $likedSnapsCount;
+            $acceptedChallengesCount = ChallengeResponse::where('user_id', Auth::user()->id)->count();
 
-                $view->with([
-                    'savedVideosCount' => $savedVideosCount,
-                    'likedVideosCount' => $likedVideosCount,
-                    'acceptedChallengesCount' => $acceptedChallengesCount,
-                ]);
-            } else {
-                $view->with([
-                    'savedVideosCount' => 0,
-                    'likedVideosCount' => 0,
-                    'acceptedChallengesCount' => 0
-                ]);
-            }
+            $view->with([
+                'savedVideosCount' => $savedVideosCount,
+                'likedVideosCount' => $likedVideosCount,
+                'snapsCcount' => $snapsCcount,
+                'acceptedChallengesCount' => $acceptedChallengesCount,
+            ]);
         });
 
         Paginator::useTailwind();

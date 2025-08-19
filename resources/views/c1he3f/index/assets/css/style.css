@@ -234,7 +234,7 @@
   --bs-link-color: #e00000;
   --bs-link-color-rgb: 4, 118, 78;
   --bs-link-decoration: underline;
-  --bs-link-hover-color: #035e3e;
+  --bs-link-hover-color: #e00000;
   --bs-link-hover-color-rgb: 3, 94, 62;
   --bs-code-color: #ff0081;
   --bs-highlight-color: #1B1B1B;
@@ -3498,11 +3498,11 @@ fieldset:disabled .btn {
   --bs-btn-border-color: #e00000;
   --bs-btn-hover-color: #fff;
   --bs-btn-hover-bg: #036442;
-  --bs-btn-hover-border-color: #035e3e;
+  --bs-btn-hover-border-color: #e00000;
   --bs-btn-focus-shadow-rgb: 42, 139, 105;
   --bs-btn-active-color: #fff;
-  --bs-btn-active-bg: #035e3e;
-  --bs-btn-active-border-color: #03593b;
+  --bs-btn-active-bg: #e00000;
+  --bs-btn-active-border-color: #e00000;
   --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
   --bs-btn-disabled-color: #fff;
   --bs-btn-disabled-bg: #e00000;
@@ -26249,8 +26249,7 @@ label input {
   margin: auto;
   top: 0px;
   height: 81px;
-  z-index: 9999999999;
-
+  z-index: 9;
 }
 
 .dz-authentication-area .main-logo .back-btn {

@@ -135,144 +135,15 @@
             <div class="col-md-6">
                 <div class="detail-item">
                     <span class="detail-label">الحالة:</span>
-                  @php
-                  // تحديد الحالات الأساسية للمستخدمين
-                  $basicStatuses = [
-                  'فعال' => ['display' => 'فعال', 'class' => 'success'],
-                  'غير فعال' => ['display' => 'غير فعال', 'class' => 'secondary'],
-                  'محذوف' => ['display' => 'محذوف', 'class' => 'danger'],
-                  'بانتظار التفعيل' => ['display' => 'بانتظار التفعيل', 'class' => 'warning'],
-                  'مرفوض' => ['display' => 'مرفوض', 'class' => 'danger']
-                  ];
-
-                  $statusDisplay = '';
-                  $badgeClass = '';
-
-                  // للمستخدمين العاديين
-                  if ($user->role !== 'طاه') {
-                  $status = $basicStatuses[$user->status] ?? ['display' => $user->status, 'class' => 'secondary'];
-                  $statusDisplay = $status['display'];
-                  $badgeClass = $status['class'];
-                  }
-                  // للطهاة
-                  else {
-                  $chefProfile = $user->chefProfile;
-
-                  if ($chefProfile) {
-                  // فحص اكتمال البيانات
-                  $isOfficialImageComplete = !empty($chefProfile->official_image);
-                  $isContractTypeComplete = !empty($chefProfile->contract_type);
-                  $isBioComplete = !empty($chefProfile->bio);
-                  $isContractSigned = !empty($user->contract_signed_at);
-
-                  $isProfileDataComplete = $isOfficialImageComplete &&
-                  $isContractTypeComplete &&
-                  $isBioComplete &&
-                  $isContractSigned;
-
-                  if ($isProfileDataComplete) {
-                  // البيانات مكتملة - عرض الحالة حسب الستاتس
-                  switch ($user->status) {
-                  case 'فعال':
-                  $statusDisplay = 'مفعل';
-                  $badgeClass = 'success';
-                  break;
-                  case 'مرفوض':
-                  case 'محذوف':
-                  $statusDisplay = 'محذوف';
-                  $badgeClass = 'danger';
-                  break;
-                  case 'بانتظار التفعيل':
-                  $statusDisplay = 'جاهز للتفعيل';
-                  $badgeClass = 'info';
-                  break;
-                  default:
-                  $statusDisplay = 'جاهز للتفعيل';
-                  $badgeClass = 'info';
-                  break;
-                  }
-                  } else {
-                  // البيانات غير مكتملة
-                  $statusDisplay = 'بانتظار إستكمال البيانات';
-                  $badgeClass = 'warning';
-                  }
-                  } else {
-                  // لا يوجد ملف شخصي للطاه
-                  $statusDisplay = 'بانتظار إنشاء الملف الشخصي';
-                  $badgeClass = 'secondary';
-                  }
-                  }
-                  @endphp
-
-                  {{-- عرض الحالة --}}
-                  <span class="badge bg-{{ $badgeClass }}">{{ $statusDisplay }}</span>
-
-                  {{-- قائمة الحالات المنسدلة المحسنة --}}
-                  <select class="form-select" name="status" id="status" required>
-                      <option value="">اختر الحالة</option>
-
-                      @if($user->role === 'طاه')
-                      {{-- خيارات خاصة بالطهاة --}}
-                      <option value="فعال" {{ old('status', $user->status) == 'فعال' ? 'selected' : '' }}>
-                          فعال (مفعل)
-                      </option>
-                      <option value="بانتظار التفعيل" {{ old('status', $user->status) == 'بانتظار التفعيل' ? 'selected' : '' }}>
-                          بانتظار التفعيل
-                      </option>
-                      <option value="غير فعال" {{ old('status', $user->status) == 'غير فعال' ? 'selected' : '' }}>
-                          غير فعال
-                      </option>
-                      <option value="مرفوض" {{ old('status', $user->status) == 'مرفوض' ? 'selected' : '' }}>
-                          مرفوض
-                      </option>
-                      <option value="محذوف" {{ old('status', $user->status) == 'محذوف' ? 'selected' : '' }}>
-                          محذوف
-                      </option>
-                      @else
-                      {{-- خيارات للمستخدمين العاديين --}}
-                      <option value="فعال" {{ old('status', $user->status) == 'فعال' ? 'selected' : '' }}>
-                          فعال
-                      </option>
-                      <option value="غير فعال" {{ old('status', $user->status) == 'غير فعال' ? 'selected' : '' }}>
-                          غير فعال
-                      </option>
-                      <option value="بانتظار التفعيل" {{ old('status', $user->status) == 'بانتظار التفعيل' ? 'selected' : '' }}>
-                          بانتظار التفعيل
-                      </option>
-                      <option value="محذوف" {{ old('status', $user->status) == 'محذوف' ? 'selected' : '' }}>
-                          محذوف
-                      </option>
-                      @endif
-                  </select>
-
-                  {{-- معلومات إضافية للطهاة --}}
-                  @if($user->role === 'طاه' && $user->chefProfile)
-                  <div class="mt-2">
-                      <small class="text-muted">
-                          حالة البيانات:
-                          @if($isProfileDataComplete ?? false)
-                          <span class="text-success">مكتملة ✓</span>
-                          @else
-                          <span class="text-warning">غير مكتملة</span>
-                          <ul class="mt-1 mb-0" style="font-size: 0.8rem;">
-                              @if(empty($chefProfile->official_image))
-                              <li>الصورة الرسمية مفقودة</li>
-                              @endif
-                              @if(empty($chefProfile->contract_type))
-                              <li>نوع العقد مفقود</li>
-                              @endif
-                              @if(empty($chefProfile->bio))
-                              <li>السيرة الذاتية مفقودة</li>
-                              @endif
-                              @if(empty($user->contract_signed_at))
-                              <li>العقد غير موقع</li>
-                              @endif
-                          </ul>
-                          @endif
-                      </small>
-                  </div>
-                  @endif
-
+                    <select class="form-select" name="status" id="status" required>
+                        <option value="فعال" {{ old('status', $user->status) == 'فعال' ? 'selected' : '' }}>فعال
+                        </option>
+                        <option value="غير فعال" {{ old('status', $user->status) == 'غير فعال' ? 'selected' : '' }}>غير
+                            فعال</option>
+                        <option value="بانتظار التفعيل" 
+                        {{ old('status', $user->status) == 'بانتظار التفعيل' ? 'selected' : '' }}>بإنتظار
+                            إستكمال البيانات</option>
+                    </select>
                     @error('status')
                     <div class="text-danger">{{ $message }}</div>
                     @enderror

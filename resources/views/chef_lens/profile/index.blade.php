@@ -44,6 +44,8 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700;800;900&family=Raleway:wght@300;400;500&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" href="{{ asset('assets/css/profileDisplayed.css') }}">
+
 
     <style>
         .widget_getintuch.pb-15.profile {
@@ -125,7 +127,6 @@
 
 <body>
     <div class="page-wrapper">
-        <!-- Preloader -->
         <div id="preloader">
             <div class="loader">
                 <div class="spinner-border text-primary" role="status">
@@ -133,41 +134,62 @@
                 </div>
             </div>
         </div>
-        <!-- Preloader end-->
-
-        <!-- Header -->
         <header class="header header-fixed" style="background-color: white !important;">
             <div class="header-content">
+                <div class="right-content d-flex align-items-center gap-4">
+                  <a href="javascript:void(0);" onclick="confirmAccountDeletion();">
+                      {{-- الغاء الحساب --}}
+                      <i style="    color: red;
+    border: 1px solid red;
+    width: 28px;
+    height: 28px;
+    text-align: center;
+    align-items: center;
+    display: grid
+;
+    border-radius: 5px;" class="fa-solid fa-trash"></i>
+
+                  </a>
+
+                </div>
+                <div class="mid-content">
+                    <h4 class="title">مدير الحساب</h4>
+                </div>
                 <div class="left-content">
                     <a href="javascript:void(0);" class="back-btn">
                         <i class="fa-solid fa-angle-left"></i>
                     </a>
                 </div>
-                <div class="mid-content">
-                    <h4 class="title">مدير الحساب</h4>
-                </div>
-                <div class="right-content d-flex align-items-center gap-4">
-                    <a href="{{ route('chef_lens.edit-profile') }}">
-                        <svg enable-background="new 0 0 461.75 461.75" height="24" viewBox="0 0 461.75 461.75" width="24" xmlns="http://www.w3.org/2000/svg">
-                            <path d="m23.099 461.612c2.479-.004 4.941-.401 7.296-1.177l113.358-37.771c3.391-1.146 6.472-3.058 9.004-5.587l226.67-226.693 75.564-75.541c9.013-9.016 9.013-23.63 0-32.645l-75.565-75.565c-9.159-8.661-23.487-8.661-32.645 0l-75.541 75.565-226.693 226.67c-2.527 2.53-4.432 5.612-5.564 9.004l-37.794 113.358c-4.029 12.097 2.511 25.171 14.609 29.2 2.354.784 4.82 1.183 7.301 1.182zm340.005-406.011 42.919 42.919-42.919 42.896-42.896-42.896zm-282.056 282.056 206.515-206.492 42.896 42.896-206.492 206.515-64.367 21.448z" fill="#4A3749"></path>
-                        </svg>
-                    </a>
-                </div>
             </div>
         </header>
-        <!-- Header -->
 
-        <!-- Main Content Start -->
-        <main class="page-content space-top p-b40" style="height: 100vh; background-color: white !important;">
+        <main class="page-content p-b40" style="height: 100vh; background-color: white !important;">
             <div class="container pt-0">
-                <div class="profile-area">
-                    <div>
-                        <img src="{{ asset('storage/' . Auth::user()->avatar) }}" style="border-radius: 50%; height: 100px; width: 100px; margin: auto; display: flex; justify-content: center;" alt="">
-                    </div>
-                    <div class="author-bx">
-                        <div class="dz-content">
-                            <h2 class="name" style="text-transform: capitalize">{{ Auth::user()->name }}</h2>
+                <div class="profile-section">
+                    <div class="profile-container">
+                        <div class="profile-info">
+                            <img class="img-fluid profile-image" src="{{ asset(path: 'storage/' . auth()->user()->avatar) }}" alt="{{ auth()->user()->name }}">
+                            <h6 class="title">
+                                <div id="name-chef" class="name-chef" style="text-transform: capitalize;">
+                                    {{ Auth::user()->name }}
+                                </div>
+                            </h6>
                         </div>
+                        <span class="follow-icon">
+                            <a style="    width: 35px;
+    display: block;
+    text-align: center;
+
+" href="{{ route('chef_lens.edit-profile') }}" class="follow-btn" data-chef-id="10" data-is-following="false">
+                                <i class="fa-solid fa-pencil"></i>
+                            </a>
+                        </span>
+
+                    </div>
+                </div>
+
+                <div class="profile-area">
+                    <div class="author-bx">
                         <div style="width: 100%;" class="swiper-slide">
                             <div class="dz-card list style-4" style="margin-bottom: 20px; border-color: rgb(2, 45, 235) !important; display: flex !important;">
                                 <div class="dz-content" style="flex: 2;">
@@ -191,55 +213,46 @@
                         </div>
 
 
-                        <div style="width: 100%;" class="swiper-slide">
-                            <div class="dz-card list style-4" style="
-																								border-color: rgb(235, 2, 2) !important;
-																								display: flex !important;">
-
-
-                                <div class="dz-content" style="flex: 2;">
-                                    <h6 class="title">
-                                        <a href="javascript:void(0);" onclick="confirmAccountDeletion();">
-                                            الغاء الحساب
-                                        </a>
-                                    </h6>
-
-                                    <form id="delete-account-form" action="{{ route('account.delete') }}" method="POST" style="display: none;">
-                                        @csrf
-                                        @method('DELETE')
-                                    </form>
-
-                                    <script>
-                                        function confirmAccountDeletion() {
-                                            Swal.fire({
-                                                title: 'هل أنت متأكد؟'
-                                                , text: 'Delete لتأكيد الحذف قم بكتابة كلمة '
-                                                , icon: 'warning'
-                                                , showCancelButton: true
-                                                , confirmButtonColor: '#d33'
-                                                , cancelButtonColor: '#3085d6'
-                                                , confirmButtonText: 'نعم، قم بحذفه!'
-                                                , cancelButtonText: 'إلغاء'
-                                                , input: 'text'
-                                                , inputPlaceholder: 'اكتب كلمة "Delete" للتأكيد'
-                                                , inputValidator: (value) => {
-                                                    if (value !== 'Delete') {
-                                                        return 'يجب أن تكتب كلمة "حذف" للتأكيد!';
-                                                    }
-                                                }
-                                            }).then((result) => {
-                                                if (result.isConfirmed) {
-                                                    document.getElementById('delete-account-form').submit();
-                                                }
-                                            });
-                                        }
-
-                                    </script>
-                                </div>
-                            </div>
-                        </div>
                     </div>
-                    <div class="widget_getintuch pb-15 profile">
+
+                    <div class="cirlce-parent">
+                        <div>
+                            <div class="cirlce-child">
+                                <i class="fa-solid fa-heart"></i>
+                            </div>
+                            <span class="stat-count">{{ $likedVideosCount }}</span>
+                            <span class="stat-label">إعجاب</span>
+                        </div>
+                        {{-- <div>
+
+                        <div class="cirlce-child">
+                            <i class="fa-solid fa-users"></i>
+                        </div>
+                        <span class="stat-count followers-stat">{{ $chefProfile->followers_count }}</span>
+                        <span class="stat-label">متابعة</span>
+                    </div> --}}
+                    <div>
+                        <div class="cirlce-child">
+                            <img class="img-fluid vs-icon" src="{{ asset('assets/images/hat.png') }}" alt="">
+                        </div>
+                        <span class="stat-count">
+                            @if($acceptedChallengesCount > 99)
+                            99+
+                            @else
+                            {{ $acceptedChallengesCount }}
+                            @endif</span>
+                        <span class="stat-label">تحدي</span>
+                    </div>
+                    <div>
+                        <div class="cirlce-child">
+                            <i class="fa-solid fa-camera"></i>
+                        </div>
+                        <span class="stat-count">{{ $snapsCcount }}</span>
+                        <span class="stat-label">عدسه</span>
+                    </div>
+                </div>
+
+                {{-- <div class="widget_getintuch pb-15 profile">
                         <ul>
                             <li>
                                 <div class="icon-bx">
@@ -250,82 +263,115 @@
                                 <div class="dz-content">
                                     <p class="sub-title">البريد الإلكتروني</p>
                                     <h6 class="title">{{ Auth::user()->email }}</h6>
-                                </div>
-                            </li>
-                        </ul>
+            </div>
+            </li>
+            </ul>
+    </div> --}}
+    </div>
+
+<div class="tabs-container">
+    <div class="tabs-header">
+        <button class="tab-button active" data-tab="tab1">
+            <i class="fa-solid fa-video-camera"></i>
+        </button>
+        <button class="tab-button" data-tab="tab2">
+            <img class="img-fluid vs-icon" src="{{ asset('assets/images/hat.png') }}" alt="">
+        </button>
+        <button class="tab-button" data-tab="tab3">
+            <i class="fa-solid fa-utensils"></i>
+        </button>
+    </div>
+
+    {{-- Tab 1: Snaps بدون وصفات --}}
+    <div id="tab1" class="tab-content active">
+        <div class="products-grid">
+            @forelse ($snapsWithOutRecipes as $snap)
+            <div class="product-card">
+                <div class="video-overlay" style="max-height: 180px;">
+                    @if(file_exists(storage_path('app/public/' . $snap->video_path)))
+                    <video muted preload="metadata" style="max-height: 190px; width: 100%;">
+                        <source src="{{ asset('storage/' . $snap->video_path) }}" type="video/mp4">
+                        الفيديو غير موجود
+                    </video>
+                    @else
+                    <div style="background: #eee; height: 190px; display: flex; align-items: center; justify-content: center;">
+                        <p>الفيديو غير موجود</p>
                     </div>
-                </div>
-
-                <div class="swiper overlay-swiper2">
-                    <div class="" style="display: flex; flex-direction: column; gap: 20px;">
-                        <div style="display: flex; flex-direction: row; gap: 10px;">
-
-                            <div class="dz-card list style-4" style="
-                                    {{ Auth::user()->contract_signed_at == null ? 'border-color: red !important;' : 'border-color: green !important;' }}
-									display: flex !important;">
-                                <div class="" style="flex: 1;">
-                                    <i style="
-                                            {{ Auth::user()->contract_signed_at == null ? 'color: red;' : 'color: green;' }}
-                                            font-size: 35px;" class="fa-solid fa-{{ Auth::user()->contract_signed_at == null ? 'circle-xmark' : 'circle-check' }}"></i>
-                                </div>
-
-                                <div class="dz-content" style="flex: 2;">
-                                    <h6 class="title">
-                                        <a href="{{ route('c1he3f.profile.agrem') }}">إتفاقية الإستخدام</a>
-                                        <a href="javascript:void(0);"><i style="color:black;" class="fa-solid fa-arrow-up-right-from-square"></i>
-                                        </a>
-                                    </h6>
-                                </div>
-                            </div>
-
-
-                            <div style="width: 48%;" class="swiper-slide">
-                                <div class="dz-card list style-4" style="border-color: green !important; display: flex !important;">
-                                    <div class="" style="flex: 1;">
-                                        <i style="color: green; font-size: 35px;" class="fa-solid fa-circle-check"></i>
-                                    </div>
-                                    <div class="dz-content" style="flex: 2;">
-                                        <h6 class="title">
-                                            <a href="{{ route('chef_lens.challenge.challenges-own') }}"> تحدياتي</a>
-                                        </h6>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div style="display: flex; flex-direction: row; gap: 10px;">
-                            <div style="width: 48%;" class="swiper-slide">
-                                <div class="dz-card list style-4" style="border-color: green !important; display: flex !important;">
-                                    <div class="" style="flex: 1;">
-                                        <i style="color: green; font-size: 35px;" class="fa-solid fa-circle-check"></i>
-                                    </div>
-                                    <div class="dz-content" style="flex: 2;">
-                                        <h6 class="title">
-                                            <a href="overview.html"> مراسلاتي</a>
-                                        </h6>
-                                    </div>
-                                </div>
-                            </div>
-
-                            {{-- <div style="width: 48%;" class="swiper-slide">
-                                <div class="dz-card list style-4" style="border-color: green !important; display: flex !important;">
-                                    <div class="" style="flex: 1;">
-                                        <i style="color: green; font-size: 35px;" class="fa-solid fa-circle-check"></i>
-                                    </div>
-                                    <div class="dz-content" style="flex: 2;">
-                                        <h6 class="title">
-                                            <a href="overview.html"> المشتريات</a>
-                                        </h6>
-                                    </div>
-                                </div>
-                            </div> --}}
-                        </div>
-
-                    </div>
+                    @endif
                 </div>
             </div>
-        </main>
-        <!-- Main Content End -->
+            @empty
+            <div class="text-center w-100">
+                <p>لا توجد فيديوهات متاحة</p>
+            </div>
+            @endforelse
+        </div>
+    </div>
+
+    {{-- Tab 2: التحديات المقبولة --}}
+    <div id="tab2" class="tab-content">
+        <div class="products-grid">
+            @forelse ($acceptedChallenges as $challenge)
+            <div class="product-card">
+                <div class="video-overlay" style="max-height: 180px;">
+                    @if(file_exists(storage_path('app/public/' . $challenge->announcement_path)))
+                    <video muted preload="metadata" style="max-height: 190px; width: 100%;">
+                        <source src="{{ asset('storage/' . $challenge->announcement_path) }}" type="video/mp4">
+                        الفيديو غير موجود
+                    </video>
+                    @else
+                    <div style="background: #eee; height: 190px; display: flex; align-items: center; justify-content: center;">
+                        <p>الفيديو غير موجود</p>
+                    </div>
+                    @endif
+                </div>
+            </div>
+            @empty
+            <div class="text-center w-100">
+                <p>لا توجد تحديات مقبولة</p>
+            </div>
+            @endforelse
+        </div>
+    </div>
+
+    {{-- Tab 3: Snaps مع الوصفات --}}
+    <div id="tab3" class="tab-content">
+        <div class="products-grid">
+            @forelse ($snapsWithRecipes as $snap)
+            <div class="product-card">
+                <div class="video-overlay" style="max-height: 180px;">
+                    @if(file_exists(storage_path('app/public/' . $snap->video_path)))
+                    <video muted preload="metadata" style="max-height: 190px; width: 100%;">
+                        <source src="{{ asset('storage/' . $snap->video_path) }}" type="video/mp4">
+                        الفيديو غير موجود
+                    </video>
+                    @else
+                    <div style="background: #eee; height: 190px; display: flex; align-items: center; justify-content: center;">
+                        <p>الفيديو غير موجود</p>
+                    </div>
+                    @endif
+
+                    {{-- عرض معلومات الوصفة إذا كانت موجودة --}}
+                    @if($snap->recipe)
+                    <div class="recipe-info">
+                        <small>{{ $snap->recipe->name }}</small>
+                    </div>
+                    @endif
+                </div>
+            </div>
+            @empty
+            <div class="text-center w-100">
+                <p>لا توجد وصفات متاحة</p>
+            </div>
+            @endforelse
+        </div>
+    </div>
+</div>
+
+
+    </div>
+    </main>
+    <!-- Main Content End -->
 
 
     </div>
@@ -336,6 +382,119 @@
     <script src="{{ asset('assets/js/settings.js') }}"></script>
     <script src="{{ asset('assets/js/custom.js') }}"></script>
     <script src="{{ asset('index.js') }}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const tabButtons = document.querySelectorAll('.tab-button');
+            const tabContents = document.querySelectorAll('.tab-content');
+            tabButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const targetTab = this.getAttribute('data-tab');
+                    tabButtons.forEach(btn => btn.classList.remove('active'));
+                    tabContents.forEach(content => content.classList.remove('active'));
+                    this.classList.add('active');
+                    document.getElementById(targetTab).classList.add('active');
+                });
+            });
+        });
+
+        function openAlert(userId) { // غيّر الاسم ليكون واضح
+            Swal.fire({
+                title: "بلاغ؟"
+                , text: 'لماذا تقوم بالإبلاغ عن هذا الحساب؟'
+                , showDenyButton: true
+                , showCancelButton: true
+                , confirmButtonText: "الإبلاغ عن المنشور أو الرسالة أو التعليق"
+                , denyButtonText: "حساب وهمي"
+                , cancelButtonText: "إلغاء"
+            }).then((result) => {
+                let reportType = '';
+                if (result.isConfirmed) {
+                    reportType = 'content_report';
+                } else if (result.isDenied) {
+                    reportType = 'fake_account';
+                }
+
+                if (reportType) {
+                    // ابحث عن الـ ChefProfile من الـ user_id
+                    fetch(`/chef-profile/report-by-user/${userId}`, {
+                            method: 'POST'
+                            , headers: {
+                                'Content-Type': 'application/json'
+                                , 'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                                , 'Accept': 'application/json'
+                            }
+                            , body: JSON.stringify({
+                                report_type: reportType
+                            })
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                Swal.fire("تم الإبلاغ!", "شكراً لك. سيتم مراجعة بلاغك.", "success");
+                                const reportBtn = document.querySelector('.report-btn');
+                                if (reportBtn) {
+                                    reportBtn.innerHTML = 'تم الإبلاغ';
+                                    reportBtn.style.background = 'gray';
+                                    reportBtn.onclick = null;
+                                    reportBtn.style.cursor = 'default';
+                                }
+                            } else {
+                                Swal.fire("حدث خطأ!", data.message || "فشل إرسال البلاغ.", "error");
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            Swal.fire("حدث خطأ!", "فشل في التواصل مع الخادم.", "error");
+                        });
+                }
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const followButtons = document.querySelectorAll('.follow-btn');
+            followButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const chefId = this.getAttribute('data-chef-id');
+                    const isFollowing = this.getAttribute('data-is-following') === 'true';
+                    const followersCountElement = this.parentElement.querySelector('.followers-count');
+                    const followersStatElement = document.querySelector('.followers-stat');
+
+                    fetch(`/chef-profile/${chefId}/toggle-follow`, {
+                            method: 'POST'
+                            , headers: {
+                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                                , 'Content-Type': 'application/json'
+                            , }
+                        , })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                this.setAttribute('data-is-following', data.isFollowing);
+                                if (data.isFollowing) {
+                                    this.innerHTML = '<i class="fa-solid fa-user-minus"></i> إلغاء المتابعة';
+                                } else {
+                                    this.innerHTML = '<i class="fa-solid fa-user-plus"></i> متابعة';
+                                }
+                                if (followersCountElement) {
+                                    followersCountElement.textContent = data.followersCount;
+                                }
+                                if (followersStatElement) {
+                                    followersStatElement.textContent = data.followersCount;
+                                }
+                            } else {
+                                alert(data.error || 'حدث خطأ أثناء المتابعة');
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            alert('حدث خطأ أثناء المتابعة');
+                        });
+                });
+            });
+        });
+
+    </script>
+
 
 </body>
 

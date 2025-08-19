@@ -411,7 +411,7 @@
                 </a>
                 <ul class="dropdown-menu">
                     <li>
-                        <a class="dropdown-item" href="{{ route('admin.users.index') }}">
+                        <a class="dropdown-item" href="{{ route('admin.chefLensUsers.index') }}">
                             <i class="fas fa-users"></i>
                             المستخدمين
                         </a>
@@ -423,31 +423,26 @@
                         </a>
                     </li>
                     <li>
-                        {{-- 3. الفيديوهات --}}
-                        <a class="dropdown-item" href="{{ route('admin.packages.index') }}">
+                        <a class="dropdown-item" href="{{ route('admin.chefLensVideos.index') }}">
                             <i class="fas fa-box-open"></i> الفيديوهات
                         </a>
                     </li>
                     <li>
-                        {{-- 4. سجل المحادثات --}}
                         <a class="dropdown-item" href="{{ route('admin.plans.index') }}">
                             <i class="fas fa-clipboard-list"></i> سجل المحادثات
                         </a>
                     </li>
                     <li>
-                        {{-- 5. سجل التحديات --}}
-                        <a class="dropdown-item" href="{{ route('admin.mainCategories.index') }}">
+                        <a class="dropdown-item" href="{{ route('admin.chefLensChallenges.index') }}">
                             <i class="fas fa-sitemap"></i> سجل التحديات
                         </a>
                     </li>
                     <li>
-                        {{-- 6. الاعلانات --}}
                         <a class="dropdown-item" href="{{ route('admin.subCategories.index') }}">
                             <i class="fas fa-indent"></i> الاعلانات
                         </a>
                     </li>
                     <li>
-                        {{-- 7. السجل المالي --}}
                         <a class="dropdown-item" href="{{ route('admin.kitchens.index') }}">
                             <i class="fas fa-utensils"></i> السجل المالي
                         </a>
