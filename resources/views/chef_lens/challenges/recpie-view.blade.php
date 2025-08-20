@@ -387,7 +387,8 @@
                 <div class="header-content">
 
                     <div class="right-content">
-                        <a href="{{ route('chef_lens') }}" class="back--btn">
+                        {{-- back one page --}}
+                        <a href="{{ url()->previous() }}" class="back--btn">
                             <i class="fa-solid fa-angle-left"></i>
                         </a>
                     </div>
