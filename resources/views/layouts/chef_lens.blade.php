@@ -410,7 +410,7 @@
             <div class="sidebar-bottom" style="direction: ltr;">
                 <div class="app-info">
                     <span class="ver-info">
-                        V 1.0.2</span>
+                        V 1.0.3</span>
                 </div>
             </div>
         </div>
