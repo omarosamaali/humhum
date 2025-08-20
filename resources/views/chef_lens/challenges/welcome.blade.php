@@ -13,8 +13,10 @@
     .title-bar {
         width: 276px;
         overflow: hidden;
-        justify-content: start;
+        justify-content: end;
         gap: 15px;
+        position: relative;
+        left: -20px;
     }
 
     .title-bar.right-section {

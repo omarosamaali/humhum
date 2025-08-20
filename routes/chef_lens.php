@@ -191,18 +191,22 @@ Route::get('chef_lens/profile', function () {
         'snapsWithRecipes'
     ));
 })->name('chef_lens.profile');
+Route::get('recipe/{recipe_id}', function ($recipe_id) {
+    $recipe = Recipe::findOrFail($recipe_id);
+    return view('chef_lens.challenges.recpie-view', compact('recipe'));
+})->name('recipe.view');
+
+Route::get(
+    'accpet-challenge/{challenge}',
+    function ($id) {
+        $challenge = Challenge::findOrFail($id);
+        return view('chef_lens.challenges.accpet-challenge', compact('challenge'));
+    }
+)
+    ->name('accpet-challenge');
 
 Route::middleware('auth.chef')->group(
     function () {
-
-        Route::get(
-            'accpet-challenge/{challenge}',
-            function ($id) {
-                $challenge = Challenge::findOrFail($id);
-                return view('chef_lens.challenges.accpet-challenge', compact('challenge'));
-            }
-        )
-            ->name('accpet-challenge');
 
         Route::get('recipe/{recipe_id}/facts', function ($recipe_id) {
             $recipe = Recipe::findOrFail($recipe_id);
@@ -221,10 +225,6 @@ Route::middleware('auth.chef')->group(
             return view('chef_lens.challenges.steps', compact('recipe', 'stepsData'));
         })->name('recipe.steps');
 
-        Route::get('recipe/{recipe_id}', function ($recipe_id) {
-            $recipe = Recipe::findOrFail($recipe_id);
-            return view('chef_lens.challenges.recpie-view', compact('recipe'));
-        })->name('recipe.view');
 
         Route::get('/chef_lens', [VideoController::class, 'index'])->name('chef_lens');
         Route::post('/videos/toggle-like', [VideoController::class, 'toggleLike']);
