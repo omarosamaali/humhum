@@ -265,7 +265,6 @@
 
 </style>
 
-
 <div class="main-container">
     <div class="title-bar">
         <div>
@@ -319,11 +318,11 @@
 <span class="alert alert-success">{{ session('message') }}</span>
 @endif
 
-<div class="video-reels-container" id="videoContainer" >
+<div class="video-reels-container" id="videoContainer">
     @foreach($challenges as $video)
     <div class="video-reel-item" data-video-id="{{ $video->id }}" data-chef-id="{{ $video->user->chefProfile->id ?? '' }}" data-video-type="challenge">
         <video class="myVideo video-reel" data-index="{{ $loop->index }}" autoplay preload="metadata" muted>
-            <source src="{{ 'storage/' . $video->announcement_path }}" type="video/mp4">
+                <source src="{{ asset('storage/' . $video->announcement_path) }}" type="video/mp4">
             المتصفح لا يدعم HTML5 video.
         </video>
         <div class="content">
@@ -629,3 +628,4 @@
 
 </script>
 @endsection
+

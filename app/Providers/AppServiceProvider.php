@@ -25,8 +25,25 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        View::composer(['layouts.chef_lens', 'chef_lens.profile.index'], function ($view) {
+        // View Composer للصفحات اللي محتاجة بيانات المستخدم
+        View::composer([
+            'layouts.chef_lens',
+            'chef_lens.profile.index',
+            'chef_lens.challenges.index'
+        ], function ($view) {
             $user = Auth::user();
+
+            // Check if user is authenticated before proceeding
+            if (!$user) {
+                // Provide default values for guest users
+                $view->with([
+                    'savedVideosCount' => 0,
+                    'likedVideosCount' => 0,
+                    'snapsCcount' => 0,
+                    'acceptedChallengesCount' => 0,
+                ]);
+                return;
+            }
 
             // Count saved Challenges and Snaps
             $savedChallengesCount = Challenge::whereJsonContains('bookmarked_by', $user->id)
@@ -51,13 +68,24 @@ class AppServiceProvider extends ServiceProvider
             $likedVideosCount = $likedChallengesCount;
 
             $snapsCcount = $likedSnapsCount;
-            $acceptedChallengesCount = ChallengeResponse::where('user_id', Auth::user()->id)->count();
+            $acceptedChallengesCount = ChallengeResponse::where('user_id', $user->id)->count();
 
             $view->with([
                 'savedVideosCount' => $savedVideosCount,
                 'likedVideosCount' => $likedVideosCount,
                 'snapsCcount' => $snapsCcount,
                 'acceptedChallengesCount' => $acceptedChallengesCount,
+            ]);
+        });
+
+        // View Composer منفصل لصفحة الـ welcome (للضيوف)
+        View::composer('chef_lens.challenges.welcome', function ($view) {
+            // بيانات افتراضية للضيوف
+            $view->with([
+                'savedVideosCount' => 0,
+                'likedVideosCount' => 0,
+                'snapsCcount' => 0,
+                'acceptedChallengesCount' => 0,
             ]);
         });
 

@@ -11,22 +11,29 @@ use App\Models\ChallengeReview;
 
 class VideoController extends Controller
 {
-    /**
-     * عرض صفحة الشيف لانس مع التحديات والسنابات
-     */
+
     public function index()
     {
-        $notifications = ChallengeReview::where(function ($query) {
-            // الشرط الأول: المستخدم هو صاحب التحدي
-            $query->whereHas('challengeResponse', function ($q) {
-                $q->where('user_id', Auth::id());
-            });
-        })
-            ->orWhere('chef_id', Auth::id()) // الشرط الثاني: المستخدم هو الشيف
-            ->with(['chef.chefProfile', 'challengeResponse.user'])
-            ->get();
+        // شوف لو المستخدم مسجل دخول ولا لأ
+        if (Auth::check()) {
+            // مستخدم مسجل - جيب الإشعارات
+            $notifications = ChallengeReview::where(function ($query) {
+                $query->whereHas('challengeResponse', function ($q) {
+                    $q->where('user_id', Auth::id());
+                });
+            })
+                ->orWhere('chef_id', Auth::id())
+                ->with(['chef.chefProfile', 'challengeResponse.user'])
+                ->get();
 
-        $notificationsCount = $notifications->count();        $challenges = Challenge::whereNotNull('announcement_path')->get();
+            $notificationsCount = $notifications->count();
+        } else {
+            // ضيف - مافيش إشعارات
+            $notifications = collect(); // مجموعة فارغة
+            $notificationsCount = 0;
+        }
+
+        $challenges = Challenge::whereNotNull('announcement_path')->get();
         $snaps = Snap::whereNotNull('video_path')->get();
 
         $chefs = ChefProfile::whereHas('user.challenges', function ($query) {
@@ -35,10 +42,39 @@ class VideoController extends Controller
             $query->whereNotNull('video_path');
         })->get();
 
-        return view('chef_lens.challenges.index', compact('challenges', 'snaps', 'chefs', 'notifications'
-        , 'notificationsCount'
-    ));
+        return view('chef_lens.challenges.index', compact(
+            'challenges',
+            'snaps',
+            'chefs',
+            'notifications',
+            'notificationsCount'
+        ));
     }
+
+    public function guestIndex()
+    {
+        // للضيوف - نفس البيانات بس بدون إشعارات
+        $notifications = collect(); // مجموعة فارغة
+        $notificationsCount = 0;
+
+        $challenges = Challenge::whereNotNull('announcement_path')->get();
+        $snaps = Snap::whereNotNull('video_path')->get();
+
+        $chefs = ChefProfile::whereHas('user.challenges', function ($query) {
+            $query->whereNotNull('announcement_path');
+        })->orWhereHas('user.snaps', function ($query) {
+            $query->whereNotNull('video_path');
+        })->get();
+
+        return view('chef_lens.challenges.welcome', compact(
+            'challenges',
+            'snaps',
+            'chefs',
+            'notifications',
+            'notificationsCount'
+        ));
+    }
+
     public function removeFromSavedOrLiked(Request $request, $videoId)
     {
         try {

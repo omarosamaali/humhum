@@ -2,27 +2,28 @@
 <html lang="en">
 
 <head>
-
     <title>Chef lens</title>
 
     <meta charset="utf-8">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-LCY/8p2NaW6Bsmo1g3+6j+EkH0dY1o+2C73AVM0DIA3A92vN0bFz5H6uXU3bM6+0F5a1g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, minimal-ui, viewport-fit=cover">
 
-    <link rel="shortcut icon" type="image/x-icon" href="assets/images/app-logo/favicon.png">
+    <link rel="shortcut icon" type="image/x-icon" href="{{ asset('assets/images/app-logo/favicon.png') }}">
 
-    <link rel="manifest" href="manifest.json">
+    <link rel="manifest" href="{{ asset('manifest.json') }}">
 
-    <link href="assets/vendor/bootstrap-select/dist/css/bootstrap-select.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="assets/vendor/bootstrap-touchspin/dist/jquery.bootstrap-touchspin.min.css">
-    <link rel="stylesheet" href="assets/vendor/swiper/swiper-bundle.min.css">
+    <!-- Fixed CSS Paths -->
+    <link href="{{ asset('assets/vendor/bootstrap-select/dist/css/bootstrap-select.min.css') }}" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('assets/vendor/bootstrap-touchspin/dist/jquery.bootstrap-touchspin.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('assets/vendor/swiper/swiper-bundle.min.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/style.css') }}">
 
-    <link rel="stylesheet" type="text/css" href="assets/css/style.css">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700;800;900&family=Raleway:wght@300;400;500&display=swap" rel="stylesheet">
+
     <style>
         .count-area {
             position: absolute;
@@ -110,7 +111,6 @@
 
         button {
             border: 0px;
-
         }
 
         #name-chef {
@@ -125,18 +125,15 @@
             width: 100vw;
             height: 100vh;
             display: flex;
-            /* لازم تبقى flex عشان السكرول الأفقي */
             overflow-x: scroll;
             overflow-y: hidden;
             scroll-snap-type: x mandatory;
             scroll-behavior: smooth;
             -webkit-overflow-scrolling: touch;
-            /* تحسين السكرول على الموبايل */
         }
 
         .video-reel-item {
             flex: 0 0 100%;
-            /* كل عنصر ياخد 100% من عرض الكونتينر */
             width: 100vw;
             height: 100vh;
             scroll-snap-align: center;
@@ -152,7 +149,6 @@
             object-fit: cover;
         }
 
-        /* إزالة الـ ID المتكرر من الفيديو نفسه */
         .myVideo {
             position: absolute;
             top: 0;
@@ -166,7 +162,6 @@
             position: absolute;
             bottom: 0;
             top: 0;
-            /* Changed from bottom: 0; for full overlay */
             background: rgba(0, 0, 0, 0.3);
             color: #f1f1f1;
             width: 100%;
@@ -174,13 +169,9 @@
             padding: 20px;
             padding-bottom: 60px;
             z-index: 1;
-            /* Ensure content is above video */
             display: flex;
-            /* Added for proper alignment of buttons */
             flex-direction: column;
-            /* Added for proper alignment of buttons */
             justify-content: flex-end;
-            /* Pushes content to the bottom */
         }
 
         #myBtn {
@@ -218,9 +209,68 @@
             color: rgb(0, 0, 0) !important;
         }
 
+        /* إضافة هذه الـ styles للأزرار */
+        .video-btn {
+            background: rgba(0, 0, 0, 0.5);
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            margin: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            cursor: pointer;
+        }
+
+        .video-btn:hover {
+            background: rgba(0, 0, 0, 0.7);
+        }
+
+        .heart-icon.liked {
+            color: red !important;
+        }
+
+        .bookmark-icon.bookmarked {
+            color: gold !important;
+        }
+
+        .button-container {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .button-half {
+            flex: 1;
+        }
+
+        .challenge-title {
+            font-size: 18px;
+            margin-bottom: 10px;
+            color: white;
+        }
+
+        .dz-meta {
+            list-style: none;
+            padding: 0;
+            margin: 10px 0;
+        }
+
+        .dz-meta li {
+            display: inline-block;
+            margin-right: 15px;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 14px;
+        }
+
+        .dz-meta i {
+            margin-left: 5px;
+        }
+
     </style>
 </head>
-
 <body>
     <div class="page-wrapper">
 
@@ -449,12 +499,15 @@
         </div>
     </div>
 
-    <script src="assets/js/jquery.js"></script>
-    <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-    <script src="assets/vendor/swiper/swiper-bundle.min.js"></script>
-    <script src="assets/js/dz.carousel.js"></script>
-    <script src="assets/js/settings.js"></script>
-    <script src="assets/js/custom.js"></script>
+<!-- في نهاية البودي، اعمل نفس الشيء للـ JavaScript -->
+<script src="{{ asset('assets/js/jquery.js') }}"></script>
+<script src="{{ asset('assets/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+<script src="{{ asset('assets/vendor/swiper/swiper-bundle.min.js') }}"></script>
+<script src="{{ asset('assets/js/dz.carousel.js') }}"></script>
+<script src="{{ asset('assets/js/settings.js') }}"></script>
+<script src="{{ asset('assets/js/custom.js') }}"></script>
+
+
 </body>
 
 </html>

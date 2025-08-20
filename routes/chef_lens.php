@@ -18,6 +18,8 @@ use App\Http\Controllers\Admin\ChefLensUserController;
 use App\Http\Controllers\Admin\ChefLensVideosController;
 use App\Http\Controllers\Admin\ChefLensChallengesController;
 
+Route::get('/chef_lens/welcome', [VideoController::class, 'guestIndex'])->name('welcome');
+
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(
     function () {
         Route::get('/dashboard', function () {
