@@ -272,7 +272,7 @@
                 <div class="swiper-wrapper">
                     @foreach($chefs as $index => $chef)
                     <div class="swiper-slide">
-                        <a href="{{ route('chef_lens.profileDisplayed', ['chefProfile' => $chef->id]) }}" style="flex-direction: column; border: 0px; padding: 0px; background-color: transparent; box-shadow: none;" class="dz-categories-bx chef-selector" data-chef-id="{{ $chef->id }}">
+                        <a href="{{ route('chef_lens.sign-up') }}" style="flex-direction: column; border: 0px; padding: 0px; background-color: transparent; box-shadow: none;" class="dz-categories-bx chef-selector" data-chef-id="{{ $chef->id }}">
                             <div class="icon-bx">
                                 <img class="img-fluid chef-img {{ $index === 1 ? 'active' : '' }}" src="{{ $chef->official_image ? asset('storage/' . $chef->official_image) : asset('assets/images/default-chef.jpg') }}" alt="{{ $chef->name }}">
                             </div>
@@ -293,7 +293,7 @@
         <div>
             <div class="swiper categories-swiper dz-swiper">
                 <div class="swiper-wrapper">
-                    <a href="{{ route('chef_lens.challenges') }}">
+                    <a href="{{ route('chef_lens.sign-up') }}">
                         <div class="swiper-slide">
                             <div class="dz-categories-bx" style=" flex-direction: column; border: 0px; padding: 0px; background-color: transparent; box-shadow: none;">
                                 <div class="icon-bx" style="padding-left: 2px;">
@@ -327,14 +327,14 @@
         </video>
         <div class="content">
             <div id="container--btns" style="margin-bottom: 48px; direction: ltr;">
-                <button class="myBtn video-btn bookmark-btn" onclick="toggleBookmark('challenge', {{ $video->id }}, this)">
+                <a href="{{ route('chef_lens.sign-up') }}" class="myBtn video-btn bookmark-btn">
                     <i class="fa-solid fa-bookmark bookmark-icon {{ Auth::check() && in_array(Auth::id(), $video->bookmarked_by ?? []) ? 'bookmarked' : '' }}"></i>
                     <span class="bookmark-count">{{ $video->bookmarks ?? 0 }}</span>
-                </button>
-                <button class="myBtn video-btn heart-btn" onclick="toggleLike('challenge', {{ $video->id }}, this)">
+                </a>
+                <a href="{{ route('chef_lens.sign-up') }}" class="myBtn video-btn heart-btn">
                     <i class="fa-solid fa-heart heart-icon {{ Auth::check() && in_array(Auth::id(), $video->liked_by ?? []) ? 'liked' : '' }}"></i>
                     <span class="heart-count">{{ $video->likes ?? 0 }}</span>
-                </button>
+                </a>
 
                 <button class="myBtn video-btn" onclick="togglePlay(this)">
                     <i class="fa-solid fa-play pause-icon play-pause-icon"></i>
