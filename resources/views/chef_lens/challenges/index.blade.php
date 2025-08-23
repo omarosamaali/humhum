@@ -265,7 +265,6 @@
 
 </style>
 
-
 <div class="main-container">
     <div class="title-bar">
         <div>
@@ -319,7 +318,7 @@
 <span class="alert alert-success">{{ session('message') }}</span>
 @endif
 
-<div class="video-reels-container" id="videoContainer" >
+<div class="video-reels-container" id="videoContainer">
     @foreach($challenges as $video)
     <div class="video-reel-item" data-video-id="{{ $video->id }}" data-chef-id="{{ $video->user->chefProfile->id ?? '' }}" data-video-type="challenge">
         <video class="myVideo video-reel" data-index="{{ $loop->index }}" autoplay preload="metadata" muted>

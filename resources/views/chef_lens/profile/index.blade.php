@@ -43,7 +43,6 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700;800;900&family=Raleway:wght@300;400;500&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="stylesheet" href="{{ asset('assets/css/profileDisplayed.css') }}">
 
 
@@ -137,19 +136,23 @@
         <header class="header header-fixed" style="background-color: white !important;">
             <div class="header-content">
                 <div class="right-content d-flex align-items-center gap-4">
-                  <a href="javascript:void(0);" onclick="confirmAccountDeletion();">
-                      {{-- الغاء الحساب --}}
-                      <i style="    color: red;
-    border: 1px solid red;
-    width: 28px;
-    height: 28px;
-    text-align: center;
-    align-items: center;
-    display: grid
-;
-    border-radius: 5px;" class="fa-solid fa-trash"></i>
+                  <form id="delete-account-form" action="{{ route('account.delete') }}" method="POST" style="display: none;">
+                      @csrf
+                      @method('DELETE')
+                  </form>
 
+                  <a href="javascript:void(0);" onclick="confirmAccountDeletion();">
+                      <i style="color: red;
+              border: 1px solid red;
+              width: 28px;
+              height: 28px;
+              text-align: center;
+              align-items: center;
+              display: grid;
+              border-radius: 5px;" class="fa-solid fa-trash">
+                      </i>
                   </a>
+
 
                 </div>
                 <div class="mid-content">
@@ -269,104 +272,104 @@
     </div> --}}
     </div>
 
-<div class="tabs-container">
-    <div class="tabs-header">
-        <button class="tab-button active" data-tab="tab1">
-            <i class="fa-solid fa-video-camera"></i>
-        </button>
-        <button class="tab-button" data-tab="tab2">
-            <img class="img-fluid vs-icon" src="{{ asset('assets/images/hat.png') }}" alt="">
-        </button>
-        <button class="tab-button" data-tab="tab3">
-            <i class="fa-solid fa-utensils"></i>
-        </button>
-    </div>
+    <div class="tabs-container">
+        <div class="tabs-header">
+            <button class="tab-button active" data-tab="tab1">
+                <i class="fa-solid fa-video-camera"></i>
+            </button>
+            <button class="tab-button" data-tab="tab2">
+                <img class="img-fluid vs-icon" src="{{ asset('assets/images/hat.png') }}" alt="">
+            </button>
+            <button class="tab-button" data-tab="tab3">
+                <i class="fa-solid fa-utensils"></i>
+            </button>
+        </div>
 
-    {{-- Tab 1: Snaps بدون وصفات --}}
-    <div id="tab1" class="tab-content active">
-        <div class="products-grid">
-            @forelse ($snapsWithOutRecipes as $snap)
-            <div class="product-card">
-                <div class="video-overlay" style="max-height: 180px;">
-                    @if(file_exists(storage_path('app/public/' . $snap->video_path)))
-                    <video muted preload="metadata" style="max-height: 190px; width: 100%;">
-                        <source src="{{ asset('storage/' . $snap->video_path) }}" type="video/mp4">
-                        الفيديو غير موجود
-                    </video>
-                    @else
-                    <div style="background: #eee; height: 190px; display: flex; align-items: center; justify-content: center;">
-                        <p>الفيديو غير موجود</p>
+        {{-- Tab 1: Snaps بدون وصفات --}}
+        <div id="tab1" class="tab-content active">
+            <div class="products-grid">
+                @forelse ($snapsWithOutRecipes as $snap)
+                <div class="product-card">
+                    <div class="video-overlay" style="max-height: 180px;">
+                        @if(file_exists(storage_path('app/public/' . $snap->video_path)))
+                        <video muted preload="metadata" style="max-height: 190px; width: 100%;">
+                            <source src="{{ asset('storage/' . $snap->video_path) }}" type="video/mp4">
+                            الفيديو غير موجود
+                        </video>
+                        @else
+                        <div style="background: #eee; height: 190px; display: flex; align-items: center; justify-content: center;">
+                            <p>الفيديو غير موجود</p>
+                        </div>
+                        @endif
                     </div>
-                    @endif
                 </div>
+                @empty
+                <div class="text-center w-100">
+                    <p>لا توجد فيديوهات متاحة</p>
+                </div>
+                @endforelse
             </div>
-            @empty
-            <div class="text-center w-100">
-                <p>لا توجد فيديوهات متاحة</p>
+        </div>
+
+        {{-- Tab 2: التحديات المقبولة --}}
+        <div id="tab2" class="tab-content">
+            <div class="products-grid">
+                @forelse ($acceptedChallenges as $challenge)
+                <div class="product-card">
+                    <div class="video-overlay" style="max-height: 180px;">
+                        @if(file_exists(storage_path('app/public/' . $challenge->announcement_path)))
+                        <video muted preload="metadata" style="max-height: 190px; width: 100%;">
+                            <source src="{{ asset('storage/' . $challenge->announcement_path) }}" type="video/mp4">
+                            الفيديو غير موجود
+                        </video>
+                        @else
+                        <div style="background: #eee; height: 190px; display: flex; align-items: center; justify-content: center;">
+                            <p>الفيديو غير موجود</p>
+                        </div>
+                        @endif
+                    </div>
+                </div>
+                @empty
+                <div class="text-center w-100">
+                    <p>لا توجد تحديات مقبولة</p>
+                </div>
+                @endforelse
             </div>
-            @endforelse
+        </div>
+
+        {{-- Tab 3: Snaps مع الوصفات --}}
+        <div id="tab3" class="tab-content">
+            <div class="products-grid">
+                @forelse ($snapsWithRecipes as $snap)
+                <div class="product-card">
+                    <div class="video-overlay" style="max-height: 180px;">
+                        @if(file_exists(storage_path('app/public/' . $snap->video_path)))
+                        <video muted preload="metadata" style="max-height: 190px; width: 100%;">
+                            <source src="{{ asset('storage/' . $snap->video_path) }}" type="video/mp4">
+                            الفيديو غير موجود
+                        </video>
+                        @else
+                        <div style="background: #eee; height: 190px; display: flex; align-items: center; justify-content: center;">
+                            <p>الفيديو غير موجود</p>
+                        </div>
+                        @endif
+
+                        {{-- عرض معلومات الوصفة إذا كانت موجودة --}}
+                        @if($snap->recipe)
+                        <div class="recipe-info">
+                            <small>{{ $snap->recipe->name }}</small>
+                        </div>
+                        @endif
+                    </div>
+                </div>
+                @empty
+                <div class="text-center w-100">
+                    <p>لا توجد وصفات متاحة</p>
+                </div>
+                @endforelse
+            </div>
         </div>
     </div>
-
-    {{-- Tab 2: التحديات المقبولة --}}
-    <div id="tab2" class="tab-content">
-        <div class="products-grid">
-            @forelse ($acceptedChallenges as $challenge)
-            <div class="product-card">
-                <div class="video-overlay" style="max-height: 180px;">
-                    @if(file_exists(storage_path('app/public/' . $challenge->announcement_path)))
-                    <video muted preload="metadata" style="max-height: 190px; width: 100%;">
-                        <source src="{{ asset('storage/' . $challenge->announcement_path) }}" type="video/mp4">
-                        الفيديو غير موجود
-                    </video>
-                    @else
-                    <div style="background: #eee; height: 190px; display: flex; align-items: center; justify-content: center;">
-                        <p>الفيديو غير موجود</p>
-                    </div>
-                    @endif
-                </div>
-            </div>
-            @empty
-            <div class="text-center w-100">
-                <p>لا توجد تحديات مقبولة</p>
-            </div>
-            @endforelse
-        </div>
-    </div>
-
-    {{-- Tab 3: Snaps مع الوصفات --}}
-    <div id="tab3" class="tab-content">
-        <div class="products-grid">
-            @forelse ($snapsWithRecipes as $snap)
-            <div class="product-card">
-                <div class="video-overlay" style="max-height: 180px;">
-                    @if(file_exists(storage_path('app/public/' . $snap->video_path)))
-                    <video muted preload="metadata" style="max-height: 190px; width: 100%;">
-                        <source src="{{ asset('storage/' . $snap->video_path) }}" type="video/mp4">
-                        الفيديو غير موجود
-                    </video>
-                    @else
-                    <div style="background: #eee; height: 190px; display: flex; align-items: center; justify-content: center;">
-                        <p>الفيديو غير موجود</p>
-                    </div>
-                    @endif
-
-                    {{-- عرض معلومات الوصفة إذا كانت موجودة --}}
-                    @if($snap->recipe)
-                    <div class="recipe-info">
-                        <small>{{ $snap->recipe->name }}</small>
-                    </div>
-                    @endif
-                </div>
-            </div>
-            @empty
-            <div class="text-center w-100">
-                <p>لا توجد وصفات متاحة</p>
-            </div>
-            @endforelse
-        </div>
-    </div>
-</div>
 
 
     </div>
@@ -383,6 +386,30 @@
     <script src="{{ asset('assets/js/custom.js') }}"></script>
     <script src="{{ asset('index.js') }}"></script>
     <script>
+        function confirmAccountDeletion() {
+        Swal.fire({
+        title: 'هل أنت متأكد؟',
+        text: "سيتم حذف حسابك بشكل دائم ولا يمكن التراجع عن هذا الإجراء!",
+        icon: 'warning',
+        input: 'text',
+        inputPlaceholder: 'اكتب كلمة "delete" للتأكيد',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'نعم، احذف حسابي!',
+        cancelButtonText: 'إلغاء',
+        inputValidator: (value) => {
+        if (value !== 'delete') {
+        return 'يجب أن تكتب كلمة "delete" للمتابعة!';
+        }
+        }
+        }).then((result) => {
+        if (result.isConfirmed) {
+        document.getElementById('delete-account-form').submit();
+        }
+        });
+        }
+
         document.addEventListener('DOMContentLoaded', function() {
             const tabButtons = document.querySelectorAll('.tab-button');
             const tabContents = document.querySelectorAll('.tab-content');
