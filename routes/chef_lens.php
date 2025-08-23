@@ -64,7 +64,7 @@ Route::get('chef_lens/challenges/{challenge_id}/add-vs', function ($challenge_id
 Route::post('chef_lens/challenges/{challenge_id}/submit-response', [ChallengeController::class, 'submitResponseUserChef'])
     ->name('chef_lens.submit-response');
 
-    Route::get('challenges/{challenge}', function($id) {
+Route::get('challenges/{challenge}', function ($id) {
     $challenge = Challenge::with('chefProfile', 'recipe')->withCount('responses')->findOrFail($id);
     $challengeAccepted = $challenge->responses()->exists();
     return view('chef_lens.challenges.show', compact('challenge', 'challengeAccepted'));
@@ -195,7 +195,6 @@ Route::get('recipe/{recipe_id}', function ($recipe_id) {
     $recipe = Recipe::findOrFail($recipe_id);
     return view('chef_lens.challenges.recpie-view', compact('recipe'));
 })->name('recipe.view');
-
 Route::get(
     'accpet-challenge/{challenge}',
     function ($id) {
@@ -205,22 +204,22 @@ Route::get(
 )
     ->name('accpet-challenge');
 
-    Route::get('recipe/{recipe_id}/facts', function ($recipe_id) {
-        $recipe = Recipe::findOrFail($recipe_id);
-        return view('chef_lens.challenges.facts', compact('recipe'));
-    })->name('recipe.facts');
+Route::get('recipe/{recipe_id}/facts', function ($recipe_id) {
+    $recipe = Recipe::findOrFail($recipe_id);
+    return view('chef_lens.challenges.facts', compact('recipe'));
+})->name('recipe.facts');
 
-    Route::get('recipe/{recipe_id}/ingredients', function ($recipe_id) {
-        $recipe = Recipe::findOrFail($recipe_id);
-        return view('chef_lens.challenges.ingredients', compact('recipe'));
-    })->name('recipe.ingredients');
+Route::get('recipe/{recipe_id}/ingredients', function ($recipe_id) {
+    $recipe = Recipe::findOrFail($recipe_id);
+    return view('chef_lens.challenges.ingredients', compact('recipe'));
+})->name('recipe.ingredients');
 
-    Route::get('recipe/{recipe_id}/steps', function ($recipe_id) {
-        $recipe = Recipe::findOrFail($recipe_id);
-        $stepsData = $recipe->steps ? $recipe->steps : [];
+Route::get('recipe/{recipe_id}/steps', function ($recipe_id) {
+    $recipe = Recipe::findOrFail($recipe_id);
+    $stepsData = $recipe->steps ? $recipe->steps : [];
 
-        return view('chef_lens.challenges.steps', compact('recipe', 'stepsData'));
-    })->name('recipe.steps');
+    return view('chef_lens.challenges.steps', compact('recipe', 'stepsData'));
+})->name('recipe.steps');
 
 Route::middleware('auth.chef')->group(
     function () {
