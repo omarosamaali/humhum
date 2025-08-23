@@ -296,7 +296,7 @@
                         <img src="{{ asset('assets/images/logo.png') }}" style="height: 111px; position: relative; right: 11px;" alt="">
                     </div>
                 </div>
-                <div class="title-bar mb-0" style="flex:1;     left: -224px;
+                <div class="title-bar mb-0" style="flex:1; position: relative;    left: -224px;
 
 ">
 

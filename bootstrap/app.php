@@ -15,7 +15,7 @@ return Application::configure(basePath: dirname(__DIR__))
     $middleware->alias([
         'admin' => \App\Http\Middleware\AdminRole::class,
         'auth.chef' => \App\Http\Middleware\ChefAuthMiddleware::class,
-
+        'AuthChefLens' => \App\Http\Middleware\AuthChefLens::class,
     ]);
 })
     ->withExceptions(function (Exceptions $exceptions): void {

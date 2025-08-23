@@ -157,11 +157,11 @@ Route::get('chef_lens/faq', function () {
     $faqs = Faq::where('place', 'user')->get();
     return view('chef_lens.faq', compact('faqs'));
 })->name('chef_lens.faq');
-
-Route::get('chef_lens/edit-profile', function () {
-    $user = Auth::user();
-    return view('chef_lens.profile.edit-profile', compact('user'));
-})->name('chef_lens.edit-profile');
+Route::middleware('AuthChefLens')->group(function(){
+    Route::get('chef_lens/edit-profile', function () {
+        $user = Auth::user();
+        return view('chef_lens.profile.edit-profile', compact('user'));
+    })->name('chef_lens.edit-profile');
 
 Route::get('chef_lens/profile', function () {
     $user = Auth::user();
@@ -191,6 +191,8 @@ Route::get('chef_lens/profile', function () {
         'snapsWithRecipes'
     ));
 })->name('chef_lens.profile');
+});
+
 Route::get('recipe/{recipe_id}', function ($recipe_id) {
     $recipe = Recipe::findOrFail($recipe_id);
     return view('chef_lens.challenges.recpie-view', compact('recipe'));
