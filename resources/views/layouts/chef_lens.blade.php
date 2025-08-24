@@ -300,9 +300,11 @@
 
 ">
 
-                    <a href="javascript:void(0);" style="   position: relative;
-    top: -39px;
-    right: 0px;" class="floating-close"><i class="feather icon-x" style="font-size: 30px;"></i></a>
+                    <a href="javascript:void(0);" style="      position: fixed;
+    top: 21px;
+    z-index: 9999999999;
+    left: 11px;" class="floating-close"><i class="feather icon-x" style="font-size: 30px;"></i></a>
+
 
                 </div>
             </div>
