@@ -335,7 +335,8 @@
                         <span>ملفي</span>
                     </a>
                     @else
-                    <a class="nav-link" href="{{ route('chef_lens.sign-in') }}">
+                    <a class="nav-link" href="{{ route('chef_lens.login') }}">
+
                         <span class="dz-icon">
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <g clip-path="url(#clip0_329_300)">
