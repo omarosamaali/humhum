@@ -219,7 +219,6 @@ class VideoController extends Controller
         try {
             $type = $request->input('type');
             $videoId = $request->input('videoId');
-
             if ($type === 'challenge') {
                 $video = Challenge::findOrFail($videoId);
             } elseif ($type === 'snap') {
@@ -227,15 +226,12 @@ class VideoController extends Controller
             } else {
                 return response()->json(['error' => 'نوع الفيديو غير صالح'], 400);
             }
-
             $user = Auth::user();
             if (!$user) {
                 return response()->json(['error' => 'يجب تسجيل الدخول'], 401);
             }
-
-            $bookmarkedBy = $video->bookmarked_by ?? [];
+            $bookmarkedBy = is_array($video->bookmarked_by) ? $video->bookmarked_by : [];
             $isBookmarked = in_array($user->id, $bookmarkedBy);
-
             if ($isBookmarked) {
                 $bookmarkedBy = array_diff($bookmarkedBy, [$user->id]);
                 $video->decrement('bookmarks');
@@ -243,16 +239,15 @@ class VideoController extends Controller
                 $bookmarkedBy[] = $user->id;
                 $video->increment('bookmarks');
             }
-
             $video->bookmarked_by = array_values($bookmarkedBy);
             $video->save();
-
             return response()->json([
                 'success' => true,
                 'bookmarks' => $video->bookmarks,
                 'is_bookmarked' => !$isBookmarked
             ]);
         } catch (\Exception $e) {
+            \Log::error('Bookmark toggle error: ' . $e->getMessage(), ['videoId' => $videoId, 'type' => $type]);
             return response()->json([
                 'error' => 'فشل في تحديث المفضلة',
                 'message' => $e->getMessage()

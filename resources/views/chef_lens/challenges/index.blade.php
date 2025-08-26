@@ -1,4 +1,5 @@
 @extends('layouts.chef_lens')
+<meta name="csrf-token" content="{{ csrf_token() }}">
 
 @section('section')
 <style>

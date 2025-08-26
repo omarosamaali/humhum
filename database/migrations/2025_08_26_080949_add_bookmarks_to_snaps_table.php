@@ -6,25 +6,17 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::table('snaps', function (Blueprint $table) {
-            // إضافة العمود bookmarked_by من نوع JSON
-            $table->json('bookmarked_by')->nullable()->after('video_path');
-            $table->json('liked_by')->nullable()->after('bookmarked_by');
-            });
+            $table->integer('bookmarks')->default(0)->after('likes');
+        });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::table('snaps', function (Blueprint $table) {
-            $table->dropColumn('bookmarked_by');
+            $table->dropColumn('bookmarks');
         });
     }
 };
