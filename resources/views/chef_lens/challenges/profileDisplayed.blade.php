@@ -30,7 +30,9 @@
             <header class="header py-2 mx-auto">
                 <div class="header-content">
                     @if(!$userReported)
-                    <button style="background: red; color: white; border-radius: 4px; padding: 4px 10px; font-size: 14px; cursor: pointer;" onclick="openAlert({{ $chefProfile->user_id }})" class="report-btn">
+                    <button 
+                    style="background: red; color: white; border-radius: 4px; padding: 4px 10px; font-size: 14px; cursor: pointer;" 
+                    onclick="openAlert({{ $chefProfile->user_id }})" class="report-btn">
                         إبلاغ
                     </button>
                     @else

@@ -21,6 +21,8 @@ return new class extends Migration
             $table->foreignId('main_category_id')->nullable()->constrained('main_categories')->onDelete('set null');
             $table->foreignId('sub_category_id')->nullable()->constrained('sub_categories')->onDelete('set null');
             $table->foreignId('recipe_id')->nullable()->constrained('recipes')->onDelete('set null');
+            $table->json('bookmarked_by')->nullable();
+
             $table->timestamps();
         });
     }
