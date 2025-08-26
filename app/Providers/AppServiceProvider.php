@@ -65,8 +65,8 @@ class AppServiceProvider extends ServiceProvider
                 ->whereNotNull('video_path')
                 ->count();
 
-            $likedVideosCount = $likedChallengesCount;
-
+            $likedVideosCount = $likedChallengesCount + $likedSnapsCount;
+            
             $snapsCcount = $likedSnapsCount;
             $acceptedChallengesCount = ChallengeResponse::where('user_id', $user->id)->count();
 
