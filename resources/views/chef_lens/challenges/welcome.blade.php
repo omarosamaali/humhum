@@ -321,50 +321,65 @@
 @endif
 
 <div class="video-reels-container" id="videoContainer">
-    @foreach($challenges as $video)
-    <div class="video-reel-item" data-video-id="{{ $video->id }}" data-chef-id="{{ $video->user->chefProfile->id ?? '' }}" data-video-type="challenge">
-        <video class="myVideo video-reel" data-index="{{ $loop->index }}" autoplay preload="metadata" muted>
-            <source src="{{ asset('storage/' . $video->announcement_path) }}" type="video/mp4">
-            المتصفح لا يدعم HTML5 video.
-        </video>
-        <div class="content">
-            <div id="container--btns" style="margin-bottom: 48px; direction: ltr;">
-                <a href="{{ route('chef_lens.sign-up') }}" class="myBtn video-btn bookmark-btn">
-                    <i class="fa-solid fa-bookmark bookmark-icon {{ Auth::check() && in_array(Auth::id(), $video->bookmarked_by ?? []) ? 'bookmarked' : '' }}"></i>
-                    <span class="bookmark-count">{{ $video->bookmarks ?? 0 }}</span>
-                </a>
-                <a href="{{ route('chef_lens.sign-up') }}" class="myBtn video-btn heart-btn">
-                    <i class="fa-solid fa-heart heart-icon {{ Auth::check() && in_array(Auth::id(), $video->liked_by ?? []) ? 'liked' : '' }}"></i>
-                    <span class="heart-count">{{ $video->likes ?? 0 }}</span>
-                </a>
+<!-- استبدل جزء الـ challenges بالكود ده -->
+@foreach($challenges as $video)
+<div class="video-reel-item" data-video-id="{{ $video->id }}" data-chef-id="{{ $video->user->chefProfile->id ?? '' }}" data-video-type="challenge">
+    <video class="myVideo video-reel" data-index="{{ $loop->index }}" autoplay preload="metadata" muted>
+        <source src="{{ asset('storage/' . $video->announcement_path) }}" type="video/mp4">
+        المتصفح لا يدعم HTML5 video.
+    </video>
+    <div class="content">
+        <div id="container--btns" style="margin-bottom: 48px; direction: ltr;">
 
-                <button class="myBtn video-btn" onclick="togglePlay(this)">
-                    <i class="fa-solid fa-play pause-icon play-pause-icon"></i>
-                </button>
-                <button class="myBtn video-btn" onclick="toggleMute(this)">
-                    <i class="fa-solid fa-volume-xmark pause-icon mute-icon"></i>
-                </button>
+            @auth
+            <!-- للمستخدمين المسجلين - buttons تفاعلية -->
+            <button class="myBtn video-btn bookmark-btn" onclick="toggleBookmark('challenge', {{ $video->id }}, this)">
+                <i class="fa-solid fa-bookmark bookmark-icon {{ in_array(Auth::id(), $video->bookmarked_by ?? []) ? 'bookmarked' : '' }}"></i>
+                <span class="bookmark-count">{{ $video->bookmarks ?? 0 }}</span>
+            </button>
+            <button class="myBtn video-btn heart-btn" onclick="toggleLike('challenge', {{ $video->id }}, this)">
+                <i class="fa-solid fa-heart heart-icon {{ in_array(Auth::id(), $video->liked_by ?? []) ? 'liked' : '' }}"></i>
+                <span class="heart-count">{{ $video->likes ?? 0 }}</span>
+            </button>
+            @else
+            <!-- للزوار - links للتسجيل -->
+            <a href="{{ route('chef_lens.sign-up') }}" class="myBtn video-btn bookmark-btn">
+                <i class="fa-solid fa-bookmark bookmark-icon"></i>
+                <span class="bookmark-count">{{ $video->bookmarks ?? 0 }}</span>
+            </a>
+            <a href="{{ route('chef_lens.sign-up') }}" class="myBtn video-btn heart-btn">
+                <i class="fa-solid fa-heart heart-icon"></i>
+                <span class="heart-count">{{ $video->likes ?? 0 }}</span>
+            </a>
+            @endauth
 
-                <h1 class="challenge-title">{{ $video->message ?? 'اسم التحدي' }}</h1>
-                <ul class="dz-meta">
-                    <li class="dz-price"><i class="fa-solid fa-clock"></i> {{ $video->created_at->locale('ar')->diffForHumans() }}</li>
-                    <li class="dz-price"><i class="fa-solid fa-eye"></i> <span class="views-count">{{ $video->views ?? 0 }}</span></li>
-                </ul>
+            <button class="myBtn video-btn" onclick="togglePlay(this)">
+                <i class="fa-solid fa-play pause-icon play-pause-icon"></i>
+            </button>
+            <button class="myBtn video-btn" onclick="toggleMute(this)">
+                <i class="fa-solid fa-volume-xmark pause-icon mute-icon"></i>
+            </button>
 
-                <div class="button-container">
-                    @if($video->challengeResponses()->where('user_id', auth()->id())->doesntExist())
-                    <a href="{{ route('accpet-challenge', $video->id ?? '') }}" style="{{ $video->recipe_id ? '' : 'width: 100%; border-radius: 15px;' }}" class="myBtn order-now button-half">إقبل التحدي</a>
-                    @else
-                    <span style="{{ $video->recipe_id ? '' : 'width: 100%; border-radius: 15px;' }}" class="myBtn order-now button-half">تم قبول التحدي</span>
-                    @endif
-                    @if($video->recipe_id)
-                    <a href="{{ route('recipe.view', $video->recipe_id) }}" class="myBtn money-btn button-half">عرض الوصفة</a>
-                    @endif
-                </div>
+            <h1 class="challenge-title">{{ $video->message ?? 'اسم التحدي' }}</h1>
+            <ul class="dz-meta">
+                <li class="dz-price"><i class="fa-solid fa-clock"></i> {{ $video->created_at->locale('ar')->diffForHumans() }}</li>
+                <li class="dz-price"><i class="fa-solid fa-eye"></i> <span class="views-count">{{ $video->views ?? 0 }}</span></li>
+            </ul>
+
+            <div class="button-container">
+                @if($video->challengeResponses()->where('user_id', auth()->id())->doesntExist())
+                <a href="{{ route('accpet-challenge', $video->id ?? '') }}" style="{{ $video->recipe_id ? '' : 'width: 100%; border-radius: 15px;' }}" class="myBtn order-now button-half">إقبل التحدي</a>
+                @else
+                <span style="{{ $video->recipe_id ? '' : 'width: 100%; border-radius: 15px;' }}" class="myBtn order-now button-half">تم قبول التحدي</span>
+                @endif
+                @if($video->recipe_id)
+                <a href="{{ route('recipe.view', $video->recipe_id) }}" class="myBtn money-btn button-half">عرض الوصفة</a>
+                @endif
             </div>
         </div>
     </div>
-    @endforeach
+</div>
+@endforeach
 
     @foreach($snaps as $video)
     <div class="video-reel-item" data-video-id="{{ $video->id }}" data-chef-id="{{ $video->user->chefProfile->id ?? '' }}" data-video-type="snap">
