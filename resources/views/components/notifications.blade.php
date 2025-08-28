@@ -69,7 +69,7 @@
 </style>
 
 <button id="notificationBtn" class="relative">
-    <i class="fa-solid fa-bell" style="color: white;"></i>
+    <i class="fa-solid fa-bell" ></i>
     @if($notificationsCount > 0)
     <span id="notificationCount" class="absolute -top-2 -left-2 bg-red-500 text-white text-xs font-bold rounded-full w-6 h-6 flex items-center justify-center">
         {{ $notificationsCount }}
@@ -102,7 +102,6 @@
 
         <h3 class="font-bold text-gray-800 text-lg" style="text-transform: capitalize;">
             {{ $notification->challengeResponse->user->name }}
-            <span class="text-sm text-gray-500">(صاحب التحدي)</span>
         </h3> <span class="text-sm text-gray-500">{{ $notification->created_at->diffForHumans() }}</span>
 
             </div>

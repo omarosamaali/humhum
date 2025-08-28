@@ -408,9 +408,9 @@
                                                     @if (Auth::check() && Auth::user()->id != $challenge->user_id)
                                                     @if ($challenge->challengeResponses->isEmpty())
                                                     @if ($challenge->challenge_type == 'users')
-                                                    <a href="javascript:void(0);" class="dz-btn prevent-user-challenge-acceptance accept-challenge" data-challenge-id="{{ $challenge->id }}">
+                                                    {{-- <a href="javascript:void(0);" class="dz-btn prevent-user-challenge-acceptance accept-challenge" data-challenge-id="{{ $challenge->id }}">
                                                         إقبل التحدي
-                                                    </a>
+                                                    </a> --}}
                                                     @else
                                                     <a href="{{ route('challenge.add-vs', $challenge->id) }}" id="accept-challenge-{{ $challenge->id }}" class="accept-challenge dz-btn accept-challenge">
                                                         إقبل التحدي

@@ -144,7 +144,7 @@
             <div class="alert alert-success">{{ session('success') }}</div>
         @endif
         <div class="chat-box-area">
-            <span class="active-date">{{ $message->created_at->format('d M Y') }}</span>
+            <span class="active-date">{{ $message->created_at?->format('d M Y') }}</span>
             <!-- Original Message -->
             <div class="chat-content user" style="justify-content: end;">
                 <div class="message-item">

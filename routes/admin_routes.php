@@ -24,16 +24,15 @@ use App\Http\Middleware\AdminRole;
 use App\Http\Controllers\MessageController;
 use App\Models\Contact;
 
-Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
+Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/messages', [MessageController::class, 'adminIndex'])->name('messages.index');
-    Route::get('/messages/{id}', [MessageController::class, 'adminShow'])->name('messages.show');
-    Route::put('/messages/{id}', [MessageController::class, 'adminUpdate'])->name('messages.update');
-    Route::delete('/messages/{id}', [MessageController::class, 'adminDestroy'])->name('messages.destroy');
+    Route::get('/messages/{message}', [MessageController::class, 'adminShow'])->name('messages.show');
+    Route::put('/messages/{message}', [MessageController::class, 'adminUpdate'])->name('messages.update');
+    Route::delete('/messages/{message}', [MessageController::class, 'adminDestroy'])->name('messages.destroy');
     Route::post('/messages/{message}/reply', [MessageController::class, 'adminReply'])->name('messages.reply');
-    Route::get('/messages/{message}', [MessageController::class, 'adminShowAndReply'])->name('messages.message-show');
-    Route::post('/messages/{message}/update-status-and-reply', [MessageController::class, 'adminUpdateStatusAndReply'])->name('messages.update-status-and-reply');
+    // Fixed: Changed method name to match controller method
+    Route::post('/messages/{message}/update-status-and-reply', [MessageController::class, 'adminReplyAndStatus'])->name('messages.update-status-and-reply');
 });
-
 // Admin routes
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     // List contacts

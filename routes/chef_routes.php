@@ -29,6 +29,16 @@ use Illuminate\Support\Facades\DB;
 use App\Models\ChallengeReview;
 use App\Http\Controllers\SocialMediaController;
 
+Route::get('/c1he3f/new-message', [MessageController::class, 'create'])->name('c1he3f.new-message');
+Route::post('/c1he3f/messages', [MessageController::class, 'store'])->name('c1he3f.messages.store');
+Route::get('/c1he3f/messages', [MessageController::class, 'index'])->name('c1he3f.messages');
+Route::get('/c1he3f/messages/{id}', [MessageController::class, 'show'])->name('c1he3f.messages.show');
+Route::post('/c1he3f/messages/{id}/reply', [MessageController::class, 'reply'])->name('c1he3f.messages.reply');
+Route::get('/c1he3f/recpies/{recipe}/edit', [RecipesController::class, 'edit'])->name('c1he3f.recpies.edit');
+// Route::put('/c1he3f/recpies/{recipe}/updateChef', [RecipesController::class, 'updateChef'])->name('c1he3f.recpies.updateChef');
+Route::put('/c1he3f/recipes/{recipe}', [RecipesController::class, 'updateChef'])->name('c1he3f.recipes.updateChef');
+
+
 Route::group(['prefix' => 'c1he3f/profile'], function () {
     Route::get('/social-media', [SocialMediaController::class, 'index'])->name('social-media.index');
     Route::post('/social-media', [SocialMediaController::class, 'store'])->name('social-media.store');
@@ -256,15 +266,6 @@ Route::get('/c1he3f/products/{product}/edit-product', [ProductController::class,
 Route::put('/c1he3f/products/{product}', [ProductController::class, 'update'])->name('c1he3f.products.update');
 Route::delete('/c1he3f/products/{product}', [ProductController::class, 'destroy'])->name('c1he3f.products.destroy');
 
-Route::get('/c1he3f/new-message', [MessageController::class, 'create'])->name('c1he3f.new-message');
-Route::post('/c1he3f/messages', [MessageController::class, 'store'])->name('c1he3f.messages.store');
-Route::get('/c1he3f/messages', [MessageController::class, 'index'])->name('c1he3f.messages');
-Route::get('/c1he3f/messages/{id}', [MessageController::class, 'show'])->name('c1he3f.messages.show');
-Route::post('/c1he3f/messages/{id}/reply', [MessageController::class, 'reply'])->name('c1he3f.messages.reply');
-Route::get('/c1he3f/recpies/{recipe}/edit', [RecipesController::class, 'edit'])->name('c1he3f.recpies.edit');
-// Route::put('/c1he3f/recpies/{recipe}/updateChef', [RecipesController::class, 'updateChef'])->name('c1he3f.recpies.updateChef');
-Route::put('/c1he3f/recipes/{recipe}', [RecipesController::class, 'updateChef'])->name('c1he3f.recipes.updateChef');
-
 Route::get('/c1he3f/recpies/{recipe}/editChef', [RecipesController::class, 'editChef'])->name('c1he3f.recpies.editChef');
 Route::get('/admin/recipes/subcategories', [RecipesController::class, 'getSubCategories'])
     ->name('admin.recipes.subcategories');
@@ -331,6 +332,7 @@ Route::middleware('guest')->group(function () {
 // Protected Routes for Authenticated Chefs - مسارات محمية للطهاة بعد تسجيل الدخول
 // -----------------------------------------------------------------------------
 Route::middleware(['auth'])->prefix('c1he3f/profile')->name('c1he3f.profile.')->group(function () {
+    
     Route::get('/', function () {
         return view('c1he3f/profile/profile');
     })->name('profile');
