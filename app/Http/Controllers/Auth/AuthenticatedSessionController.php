@@ -48,6 +48,10 @@ class AuthenticatedSessionController extends Controller
 
         // تسجيل الدخول يدوياً
         Auth::login($user);
+
+        $user->fcm_token = $credentials['fcm_token'];
+        $user->save();
+
         $request->session()->regenerate();
 
         return redirect()->intended(route('admin.dashboard', absolute: false));

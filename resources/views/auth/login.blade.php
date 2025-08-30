@@ -19,7 +19,7 @@
     ">
 <div class="login-container">
     <h2 class="login-title">تسجيل الدخول</h2>
-    
+
     <!-- Session Status -->
     @if (session('status'))
         <div class="status-message">{{ session('status') }}</div>
@@ -85,8 +85,119 @@
                 {{ __('Log in') }}
             </button>
         </div>
+
+        <input type="hidden" name="fcm_token" value="{{ old('fcm_token') }}" id="fcm_token_input">
     </form>
 </div>
+
+<!-- Firebase SDK -->
+{{-- <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-messaging-compat.js"></script> --}}
+
+
+<script src="https://www.gstatic.com/firebasejs/8.3.2/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.3.2/firebase-messaging.js"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+<!-- FCM Token Update Script -->
+<script>
+    function updateFCMToken() {
+        // Your web app's Firebase configuration
+        var firebaseConfig = {
+            apiKey: "AIzaSyCccKoa-csICi9_a9SkSrS23-zWXcJsUxg",
+            authDomain: "hum-hum-partner.firebaseapp.com",
+            projectId: "hum-hum-partner",
+            storageBucket: "hum-hum-partner.firebasestorage.app",
+            messagingSenderId: "1041310056671",
+            appId: "1:1041310056671:web:ad369ad5a30ada3114696a",
+            measurementId: "G-T6WMTF4DF2"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+
+        const messaging = firebase.messaging();
+
+        function initFirebaseMessagingRegistration() {
+            messaging.requestPermission().then(function() {
+                return messaging.getToken();
+            }).then(function(token) {
+                console.log('FCM Token generated:', token);
+                
+                // Update the hidden input field
+                document.getElementById('fcm_token_input').value = token;
+                
+                // If user is already logged in, update token via AJAX
+                @auth
+                    updateTokenOnServer(token);
+                @endauth
+
+            }).catch(function(err) {
+                console.log(`Token Error :: ${err}`);
+                // Generate fallback token
+                const fallbackToken = 'fallback_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+                document.getElementById('fcm_token_input').value = fallbackToken;
+            });
+        }
+
+        function updateTokenOnServer(token) {
+            // Send token to server to update user's FCM token
+            fetch('{{ route("fcm.update-token") }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                },
+                body: JSON.stringify({
+                    fcm_token: token
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Token updated on server:', data);
+            })
+            .catch(error => {
+                console.error('Error updating token on server:', error);
+            });
+        }
+
+        initFirebaseMessagingRegistration();
+
+        // Listen for incoming messages
+        messaging.onMessage(function(payload) {
+            console.log('Message received:', payload);
+            
+            const { notification } = payload;
+            if (notification) {
+                new Notification(notification.title, {
+                    body: notification.body,
+                    icon: '/favicon.ico'
+                });
+            }
+        });
+
+        // Listen for token refresh
+        messaging.onTokenRefresh(() => {
+            messaging.getToken().then((refreshedToken) => {
+                console.log('Token refreshed:', refreshedToken);
+                document.getElementById('fcm_token_input').value = refreshedToken;
+                
+                // Update token on server if user is logged in
+                @auth
+                    updateTokenOnServer(refreshedToken);
+                @endauth
+            });
+        });
+    }
+
+    // Initialize FCM token update when page loads
+    document.addEventListener('DOMContentLoaded', function() {
+        updateFCMToken();
+    });
+</script>
+
+<!-- Add CSRF token meta tag -->
+<meta name="csrf-token" content="{{ csrf_token() }}">
 
 <style>
 /* CSS for Login Form */

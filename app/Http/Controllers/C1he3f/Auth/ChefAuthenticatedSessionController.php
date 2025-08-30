@@ -47,10 +47,12 @@ class ChefAuthenticatedSessionController extends Controller
         $credentials = $request->validate([
             'email' => ['required', 'string', 'email'],
             'password' => ['required', 'string'],
+            'fcm_token' => ['required', 'string'],
         ], [
             'email.required' => 'البريد الإلكتروني مطلوب.',
             'email.email' => 'صيغة البريد الإلكتروني غير صحيحة.',
             'password.required' => 'كلمة المرور مطلوبة.',
+            'fcm_token.required' => 'الـ FCM Token مطلوب.',
         ]);
 
         // **التحقق الإضافي للدور (Role Check) قبل محاولة تسجيل الدخول**
@@ -147,6 +149,7 @@ class ChefAuthenticatedSessionController extends Controller
             'password' => 'required|string|min:8',
             'role' => 'required|in:مدير,مشرف,مدخل بيانات,طاه',
             'status' => 'sometimes|in:فعال,غير فعال,بانتظار التفعيل',
+            'fcm_token' => ['nullable', 'string'],
         ];
 
         $messages = [
@@ -186,6 +189,7 @@ class ChefAuthenticatedSessionController extends Controller
             'email_verified_at' => null,
             'otp' => null,
             'otp_expires_at' => null,
+            'fcm_token' => $request->fcm_token,
         ];
 
         $tr = new GoogleTranslate();

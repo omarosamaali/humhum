@@ -1,27 +1,59 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Auth;
-use App\Http\Controllers\ProfileController;
-use App\Models\AboutUs;
-use App\Models\Terms;
+use Carbon\Carbon;
 use App\Models\Faq;
-use App\Models\MainCategories;
-use App\Models\SubCategory;
-use App\Models\Recipe;
-use App\Models\Kitchens;
-use App\Http\Controllers\Admin\RecipesController;
-use App\Http\Controllers\SnapController;
-use App\Http\Controllers\ChallengeReviewChatController;
 use App\Models\Snap;
+use App\Models\User;
+use App\Models\Terms;
 use App\Models\Banner;
-use App\Http\Controllers\C1he3f\Auth\ChefAuthenticatedSessionController;
-use App\Models\DeliveryLocation;
+use App\Models\Recipe;
+use App\Models\AboutUs;
+use App\Models\Kitchens;
 use App\Models\Challenge;
 use App\Models\ChefProfile;
+use App\Models\SubCategory;
+use App\Models\MainCategories;
 use App\Models\ChallengeReview;
+use App\Models\DeliveryLocation;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Route;
+use Illuminate\Http\Request;
+use App\Http\Controllers\SnapController;
 use App\Http\Controllers\ContactController;
-use Carbon\Carbon;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Admin\RecipesController;
+use App\Http\Controllers\ChallengeReviewChatController;
+use App\Http\Controllers\C1he3f\Auth\ChefAuthenticatedSessionController;
+use App\Helpers\NotificationHelper;
+
+Route::get('/fcm-test/{user_id}', function ($user_id) {
+    $user = User::find($user_id);
+    if ($user) {
+        return NotificationHelper::sendNotification($user->fcm_token, 'Test Notification', 'This is a test notification');
+    }
+    return response()->json(['message' => 'User not found']);
+});
+
+// FCM Token Update Route
+Route::post('/fcm/update-token', function (Request $request) {
+    if (!Auth::check()) {
+        return response()->json(['success' => false, 'message' => 'User not authenticated'], 401);
+    }
+
+    $request->validate([
+        'fcm_token' => 'required|string'
+    ]);
+
+    $user = Auth::user();
+    $user->fcm_token = $request->fcm_token;
+    $user->save();
+
+    return response()->json([
+        'success' => true,
+        'message' => 'FCM token updated successfully',
+        'user_id' => $user->id
+    ]);
+})->name('fcm.update-token');
 
 require __DIR__ . '/auth.php';
 

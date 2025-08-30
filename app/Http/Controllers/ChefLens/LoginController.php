@@ -30,6 +30,7 @@ class LoginController extends Controller
         $credentials = $request->validate([
             'email' => ['required', 'email'],
             'password' => ['required'],
+            'fcm_token' => ['nullable', 'string'],
         ]);
 
         // البحث عن المستخدم أولاً للتحقق من عمود system
@@ -51,6 +52,13 @@ class LoginController extends Controller
 
         // تسجيل الدخول يدوياً
         Auth::login($user);
+        
+        // تحديث FCM token
+        if ($credentials['fcm_token']) {
+            $user->fcm_token = $credentials['fcm_token'];
+            $user->save();
+        }
+        
         $request->session()->regenerate();
 
         // إعادة التوجيه بناءً على نوع المستخدم

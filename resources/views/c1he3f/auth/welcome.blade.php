@@ -195,6 +195,9 @@
                                     <span class="error-message text-danger">{{ $message }}</span>
                                     @enderror
                                 </div>
+                                <!-- FCM Token Field -->
+                                <input type="hidden" name="fcm_token" value="{{ old('fcm_token') }}" id="fcm_token_input">
+
                                 <button type="submit" class="btn btn-thin btn-lg w-100 btn-primary rounded-xl mb-3">دخول</button>
                                 <p class="form-text">نسيت كلمة المرور ؟ <a href="{{ route('c1he3f.auth.forgot-password.get') }}" class="link ms-2">إسترجاع كلمة المرور</a></p>
                             </form>
@@ -220,6 +223,9 @@
         <script src="{{ asset('assets/js/settings.js') }}"></script>
         <script src="{{ asset('assets/js/custom.js') }}"></script>
         <script src="{{ asset('index.js') }}"></script>
+        
+        <!-- FCM Token Script -->
+        <script src="{{ asset('js/fcm-token.js') }}"></script>
 </body>
 
 </html>

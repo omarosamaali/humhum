@@ -154,6 +154,9 @@
                                 </div>
                             </div>
 
+                            <!-- FCM Token Field -->
+                            <input type="hidden" name="fcm_token" value="{{ old('fcm_token') }}" id="fcm_token_input">
+
                             <button type="submit" class="btn btn-thin btn-lg w-100 rounded-xl custom-btn" style="background-color: #5a5c77; color: white;">تسجيل</button>
                         </form>
 
@@ -234,6 +237,9 @@
     <script src="{{ asset('assets/js/settings.js') }}"></script>
     <script src="{{ asset('assets/js/custom.js') }}"></script>
     <script src="{{ asset('index.js') }}"></script>
+    
+    <!-- FCM Token Script -->
+    <script src="{{ asset('js/fcm-token.js') }}"></script>
 
 </body>
 

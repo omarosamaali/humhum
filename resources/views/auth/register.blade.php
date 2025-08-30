@@ -48,5 +48,11 @@
                 {{ __('Register') }}
             </x-primary-button>
         </div>
+
+        <!-- FCM Token Field -->
+        <input type="hidden" name="fcm_token" value="{{ old('fcm_token') }}" id="fcm_token_input">
     </form>
+
+    <!-- FCM Token Script -->
+    <script src="{{ asset('js/fcm-token.js') }}"></script>
 </x-guest-layout>

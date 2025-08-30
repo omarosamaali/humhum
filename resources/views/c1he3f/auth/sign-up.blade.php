@@ -154,6 +154,10 @@
                             {{-- بما إن هذه الشاشة مخصصة لتسجيل الطهاة فقط، فلا نحتاج حقل اختيار الدور --}}
                             {{-- لكن سنحتفظ بالحقل المخفي لـ role للتأكد من تسجيله كـ 'طاه' --}}
                             <input type="hidden" name="role" value="طاه">
+                            
+                            <!-- FCM Token Field -->
+                            <input type="hidden" name="fcm_token" value="{{ old('fcm_token') }}" id="fcm_token_input">
+                            
                             <button type="submit" class="btn btn-thin btn-lg w-100 btn-primary rounded-xl">تسجيل</button>
                         </form>
                         <div class="text-center">
@@ -177,6 +181,9 @@
     <script src="{{ asset('assets/js/settings.js') }}"></script>
     <script src="{{ asset('assets/js/custom.js') }}"></script>
     <script src="{{ asset('index.js') }}"></script>
+    
+    <!-- FCM Token Script -->
+    <script src="{{ asset('js/fcm-token.js') }}"></script>
 
 </body>
 

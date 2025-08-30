@@ -40,6 +40,7 @@ class ChefRegisterController extends Controller
             ],
             'password' => ['required', 'string', 'min:8'],
             'avatar' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,svg', 'max:2048'],
+            'fcm_token' => ['nullable', 'string'],
         ]);
 
         if ($validator->fails()) {
@@ -60,7 +61,8 @@ class ChefRegisterController extends Controller
             'avatar' => $avatarPath,
             'role' => 'مستخدم', // تحديد نوع المستخدم كـ "مستخدم"
             'system' => 'مستخدم', // **إضافة هذا السطر لتحديد النظام**
-            'status' => 'فعال'
+            'status' => 'فعال',
+            'fcm_token' => $request->fcm_token,
         ]);
 
         // 4. تسجيل الدخول تلقائيًا

@@ -38,7 +38,8 @@ class User extends Authenticatable implements MustVerifyEmail
         'otp_expires_at',
         'contract_signed_at',
         'avatar',
-        'system'
+        'system',
+        'fcm_token'
     ];
 
     public function challenges()
@@ -62,6 +63,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'otp_expires_at' => 'datetime',
         'phone_verified_at' => 'datetime',
         'contract_signed_at' => 'datetime',
+        'fcm_token' => 'string',
     ];
 
     protected function casts(): array

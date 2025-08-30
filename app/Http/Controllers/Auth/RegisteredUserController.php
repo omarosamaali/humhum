@@ -43,6 +43,7 @@ class RegisteredUserController extends Controller
                 }),
             ],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'fcm_token' => ['nullable', 'string'],
         ]);
 
         $user = User::create([
@@ -52,6 +53,7 @@ class RegisteredUserController extends Controller
             'role' => 'مدير',
             'status' => '0',
             'system' => 'مدير', // إضافة هذا السطر لتعيين system كـ "مدير"
+            'fcm_token' => $request->fcm_token,
         ]);
 
         event(new Registered($user));
