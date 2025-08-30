@@ -28,6 +28,7 @@ use App\Models\Terms;
 use Illuminate\Support\Facades\DB;
 use App\Models\ChallengeReview;
 use App\Http\Controllers\SocialMediaController;
+use App\Helpers\NotificationHelper;
 
 Route::get('/c1he3f/new-message', [MessageController::class, 'create'])->name('c1he3f.new-message');
 Route::post('/c1he3f/messages', [MessageController::class, 'store'])->name('c1he3f.messages.store');
@@ -187,6 +188,8 @@ Route::post('c1he3f/challenge/review/{challenge_response_id}', function (Request
     ); 
 
     $challengeId = $challengeResponse->challenge_id;
+
+    NotificationHelper::sendNotification($challengeResponse->user->fcm_token, 'تم تقييم الوصفه الخاصه بك', 'تم تقييم الوصفه الخاصه بك من قبل ' . Auth::user()->name);
 
     // Redirect with success message
     return redirect()->route('challenge.vs-show', ['challenge_id' => $challengeId])

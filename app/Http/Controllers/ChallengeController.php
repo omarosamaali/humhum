@@ -13,6 +13,7 @@ use App\Rules\NoMoreThanOneActiveChallenge;
 use App\Models\ChallengeResponse;
 use App\Models\User;
 use App\Models\ChefProfile;
+use App\Helpers\NotificationHelper;
 
 class ChallengeController extends Controller
 {
@@ -118,6 +119,9 @@ class ChallengeController extends Controller
             'message_to_chef' => $request->input('message_to_chef'),
             'status' => 'pending', // أو أي حالة أولية (مثال: waiting_for_review)
         ]);
+
+        // send notification to chef
+        NotificationHelper::sendNotification($challenge->chef->fcm_token, 'استجابة جديدة للتحدي', 'قام المستخدم ' . Auth::user()->name . ' بارسال استجابة للتحدي');
 
         return redirect()->route('challenge.vs')->with('success', 'تم إرسال استجابتك للتحدي بنجاح!');
     }
