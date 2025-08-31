@@ -100,6 +100,9 @@ class MessageController extends Controller
             $message->status = 'replied';
             $message->save();
 
+            // send notification to user
+            NotificationHelper::sendNotification($message->user?->fcm_token, 'رد على الرسالة', 'قام المستخدم ' . Auth::user()->name . ' برد على الرسالة');
+
             Log::info('New Message Reply created by user ID: ' . Auth::id() . ' for message ID: ' . $message->id);
             return back()->with('success', 'تم إرسال ردك بنجاح!');
         }
