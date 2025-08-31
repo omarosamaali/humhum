@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
+use App\Helpers\NotificationHelper;
 
 class MessageController extends Controller
 {
@@ -159,6 +160,9 @@ class MessageController extends Controller
 
         $message->save();
 
+        // send notification to user
+        NotificationHelper::sendNotification($message->user?->fcm_token, 'رد على الرسالة', 'قام المدير ' . Auth::user()->name . ' برد على الرسالة');
+
         return redirect()->route('admin.messages.show', $message->id)->with('success', 'تم تحديث الرسالة وإرسال الرد بنجاح!');
     }
 
@@ -168,6 +172,9 @@ class MessageController extends Controller
             Storage::disk('public')->delete($message->file_path);
         }
         $message->delete();
+
+        // send notification to user
+        NotificationHelper::sendNotification($message->user?->fcm_token, 'تم حذف الرسالة', 'قام المدير ' . Auth::user()->name . ' بحذف الرسالة');
 
         return redirect()->route('admin.messages.index')->with('success', 'تم حذف الرسالة بنجاح!');
     }
