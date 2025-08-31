@@ -236,17 +236,8 @@
     </div>
 
     <script>
-        const reviewId = {
-            {
-                $review - > id
-            }
-        };
-
-        const currentUserId = {
-            {
-                Auth::id()
-            }
-        };
+        const reviewId = {{ $review->id }};
+        const currentUserId = {{ Auth::id() }};
         const otherParticipant = @json($otherParticipant);
 
         const messageInput = document.getElementById('messageInput');

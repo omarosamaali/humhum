@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\ChallengeReview;
 use App\Models\ChallengeReviewMessage;
 use Illuminate\Support\Facades\Auth;
+use App\Helpers\NotificationHelper;
 
 class ChallengeReviewChatController extends Controller
 {
@@ -108,6 +109,18 @@ class ChallengeReviewChatController extends Controller
                 ?? $challengerUser->avatar
                 ?? $challengerUser->image
                 ?? 'default-avatar.png';
+        }
+
+        // send notification to user
+        $recipientUser = null;
+        if ($message->sender_id == $review->chef_id) {
+            $recipientUser = $review->challengeResponse->user;
+        } else {
+            $recipientUser = $review->chef;
+        }
+
+        if ($recipientUser && $recipientUser->fcm_token) {
+            NotificationHelper::sendNotification($recipientUser->fcm_token, 'رد على الرسالة', 'قام المستخدم ' . Auth::user()?->name . ' برد على الرسالة');
         }
 
         return response()->json([
