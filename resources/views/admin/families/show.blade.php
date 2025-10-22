@@ -107,23 +107,6 @@
             </div>
         </div>
 
-        <h6 class="mt-4 mb-3">الأسماء المترجمة:</h6>
-        <div class="row">
-            @foreach ($targetLanguages as $code => $name)
-                @php
-                    $columnName = 'name_' . $code;
-                    $translatedName = $family->$columnName;
-                @endphp
-                @if ($translatedName)
-                    <div class="col-md-12 mb-3">
-                        <div class="detail-item border rounded-lg p-2">
-                            <strong class="text-black">{{ $name }} :</strong>
-                            <span>{{ $translatedName }}</span>
-                        </div>
-                    </div>
-                @endif
-            @endforeach
-        </div>
         <div class="btn-section">
             <a href="{{ route('admin.families.index') }}" class="back-btn">
                 <i class="fas fa-arrow-right ms-1"></i>

@@ -259,7 +259,6 @@
             transform: translateY(-2px);
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
         }
-
     </style>
 
     @stack('styles')
@@ -279,7 +278,8 @@
             </a>
             <!-- قائمة الإعدادات -->
             <div class="dropdown">
-                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                    aria-expanded="false">
                     <i class="fas fa-book"></i>
                     الوصفات
                 </a>
@@ -320,7 +320,8 @@
             {{-- قائمة الإعدادات --}}
             @can('isAdmin')
             <div class="dropdown">
-                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                    aria-expanded="false">
                     <i class="fas fa-cog"></i>
                     الإعدادات
                 </a>
@@ -374,6 +375,12 @@
                         </a>
                     </li>
                     <li>
+                        {{-- 8. الارشادات --}}
+                        <a class="dropdown-item" href="{{ route('admin.tips.index') }}">
+                            <i class="fas fa-images"></i> الارشادات
+                        </a>
+                    </li>
+                    <li>
                         {{-- 9. الأخبار --}}
                         <a class="dropdown-item" href="{{ route('admin.news.index') }}">
                             <i class="fas fa-newspaper"></i> الأخبار
@@ -405,7 +412,8 @@
             @can('isAdmin')
 
             <div class="dropdown">
-                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                    aria-expanded="false">
                     <i class="fas fa-cog"></i>
                     عدسة الطاهي
                 </a>
@@ -463,7 +471,8 @@
                 رسائل الموقع
             </a>
 
-            <a class="nav-link" href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+            <a class="nav-link" href="{{ route('logout') }}"
+                onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                 <i class="fas fa-sign-out-alt"></i>
                 تسجيل الخروج
             </a>

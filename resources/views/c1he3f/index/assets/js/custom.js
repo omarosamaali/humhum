@@ -42,20 +42,20 @@ Ombe = function(){
 	}
 
 	// Theme Version ============
-	var handleThemeVersion = function() {
-		jQuery('.theme-change').on('click',function(){
-			jQuery('body').toggleClass('theme-dark');
-			jQuery('.theme-btn').toggleClass('active');
-			var logoSrc = $(".app-logo").attr("src");
-			if(jQuery('body').hasClass('theme-dark')){
-			   setCookie('themeVersion_value', 'theme-dark'); 
-			   $(".app-logo").attr("src", logoSrc.replace('light','dark'))
-			}else{
-			   setCookie('themeVersion_value', '');  
-			   $(".app-logo").attr("src", logoSrc.replace('dark','light'))
-			}
-		});
-	}
+	// var handleThemeVersion = function() {
+	// 	jQuery('.theme-change').on('click',function(){
+	// 		jQuery('body').toggleClass('theme-dark');
+	// 		jQuery('.theme-btn').toggleClass('active');
+	// 		var logoSrc = $(".app-logo").attr("src");
+	// 		if(jQuery('body').hasClass('theme-dark')){
+	// 		   setCookie('themeVersion_value', 'theme-dark'); 
+	// 		   $(".app-logo").attr("src", logoSrc.replace('light','dark'))
+	// 		}else{
+	// 		   setCookie('themeVersion_value', '');  
+	// 		   $(".app-logo").attr("src", logoSrc.replace('dark','light'))
+	// 		}
+	// 	});
+	// }
     
 	// Show Pass ============
     var handleShowPass = function(){
@@ -222,15 +222,15 @@ Ombe = function(){
     }
 	
 	
-	var handleThemeVersion2 = function() {
-		jQuery('.dz-list-group ul li a').on('click',function(){
-			if($(this).hasClass('theme-change'))
-			{				
-				jQuery('body').toggleClass('theme-dark');
-				jQuery('.theme-btn').toggleClass('active');
-			}
-		});
-	}
+	// var handleThemeVersion2 = function() {
+	// 	jQuery('.dz-list-group ul li a').on('click',function(){
+	// 		if($(this).hasClass('theme-change'))
+	// 		{				
+	// 			jQuery('body').toggleClass('theme-dark');
+	// 			jQuery('.theme-btn').toggleClass('active');
+	// 		}
+	// 	});
+	// }
     
     // Theme Version ============
 	var handleRemoveClass = function() {
@@ -575,17 +575,30 @@ jQuery(document).ready(function() {
 	Ombe.init();
 	
 	$('[data-bs-toggle="popover"]').popover();
-    $('.theme-dark .custom-switch input').prop('checked', true);
+    $('.custom-switch input').prop('checked', true);
 	
 	$('#bsMaterialDatePicker').bootstrapMaterialDatePicker({
 		weekStart : 0,
 		time: false
 	});
 	
-	$('#bsMaterialTimePicker').bootstrapMaterialDatePicker({
-		date: false
-	});
-	
+$('#bsMaterialTimePicker').bootstrapMaterialDatePicker({
+    date: false,        // إلغاء التاريخ
+    shortTime: true,    // تفعيل نظام 12 ساعة (يظهر AM/PM)
+    format: 'hh:mm A'   // hh للساعة بصيغة 12، A لعرض AM أو PM
+});
+
+
+	$('#startDatePicker').bootstrapMaterialDatePicker({
+    weekStart: 0,
+    time: false
+});
+
+$('#endDatePicker').bootstrapMaterialDatePicker({
+    weekStart: 0,
+    time: false
+});
+
 	
 });
 /* Document.ready END */
@@ -600,7 +613,7 @@ jQuery(window).on('load',function () {
 	 	jQuery('#splashscreen').fadeOut(1500);
 	}, 1500);
 	
-    $('.theme-dark .custom-switch input').prop('checked', true).addClass('active');
+    $('.custom-switch input').prop('checked', true).addClass('active');
 	
 });
 /*  Window Load END */

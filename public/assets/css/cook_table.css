@@ -1,0 +1,78 @@
+.accordion-header-indicator::before {
+    content: "" !important;
+}
+
+.accordion-header-indicator {
+    width: 18px !important;
+    height: 21px !important;
+}
+
+.accordion-danger-solid .accordion-header {
+    background: #660099;
+    border-color: #660099;
+}
+
+.accordion-danger-solid .accordion-header.collapsed {
+    background: #66009952;
+    border-color: #660099;
+    color: #660099;
+    box-shadow: none;
+    border-bottom-left-radius: var(--border-radius-sm);
+    border-bottom-right-radius: var(--border-radius-sm);
+}
+
+.accordion-danger-solid .accordion__body {
+    border: 0.125rem solid #660099 !important;
+    box-shadow: 0 0.9375rem 1.25rem 0 #66009924;
+}
+
+select.form-select {
+    color: #000000 !important;
+}
+
+#bsMaterialTimePicker {
+    background-color: unset !important;
+    width: 99px;
+    left: 10px;
+    position: absolute;
+    color: white !important;
+    direction: ltr;
+    border: 0px;
+    top: 8px;
+}
+
+::placeholder {
+    color: #919191 !important;
+}
+
+.input-mini .form-control {
+    border-radius: 5px;
+    border: 1px solid #ccc !important;
+}
+
+.form-label {
+    font-size: 11px;
+    color: black !important;
+}
+
+.tips-recpie {
+    width: 132px;
+}
+
+.dtp div.dtp-date, .dtp div.dtp-time , .dtp table.dtp-picker-days tr>td>a.selected, .dtp .dtp-buttons .btn.dtp-btn-ok {
+    background: #660099 !important;
+}
+
+.choices[data-type*=select-multiple] .choices__button, .choices[data-type*=text] .choices__button {
+    position: relative;
+    display: inline-block;
+    margin: 0 8px 0 0px !important;
+    padding-left: 16px !important;
+    border: unset !important;
+    background-image: url(data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjEiIGhlaWdodD0iMjEiIHZpZXdCb3g9IjAgMCAyMSAyMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSIjRkZGIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxwYXRoIGQ9Ik0yLjU5Mi4wNDRsMTguMzY0IDE4LjM2NC0yLjU0OCAyLjU0OEwuMDQ0IDIuNTkyeiIvPjxwYXRoIGQ9Ik0wIDE4LjM2NEwxOC4zNjQgMGwyLjU0OCAyLjU0OEwyLjU0OCAyMC45MTJ6Ii8+PC9nPjwvc3ZnPg==);
+    background-size: 8px;
+    width: 8px;
+    line-height: 1;
+    opacity: .75;
+    border-radius: 0;
+}

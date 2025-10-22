@@ -78,17 +78,6 @@
             <div class="row">
                 <div class="col-md-4">
                     <div class="mb-3">
-                        <label for="name_ar" class="form-label">اسم العائلة (بالعربية)</label>
-                        <input type="text" class="form-control" id="name_ar" name="name_ar"
-                            value="{{ old('name_ar') }}" required>
-                        @error('name_ar')
-                            <div class="text-white">{{ $message }}</div>
-                        @enderror
-                    </div>
-                </div>
-
-                <div class="col-md-4">
-                    <div class="mb-3">
                         <label for="image_input" class="form-label">صورة العائلة</label>
                         <input type="file" class="form-control" name="image" id="image_input" accept="image/*">
                         @error('image')
@@ -140,7 +129,6 @@
                 <tr>
                     <th>#</th>
                     <th>تاريخ الإضافة</th>
-                    <th>الاسم (عربي)</th>
                     <th>الصورة</th>
                     <th>الحالة</th>
                     <th>الإجراءات</th>
@@ -151,7 +139,6 @@
                     <tr>
                         <td>{{ $loop->iteration }}</td>
                         <td>{{ $family->created_at->format('d/m/Y') }}</td>
-                        <td>{{ $family->name_ar }}</td>
                         <td>
                             @if ($family->image)
                                 <img src="{{ $family->image_url }}" alt="{{ $family->name_ar }}" class="family-img">

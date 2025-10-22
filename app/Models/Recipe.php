@@ -37,6 +37,7 @@ class Recipe extends Model
         'status',
         'price',
         'user_id',
+        'views'
     ];
 
     protected $casts = [
@@ -195,5 +196,10 @@ class Recipe extends Model
         } else {
             return 'partial';
         }
+    }
+
+    public function favoritedBy()
+    {
+        return $this->belongsToMany(User::class, 'favorites')->withTimestamps();
     }
 }

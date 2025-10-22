@@ -7,9 +7,7 @@ use App\Http\Controllers\ChefLens\ProfileController;
 use App\Http\Controllers\VideoController; // تأكد من استيراد متحكم الفيديو
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
-Route::middleware('auth')->group(function () {
 
-});
 Route::get('chef_lens/edit-profile', [ProfileController::class, 'showProfile'])->name('chef_lens.edit-profile');
 
 // Route لمعالجة تحديث البروفايل (يجب أن يكون من نوع POST)

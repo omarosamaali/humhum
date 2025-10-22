@@ -119,31 +119,9 @@ if(
 	
 	var theme =  getUrlParameter('color-theme');
 	var themeMode =  getUrlParameter('theme-mode');
-	//console.log(theme);
-	
-    // Change the theme version controller
-    jQuery('.theme-btn').on('click',function(){
-        jQuery('body').toggleClass('theme-dark');
-        jQuery('.theme-btn').toggleClass('active');
-		var logoSrc = $(".app-logo").attr("src");
-        if(jQuery('body').hasClass('theme-dark')){
-           setCookie('themeVersion_value', 'theme-dark'); 
-		   $(".app-logo").attr("src", logoSrc.replace('light','dark'))
-        }else{
-           setCookie('themeVersion_value', '');  
-		   $(".app-logo").attr("src", logoSrc.replace('dark','light'))
-        }
-        
-    });
-
 	
 	// Change the theme directions
 	jQuery('.direction-btn').on('change',function(){
-		/* jQuery('body').toggleClass('theme-rtl');
-        jQuery(this).toggleClass('active'); */
-
-		//console.log($(this).prop('checked'))
-
         if($(this).prop('checked')){
 			jQuery('body').addClass('theme-rtl')
 			jQuery(this).addClass('active');
@@ -165,11 +143,11 @@ if(
         body.attr('data-theme-color',  this.value);
 		var logoSrc = $(".app-logo").attr("src");
 		const isDark = getCookie("themeVersion_value");
-		if(isDark === "theme-dark"){
-			$(".app-logo").attr("src", logoSrc?.split('dark')[0]+"dark/"+$(this).attr("appLogo"))
-		}else{
-			$(".app-logo").attr("src", logoSrc?.split('light')[0]+"light/"+$(this).attr("appLogo"))
-		}
+		// if(isDark === "theme-dark"){
+		// 	$(".app-logo").attr("src", logoSrc?.split('dark')[0]+"dark/"+$(this).attr("appLogo"))
+		// }else{
+		// 	$(".app-logo").attr("src", logoSrc?.split('light')[0]+"light/"+$(this).attr("appLogo"))
+		// }
 		
 		if(isCookieSet){
 			//console.log(22+'-'+this.value);
@@ -183,13 +161,13 @@ if(
 		setCookie('themeColor_value', theme);
 	}
 	if(themeMode){
-		if(themeMode == "dark"){
-			jQuery('body').addClass('theme-dark');
-			setCookie('themeVersion_value', 'theme-dark'); 
-		}else if(themeMode == "light"){
-			jQuery('body').removeClass('theme-dark');
-			setCookie('themeVersion_value', ''); 
-		}
+		// if(themeMode == "dark"){
+		// 	jQuery('body').addClass('theme-dark');
+		// 	setCookie('themeVersion_value', 'theme-dark'); 
+		// }else if(themeMode == "light"){
+		// 	jQuery('body').removeClass('theme-dark');
+		// 	setCookie('themeVersion_value', ''); 
+		// }
 	}
     
     
@@ -252,22 +230,22 @@ function setThemePanel(){
 			if(themeOptionItem == 'themeColor'){
 				body.attr('data-theme-color', themeOptionItemValue);
 			}else if(themeOptionItem == 'appLogo'){
-				var logoSrc = $(".app-logo").attr("src");
-				const isDark = getCookie("themeVersion_value");
-				if(isDark === "theme-dark"){
-					$(".app-logo").attr("src", logoSrc?.split('dark')[0]+"dark/"+themeOptionItemValue)
-				}else{
-					$(".app-logo").attr("src", logoSrc?.split('light')[0]+"light/"+themeOptionItemValue)
-				}
+				// var logoSrc = $(".app-logo").attr("src");
+				// const isDark = getCookie("themeVersion_value");
+				// if(isDark === "theme-dark"){
+				// 	$(".app-logo").attr("src", logoSrc?.split('dark')[0]+"dark/"+themeOptionItemValue)
+				// }else{
+				// 	$(".app-logo").attr("src", logoSrc?.split('light')[0]+"light/"+themeOptionItemValue)
+				// }
 			}else if(themeOptionItem == 'themeVersion'){
-				body.addClass(themeOptionItemValue);
-                jQuery('.theme-btn').addClass('active');
-				var logoSrc = $(".app-logo").attr("src");
-				if(themeOptionItemValue === "theme-dark"){
-					$(".app-logo").attr("src", logoSrc.replace('light','dark'))
-				}else{
-					$(".app-logo").attr("src", logoSrc.replace('dark','light'))
-				}
+				// body.addClass(themeOptionItemValue);
+                // jQuery('.theme-btn').addClass('active');
+				// var logoSrc = $(".app-logo").attr("src");
+				// if(themeOptionItemValue === "theme-dark"){
+				// 	$(".app-logo").attr("src", logoSrc.replace('light','dark'))
+				// }else{
+				// 	$(".app-logo").attr("src", logoSrc.replace('dark','light'))
+				// }
 				
 			}else if(themeOptionItem == 'themeDirection'){
 				/* body.addClass(themeOptionItemValue);

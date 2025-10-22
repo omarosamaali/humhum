@@ -162,7 +162,7 @@
                         <td>{{ $recipe->recipe_code }}</td>
                         <td>
                             @if ($recipe->dish_image)
-                                <img src="{{ Storage::url($recipe->dish_image) }}" alt="{{ $recipe->title }}"
+                                <img src="{{ asset('storage/' . $recipe->dish_image) }}" alt="{{ $recipe->title }}"
                                     class="recipe-img">
                             @else
                                 <img src="{{ asset('assets/default-recipe-image.png') }}" alt="بدون صورة"

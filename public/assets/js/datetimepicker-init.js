@@ -4,6 +4,15 @@ $(document).ready(function(){
 		weekStart : 0,
 		time: false
 	});
-	
+	$('#startDatePicker').bootstrapMaterialDatePicker({
+    weekStart: 0,
+    time: false
+});
+
+$('#endDatePicker').bootstrapMaterialDatePicker({
+    weekStart: 0,
+    time: false
+});
+
 
 });

@@ -146,18 +146,6 @@
                 </div>
             </div>
 
-            <h6 class="mt-4 mb-3 text-black">الأسماء المترجمة (للقراءة فقط - تتحدث تلقائياً):</h6>
-            <div class="row">
-                @foreach ($targetLanguages as $code => $name)
-                    <div class="col-md-12 mb-3 border rounded-lg p-2">
-                        <label for="name_{{ $code }}" class="form-label font-bold">{{ $name }} :</label>
-                        <span class="text-right">
-                            {{ old('name_' . $code, $family->{'name_' . $code}) }}
-                        </span>
-                    </div>
-                @endforeach
-            </div>
-
             <div class="btn-section text-center">
                 <a href="{{ route('admin.families.index') }}" class="back-btn">
                     <i class="fas fa-arrow-right ms-1"></i>

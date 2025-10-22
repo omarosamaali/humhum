@@ -20,6 +20,7 @@ use App\Http\Controllers\Admin\FaqController;
 use App\Http\Controllers\Admin\BannerController;
 use App\Http\Controllers\Admin\RecipesController;
 use App\Http\Controllers\Admin\ReportController;
+use App\Http\Controllers\Admin\TipsController;
 use App\Http\Middleware\AdminRole;
 use App\Http\Controllers\MessageController;
 use App\Models\Contact;
@@ -124,6 +125,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::resource('subCategories', SubCategoryController::class);
     Route::resource('kitchens', KitchensController::class);
     Route::resource('families', FamiliesController::class);
+    Route::resource('tips', TipsController::class);
     Route::resource('news', NewsController::class);
     Route::resource('about-us', AboutUsController::class);
     Route::resource('terms', TermsController::class);

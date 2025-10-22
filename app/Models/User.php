@@ -15,11 +15,13 @@ class User extends Authenticatable implements MustVerifyEmail
     use HasApiTokens, HasFactory, Notifiable;
     protected $fillable = [
         'name',
+        'membership_number',
         'name_ar',
         'name_en',
         'name_id',
         'name_am',
         'name_hi',
+        'country',
         'name_bn',
         'name_ml',
         'name_fil',
@@ -52,13 +54,11 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     protected $hidden = [
-        'password',
         'remember_token',
     ];
 
     protected $casts = [
         'email_verified_at' => 'datetime',
-        'password' => 'hashed',
         'otp_expires_at' => 'datetime',
         'phone_verified_at' => 'datetime',
         'contract_signed_at' => 'datetime',
@@ -68,7 +68,6 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return [
             'email_verified_at' => 'datetime',
-            'password' => 'hashed',
         ];
     }
 
@@ -148,5 +147,29 @@ class User extends Authenticatable implements MustVerifyEmail
     public function socialMedia()
     {
         return $this->hasOne(SocialMedia::class);
+    }
+
+    public function favorites()
+    {
+        return $this->belongsToMany(Recipe::class, 'favorites')->withTimestamps();
+    }
+
+    public function setCountryAttribute($value)
+    {
+        $this->attributes['country'] = strtolower($value);
+    }
+
+    public function my_family(){
+        return $this->hasMany(MyFamily::class);
+    }
+
+    public function cooks()
+    {
+        return $this->hasMany(Cook::class);
+    }
+
+
+    public function tip(){
+        return $this->hasMany(Tip::class);
     }
 }

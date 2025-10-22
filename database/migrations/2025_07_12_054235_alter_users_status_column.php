@@ -12,10 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            // Change 'your_current_type' to the actual type if it's not string
-            // For example, if it's an ENUM, you might need to drop and re-add.
-            // A simpler approach is to ensure it's a string and then modifyLength
-            $table->string('status', 20)->change(); // Change 20 to a suitable length
+            $table->string('status', 20)->change()->default('بانتظار التفعيل');
         });
     }
 

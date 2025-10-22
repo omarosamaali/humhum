@@ -238,3 +238,5 @@ require __DIR__ . '/chef_lens.php';
 require __DIR__ . '/chef_routes.php';
 
 require __DIR__ . '/admin_routes.php';
+
+require __DIR__ . '/user.php';

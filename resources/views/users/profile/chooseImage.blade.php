@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <!-- Title -->
+    <title>إختر الصورة الرمزية</title>
+
+    <!-- Mobile Specific -->
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, minimal-ui, viewport-fit=cover">
+
+    <!-- Favicons Icon -->
+    <link rel="shortcut icon" type="image/x-icon" href="assets/images/user-logo/favicon.png">
+
+    <!-- Globle Stylesheets -->
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/style.css') }}">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700;800;900&family=Raleway:wght@300;400;500&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #660099;
+        }
+
+        .edit-profile .avatar-upload .avatar-preview {
+            border: 3px solid gray;
+        }
+
+        .edit-profile .avatar-upload .avatar-preview.active {
+            border: 3px solid var(--primary-color);
+        }
+
+        .edit-profile .avatar-upload .change-btn {
+            background-color: var(--primary-color);
+        }
+
+        .input-group:focus-within .input-group-text,
+        .input-group:focus-within .form-control,
+        .form-control:focus,
+        .form-control:active,
+        .form-control.active {
+            border-color: var(--primary-color);
+        }
+
+        .edit-profile .avatar-upload .avatar-preview>#imagePreview {
+            background-size: contain;
+        }
+    </style>
+    @vite(['resources/js/app.js'])
+</head>
+
+<body>
+    <div class="page-wrapper">
+        <!-- Preloader -->
+        <div id="preloader">
+            <div class="loader">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+            </div>
+        </div>
+        <!-- Preloader end-->
+        <header class="header header-fixed">
+            <div class="header-content">
+                <div class="left-content">
+                    <a href="{{ route('users.profile.edit') }}" id="back-btn">
+                        <i class="feather icon-arrow-left"></i>
+                    </a>
+                </div>
+                <div class="mid-content">
+                    <h4 class="title">إختر الصورة الرمزية</h4>
+                </div>
+                <div class="right-content d-flex align-items-center gap-4">
+                    <a id="submitForm" href="javascript:void(0);">
+                        <i class="feather icon-check" style="font-size: 29px; font-weight: bold; color: green;"></i>
+                    </a>
+                </div>
+            </div>
+        </header>
+        <!-- Main Content Start  -->
+        <main class="page-content">
+            <div class="container py-0">
+                <div class="dz-authentication-area">
+                    <div class="account-section" style="padding-bottom: 78px; margin-top: 78px;">
+                        <form class="m-b20" method="POST" action="{{ route('users.profile.updateImage', $user) }}"
+                            enctype="multipart/form-data">
+                            @csrf
+                            {{-- @method('PUT') --}}
+                            <input type="hidden" name="avatar" id="selectedImage">
+                            <div class="edit-profile">
+                                <p>إختر الصورة المعبرة لك</p>
+                                <div
+                                    style="display: flex; flex-wrap: wrap; gap: 40px; align-items: center; justify-content: center;">
+                                    {{-- @foreach ($avatars as $avatar)
+                                    <div class="profile-image">
+                                        <div class="avatar-upload">
+                                            <div class="avatar-preview" style="width: 100px; height: 100px;">
+                                                <div id="imagePreview"
+                                                    style="background-image: url(assets/images/team/1.png); width: 90px; height: 90px;">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    @endforeach --}}
+                                    <div class="profile-image">
+                                        <div class="avatar-upload">
+                                            <div class="avatar-preview" style="width: 100px; height: 100px;">
+                                                <div id="imagePreview"
+                                                    style="background-image: url(assets/images/team/1.png); width: 90px; height: 90px;">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="profile-image">
+                                        <div class="avatar-upload">
+                                            <div class="avatar-preview" style="width: 100px; height: 100px;">
+                                                <div id="imagePreview"
+                                                    style="background-image: url(assets/images/team/2.png); width: 90px; height: 90px;">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="profile-image">
+                                        <div class="avatar-upload">
+                                            <div class="avatar-preview" style="width: 100px; height: 100px;">
+                                                <div id="imagePreview"
+                                                    style="background-image: url(assets/images/team/3.png); width: 90px; height: 90px;">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="profile-image">
+                                        <div class="avatar-upload">
+                                            <div class="avatar-preview" style="width: 100px; height: 100px;">
+                                                <div id="imagePreview"
+                                                    style="background-image: url(assets/images/team/1.png); width: 90px; height: 90px;">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="profile-image">
+                                        <div class="avatar-upload">
+                                            <div class="avatar-preview" style="width: 100px; height: 100px;">
+                                                <div id="imagePreview"
+                                                    style="background-image: url(assets/images/team/2.png); width: 90px; height: 90px;">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="profile-image">
+                                        <div class="avatar-upload">
+                                            <div class="avatar-preview" style="width: 100px; height: 100px;">
+                                                <div id="imagePreview"
+                                                    style="background-image: url(assets/images/team/3.png); width: 90px; height: 90px;">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+    </div>
+
+    <script>
+        document.querySelectorAll('.avatar-preview').forEach(preview => {
+            preview.addEventListener('click', function () {
+                // إزالة الكلاس active من كل الصور
+                document.querySelectorAll('.avatar-preview').forEach(p => p.classList.remove('active'));
+    
+                // إضافة الكلاس active على الصورة اللي تم الضغط عليها
+                this.classList.add('active');
+            });
+        });
+    </script>
+    <script>
+        const previews = document.querySelectorAll('.avatar-preview');
+        const selectedImageInput = document.getElementById('selectedImage');
+        const submitButton = document.getElementById('submitForm');
+        const form = document.querySelector('form');
+    
+        previews.forEach(preview => {
+            preview.addEventListener('click', function () {
+                // إزالة الكلاس active من الكل
+                previews.forEach(p => p.classList.remove('active'));
+    
+                // إضافة الكلاس active على الصورة اللي تم اختيارها
+                this.classList.add('active');
+    
+                // جلب رابط الصورة من الخلفية
+                const bg = this.querySelector('#imagePreview').style.backgroundImage;
+                const imageUrl = bg.slice(5, -2); // إزالة 'url("و ")'
+                selectedImageInput.value = imageUrl; // حفظ المسار في input hidden
+            });
+        });
+    
+        // لما المستخدم يضغط على علامة الصح
+    // لما المستخدم يضغط على علامة الصح
+    submitButton.addEventListener('click', function () {
+    if(selectedImageInput.value) { // تأكد إن في صورة متختارة
+    form.submit();
+    } else {
+    alert('من فضلك اختر صورة أولاً');
+    }
+    });
+    </script>
+    <script src="assets/js/jquery.js"></script>
+    <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="assets/vendor/swiper/swiper-bundle.min.js"></script><!-- Swiper -->
+    <script src="assets/js/dz.carousel.js"></script><!-- Swiper -->
+    <script src="assets/js/settings.js"></script>
+    <script src="assets/js/custom.js"></script>
+</body>
+
+</html>

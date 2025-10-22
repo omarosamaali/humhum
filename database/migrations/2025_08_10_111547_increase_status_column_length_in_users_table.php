@@ -9,7 +9,7 @@ class IncreaseStatusColumnLengthInUsersTable extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->string('status', 255)->change(); // Increase to 255 characters
+            $table->string('status', 255)->change()->default('بانتظار التفعيل'); // Increase to 255 characters
         });
     }
 

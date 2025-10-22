@@ -122,19 +122,19 @@ if(
 	//console.log(theme);
 	
     // Change the theme version controller
-    jQuery('.theme-btn').on('click',function(){
-        jQuery('body').toggleClass('theme-dark');
-        jQuery('.theme-btn').toggleClass('active');
-		var logoSrc = $(".app-logo").attr("src");
-        if(jQuery('body').hasClass('theme-dark')){
-           setCookie('themeVersion_value', 'theme-dark'); 
-		   $(".app-logo").attr("src", logoSrc.replace('light','dark'))
-        }else{
-           setCookie('themeVersion_value', '');  
-		   $(".app-logo").attr("src", logoSrc.replace('dark','light'))
-        }
+    // jQuery('.theme-btn').on('click',function(){
+    //     jQuery('body').toggleClass('theme-dark');
+    //     jQuery('.theme-btn').toggleClass('active');
+	// 	var logoSrc = $(".app-logo").attr("src");
+    //     if(jQuery('body').hasClass('theme-dark')){
+    //        setCookie('themeVersion_value', 'theme-dark'); 
+	// 	   $(".app-logo").attr("src", logoSrc.replace('light','dark'))
+    //     }else{
+    //        setCookie('themeVersion_value', '');  
+	// 	   $(".app-logo").attr("src", logoSrc.replace('dark','light'))
+    //     }
         
-    });
+    // });
 
 	
 	// Change the theme directions
@@ -259,15 +259,16 @@ function setThemePanel(){
 				}else{
 					$(".app-logo").attr("src", logoSrc?.split('light')[0]+"light/"+themeOptionItemValue)
 				}
-			}else if(themeOptionItem == 'themeVersion'){
-				body.addClass(themeOptionItemValue);
-                jQuery('.theme-btn').addClass('active');
-				var logoSrc = $(".app-logo").attr("src");
-				if(themeOptionItemValue === "theme-dark"){
-					$(".app-logo").attr("src", logoSrc.replace('light','dark'))
-				}else{
-					$(".app-logo").attr("src", logoSrc.replace('dark','light'))
-				}
+			}
+			else if (themeOptionItem == 'themeVersion') {
+				// body.addClass(themeOptionItemValue);
+                // jQuery('.theme-btn').addClass('active');
+				// var logoSrc = $(".app-logo").attr("src");
+				// if(themeOptionItemValue === "theme-dark"){
+				// 	$(".app-logo").attr("src", logoSrc.replace('light','dark'))
+				// }else{
+				// 	$(".app-logo").attr("src", logoSrc.replace('dark','light'))
+				// }
 				
 			}else if(themeOptionItem == 'themeDirection'){
 				/* body.addClass(themeOptionItemValue);

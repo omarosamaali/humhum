@@ -274,7 +274,8 @@
                     <div class="swiper-slide">
                         <a href="{{ route('chef_lens.profileDisplayed', ['chefProfile' => $chef->id]) }}" style="flex-direction: column; border: 0px; padding: 0px; background-color: transparent; box-shadow: none;" class="dz-categories-bx chef-selector" data-chef-id="{{ $chef->id }}">
                             <div class="icon-bx">
-                                <img class="img-fluid chef-img {{ $index === 1 ? 'active' : '' }}" src="{{ $chef->official_image ? asset('storage/' . $chef->official_image) : asset('assets/images/default-chef.jpg') }}" alt="{{ $chef->name }}">
+                                <img class="img-fluid chef-img {{ $index === 1 ? 'active' : '' }}" src="{{ $chef->official_image ? asset('storage/' . $chef->official_image) : 
+                                asset('assets/images/default-chef.jpg') }}" alt="{{ $chef->name }}">
                             </div>
                             <div class="dz-content">
                                 <h6 class="title">

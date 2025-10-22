@@ -48,7 +48,7 @@ class Kitchens extends Model
 
     public function recipes()
     {
-        return $this->hasMany(Recipe::class); // الارتباط الآن بـ id الافتراضي
+        return $this->hasMany(Recipe::class, 'kitchen_type_id'); // الارتباط الآن بـ id الافتراضي
     }
 
     public function Translations()

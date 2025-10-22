@@ -11,18 +11,6 @@ class Family extends Model
     use HasFactory;
 
     protected $fillable = [
-        'name_ar',
-        'name_id',
-        'name_am', // جديد
-        'name_hi', // جديد
-        'name_bn', // جديد
-        'name_ml', // جديد
-        'name_fil', // جديد
-        'name_ur', // جديد
-        'name_ta', // جديد
-        'name_en', // جديد
-        'name_ne', // جديد
-        'name_ps', // جديد
         'image',
         'status',
     ];
