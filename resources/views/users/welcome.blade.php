@@ -467,7 +467,7 @@
                 <img src="{{ asset('assets/images/user-logo/' . ($loop->index + 1) . '.png') }}" class="chef-logo"
                     alt="">
                 <p class="recipe-name" style="padding: 2px;">
-                   {{ Str::limit($recipe->title, 13) }}
+                   {{ Str::words($recipe->title, 2) }}
                 </p>
             </a>
             @endforeach

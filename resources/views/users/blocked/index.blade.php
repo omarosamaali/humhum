@@ -28,16 +28,6 @@
 <body>
     <div class="page-wrapper">
 
-        <!-- Preloader -->
-        <div id="preloader">
-            <div class="loader">
-                <div class="spinner-border text-primary" role="status">
-                    <span class="visually-hidden">Loading...</span>
-                </div>
-            </div>
-        </div>
-        <!-- Preloader end-->
-
         <!-- Header -->
         <header class="header header-fixed" style="border-bottom: 1px solid #eee;">
             <div class="header-content">
