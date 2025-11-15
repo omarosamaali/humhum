@@ -59,6 +59,14 @@
         justify-content: center;
         gap: 1px;
     }
+
+    .bottom-container {
+        flex-direction: row;
+        display: flex;
+        align-items: start;
+        position: relative;
+        top: 25px;
+    }
 </style>
 @section('content')
 <div class="container">
@@ -246,7 +254,9 @@
                         <div class="dz-media recipe-media">
                             <img src="{{ asset('storage/' . $dailyRecipe->dish_image) }}" style="
                                 border-radius: 0px 22px 22px 0px !important;
-                                height: 121px !important;" alt="">
+                                height: 100% !important;
+                                max-height: 148px !important;
+                                max-width: 150px;" alt="">
                         </div>
                         <div class="dz-content">
                             <div class="dz-head">
@@ -285,13 +295,13 @@
                                         {{ $favorites_count }}
                                     </li>
                                 </ul>
-                                <div>
+                                <div class="bottom-container">
                                     <div class="tags cuisine-tag">
                                         <img src="{{ $dailyRecipe->cuisine_flag ?? 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/fe/Flag_of_Egypt.svg/800px-Flag_of_Egypt.svg.png' }}"
                                             class="cuisine-flag" style="border-radius: 50% !important;" alt="">
                                         {{ $dailyRecipe->cuisine ?? __('messages.egyptian_cuisine') }}
                                     </div>
-                                    <div class="bookmark">
+                                    <div class="bookmark" style="bottom: 0px;">
                                         @auth
                                         <button class="favorite-btn"
                                             onclick="toggleFavorite({{ $dailyRecipe->id }}, this)" type="button">
