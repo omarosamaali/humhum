@@ -268,7 +268,7 @@
                         <div class="dz-content">
                             <div class="dz-head cart-items">
                                 <div>
-                                    <h6 class="title">
+                                    <h6 class="title" style="padding-left: 13px;">
                                         <span style="font-size: 13px;">{{ $dailyRecipe->title }}</span>
                                     </h6>
                                     <ul class="tag-list">
