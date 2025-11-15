@@ -466,8 +466,8 @@
                 <img src="{{ asset('storage/' . $recipe->dish_image) }}" alt="{{ $recipe->name }}" class="recipe-image">
                 <img src="{{ asset('assets/images/user-logo/' . ($loop->index + 1) . '.png') }}" class="chef-logo"
                     alt="">
-                <p class="recipe-name">
-                    {{ $recipe->title }}
+                <p class="recipe-name" style="padding: 2px;">
+                   {{ Str::limit($recipe->title, 13) }}
                 </p>
             </a>
             @endforeach
