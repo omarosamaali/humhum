@@ -60,6 +60,13 @@
         gap: 1px;
     }
 
+    .cart-items {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        justify-content: space-between;
+    }
+
     .bottom-container {
         flex-direction: row;
         display: flex;
@@ -259,42 +266,44 @@
                                 max-width: 150px;" alt="">
                         </div>
                         <div class="dz-content">
-                            <div class="dz-head">
-                                <h6 class="title">
-                                    <span>{{ $dailyRecipe->title }}</span>
-                                </h6>
-                                <ul class="tag-list">
-                                    @if($dailyRecipe->meal_type)
-                                    @foreach(explode(',', $dailyRecipe->meal_type) as $type)
-                                    <li><span>{{ __('messages.' . strtolower(trim($type))) }}</span></li>
-                                    @endforeach
-                                    @endif
-                                </ul>
-                                @forelse ($dailyRecipe->subCategories as $subCategory)
-                                <span class="badge badge-info">
-                                    @if(app()->getLocale() == 'ar')
-                                    {{ $subCategory->name_ar }}
-                                    @else
-                                    {{ $subCategory->name_en }}
-                                    @endif
-                                </span>
-                                @empty
-                                <span class="text-muted">{{ __('messages.no_subcategories') }}</span>
-                                @endforelse
-                                <ul class="tag-list recipe-stats">
-                                    <li class="dz-price stat-item">
-                                        <i class="fa-solid fa-clock primary-icon"></i>
-                                        {{ $dailyRecipe->prep_time ?? '5' }}
-                                    </li>
-                                    <li class="dz-price stat-item">
-                                        <i class="fa-solid fa-eye primary-icon"></i>
-                                        {{ $dailyRecipe->views ?? 0 }}
-                                    </li>
-                                    <li class="dz-price stat-item">
-                                        <i class="fa-solid fa-heart primary-icon"></i>
-                                        {{ $favorites_count }}
-                                    </li>
-                                </ul>
+                            <div class="dz-head cart-items">
+                                <div>
+                                    <h6 class="title">
+                                        <span style="font-size: 13px;">{{ $dailyRecipe->title }}</span>
+                                    </h6>
+                                    <ul class="tag-list">
+                                        @if($dailyRecipe->meal_type)
+                                        @foreach(explode(',', $dailyRecipe->meal_type) as $type)
+                                        <li><span>{{ __('messages.' . strtolower(trim($type))) }}</span></li>
+                                        @endforeach
+                                        @endif
+                                    </ul>
+                                    @forelse ($dailyRecipe->subCategories as $subCategory)
+                                    <span class="badge badge-info">
+                                        @if(app()->getLocale() == 'ar')
+                                        {{ $subCategory->name_ar }}
+                                        @else
+                                        {{ $subCategory->name_en }}
+                                        @endif
+                                    </span>
+                                    @empty
+                                    <span class="text-muted">{{ __('messages.no_subcategories') }}</span>
+                                    @endforelse
+                                    <ul class="tag-list recipe-stats">
+                                        <li class="dz-price stat-item">
+                                            <i class="fa-solid fa-clock primary-icon"></i>
+                                            {{ $dailyRecipe->prep_time ?? '5' }}
+                                        </li>
+                                        <li class="dz-price stat-item">
+                                            <i class="fa-solid fa-eye primary-icon"></i>
+                                            {{ $dailyRecipe->views ?? 0 }}
+                                        </li>
+                                        <li class="dz-price stat-item">
+                                            <i class="fa-solid fa-heart primary-icon"></i>
+                                            {{ $favorites_count }}
+                                        </li>
+                                    </ul>
+                                </div>
                                 <div class="bottom-container">
                                     <div class="tags cuisine-tag">
                                         <img src="{{ $dailyRecipe->cuisine_flag ?? 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/fe/Flag_of_Egypt.svg/800px-Flag_of_Egypt.svg.png' }}"
