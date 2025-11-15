@@ -7,7 +7,13 @@
 body.theme-dark main.page-content {
   background: #101010;
 }
+        :root {
+            --primary-color: #660099;
+        }
 
+        ::selection {
+            background: var(--primary-color) !important;
+        }
 :root {
   --primary: #e00000;
   --primary-dark: black;
@@ -21038,8 +21044,8 @@ button:focus {
 
 input[type="date"]::-webkit-inner-spin-button,
 input[type="date"]::-webkit-calendar-picker-indicator {
-  display: none;
-  -webkit-appearance: none;
+  /* display: none;
+  -webkit-appearance: none; */
 }
 
 .form-control {

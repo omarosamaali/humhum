@@ -23,4 +23,14 @@ class MyFamilyTip extends Model
     {
         return $this->belongsTo(Tip::class);
     }
+
+    public function tips()
+    {
+        return $this->belongsTo(MyFamilyTip::class);
+    }
+
+    public function familyMember()
+    {
+        return $this->belongsTo(MyFamily::class, 'my_family_id');
+    }
 }

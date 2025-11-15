@@ -120,7 +120,7 @@
         </div>
 
         <div class="btn-section">
-            <a href="{{ route('admin.faqs.index') }}" class="back-btn">
+            <a href="{{ route('admin.faqs.index') }}" id="back-btn">
                 <i class="fas fa-arrow-right ms-1"></i>
                 العودة
             </a>

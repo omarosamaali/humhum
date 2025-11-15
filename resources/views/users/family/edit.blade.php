@@ -70,94 +70,89 @@
         </div>
         <!-- Preloader end-->
 
-        <header class="header header-fixed">
-            <div class="header-content">
-                <div class="left-content">
-                    <a href="{{ route('users.family.show', $myFamily) }}" id="back-btn">
-                        <i class="feather icon-arrow-left"></i>
-                    </a>
-                </div>
-                <div class="mid-content">
-                    <h4 class="title">تعديل بيانات الفرد</h4>
-                </div>
-                <div class="right-content d-flex align-items-center gap-4">
-                    <a id="submitForm" href="javascript:void(0);">
-                        <i class="feather icon-check" style="font-size: 29px; font-weight: bold; color: green;"></i>
-                    </a>
-                </div>
-            </div>
-        </header>
-
-        <!-- Main Content Start -->
-        <main class="page-content space-top p-b80">
-            <div class="container">
-                <div class="edit-profile">
-
-                    <div class="profile-image">
-                        <div class="avatar-upload">
-                            <div class="avatar-preview">
-                                <div id="imagePreview" style="{{ $myFamily?->avatar ? 
-                                'background-image: url(' . asset($myFamily->avatar) . ');' 
-                                : 'background-image: url(assets/images/default.jpg);' }}"></div>
-                                <div class="change-btn">
-                                    <a href="{{ route('users.family.chooseImage', $myFamily) }}" for="imageUpload">
-                                        <i class="fi fi-rr-pencil" style="color: white;"></i>
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <form method="POST" action="{{ route('users.family.update', $myFamily->id) }}"
-                        enctype="multipart/form-data">
-                        @csrf
-                        @method('put')
-
-                        <div class="mb-4" style="text-align: center;">
-                            <label class="form-label" for="name">الاسم</label>
-                            <div class="input-group input-mini input-sm">
-                                <input type="text" id="name" name="name" value="{{ $myFamily->name }}"
-                                    class="form-control">
-                            </div>
-                        </div>
-
-                    </form>
-                    <div id="chef-fields" class="chef-fields">
-                        <button onclick="deleteUser()"
-                            style="border: 1px solid red; background-color: white !important; color: red !important;"
-                            class="btn btn-secondary btn-lg btn-thin rounded-xl w-100">
-                            حذف الحساب
-                        </button>
-                    </div>
-
-                </div>
-            </div>
-        </main>
-        <!-- Main Content End -->
-
-        <!-- Footer Fixed Button -->
+<header class="header header-fixed">
+    <div class="header-content">
+        <div class="left-content">
+            <a href="{{ route('users.family.show', $myFamily) }}" id="back-btn">
+                <i class="feather icon-arrow-left"></i>
+            </a>
+        </div>
+        <div class="mid-content">
+            <h4 class="title">{{ __('messages.edit_member_data') }}</h4>
+        </div>
+        <div class="right-content d-flex align-items-center gap-4">
+            <a id="submitForm" href="javascript:void(0);">
+                <i class="feather icon-check" style="font-size: 29px; font-weight: bold; color: green;"></i>
+            </a>
+        </div>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</header>
 
-    <script>
-        function deleteUser() {
-			Swal.fire({
-				title: "هل أنت متأكد من حذف حساب",
-				showDenyButton: true,
-				// showCancelButton: true,
-				confirmButtonText: "نعم",
-				denyButtonText: `لا`
-			}).then((result) => {
-				/* Read more about isConfirmed, isDenied below */
-				if (result.isConfirmed) {
-					Swal.fire("تم الحذف بنجاح", "", "success");
-				} else if (result.isDenied) {
-					Swal.fire("تم إلغاء الحذف", "", "info");
-				}
-			});
+<!-- Main Content Start -->
+<main class="page-content space-top p-b80">
+    <div class="container">
+        <div class="edit-profile">
 
-		}
-    </script>
-    <script>
+            <div class="profile-image">
+                <div class="avatar-upload">
+                    <div class="avatar-preview">
+                        <div id="imagePreview" style="{{ $myFamily?->avatar ? 
+                        'background-image: url(' . asset($myFamily->avatar) . ');' 
+                        : 'background-image: url(assets/images/default.jpg);' }}"></div>
+                        <div class="change-btn">
+                            <a href="{{ route('users.family.chooseImage', $myFamily) }}" for="imageUpload">
+                                <i class="fi fi-rr-pencil" style="color: white;"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <form method="POST" action="{{ route('users.family.update', $myFamily->id) }}"
+                enctype="multipart/form-data">
+                @csrf
+                @method('put')
+
+                <div class="mb-4" style="text-align: center;">
+                    <label class="form-label" for="name">{{ __('messages.name') }}</label>
+                    <div class="input-group input-mini input-sm">
+                        <input type="text" id="name" name="name" value="{{ $myFamily->name }}" class="form-control">
+                    </div>
+                </div>
+
+            </form>
+            <div id="chef-fields" class="chef-fields">
+                <button onclick="deleteUser()"
+                    style="border: 1px solid red; background-color: white !important; color: red !important;"
+                    class="btn btn-secondary btn-lg btn-thin rounded-xl w-100">
+                    {{ __('messages.delete_account') }}
+                </button>
+            </div>
+
+        </div>
+    </div>
+</main>
+<!-- Main Content End -->
+
+<!-- Footer Fixed Button -->
+</div>
+{!! $swalScript !!}
+
+<script>
+    function deleteUser() {
+        Swal.fire({
+            title: "{{ __('messages.confirm_delete_account') }}",
+            showDenyButton: true,
+            confirmButtonText: "{{ __('messages.yes') }}",
+            denyButtonText: "{{ __('messages.no') }}"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                Swal.fire("{{ __('messages.deleted_successfully') }}", "", "success");
+            } else if (result.isDenied) {
+                Swal.fire("{{ __('messages.delete_cancelled') }}", "", "info");
+            }
+        });
+    }
+</script>    <script>
         const submitButton = document.getElementById('submitForm');
                 const form = document.querySelector('form');
                 submitButton.addEventListener('click', function () {

@@ -23,7 +23,7 @@
         crossorigin="anonymous" referrerpolicy="no-referrer" />
     <meta name="viewport"
         content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, minimal-ui, viewport-fit=cover">
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    {!! $swalScript !!}
     <link rel="shortcut icon" type="image/x-icon" href="{{ asset('assets/images/app-logo/favicon.png') }}">
 
     <link rel="manifest" href="{{ asset('manifest.json') }}">
@@ -67,7 +67,7 @@
             <div class="container py-0">
                 <div class="dz-authentication-area">
                     <div class="main-logo">
-                        <a href="javascript:history.back()" class="back-btn"> {{-- تم تعديله للعودة للصفحة السابقة --}}
+                        <a href="javascript:history.back()" id="back-btn"> {{-- تم تعديله للعودة للصفحة السابقة --}}
                             <i class="feather icon-arrow-left"></i>
                         </a>
                         <div class="logo" style="right: 32px; position: relative;">
@@ -116,7 +116,7 @@
 
                             <div class="text-center form-text">إذا لم تستلم الرمز!
                                 {{-- تعديل رابط إعادة الإرسال ليقوم بـ POST request --}}
-                                <a href="javascript:void(0);" onclick="document.getElementById('resend-otp-form').submit();"
+                                <a href="{{ url()->previous() ?: route('home') }}" onclick="document.getElementById('resend-otp-form').submit();"
                                    class="text-underline link">إعادة إرسال</a>
                             </div>
 

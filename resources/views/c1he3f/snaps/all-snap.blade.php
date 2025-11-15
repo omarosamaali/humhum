@@ -37,7 +37,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700;800;900&family=Raleway:wght@300;400;500&display=swap" rel="stylesheet">
 
     <!-- SweetAlert2 -->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    {!! $swalScript !!}
 
     <style>
         :lang(ar) body {
@@ -141,7 +141,7 @@
         <header class="header header-sticky border-bottom">
             <div class="header-content">
                 <div class="left-content">
-                    <a href="javascript:void(0);" class="back-btn">
+                    <a href="{{ url()->previous() ?: route('home') }}" id="back-btn">
                         <i class="feather icon-arrow-left"></i>
                     </a>
                 </div>

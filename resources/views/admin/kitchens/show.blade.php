@@ -128,7 +128,7 @@
             @endforeach
         </div>
         <div class="btn-section text-center">
-            <a href="{{ route('admin.kitchens.index') }}" class="back-btn"> {{-- تم التعديل هنا (mainCategories إلى kitchens) --}}
+            <a href="{{ route('admin.kitchens.index') }}" id="back-btn"> {{-- تم التعديل هنا (mainCategories إلى kitchens) --}}
                 <i class="fas fa-arrow-right ms-1"></i>
                 العودة لقائمة المطابخ {{-- تم التعديل هنا --}}
             </a>

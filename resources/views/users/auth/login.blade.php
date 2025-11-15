@@ -8,9 +8,9 @@
 
         {{-- الشعار --}}
         <div class="main-logo">
-            <a href="{{ url('/') }}" class="back-btn">
+            {{-- <a href="{{ url('/') }}" id="back-btn">
                 <i class="feather icon-arrow-left"></i>
-            </a>
+            </a> --}}
             <div class="logo" style="right: 32px; position: relative;">
                 <img src="{{ asset('assets/images/user-logo/logo.png') }}" alt="logo">
             </div>
@@ -44,7 +44,7 @@
                     <div class="input-group input-mini input-lg" style="justify-content: center;">
                         <label class="form-label">كلمة المرور</label>
                         <div class="otp-group" id="otpGroup" aria-label="حقل كلمة المرور المكوّن من 4 خانات"
-                            style="display: flex;  gap: 5px; margin-bottom: 40px;">
+                            style="display: flex;  gap: 5px; margin-bottom: 40px; direction: rtl;">
                             <input inputmode="numeric" pattern="[0-9]*" maxlength="1" data-index="0"
                                 autocomplete="one-time-code" class="form-control otp-input" type="text" id="digit-2"
                                 الاسم="الرقم ٢" عنصر نائب="" البيانات-التالي="الرقم ٣" البيانات-السابق="الرقم ١">

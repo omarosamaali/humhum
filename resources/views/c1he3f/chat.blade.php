@@ -35,7 +35,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700;800;900&family=Raleway:wght@300;400;500&display=swap" rel="stylesheet">
 
     <!-- SweetAlert2 -->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    {!! $swalScript !!}
 
     <style>
         :lang(ar) body {
@@ -126,7 +126,7 @@
     <header class="header header-fixed">
         <div class="header-content">
             <div class="left-content">
-                <a href="{{ route('c1he3f.messages') }}" class="back-btn">
+                <a href="{{ route('c1he3f.messages') }}" id="back-btn">
                     <i class="feather icon-arrow-left"></i>
                 </a>
             </div>
@@ -144,7 +144,7 @@
             <div class="alert alert-success">{{ session('success') }}</div>
         @endif
         <div class="chat-box-area">
-            <span class="active-date">{{ $message->created_at->format('d M Y') }}</span>
+            {{-- <span class="active-date">{{ $message->created_at->format('d M Y') }}</span> --}}
             <!-- Original Message -->
             <div class="chat-content user" style="justify-content: end;">
                 <div class="message-item">
@@ -160,7 +160,7 @@
                             @endif
                         </div>
                     @endif
-                    <div class="message-time">{{ $message->created_at->format('h:i A') }}</div>
+                    {{-- <div class="message-time">{{ $message->created_at->format('h:i A') }}</div> --}}
                 </div>
             </div>
             <!-- Display All Replies -->
@@ -181,7 +181,7 @@
                                         @endif
                                     </div>
                                 @endif
-                                <div class="message-time">{{ $reply->created_at->format('h:i A') }}</div>
+                                {{-- <div class="message-time">{{ $reply->created_at->format('h:i A') }}</div> --}}
                             </div>
                         </div>
                     </div>
@@ -224,18 +224,18 @@
 
 <style>
     /* ... (الـ CSS الحالي لديك) ... */
-    .custom-file-upload-button {
-        display: inline-block;
-        padding: 10px 15px;
-        cursor: pointer;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-        background-color: #f0f0f0;
-        color: #e00000;
-        font-size: 1rem;
-        text-align: center;
-        transition: background-color 0.3s ease;
-    }
+.custom-file-upload-button {
+            display: inline-block;
+            padding: 6px 12px;
+            cursor: pointer;
+            border: 1px solid #ccc;
+            border-radius: 12px;
+            background-color: #f0f0f0;
+            color: #e00000;
+            font-size: 1rem;
+            text-align: center;
+            transition: background-color 0.3s ease;
+            }
 
     .custom-file-upload-button:hover {
         background-color: #e0e0e0;

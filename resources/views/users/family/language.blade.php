@@ -85,7 +85,7 @@
                     </a>
                 </div>
                 <div class="mid-content">
-                    <h4 class="title">تعديل بيانات الفرد</h4>
+                    <h4 class="title">{{ __('messages.edit_member_data') }}</h4>
                 </div>
                 <div class="right-content d-flex align-items-center gap-4">
                     <a id="submitForm" href="javascript:void(0);">
@@ -104,14 +104,31 @@
                         <div id="chef-fields" class="chef-fields">
                             <div class="col-md-12" style="text-align: center;">
                                 <div class="mb-3">
-                                    <label class="form-label">اللغة</label>
-                                    <select class="form-select" name="language" value="{{ old('language') }}"
-                                        style="width: 100%; text-align: center;">
-                                        <option value="">اختر اللغة</option>
-                                        <option value="العربية" {{ $myFamily->language == 'العربية' ? 'selected' : '' }}>العربية
-                                        <option value="الإنجليزية" {{ $myFamily->language == 'الإنجليزية' ? 'selected' : '' }}>الإنجليزية
-                                        </option>
-                                    </select>
+                                    <label class="form-label">{{ __('messages.language') }}</label>
+                                   @php
+                                                            $languages = [
+                                                            'arabic' => 'العربية',
+                                                            'en' => 'الإنجليزية',
+                                                            'id' => 'الإندونيسية',
+                                                            'am' => 'الأمهرية',
+                                                            'hi' => 'الهندية',
+                                                            'bn' => 'البنغالية',
+                                                            'ml' => 'المالايالامية',
+                                                            'fil' => 'الفلبينية',
+                                                            'ur' => 'الأردية',
+                                                            'ta' => 'التاميلية',
+                                                            'ne' => 'النيبالية',
+                                                            'ps' => 'الأفغانية',
+                                                            'fr' => 'الفرنسية',
+                                                            ];
+                                                            @endphp
+                                                            
+                                                            <select class="form-select" name="language" required style="width: 100%; text-align: center; color: black;">
+                                                                <option value="">{{ __('messages.choose_language') }}</option>
+                                                                @foreach($languages as $code => $name)
+                                                                <option value="{{ $code }}">{{ $name }}</option>
+                                                                @endforeach
+                                                            </select>
                                 </div>
                             </div>
                         </div>
@@ -122,7 +139,7 @@
         <!-- Main Content End -->
 
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    {!! $swalScript !!}
     <script>
         const submitButton = document.getElementById('submitForm');
                 const form = document.querySelector('form');

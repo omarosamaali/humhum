@@ -13,6 +13,7 @@ class Cook extends Model
         'language',
         'password',
         'cook_number',
+        'cook_id',
     ];
 
     public function users(){

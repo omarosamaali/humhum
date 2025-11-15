@@ -43,11 +43,11 @@
             <div class="header-content">
                 <div class="right-content d-flex align-items-center gap-4">
                     <a href="{{ route('users.blocked.show') }}" class="menu">
-                        القائمة
+                        {{ __('messages.menu') }}
                     </a>
                 </div>
                 <div class="mid-content">
-                    <h4 class="title">المحظورات</h4>
+                    <h4 class="title">{{ __('messages.blacklist') }}</h4>
                 </div>
                 <div class="left-content">
                     <a href="{{ route('users.welcome') }}" id="back-btn">
@@ -62,84 +62,85 @@
         <main class="page-content space-top">
             <div class="container">
                 <!-- SearchBox -->
-<!-- SearchBox -->
-<div class="search-box">
-    <div class="input-group input-radius input-rounded input-lg">
-        <input type="search" id="searchRecipes" placeholder="ما هي الوصفات التي تبحث عنها" class="form-control">
-        <span class="input-group-text">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path
-                    d="M9.65925 19.3102C11.8044 19.3103 13.8882 18.5946 15.5806 17.2764L21.9653 23.6612C22.4423 24.1218 23.2023 24.1086 23.663 23.6316C24.1123 23.1664 24.1123 22.4288 23.663 21.9635L17.2782 15.5788C20.5491 11.3682 19.7874 5.30333 15.5769 2.03243C11.3663 -1.23848 5.30149 -0.476799 2.03058 3.73374C-1.24033 7.94428 -0.478646 14.0092 3.73189 17.2801C5.42702 18.5969 7.51269 19.3113 9.65925 19.3102ZM4.52915 4.5273C7.36245 1.69394 11.9561 1.69389 14.7895 4.5272C17.6229 7.3605 17.6229 11.9542 14.7896 14.7876C11.9563 17.6209 7.36261 17.621 4.52925 14.7877C4.5292 14.7876 4.5292 14.7876 4.52915 14.7876C1.69584 11.9749 1.67915 7.39794 4.49181 4.56464C4.50424 4.55216 4.51667 4.53973 4.52915 4.5273Z"
-                    fill="#C9C9C9" />
-            </svg>
-        </span>
-    </div>
-</div>
+                <div class="search-box">
+                    <div class="input-group input-radius input-rounded input-lg">
+                        <input type="search" id="searchRecipes"
+                            placeholder="{{ __('messages.search_recipes_placeholder') }}" class="form-control">
+                        <span class="input-group-text">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M9.65925 19.3102C11.8044 19.3103 13.8882 18.5946 15.5806 17.2764L21.9653 23.6612C22.4423 24.1218 23.2023 24.1086 23.663 23.6316C24.1123 23.1664 24.1123 22.4288 23.663 21.9635L17.2782 15.5788C20.5491 11.3682 19.7874 5.30333 15.5769 2.03243C11.3663 -1.23848 5.30149 -0.476799 2.03058 3.73374C-1.24033 7.94428 -0.478646 14.0092 3.73189 17.2801C5.42702 18.5969 7.51269 19.3113 9.65925 19.3102ZM4.52915 4.5273C7.36245 1.69394 11.9561 1.69389 14.7895 4.5272C17.6229 7.3605 17.6229 11.9542 14.7896 14.7876C11.9563 17.6209 7.36261 17.621 4.52925 14.7877C4.5292 14.7876 4.5292 14.7876 4.52915 14.7876C1.69584 11.9749 1.67915 7.39794 4.49181 4.56464C4.50424 4.55216 4.51667 4.53973 4.52915 4.5273Z"
+                                    fill="#C9C9C9" />
+                            </svg>
+                        </span>
+                    </div>
+                </div>
 
-<!-- JavaScript للبحث -->
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-    const searchInput = document.getElementById('searchRecipes');
-    const recipeCards = document.querySelectorAll('.container-cart');
-    
-    searchInput.addEventListener('input', function() {
-        const searchTerm = this.value.trim().toLowerCase();
-        
-        recipeCards.forEach(function(card) {
-            // نجيب عنوان الوجبة
-            const title = card.querySelector('.title span');
-            const titleText = title ? title.textContent.toLowerCase() : '';
-            
-            // نجيب اسم المطبخ
-            const kitchen = card.querySelector('.tags');
-            const kitchenText = kitchen ? kitchen.textContent.toLowerCase() : '';
-            
-            // نجيب التصنيفات الفرعية
-            const badges = card.querySelectorAll('.badge');
-            let badgesText = '';
-            badges.forEach(badge => {
-                badgesText += badge.textContent.toLowerCase() + ' ';
+                <!-- JavaScript للبحث -->
+                <script>
+                    document.addEventListener('DOMContentLoaded', function() {
+                const searchInput = document.getElementById('searchRecipes');
+                const recipeCards = document.querySelectorAll('.container-cart');
+                
+                searchInput.addEventListener('input', function() {
+                    const searchTerm = this.value.trim().toLowerCase();
+                    
+                    recipeCards.forEach(function(card) {
+                        // نجيب عنوان الوجبة
+                        const title = card.querySelector('.title span');
+                        const titleText = title ? title.textContent.toLowerCase() : '';
+                        
+                        // نجيب اسم المطبخ
+                        const kitchen = card.querySelector('.tags');
+                        const kitchenText = kitchen ? kitchen.textContent.toLowerCase() : '';
+                        
+                        // نجيب التصنيفات الفرعية
+                        const badges = card.querySelectorAll('.badge');
+                        let badgesText = '';
+                        badges.forEach(badge => {
+                            badgesText += badge.textContent.toLowerCase() + ' ';
+                        });
+                        
+                        // لو البحث فاضي، نعرض كل الوجبات
+                        if (searchTerm === '') {
+                            card.style.display = '';
+                        } 
+                        // لو البحث موجود في العنوان أو المطبخ أو التصنيفات
+                        else if (titleText.includes(searchTerm) || 
+                                 kitchenText.includes(searchTerm) || 
+                                 badgesText.includes(searchTerm)) {
+                            card.style.display = '';
+                        } 
+                        // لو مش موجود، نخفي الكارد
+                        else {
+                            card.style.display = 'none';
+                        }
+                    });
+                    
+                    // نعرض رسالة لو مفيش نتائج
+                    const visibleCards = Array.from(recipeCards).filter(card => card.style.display !== 'none');
+                    
+                    // نشيل الرسالة القديمة لو موجودة
+                    const oldMessage = document.querySelector('.no-results-message');
+                    if (oldMessage) {
+                        oldMessage.remove();
+                    }
+                    
+                    // لو مفيش نتائج، نعرض رسالة
+                    if (visibleCards.length === 0 && searchTerm !== '') {
+                        const message = document.createElement('div');
+                        message.className = 'no-results-message text-center py-5';
+                        message.innerHTML = `
+                            <i class="fa fa-search" style="font-size: 50px; color: #ccc;"></i>
+                            <h5 class="mt-3">{{ __('messages.no_results') }}</h5>
+                            <p class="text-muted">{{ __('messages.no_results_message') }} "<strong>${searchTerm}</strong>"</p>
+                        `;
+                        document.querySelector('.dz-custom-swiper').prepend(message);
+                    }
+                });
             });
-            
-            // لو البحث فاضي، نعرض كل الوجبات
-            if (searchTerm === '') {
-                card.style.display = '';
-            } 
-            // لو البحث موجود في العنوان أو المطبخ أو التصنيفات
-            else if (titleText.includes(searchTerm) || 
-                     kitchenText.includes(searchTerm) || 
-                     badgesText.includes(searchTerm)) {
-                card.style.display = '';
-            } 
-            // لو مش موجود، نخفي الكارد
-            else {
-                card.style.display = 'none';
-            }
-        });
-        
-        // نعرض رسالة لو مفيش نتائج
-        const visibleCards = Array.from(recipeCards).filter(card => card.style.display !== 'none');
-        
-        // نشيل الرسالة القديمة لو موجودة
-        const oldMessage = document.querySelector('.no-results-message');
-        if (oldMessage) {
-            oldMessage.remove();
-        }
-        
-        // لو مفيش نتائج، نعرض رسالة
-        if (visibleCards.length === 0 && searchTerm !== '') {
-            const message = document.createElement('div');
-            message.className = 'no-results-message text-center py-5';
-            message.innerHTML = `
-                <i class="fa fa-search" style="font-size: 50px; color: #ccc;"></i>
-                <h5 class="mt-3">لا توجد نتائج</h5>
-                <p class="text-muted">لم نجد أي وجبات تطابق بحثك عن "<strong>${searchTerm}</strong>"</p>
-            `;
-            document.querySelector('.dz-custom-swiper').prepend(message);
-        }
-    });
-});
-</script>
+                </script>
 
                 <form id="blockForm" action="{{ route('blocked.store') }}" method="POST"
                     onsubmit="return validateForm(event)">
@@ -147,17 +148,215 @@
 
                     <!-- SearchBox -->
                     <div class="mb-3" style="text-align: center; position: relative;">
-                        <label class="form-label">حدد فرد عائلة او الجميع</label>
-                        <select multiple class="form-select" name="country[]" id="familyMembers"
-                            style="border: 1px solid #660099; width: 84%; text-align: center; color: black;">
-                            <option value="" style="border-bottom: 1px solid #eee;">الجميع</option>
+                        <label class="form-label">{{ __('messages.select_family_member_or_all') }}</label>
+
+                        <!-- الـ Select المخفي (للـ form submission) -->
+                        <select multiple name="country[]" id="familyMembers" style="display: none;">
                             @foreach ($my_family as $member)
                             <option value="{{ $member->id }}">{{ $member->name }}</option>
                             @endforeach
                         </select>
 
+                        <div class="custom-multiselect" style="width: 84%; position: relative;">
+                            <div class="multiselect-display" onclick="toggleDropdown()" style="
+        border: 1px solid #660099;
+        padding: 10px 15px;
+        background: white;
+        border-radius: 6px;
+        cursor: pointer;
+        min-height: 45px;
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 5px;
+    ">
+                                <span class="placeholder" style="color: #999;">اختر أعضاء العائلة...</span>
+                                <div class="selected-items" style="display: flex; flex-wrap: wrap; gap: 5px;"></div>
+                                <span style="margin-right: auto; color: #660099;">▼</span>
+                            </div>
+
+                            <!-- قائمة الخيارات -->
+                            <div class="multiselect-dropdown" id="dropdownMenu" style="
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: white;
+        border: 1px solid #660099;
+        border-radius: 6px;
+        margin-top: 5px;
+        box-shadow: 0 4px 12px rgba(102, 0, 153, 0.15);
+        z-index: 1000;
+        max-height: 300px;
+        overflow-y: auto;
+    ">
+                                <!-- صندوق البحث -->
+                                <div
+                                    style="padding: 10px; border-bottom: 1px solid #eee; sticky; top: 0; background: white;">
+                                    <input type="text" id="searchBox" placeholder="ابحث..." style="
+                width: 100%;
+                padding: 8px 12px;
+                border: 1px solid #ddd;
+                border-radius: 4px;
+                font-size: 14px;
+            " onkeyup="filterOptions()">
+                                </div>
+
+                                <!-- الخيارات -->
+                                <div class="options-list" style="padding: 5px 0;">
+                                    <!-- خيار "الكل" -->
+                                    <label class="option-item" data-value="" style="
+                display: flex;
+                align-items: center;
+                padding: 10px 15px;
+                cursor: pointer;
+                transition: background 0.2s;
+                border-bottom: 1px solid #f0f0f0;
+            " onmouseover="this.style.background='#f8f4fc'" onmouseout="this.style.background='white'">
+                                        <input type="checkbox" class="option-checkbox" onchange="selectAll(this)">
+                                        <span style="margin-right: 10px;">{{ __('messages.all') }}</span>
+                                    </label>
+
+                                    @foreach ($my_family as $member)
+                                    <label class="option-item" data-value="{{ $member->id }}"
+                                        data-name="{{ $member->name }}" style="
+                display: flex;
+                align-items: center;
+                padding: 10px 15px;
+                cursor: pointer;
+                transition: background 0.2s;
+            " onmouseover="this.style.background='#f8f4fc'" onmouseout="this.style.background='white'">
+                                        <input type="checkbox" class="option-checkbox" value="{{ $member->id }}"
+                                            onchange="updateSelection()">
+                                        <span style="margin-right: 10px;">{{ $member->name }}</span>
+                                    </label>
+                                    @endforeach
+                                </div>
+                            </div>
+                        </div>
+
+                        <script>
+                            // فتح/إغلاق القائمة
+function toggleDropdown() {
+    const dropdown = document.getElementById('dropdownMenu');
+    dropdown.style.display = dropdown.style.display === 'none' ? 'block' : 'none';
+    
+    if(dropdown.style.display === 'block') {
+        document.getElementById('searchBox').focus();
+    }
+}
+
+// إغلاق عند الضغط خارج القائمة
+document.addEventListener('click', function(e) {
+    const container = document.querySelector('.custom-multiselect');
+    if (!container.contains(e.target)) {
+        document.getElementById('dropdownMenu').style.display = 'none';
+    }
+});
+
+// تحديث الاختيارات
+function updateSelection() {
+    const checkboxes = document.querySelectorAll('.option-checkbox[value]');
+    const selectedContainer = document.querySelector('.selected-items');
+    const placeholder = document.querySelector('.placeholder');
+    const hiddenSelect = document.getElementById('familyMembers');
+    
+    // مسح الاختيارات القديمة
+    selectedContainer.innerHTML = '';
+    hiddenSelect.innerHTML = '';
+    
+    let selectedCount = 0;
+    
+    checkboxes.forEach(checkbox => {
+        if (checkbox.checked) {
+            selectedCount++;
+            const name = checkbox.closest('.option-item').dataset.name;
+            const value = checkbox.value;
+            
+            // إضافة Badge
+            const badge = document.createElement('span');
+            badge.style.cssText = `
+                background: #660099;
+                color: white;
+                padding: 4px 10px;
+                border-radius: 15px;
+                font-size: 13px;
+                display: inline-flex;
+                align-items: center;
+                gap: 5px;
+            `;
+            badge.innerHTML = `${name} <span onclick="removeItem('${value}')" style="cursor: pointer; font-weight: bold;">×</span>`;
+            selectedContainer.appendChild(badge);
+            
+            // إضافة للـ hidden select
+            const option = document.createElement('option');
+            option.value = value;
+            option.selected = true;
+            hiddenSelect.appendChild(option);
+        }
+    });
+    
+    // إظهار/إخفاء placeholder
+    placeholder.style.display = selectedCount > 0 ? 'none' : 'block';
+}
+
+// حذف عنصر محدد
+function removeItem(value) {
+    const checkbox = document.querySelector(`.option-checkbox[value="${value}"]`);
+    if (checkbox) {
+        checkbox.checked = false;
+        updateSelection();
+    }
+}
+
+// تحديد الكل
+function selectAll(checkbox) {
+    const allCheckboxes = document.querySelectorAll('.option-checkbox[value]');
+    allCheckboxes.forEach(cb => cb.checked = checkbox.checked);
+    updateSelection();
+}
+
+// البحث
+function filterOptions() {
+    const searchTerm = document.getElementById('searchBox').value.toLowerCase();
+    const items = document.querySelectorAll('.option-item[data-name]');
+    
+    items.forEach(item => {
+        const text = item.dataset.name.toLowerCase();
+        item.style.display = text.includes(searchTerm) ? 'flex' : 'none';
+    });
+}
+                        </script>
+
+                        <style>
+                            .placeholder {
+                                background-color: unset !important;
+                            }
+
+                            .multiselect-dropdown::-webkit-scrollbar {
+                                width: 6px;
+                            }
+
+                            .multiselect-dropdown::-webkit-scrollbar-thumb {
+                                background: #660099;
+                                border-radius: 3px;
+                            }
+
+                            .multiselect-dropdown::-webkit-scrollbar-track {
+                                background: #f1f1f1;
+                            }
+
+                            /* Checkbox تخصيص */
+                            .option-checkbox {
+                                width: 18px;
+                                height: 18px;
+                                cursor: pointer;
+                                accent-color: #660099;
+                            }
+                        </style>
                         <!-- الزر دا هو اللي هيبعت الفورم -->
-                        <button type="submit" class="correct">حظر</button>
+                        <button type="submit" class="correct">{{ __('messages.block') }}</button>
                     </div>
 
                     <!-- Products Area -->
@@ -177,10 +376,11 @@
 
                                         @forelse ($recipe->subCategories as $subCategory)
                                         <span class="badge badge-info" style="margin-bottom: 3px;">
-                                            {{ $subCategory->name_ar }}
+                                            {{ app()->getLocale() == 'ar' ? $subCategory->name_ar :
+                                            $subCategory->name_en }}
                                         </span>
                                         @empty
-                                        <span class="text-muted">لا توجد</span>
+                                        <span class="text-muted">{{ __('messages.none') }}</span>
                                         @endforelse
 
                                         <ul class="tag-list" style="display: flex; gap: 10px;">
@@ -204,7 +404,8 @@
                                                 <img src="{{ asset('storage/' . $recipe->kitchen->image) }}"
                                                     style="border-radius: 50% !important; width: 30px; height: 30px;"
                                                     alt="">
-                                                {{ $recipe->kitchen->name_ar }}
+                                                {{ app()->getLocale() == 'ar' ? $recipe->kitchen->name_ar :
+                                                $recipe->kitchen->name_en }}
                                             </div>
 
                                             <!-- هنخلي الـ checkbox دا يمثل وجبة -->
@@ -227,71 +428,71 @@
         <!-- Main Content End -->
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    {!! $swalScript !!}
     <script>
         function validateForm(event) {
-event.preventDefault(); // نوقف الإرسال لحد ما نتأكد
+        event.preventDefault(); // نوقف الإرسال لحد ما نتأكد
 
-// نجيب الوجبات المختارة
-const selectedRecipes = document.querySelectorAll('input[name="recipes[]"]:checked');
+        // نجيب الوجبات المختارة
+        const selectedRecipes = document.querySelectorAll('input[name="recipes[]"]:checked');
 
-// نجيب الأعضاء المختارين
-const selectedMembers = document.querySelectorAll('#familyMembers option:checked');
+        // نجيب الأعضاء المختارين
+        const selectedMembers = document.querySelectorAll('#familyMembers option:checked');
 
-// لو مفيش وجبات محددة
-if (selectedRecipes.length === 0) {
-Swal.fire({
-title: "يجب اختيار وجبة واحدة على الأقل",
-icon: "warning",
-confirmButtonText: "حسناً",
-confirmButtonColor: "#660099",
-showClass: {
-popup: `
-animate__animated
-animate__fadeInUp
-animate__faster
-`
-},
-hideClass: {
-popup: `
-animate__animated
-animate__fadeOutDown
-animate__faster
-`
-}
-});
-return false;
-}
+        // لو مفيش وجبات محددة
+        if (selectedRecipes.length === 0) {
+            Swal.fire({
+                title: "{{ __('messages.select_at_least_one_meal') }}",
+                icon: "warning",
+                confirmButtonText: "{{ __('messages.ok') }}",
+                confirmButtonColor: "#660099",
+                showClass: {
+                    popup: `
+                        animate__animated
+                        animate__fadeInUp
+                        animate__faster
+                    `
+                },
+                hideClass: {
+                    popup: `
+                        animate__animated
+                        animate__fadeOutDown
+                        animate__faster
+                    `
+                }
+            });
+            return false;
+        }
 
-// لو مفيش أعضاء محددين
-if (selectedMembers.length === 0) {
-Swal.fire({
-title: "يجب اختيار عضو واحد على الأقل أو الجميع",
-icon: "warning",
-confirmButtonText: "حسناً",
-confirmButtonColor: "#660099",
-showClass: {
-popup: `
-animate__animated
-animate__fadeInUp
-animate__faster
-`
-},
-hideClass: {
-popup: `
-animate__animated
-animate__fadeOutDown
-animate__faster
-`
-}
-});
-return false;
-}
+        // لو مفيش أعضاء محددين
+        if (selectedMembers.length === 0) {
+            Swal.fire({
+                title: "{{ __('messages.select_at_least_one_member_or_all') }}",
+                icon: "warning",
+                confirmButtonText: "{{ __('messages.ok') }}",
+                confirmButtonColor: "#660099",
+                showClass: {
+                    popup: `
+                        animate__animated
+                        animate__fadeInUp
+                        animate__faster
+                    `
+                },
+                hideClass: {
+                    popup: `
+                        animate__animated
+                        animate__fadeOutDown
+                        animate__faster
+                    `
+                }
+            });
+            return false;
+        }
 
-// لو كل حاجة تمام، نبعت الفورم
-document.getElementById('blockForm').submit();
-return true;
-}
+        // لو كل حاجة تمام، نبعت الفورم
+        document.getElementById('blockForm').submit();
+        return true;
+    }
     </script>
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>

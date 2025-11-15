@@ -15,7 +15,7 @@
         content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, minimal-ui, viewport-fit=cover">
 
     <!-- Favicons Icon -->
-    <link rel="shortcut icon" type="image/x-icon" href="{{ asset('assets/images/app-logo/favicon.png') }}">
+    <link rel="shortcut icon" type="image/x-icon" href="{{ asset('assets/images/user-logo/favicon.png') }}">
 
     <!-- Global CSS -->
     <link rel="stylesheet" href="{{ asset('assets/vendor/bootstrap-select/dist/css/bootstrap-select.min.css') }}">
@@ -52,7 +52,7 @@
         <header class="header header-fixed transparent">
             <div class="header-content">
                 <div class="left-content">
-                    <a href="javascript:void(0);" class="back-btn">
+                    <a href="{{ url()->previous() ?: route('home') }}" id="back-btn">
                         <i class="feather icon-arrow-left"></i>
                     </a>
                 </div>
@@ -203,14 +203,15 @@
                     <div class="item-wrapper"
                         style=" justify-content: center; display: flex; align-items: center; gap: 10px; flex-direction: row; margin-top: 30px;">
                         <button class="btn btn-primary" style="padding: 6px 18px !important;">
-                            <a href="ingredients.html" style="color: white;">المكونات</a>
+                            <a href="{{ route('users.meals.ingredients', $recipe->id) }}" style="color: white;">المكونات</a>
                         </button>
                         <button class="btn btn-warning" style="padding: 6px 18px !important;">
-                            <a href="steps.html" style="color: white;">
+                            <a href="{{ route('users.meals.steps', $recipe->id) }}" style="color: white;">
                                 الخطوات
                             </a>
                         </button>
-                        <button class="btn btn-success" style="padding: 6px 18px !important;"><a href="facts.html"
+                        <button class="btn btn-success" style="padding: 6px 18px !important;"><a 
+                            href="{{ route('users.meals.ingredients', $recipe->id) }}"
                                 style="color: white;">الحقائق</a> </button>
                     </div>
                 </div>

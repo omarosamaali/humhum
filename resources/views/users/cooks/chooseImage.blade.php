@@ -4,7 +4,7 @@
 <head>
 
     <!-- Title -->
-    <title>إختر الصورة الرمزية</title>
+    <title>{{ __('messages.اختر الصورة الشخصية') }}</title>
 
     <!-- Mobile Specific -->
     <meta name="viewport"
@@ -75,7 +75,7 @@
                     </a>
                 </div>
                 <div class="mid-content">
-                    <h4 class="title">إختر الصورة الرمزية</h4>
+                    <h4 class="title">{{ __('messages.اختر الصورة الشخصية') }}</h4>
                 </div>
                 <div class="right-content d-flex align-items-center gap-4">
                     <a id="submitForm" href="javascript:void(0);">
@@ -84,7 +84,7 @@
                 </div>
             </div>
         </header>
-        
+
         <!-- Main Content Start  -->
         <main class="page-content">
             <div class="container py-0">
@@ -96,63 +96,20 @@
                             {{-- @method('PUT') --}}
                             <input type="hidden" name="image" id="selectedImage">
                             <div class="edit-profile">
-                                <p>إختر الصورة المعبرة لك</p>
+                                <p>{{ __('messages.إختر الصورة المعبرة لك') }}</p>
                                 <div
                                     style="display: flex; flex-wrap: wrap; gap: 40px; align-items: center; justify-content: center;">
+                                    @foreach ($avatars as $avatar)
                                     <div class="profile-image">
                                         <div class="avatar-upload">
-                                            <div class="avatar-preview" style="width: 100px; height: 100px;">
-                                                <div id="imagePreview"
-                                                    style="background-image: url(assets/images/team/1.png); width: 90px; height: 90px;">
-                                                </div>
+                                            <div class="avatar-preview" style="width: 100px; height: 100px;"
+                                                data-image="{{ asset('storage/' . $avatar->image) }}">
+                                                <img src="{{ asset('storage/' . $avatar->image) }}"
+                                                    style="width: 90px; height: 90px; border-radius: 50%;" alt="">
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="profile-image">
-                                        <div class="avatar-upload">
-                                            <div class="avatar-preview" style="width: 100px; height: 100px;">
-                                                <div id="imagePreview"
-                                                    style="background-image: url(assets/images/team/2.png); width: 90px; height: 90px;">
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="profile-image">
-                                        <div class="avatar-upload">
-                                            <div class="avatar-preview" style="width: 100px; height: 100px;">
-                                                <div id="imagePreview"
-                                                    style="background-image: url(assets/images/team/3.png); width: 90px; height: 90px;">
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="profile-image">
-                                        <div class="avatar-upload">
-                                            <div class="avatar-preview" style="width: 100px; height: 100px;">
-                                                <div id="imagePreview"
-                                                    style="background-image: url(assets/images/team/1.png); width: 90px; height: 90px;">
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="profile-image">
-                                        <div class="avatar-upload">
-                                            <div class="avatar-preview" style="width: 100px; height: 100px;">
-                                                <div id="imagePreview"
-                                                    style="background-image: url(assets/images/team/2.png); width: 90px; height: 90px;">
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="profile-image">
-                                        <div class="avatar-upload">
-                                            <div class="avatar-preview" style="width: 100px; height: 100px;">
-                                                <div id="imagePreview"
-                                                    style="background-image: url(assets/images/team/3.png); width: 90px; height: 90px;">
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    @endforeach
                                 </div>
                             </div>
                         </form>
@@ -175,35 +132,36 @@
         });
     </script>
     <script>
-        const previews = document.querySelectorAll('.avatar-preview');
-        const selectedImageInput = document.getElementById('selectedImage');
-        const submitButton = document.getElementById('submitForm');
-        const form = document.querySelector('form');
+        document.addEventListener('DOMContentLoaded', function() {
+                const previews = document.querySelectorAll('.avatar-preview');
+                const selectedImageInput = document.getElementById('selectedImage');
+                const submitButton = document.getElementById('submitForm');
+                const form = document.querySelector('form');
     
-        previews.forEach(preview => {
-            preview.addEventListener('click', function () {
-                // إزالة الكلاس active من الكل
-                previews.forEach(p => p.classList.remove('active'));
+                previews.forEach(preview => {
+                    preview.addEventListener('click', function() {
+                        // إزالة النشاط من جميع الصور
+                        previews.forEach(p => p.classList.remove('active'));
+                        
+                        // إضافة النشاط للصورة المختارة
+                        this.classList.add('active');
+                        
+                        // الحصول على رابط الصورة من data-image
+                        const imageUrl = this.getAttribute('data-image');
+                        selectedImageInput.value = imageUrl;
+                        
+                        console.log('Selected image:', imageUrl); // للت Debug
+                    });
+                });
     
-                // إضافة الكلاس active على الصورة اللي تم اختيارها
-                this.classList.add('active');
-    
-                // جلب رابط الصورة من الخلفية
-                const bg = this.querySelector('#imagePreview').style.backgroundImage;
-                const imageUrl = bg.slice(5, -2); // إزالة 'url("و ")'
-                selectedImageInput.value = imageUrl; // حفظ المسار في input hidden
+                submitButton.addEventListener('click', function() {
+                    if(selectedImageInput.value) {
+                        form.submit();
+                    } else {
+                        alert('{{ __('messages.please_choose_image_first') }}');
+                    }
+                });
             });
-        });
-    
-        // لما المستخدم يضغط على علامة الصح
-    // لما المستخدم يضغط على علامة الصح
-    submitButton.addEventListener('click', function () {
-    if(selectedImageInput.value) { // تأكد إن في صورة متختارة
-    form.submit();
-    } else {
-    alert('من فضلك اختر صورة أولاً');
-    }
-    });
     </script>
     <script src="assets/js/jquery.js"></script>
     <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>

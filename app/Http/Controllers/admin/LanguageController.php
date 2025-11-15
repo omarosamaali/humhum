@@ -43,7 +43,6 @@ class LanguageController extends Controller
         }
 
         // يمكنك فرز اللغات هنا إذا أردت (مثلاً حسب الاسم أو الكود)
-        // usort($languages, fn($a, $b) => strcmp($a->name, $b->name));
 
         return view('admin.languages.index', compact('languages'));
     }

@@ -17,7 +17,7 @@
         content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, minimal-ui, viewport-fit=cover">
 
     <!-- Favicons Icon -->
-    <link rel="shortcut icon" type="image/x-icon" href="{{ asset('assets/images/app-logo/favicon.png') }}">
+    <link rel="shortcut icon" type="image/x-icon" href="{{ asset('assets/images/user-logo/favicon.png') }}">
 
     <!-- Global CSS -->
     <link href="{{ asset('assets/vendor/bootstrap-select/dist/css/bootstrap-select.min.css') }}" rel="stylesheet">
@@ -41,7 +41,9 @@
             --primary-color: #660099;
         }
 
-        .form-control:focus, .form-control:active, .form-control.active {
+        .form-control:focus,
+        .form-control:active,
+        .form-control.active {
             border-color: var(--primary-color);
         }
     </style>
@@ -61,17 +63,16 @@
         </div>
         <!-- Preloader end-->
 
-        <!-- Header -->
         <header class="header header-fixed border-bottom">
             <div class="header-content">
                 <div class="left-content">
                     <a href="{{ route('users.family.tips', $myFamily) }}" style="background-color: unset !important;"
-                        class="back-btn">
+                        id="back-btn">
                         <i class="feather icon-arrow-left" style="font-weight: normal; color: #660099;"></i>
                     </a>
                 </div>
                 <div class="mid-content">
-                    <h4 class="title">إضافة جديد</h4>
+                    <h4 class="title">{{ __('messages.add_new') }}</h4>
                 </div>
                 <div class="right-content d-flex align-items-center gap-4">
                     <a id="submitCustomTip" href="javascript:void(0);">
@@ -80,9 +81,7 @@
                 </div>
             </div>
         </header>
-        <!-- Header -->
 
-        <!-- Main Content Start -->
         <main class="page-content space-top p-b100" style="text-align: center;">
             <div class="container">
 
@@ -91,7 +90,7 @@
                     @csrf
 
                     <div class="mb-3">
-                        <label class="form-label" for="custom_tip">إرشادات خاصة</label>
+                        <label class="form-label" for="custom_tip">{{ __('messages.special_tips') }}</label>
                         <input type="text" id="custom_tip" name="custom_tip"
                             class="form-control @error('custom_tip') is-invalid @enderror" style="text-align: center;"
                             value="{{ old('custom_tip') }}" required>
@@ -107,33 +106,28 @@
 
             </div>
         </main>
-        <!-- Main Content End -->
     </div>
 
-    <!--**********************************
-    Scripts
-    ***********************************-->
     <script>
         // إرسال الفورم عند الضغط على علامة الصح
-        const submitButton = document.getElementById('submitCustomTip');
-        const form = document.getElementById('customTipForm');
-        
-        submitButton.addEventListener('click', function () {
-            // التحقق من أن الحقل غير فارغ
-            const input = document.getElementById('custom_tip');
-            if (input.value.trim() === '') {
-                input.classList.add('is-invalid');
-                return;
-            }
-            form.submit();
-        });
+    const submitButton = document.getElementById('submitCustomTip');
+    const form = document.getElementById('customTipForm');
+    
+    submitButton.addEventListener('click', function () {
+        // التحقق من أن الحقل غير فارغ
+        const input = document.getElementById('custom_tip');
+        if (input.value.trim() === '') {
+            input.classList.add('is-invalid');
+            return;
+        }
+        form.submit();
+    });
 
-        // إزالة رسالة الخطأ عند الكتابة
-        document.getElementById('custom_tip').addEventListener('input', function() {
-            this.classList.remove('is-invalid');
-        });
+    // إزالة رسالة الخطأ عند الكتابة
+    document.getElementById('custom_tip').addEventListener('input', function() {
+        this.classList.remove('is-invalid');
+    });
     </script>
-
     <script src="{{ asset('assets/js/jquery.js') }}"></script>
     <script src="{{ asset('assets/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
     <script src="{{ asset('assets/vendor/swiper/swiper-bundle.min.js') }}"></script>

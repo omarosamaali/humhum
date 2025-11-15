@@ -108,7 +108,7 @@
             <div class="container py-0" style="height: 100vh; background-color: white;">
                 <div class="dz-authentication-area">
                     <div class="main-logo" style="background: unset !important; width: 88%;">
-                        <a href="javascript:void(0);" class="back-btn">
+                        <a href="{{ url()->previous() ?: route('home') }}" id="back-btn">
                             <i class="fa-solid fa-hand-point-left" style="color: black;"></i>
                         </a>
                         <div class="logo" style="right: 32px; position: relative;">
@@ -144,7 +144,7 @@
                                 <button type="submit" class="btn btn-secondary btn-lg btn-thin rounded-xl w-100 custom-btn" style="background-color: #5a5c77 !important; color: white;">
                                     التحقق والمتابعة
                                 </button>
-                                <div class="text-center mt-3 form-text">إذا لم تستلم الرمز! <a href="javascript:void(0);" class="text-underline link" style="color: rgb(0, 0, 0);">إعادة إرسال</a></div>
+                                <div class="text-center mt-3 form-text">إذا لم تستلم الرمز! <a href="{{ url()->previous() ?: route('home') }}" class="text-underline link" style="color: rgb(0, 0, 0);">إعادة إرسال</a></div>
                             </div>
                         </form>
 

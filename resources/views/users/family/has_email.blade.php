@@ -22,6 +22,9 @@
             --primary-color: #660099;
         }
 
+        ::selection {
+            background: var(--primary-color) !important;
+        }
         .edit-profile .avatar-upload .avatar-preview {
             border: 2px solid var(--primary-color);
         }
@@ -83,6 +86,7 @@
             color: #333;
         }
     </style>
+    @vite(['resources/js/app.js'])
 </head>
 
 <body>
@@ -103,7 +107,7 @@
                     </a>
                 </div>
                 <div class="mid-content">
-                    <h4 class="title">تعديل بيانات الفرد</h4>
+                    <h4 class="title">{{ __('messages.edit_member_data') }}</h4>
                 </div>
                 <div class="right-content d-flex align-items-center gap-4">
                     <a id="submitForm" href="javascript:void(0);">
@@ -116,51 +120,96 @@
         <main class="page-content space-top p-b80">
             <div class="container">
                 <div class="edit-profile">
-                    <form method="POST" action="{{ route('users.family.update_has_email', $myFamily) }}" id="hasEmailForm">
+                    <form method="POST" action="{{ route('users.family.update_has_email', $myFamily) }}"
+                        id="hasEmailForm">
                         @csrf
 
                         <div id="chef-fields" class="chef-fields">
                             <div class="col-md-12" style="text-align: center;">
                                 <div class="mb-4">
-                                    <label class="form-label">يمكنه الدخول للحساب</label>
+                                    <label class="form-label">{{ __('messages.can_access_account') }}</label>
                                     <select class="form-select" name="has_email" id="hasEmailSelect" required
-                                        style="width: 100%; text-align: center;">
-                                        <option value="">اختر الحالة</option>
-                                        <option value="1">نعم</option>
-                                        <option value="0">لا</option>
+                                        style="width: 100%; text-align: center; border: 1px solid;">
+                                        <option value="">{{ __('messages.choose_status') }}</option>
+                                        <option value="1" {{ $myFamily->has_email == '1' ? 'selected' : '' }}>{{ __('messages.yes') }}</option>
+                                        <option value="0" {{ $myFamily->has_email == '0' ? 'selected' : '' }}>{{ __('messages.no') }}</option>
                                     </select>
                                 </div>
                             </div>
 
                             <div class="col-md-12" id="passwordSection" style="display: none;">
                                 <div class="password-label">
-                                    <label class="form-label">أدخل كلمة المرور (4 أرقام)</label>
+                                    <label class="form-label">{{ __('messages.enter_password_4_digits') }}</label>
                                 </div>
-                                <div class="otp-group" id="otpGroup" aria-label="حقل كلمة المرور المكوّن من 4 خانات">
+                                <div class="otp-group" id="otpGroup" style="direction: rtl;"
+                                    aria-label="{{ __('messages.password_field_4_digits') }}">
                                     <input inputmode="numeric" pattern="[0-9]*" maxlength="1" data-index="0"
-                                        class="form-control otp-input" type="password" id="digit-1" name="digit-1"
-                                        placeholder="" autocomplete="off">
+                                        class="form-control otp-input" type="text" id="digit-1" name="digit-1"
+                                        value="{{ $myFamily?->password[0] ?? '' }}" autocomplete="off">
                                     <input inputmode="numeric" pattern="[0-9]*" maxlength="1" data-index="1"
-                                        class="form-control otp-input" type="password" id="digit-2" name="digit-2"
-                                        placeholder="" autocomplete="off">
+                                        class="form-control otp-input" type="text" id="digit-2" name="digit-2"
+                                        value="{{ $myFamily?->password[1] ?? '' }}" autocomplete="off">
                                     <input inputmode="numeric" pattern="[0-9]*" maxlength="1" data-index="2"
-                                        class="form-control otp-input" type="password" id="digit-3" name="digit-3"
-                                        placeholder="" autocomplete="off">
+                                        class="form-control otp-input" type="text" id="digit-3" name="digit-3"
+                                        value="{{ $myFamily?->password[2] ?? '' }}" autocomplete="off">
                                     <input inputmode="numeric" pattern="[0-9]*" maxlength="1" data-index="3"
-                                        class="form-control otp-input" type="password" id="digit-4" name="digit-4"
-                                        placeholder="" autocomplete="off">
+                                        class="form-control otp-input" type="text" id="digit-4" name="digit-4"
+                                        value="{{ $myFamily?->password[3] ?? '' }}" autocomplete="off">
                                 </div>
+                                @php
+                                    $userLoginEmail = url('/') . '/family_members.login.' . Auth::user()->membership_number . '.' . $myFamily->id;
+                                @endphp
+                                <label for="userLoginEmail" style="width: 100%;" class="text-center form-label">
+                                    {{ __('messages.تسجيل دخول العضو من خلال الرابط التالي') }}
+                                </label>
+                                <input id="userLoginEmail" type="text" class="form-control text-center" value="{{ $userLoginEmail }}">
+                                <button type="button" class="btn btn-success btn-sm" onclick="copyLoginLink()" style="margin-top: 10px; width: 100%;">
+                                    {{ __('messages.copy_link') }}
+                                    <i class="fa fa-copy" style="margin: 0px 5px;"></i> 
+                                </button>
                             </div>
                             <input type="hidden" name="password" id="passwordHidden" />
                         </div>
-
                     </form>
+                    <script>
+                        function copyLoginLink() {
+                            const loginLinkInput = document.getElementById('userLoginEmail');
+                            loginLinkInput.select();
+                            document.execCommand('copy');
+                            Swal.fire({
+                            title: "رائع!",
+                            text: "تم نسخ الرابط بنجاح",
+                            icon: "success"
+                            });
+                        }
+                        document.addEventListener('DOMContentLoaded', function() {
+                        const hasEmailSelect = document.getElementById('hasEmailSelect');
+                        const passwordSection = document.getElementById('passwordSection');
+                        const loginLinkSection = document.getElementById('loginLinkSection');
+                        
+                        hasEmailSelect.addEventListener('change', function() {
+                        if (this.value === '1') {
+                        passwordSection.style.display = 'block';
+                        if (loginLinkSection) {
+                        loginLinkSection.style.display = 'block';
+                        }
+                        } else {
+                        passwordSection.style.display = 'none';
+                        if (loginLinkSection) {
+                        loginLinkSection.style.display = 'none';
+                        }
+                        }
+                        });
+                                                if (hasEmailSelect.value === '1') {
+                        passwordSection.style.display = 'block';
+                        }                        });
+                    </script>
                 </div>
             </div>
         </main>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    {!! $swalScript !!}
     <script src="assets/js/jquery.js"></script>
     <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script src="assets/vendor/swiper/swiper-bundle.min.js"></script>

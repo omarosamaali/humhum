@@ -79,7 +79,7 @@
         <header class="header header-fixed border-bottom">
             <div class="header-content">
                 <div class="left-content">
-                    <a href="delivery-location.html" class="back-btn">
+                    <a href="delivery-location.html" id="back-btn">
                         <i class="feather icon-arrow-left"></i>
                     </a>
                 </div>

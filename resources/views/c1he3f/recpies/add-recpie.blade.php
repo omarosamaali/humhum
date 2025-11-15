@@ -26,7 +26,7 @@
         crossorigin="anonymous" referrerpolicy="no-referrer" /> --}}
     <!-- Mobile Specific -->
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, minimal-ui, viewport-fit=cover">
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    {!! $swalScript !!}
     <!-- Favicons Icon -->
     <link rel="shortcut icon" type="image/x-icon" href="{{ asset('assets/images/app-logo/favicon.png') }}">
 
@@ -921,7 +921,7 @@
         <header class="header header-fixed border-bottom">
             <div class="header-content">
                 <div class="left-content">
-                    <a href="javascript:void(0);" class="back-btn">
+                    <a href="{{ url()->previous() ?: route('home') }}" id="back-btn">
                         <i class="feather icon-arrow-left"></i>
                     </a>
                 </div>
@@ -1064,7 +1064,7 @@
     <script src="{{ asset('assets/js/custom.js') }}"></script>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    {!! $swalScript !!}
     <script>
         $(document).ready(function() {
             if ($('#id_sub_categories').length > 0) {

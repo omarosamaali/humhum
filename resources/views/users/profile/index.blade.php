@@ -8,7 +8,7 @@
 
     <x-preloader />
 
-    <x-user-header title="حسابي" route="{{ route('users.profile.edit', Auth::user()->id) }}" 
+    <x-user-header title="{{ __('messages.حسابي') }}" route="{{ route('users.profile.edit', Auth::user()->id) }}"
         back="{{ route('users.welcome') }}" />
 
     <main class="page-content p-b40" style="padding-top: 26px; margin-left: 20px; margin-right: 20px;">
@@ -22,15 +22,25 @@
                     <div class="line"></div>
                     <div class="dz-media">
                         <img src="{{ Auth::user()->avatar ? Auth::user()->avatar : asset('assets/images/default.jpg') }}"
-                            style="border-radius: 50%; border: 3px solid #660099; background: white;" alt="unkown image">
+                            style="border-radius: 50%; border: 3px solid #660099; background: white;"
+                            alt="unkown image">
                     </div>
                     <div class="dz-content">
-                        <p style="color: white;">انا إسمى</p>
+                        <p style="color: white;">{{ __('messages.my_name') }}</p>
                         <h2 style="color: #ffffff;" class="name">{{ Auth::user()->name }}</h2>
 
                         <p class="text-primary"
                             style="background-color: #660099; color:white !important; padding: 5px;">
-                            حساب {{ Auth::user()->status }}
+                            {{ __('messages.account') }}
+                            @php
+                            $status = Auth::user()->status;
+                            $locale = session('locale', 'ar');
+                            @endphp
+                            @if ($locale === 'ar')
+                            {{ $status == 'فعال' ? 'فعّال' : 'غير فعّال' }}
+                            @else
+                            {{ $status == 'فعال' ? 'Active' : 'Inactive' }}
+                            @endif
                         </p>
                     </div>
                 </div>
@@ -38,7 +48,7 @@
                     <ul>
                         <li style="text-align: center; justify-content: center;">
                             <div class="dz-content">
-                                <h6 class="title" style="color: white;"> من
+                                <h6 class="title" style="color: white;"> {{ __('messages.from') }}
                                     <img src="https://flagcdn.com/24x18/{{ Auth::user()->country }}.png"
                                         alt="Flag {{ Auth::user()->country }}"
                                         style="width: 24px; height: 18px; vertical-align: middle;" /> </span>

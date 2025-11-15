@@ -66,12 +66,12 @@
         <header class="header header-fixed">
             <div class="header-content">
                 <div class="left-content">
-                    <a href="javascript:void(0);" class="back-btn">
+                    <a href="{{ url()->previous() ?: route('home') }}" id="back-btn">
                         <i class="feather icon-arrow-left"></i>
                     </a>
                 </div>
                 <div class="mid-content">
-                    <h4 class="title">إضافة طباخ</h4>
+                    <h4 class="title">{{ __('messages.add_chef') }}</h4>
                 </div>
                 <div class="right-content d-flex align-items-center gap-4">
                     <a href="javascript:void(0);" id="submitForm">
@@ -90,7 +90,7 @@
                         @csrf
 
                         <div class="mb-4" style="text-align: center;">
-                            <label class="form-label" for="name">الاسم</label>
+                            <label class="form-label" for="name">{{ __('messages.name') }}</label>
                             <div class="input-group input-mini input-sm">
                                 <input type="text" id="name" class="form-control" value="{{ old('name') }}" name="name"
                                     required>
@@ -98,33 +98,53 @@
                         </div>
 
                         <div class="mb-3" style="text-align: center;">
-                            <label class="form-label">اللغة</label>
+                            <label class="form-label">{{ __('messages.language') }}</label>
+                            @php
+                            $languages = [
+                            'ar' => 'العربية',
+                            'en' => 'الإنجليزية',
+                            'id' => 'الإندونيسية',
+                            'am' => 'الأمهرية',
+                            'hi' => 'الهندية',
+                            'bn' => 'البنغالية',
+                            'ml' => 'المالايالامية',
+                            'fil' => 'الفلبينية',
+                            'ur' => 'الأردية',
+                            'ta' => 'التاميلية',
+                            'ne' => 'النيبالية',
+                            'ps' => 'الأفغانية',
+                            'fr' => 'الفرنسية',
+                            ];
+                            @endphp
+
                             <select class="form-select" name="language" required
                                 style="width: 100%; text-align: center; color: black;">
-                                <option value="">اختر اللغة</option>
-                                <option value="العربية">العربية</option>
-                                <option value="الإنجليزية">الإنجليزية</option>
+                                <option value="">{{ __('messages.choose_language') }}</option>
+                                @foreach($languages as $code => $name)
+                                <option value="{{ $code }}">{{ $name }}</option>
+                                @endforeach
                             </select>
                         </div>
 
                         <div class="col-md-12" id="passwordSection">
                             <div class="password-label">
-                                <label class="form-label" style="display: flex; justify-content: center;">أدخل كلمة
-                                    المرور (4 أرقام)</label>
+                                <label class="form-label" style="display: flex; justify-content: center;">
+                                    {{ __('messages.enter_password_4_digits') }}
+                                </label>
                             </div>
-                            <div class="otp-group" style="display: flex; gap:11px;" id="otpGroup"
+                            <div class="otp-group" style="direction: rtl; display: flex; gap:11px;" id="otpGroup"
                                 aria-label="حقل كلمة المرور المكوّن من 4 خانات">
                                 <input inputmode="numeric" pattern="[0-9]*" maxlength="1" data-index="0"
-                                    class="form-control otp-input" type="password" id="digit-1" name="digit-1"
+                                    class="form-control otp-input" type="text" id="digit-1" name="digit-1"
                                     placeholder="" autocomplete="off" required>
                                 <input inputmode="numeric" pattern="[0-9]*" maxlength="1" data-index="1"
-                                    class="form-control otp-input" type="password" id="digit-2" name="digit-2"
+                                    class="form-control otp-input" type="text" id="digit-2" name="digit-2"
                                     placeholder="" autocomplete="off" required>
                                 <input inputmode="numeric" pattern="[0-9]*" maxlength="1" data-index="2"
-                                    class="form-control otp-input" type="password" id="digit-3" name="digit-3"
+                                    class="form-control otp-input" type="text" id="digit-3" name="digit-3"
                                     placeholder="" autocomplete="off" required>
                                 <input inputmode="numeric" pattern="[0-9]*" maxlength="1" data-index="3"
-                                    class="form-control otp-input" type="password" id="digit-4" name="digit-4"
+                                    class="form-control otp-input" type="text" id="digit-4" name="digit-4"
                                     placeholder="" autocomplete="off" required>
                             </div>
                         </div>

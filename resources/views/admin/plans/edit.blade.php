@@ -245,7 +245,7 @@
             </div>
 
             <div class="btn-section text-center">
-                <a href="{{ route('admin.plans.index') }}" class="back-btn">
+                <a href="{{ route('admin.plans.index') }}" id="back-btn">
                     <i class="fas fa-arrow-right ms-1"></i>
                     العودة للقائمة
                 </a>

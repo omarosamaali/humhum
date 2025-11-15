@@ -395,7 +395,7 @@
                     <li>
                         {{-- 11. الأسئلة الشائعة --}}
                         <a class="dropdown-item" href="{{ route('admin.faqs.index') }}">
-                            <i class="fas fa-question-circle"></i> الأسئلة الشائقة
+                            <i class="fas fa-question-circle"></i> الأسئلة الشائعة
                         </a>
                     </li>
                     <li>

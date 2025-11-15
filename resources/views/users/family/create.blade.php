@@ -51,6 +51,13 @@
             box-shadow: unset;
         }
     </style>
+    <style>
+        /* شكل بسيط للتنبيه */
+        .is-invalid {
+            border-color: red !important;
+            background-color: #ffe6e6;
+        }
+    </style>
 </head>
 
 <body>
@@ -65,7 +72,6 @@
             </div>
         </div>
         <!-- Preloader end-->
-
         <header class="header header-fixed">
             <div class="header-content">
                 <div class="left-content">
@@ -74,7 +80,7 @@
                     </a>
                 </div>
                 <div class="mid-content">
-                    <h4 class="title">إضافة فرد</h4>
+                    <h4 class="title">{{ __('messages.add_member') }}</h4>
                 </div>
                 <div class="right-content d-flex align-items-center gap-4">
                     <a id="submitForm" href="javascript:void(0);">
@@ -91,19 +97,39 @@
                     <form action="{{ route('users.family.store') }}" method="POST">
                         @csrf
                         <div class="mb-4" style="text-align: center;">
-                            <label class="form-label" for="name">الاسم</label>
+                            <label class="form-label" for="name">{{ __('messages.name') }}</label>
                             <div class="input-group input-mini input-sm">
-                                <input type="text" id="name" class="form-control" value="{{ old('name') }}" name="name" required>
+                                <input type="text" id="name" class="form-control" value="{{ old('name') }}" name="name"
+                                    required>
                             </div>
                         </div>
 
                         <div class="mb-3" style="text-align: center;">
-                            <label class="form-label">اللغة</label>
+                            <label class="form-label">{{ __('messages.language') }}</label>
+                            @php
+                            $languages = [
+                            'ar' => 'العربية',
+                            'en' => 'الإنجليزية',
+                            'id' => 'الإندونيسية',
+                            'am' => 'الأمهرية',
+                            'hi' => 'الهندية',
+                            'bn' => 'البنغالية',
+                            'ml' => 'المالايالامية',
+                            'fil' => 'الفلبينية',
+                            'ur' => 'الأردية',
+                            'ta' => 'التاميلية',
+                            'ne' => 'النيبالية',
+                            'ps' => 'الأفغانية',
+                            'fr' => 'الفرنسية',
+                            ];
+                            @endphp
+
                             <select class="form-select" name="language" required
                                 style="width: 100%; text-align: center; color: black;">
-                                <option value="">اختر اللغة</option>
-                                <option value="العربية">العربية</option>
-                                <option value="الإنجليزية">الإنجليزية</option>
+                                <option value="">{{ __('messages.choose_language') }}</option>
+                                @foreach($languages as $code => $name)
+                                <option value="{{ $code }}">{{ $name }}</option>
+                                @endforeach
                             </select>
                         </div>
                     </form>
@@ -111,8 +137,9 @@
             </div>
         </main>
     </div>
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
         const submitButton = document.getElementById('submitForm');
         const form = document.querySelector('form');
 
@@ -133,7 +160,7 @@
             });
 
             if (!isValid) {
-                alert('من فضلك املأ جميع الحقول المطلوبة قبل الإرسال.');
+                alert('{{ __('messages.please_fill_all_required_fields') }}');
                 firstEmptyField.focus();
                 return; // منبعتش الفورم
             }
@@ -142,15 +169,7 @@
             form.submit();
         });
     });
-</script>
-
-<style>
-    /* شكل بسيط للتنبيه */
-    .is-invalid {
-        border-color: red !important;
-        background-color: #ffe6e6;
-    }
-</style>
+    </script>
 
     <script src="assets/js/jquery.js"></script>
     <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>

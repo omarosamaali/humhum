@@ -300,7 +300,7 @@
 
 ">
 
-                    <a href="javascript:void(0);" style="      position: fixed;
+                    <a href="{{ url()->previous() ?: route('home') }}" style="      position: fixed;
     top: 21px;
     z-index: 9999999999;
     left: 11px;" class="floating-close"><i class="feather icon-x" style="font-size: 30px;"></i></a>
@@ -496,7 +496,7 @@
                     {{-- End Notifications --}}
 
                     <div class="right-content d-flex align-items-center gap-4" style="margin-right: 20px;">
-                        <a href="javascript:void(0);" class="icon dz-floating-toggler">
+                        <a href="{{ url()->previous() ?: route('home') }}" class="icon dz-floating-toggler">
                             <svg width="24" height="24" viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
                                 <rect y="2" width="20" height="3" rx="1.5" fill="white" />
                                 <rect y="18" width="20" height="3" rx="1.5" fill="white" />

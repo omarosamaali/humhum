@@ -116,7 +116,7 @@
         </div>
 
         <div class="btn-section">
-            <a href="{{ route('admin.about-us.index') }}" class="back-btn">
+            <a href="{{ route('admin.about-us.index') }}" id="back-btn">
                 <i class="fas fa-arrow-right ms-1"></i>
                 العودة
             </a>

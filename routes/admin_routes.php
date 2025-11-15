@@ -22,24 +22,40 @@ use App\Http\Controllers\Admin\RecipesController;
 use App\Http\Controllers\Admin\ReportController;
 use App\Http\Controllers\Admin\TipsController;
 use App\Http\Middleware\AdminRole;
-use App\Http\Controllers\MessageController;
+use App\Http\Controllers\MealPlanController;
 use App\Models\Contact;
+use App\Http\Controllers\MessageController;
 
+
+Route::middleware(['auth'])->prefix('admin')->name('admin.')->group(function () {
+    Route::post('/messages/{message}/update-status-and-reply', [MessageController::class, 'adminReplyAndStatus'])->name('messages.update-status-and-reply');
+});
+Route::get('/messages/{message}', [MessageController::class, 'adminShow'])->name('admin.messages.show');
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/messages', [MessageController::class, 'adminIndex'])->name('messages.index');
-    Route::get('/messages/{id}', [MessageController::class, 'adminShow'])->name('messages.show');
     Route::put('/messages/{id}', [MessageController::class, 'adminUpdate'])->name('messages.update');
     Route::delete('/messages/{id}', [MessageController::class, 'adminDestroy'])->name('messages.destroy');
     Route::post('/messages/{message}/reply', [MessageController::class, 'adminReply'])->name('messages.reply');
-    Route::get('/messages/{message}', [MessageController::class, 'adminShowAndReply'])->name('messages.message-show');
+    Route::get('/messages/{message}', [MessageController::class, 'adminShow'])->name('messages.message-show');
     Route::post('/messages/{message}/update-status-and-reply', [MessageController::class, 'adminUpdateStatusAndReply'])->name('messages.update-status-and-reply');
+});
+
+
+Route::middleware(['auth'])->prefix('user/meal-plans')->name('user.meal-plans.')
+                ->group(function () {
+                    Route::get('/create', [MealPlanController::class, 'create'])->name('create');
+                    Route::post('/', [MealPlanController::class, 'store'])->name('store');
+                    Route::get('/', [MealPlanController::class, 'index'])->name('index');
+                    Route::get('/{id}/edit', [MealPlanController::class, 'edit'])->name('edit');
+                    Route::put('/{id}', [MealPlanController::class, 'update'])->name('update');
+                    Route::delete('/{id}', [MealPlanController::class, 'destroy'])->name('destroy');
 });
 
 // Admin routes
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     // List contacts
     Route::get('/contacts', function () {
-        $contacts = Contact::latest()->paginate(10); // Changed variable to $contacts for consistency
+        $contacts = Contact::latest()->paginate(10);
         return view('admin.contacts.index', compact('contacts'));
     })->name('contacts.index');
 
@@ -112,6 +128,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
         return redirect()->back()->with('error', 'إجراء غير صحيح');
     })->name('contacts.bulk-update');
 });
+
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', function () {
         return view('admin.dashboard');

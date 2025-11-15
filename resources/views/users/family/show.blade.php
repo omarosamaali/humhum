@@ -87,6 +87,8 @@
             top: 53px;
             z-index: 99999;
             width: 108px;
+        }::selection {
+        background: var(--primary-color) !important;
         }
     </style>
 </head>
@@ -113,7 +115,7 @@
                     </a>
                 </div>
                 <div class="mid-content">
-                    <h4 class="title"> <span style="color: var(--primary-color);">{{ $myFamily->name }}</span> حساب</h4>
+                    <h4 class="title"> <span style="color: var(--primary-color);">{{ $myFamily->name }}</span> {{ __('messages.account_user') }}</h4>
                 </div>
                 <div class="right-content d-flex align-items-center gap-4">
                     @if($myFamily->owner == '0')
@@ -131,150 +133,145 @@
         </header>
         <!-- Header -->
 
-        <!-- Main Content Start -->
-        <main class="page-content p-b40" style="padding-top: 26px;">
-            <img src="assets/images/hand.png" class="hand" alt="unkown image">
+<!-- Main Content Start -->
+<main class="page-content p-b40" style="padding-top: 26px;">
+    <img src="assets/images/hand.png" class="hand" alt="unkown image">
 
-            <div class="container pt-0 container-profile" style="padding: 0px; position: relative;">
-                <img src="assets/images/background.png" class="background-fixed" alt="">
-                <div class="profile-area" style="position: relative; z-index: 999;">
-                    <div class="author-bx">
-                        <div class="line"></div>
-                        <div class="dz-media">
-                            <img src="{{ $myFamily->avatar ? $myFamily->avatar : asset('assets/images/default.jpg') }}"
-                                style="border-radius: 50%; border: 3px solid #660099; background-color: white !important; object-fit: contain;" alt="unkown image">
+    <div class="container pt-0 container-profile" style="padding: 0px; position: relative;">
+        <img src="assets/images/background.png" class="background-fixed" alt="">
+        <div class="profile-area" style="position: relative; z-index: 999;">
+            <div class="author-bx">
+                <div class="line"></div>
+                <div class="dz-media">
+                    <img src="{{ $myFamily->avatar ? $myFamily->avatar : asset('assets/images/default.jpg') }}"
+                        style="border-radius: 50%; border: 3px solid #660099; background-color: white !important; object-fit: contain;"
+                        alt="unkown image">
+                </div>
+                <div class="dz-content">
+                    <p style="color: white;">{{ __('messages.my_name') }}</p>
+                    <h2 style="color: #ffffff;" class="name">{{ $myFamily->name }}</h2>
+
+                    <p class="text-primary" style="background-color: #660099; color:white !important; padding: 5px;">
+                        {{ __('messages.family_number') }} {{ Auth::user()?->membership_number }}
+                        <br />
+                        {{ __('messages.member_code') }} {{ $myFamily->id }}
+                    </p>
+                </div>
+            </div>
+            <div class="widget_getintuch pb-15 profile">
+                <ul>
+                    <!-- رقم العضوية -->
+                    <!-- <li>
+                        <div class="icon-bx">
+                            <svg class="svg-primary" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"
+                                    fill="#4A3749" />
+                            </svg>
                         </div>
                         <div class="dz-content">
-                            <p style="color: white;">انا إسمى</p>
-                            <h2 style="color: #ffffff;" class="name">{{ $myFamily->name }}</h2>
-
-                            <p class="text-primary"
-                                style="background-color: #660099; color:white !important; padding: 5px;">
-                                رقم العائلة {{ Auth::user()?->membership_number }}
-                                <br />
-                                رمز فرد العائلة {{ $myFamily->id }}
-                            </p>
+                            <p class="sub-title">{{ __('messages.membership_number') }}</p>
+                            <h6 class="title">51342</h6>
                         </div>
-                    </div>
-                    <div class="widget_getintuch pb-15 profile">
-                        <ul>
-                            <!-- رقم العضوية -->
-                            <!-- <li>
-			<div class="icon-bx">
-				<svg class="svg-primary" width="24" height="24" viewBox="0 0 24 24" fill="none"
-					xmlns="http://www.w3.org/2000/svg">
-					<path
-						d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"
-						fill="#4A3749" />
-				</svg>
-			</div>
-			<div class="dz-content">
-				<p class="sub-title">رقم العضوية</p>
-				<h6 class="title">51342</h6>
-			</div>
-		</li> -->
+                    </li> -->
 
+                    <!-- الباقة الحالية -->
+                    <!-- <li>
+                        <div class="icon-bx">
+                            <svg class="svg-primary" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21L12 17.77L5.82 21L7 14.14L2 9.27L8.91 8.26L12 2Z"
+                                    fill="#4A3749" />
+                            </svg>
+                        </div>
+                        <div class="dz-content">
+                            <p class="sub-title">{{ __('messages.current_package') }}</p>
+                            <h6 class="title">{{ __('messages.gold_package') }}</h6>
+                        </div>
+                    </li> -->
 
-                            <!-- الباقة الحالية -->
-                            <!-- <li>
-			<div class="icon-bx">
-				<svg class="svg-primary" width="24" height="24" viewBox="0 0 24 24" fill="none"
-					xmlns="http://www.w3.org/2000/svg">
-					<path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21L12 17.77L5.82 21L7 14.14L2 9.27L8.91 8.26L12 2Z"
-						fill="#4A3749" />
-				</svg>
-			</div>
-			<div class="dz-content">
-				<p class="sub-title">الباقة الحالية</p>
-				<h6 class="title">الباقة الذهبية</h6>
-			</div>
-		</li> -->
+                    <!-- الخطة الحالية -->
+                    <!-- <li>
+                        <div class="icon-bx">
+                            <svg class="svg-primary" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M19 3H5C3.9 3 3 3.9 3 5V19C3 20.1 3.9 21 5 21H19C20.1 21 21 20.1 21 19V5C21 3.9 20.1 3 19 3ZM10 17H8V15H10V17ZM10 13H8V11H10V13ZM10 9H8V7H10V9ZM14 17H12V15H14V17ZM14 13H12V11H14V13ZM14 9H12V7H14V9ZM18 17H16V15H18V17ZM18 13H16V11H18V13ZM18 9H16V7H18V9Z"
+                                    fill="#4A3749" />
+                            </svg>
+                        </div>
+                        <div class="dz-content">
+                            <p class="sub-title">{{ __('messages.current_plan') }}</p>
+                            <h6 class="title">{{ __('messages.5_months_plan') }}</h6>
+                        </div>
+                    </li> -->
 
-                            <!-- الخطة الحالية -->
-                            <!-- <li>
-			<div class="icon-bx">
-				<svg class="svg-primary" width="24" height="24" viewBox="0 0 24 24" fill="none"
-					xmlns="http://www.w3.org/2000/svg">
-					<path
-						d="M19 3H5C3.9 3 3 3.9 3 5V19C3 20.1 3.9 21 5 21H19C20.1 21 21 20.1 21 19V5C21 3.9 20.1 3 19 3ZM10 17H8V15H10V17ZM10 13H8V11H10V13ZM10 9H8V7H10V9ZM14 17H12V15H14V17ZM14 13H12V11H14V13ZM14 9H12V7H14V9ZM18 17H16V15H18V17ZM18 13H16V11H18V13ZM18 9H16V7H18V9Z"
-						fill="#4A3749" />
-				</svg>
-			</div>
-			<div class="dz-content">
-				<p class="sub-title">الخطة الحالية</p>
-				<h6 class="title">خطة 5 شهور</h6>
-			</div>
-		</li> -->
-
-                            <!-- تاريخ الانتهاء -->
-                            <!-- <li>
-			<div class="icon-bx">
-				<svg class="svg-primary" width="24" height="24" viewBox="0 0 24 24" fill="none"
-					xmlns="http://www.w3.org/2000/svg">
-					<path
-						d="M19 3H5C3.9 3 3 3.9 3 5V19C3 20.1 3.9 21 5 21H19C20.1 21 21 20.1 21 19V5C21 3.9 20.1 3 19 3ZM10 17H8V15H10V17ZM10 13H8V11H10V13ZM10 9H8V7H10V9ZM14 17H12V15H14V17ZM14 13H12V11H14V13ZM14 9H12V7H14V9ZM18 17H16V15H18V17ZM18 13H16V11H18V13ZM18 9H16V7H18V9Z"
-						fill="#4A3749" />
-				</svg>
-			</div>
-			<div class="dz-content">
-				<p class="sub-title">تاريخ الإنتهاء</p>
-				<h6 class="title">31/10/2025</h6>
-			</div>
-		</li> -->
-                        </ul>
-                        <!-- <a href="profileDisplayed.html" class="btn btn-primary"
-							style="width: 100% !important; margin-bottom: 20px;">ترقية
-							الباقة</a> -->
-
-                    </div>
-                </div>
-
+                    <!-- تاريخ الانتهاء -->
+                    <!-- <li>
+                        <div class="icon-bx">
+                            <svg class="svg-primary" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M19 3H5C3.9 3 3 3.9 3 5V19C3 20.1 3.9 21 5 21H19C20.1 21 21 20.1 21 19V5C21 3.9 20.1 3 19 3ZM10 17H8V15H10V17ZM10 13H8V11H10V13ZM10 9H8V7H10V9ZM14 17H12V15H14V17ZM14 13H12V11H14V13ZM14 9H12V7H14V9ZM18 17H16V15H18V17ZM18 13H16V11H18V13ZM18 9H16V7H18V9Z"
+                                    fill="#4A3749" />
+                            </svg>
+                        </div>
+                        <div class="dz-content">
+                            <p class="sub-title">{{ __('messages.expiry_date') }}</p>
+                            <h6 class="title">31/10/2025</h6>
+                        </div>
+                    </li> -->
+                </ul>
+                <!-- <a href="profileDisplayed.html" class="btn btn-primary"
+                    style="width: 100% !important; margin-bottom: 20px;">{{ __('messages.upgrade_package') }}</a> -->
             </div>
-            <ul class="tag-list" style="display: flex; gap: 10px; justify-content: space-evenly;">
-                <a href="{{ $myFamily->owner == '0' ? route('users.family.has_email', $myFamily) : '#' }}">
-                    <li class="dz-price"
-                        style="border: 1px solid var(--primary-color); padding: 5px; border-radius: 5px; display: flex; align-items: center; flex-direction: column; text-align: center; font-size: 14px;">
-                        <i class="fa-solid fa-user" style="color: var(--primary-color); font-size: 21px;"></i>
-                        حساب
-                        <br />
-                        {{ $myFamily->has_email == '1' ? 'نعم' : 'لا' }}
-                    </li>
-                </a>
-
-                <a href="{{ route('users.family.language', $myFamily) }}">
-                    <li class="dz-price"
-                        style="border: 1px solid var(--primary-color); padding: 5px; border-radius: 5px; display: flex; align-items: center; flex-direction: column; text-align: center; font-size: 14px;">
-                        <i class="fa-solid fa-earth" style="color: var(--primary-color); font-size: 21px;"></i>
-                        اللغة
-                        <br />
-                        {{ $myFamily->language }}
-                    </li>
-                </a>
-
-                <a href="{{ route('users.family.tips', $myFamily) }}">
-                    <li class="dz-price"
-                        style="border: 1px solid var(--primary-color); padding: 5px; border-radius: 5px; display: flex; align-items: center; flex-direction: column; text-align: center; font-size: 14px;">
-                        <i class="fa-solid fa-list-check" style="color: var(--primary-color); font-size: 21px;"></i>
-                        الإرشادات
-                        <br />
-                        {{ $countTips }}
-                    </li>
-                </a>
-
-                <a href="{{ $myFamily->owner == '0' ? route('users.family.send_notification', $myFamily) : '#' }}">
-                    <li class="dz-price"
-                        style="border: 1px solid var(--primary-color); padding: 5px; border-radius: 5px; display: flex; align-items: center; flex-direction: column; text-align: center; font-size: 14px;">
-                        <i class="fa-solid fa-bell" style="color: var(--primary-color); font-size: 21px;"></i>
-                        الإشعارات
-                        <br />
-                        {{ $myFamily?->send_notification == '1' ? 'نعم' : 'لا' }}
-                    </li>
-                </a>
-
-            </ul>
-        </main>
-        <!-- Main Content End -->
+        </div>
     </div>
+
+    <ul class="tag-list" style="display: flex; gap: 10px; justify-content: space-evenly;">
+        <a href="{{ $myFamily->owner == '0' ? route('users.family.has_email', $myFamily) : '#' }}">
+            <li class="dz-price"
+                style="border: 1px solid var(--primary-color); padding: 5px; border-radius: 5px; display: flex; align-items: center; flex-direction: column; text-align: center; font-size: 14px;">
+                <i class="fa-solid fa-user" style="color: var(--primary-color); font-size: 21px;"></i>
+                {{ __('messages.account') }}
+                <br />
+                {{ $myFamily->has_email == '1' ? __('messages.yes') : __('messages.no') }}
+            </li>
+        </a>
+
+        <a href="{{ route('users.family.language', $myFamily) }}">
+            <li class="dz-price"
+                style="border: 1px solid var(--primary-color); padding: 5px; border-radius: 5px; display: flex; align-items: center; flex-direction: column; text-align: center; font-size: 14px;">
+                <i class="fa-solid fa-earth" style="color: var(--primary-color); font-size: 21px;"></i>
+                {{ __('messages.language') }}
+                <br />
+                {{ __('messages.' . $myFamily->language) }}
+            </li>
+        </a>
+
+        <a href="{{ route('users.family.tips', $myFamily) }}">
+            <li class="dz-price"
+                style="border: 1px solid var(--primary-color); padding: 5px; border-radius: 5px; display: flex; align-items: center; flex-direction: column; text-align: center; font-size: 14px;">
+                <i class="fa-solid fa-list-check" style="color: var(--primary-color); font-size: 21px;"></i>
+                {{ __('messages.tips') }}
+                <br />
+                {{ $countTips }}
+            </li>
+        </a>
+
+        <a href="{{ $myFamily->owner == '0' ? route('users.family.send_notification', $myFamily) : '#' }}">
+            <li class="dz-price"
+                style="border: 1px solid var(--primary-color); padding: 5px; border-radius: 5px; display: flex; align-items: center; flex-direction: column; text-align: center; font-size: 14px;">
+                <i class="fa-solid fa-bell" style="color: var(--primary-color); font-size: 21px;"></i>
+                {{ __('messages.notifications') }}
+                <br />
+                {{ $myFamily?->send_notification == '1' ? __('messages.yes') : __('messages.no') }}
+            </li>
+        </a>
+    </ul>
+</main>
+<!-- Main Content End -->    </div>
     <!--**********************************
     Scripts
 ***********************************-->

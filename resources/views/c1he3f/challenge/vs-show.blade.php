@@ -269,7 +269,7 @@
                     </div>
                     <div class="mid-content"></div>
                     <div class="right-content d-flex align-items-center gap-4">
-                        <a href="vs.html" class="back-btn" style="background-color: white;">
+                        <a href="vs.html" id="back-btn" style="background-color: white;">
                             <i class="feather icon-arrow-left"></i>
                         </a>
                     </div>

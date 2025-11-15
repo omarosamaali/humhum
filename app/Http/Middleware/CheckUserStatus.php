@@ -5,14 +5,13 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log; // تأكد أن هذا السطر موجود
+use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpFoundation\Response;
 
 class CheckUserStatus
 {
     public function handle(Request $request, Closure $next): Response
     {
-        // Routes التي لا نريد تطبيق الـ middleware عليها
         $excludedRoutes = [
             'login',
             'register',
@@ -23,14 +22,12 @@ class CheckUserStatus
             'verification.send',
         ];
 
-        // تسجيل معلومات للـ debugging
         Log::info('CheckUserStatus middleware called', [
             'route' => $request->route() ? $request->route()->getName() : 'no-route',
             'user_authenticated' => Auth::check(),
             'url' => $request->url()
         ]);
 
-        // تجاهل الـ middleware إذا كان الـ route مستثنى
         $currentRoute = $request->route() ? $request->route()->getName() : null;
         if (in_array($currentRoute, $excludedRoutes)) {
             Log::info('Route excluded from CheckUserStatus', ['route' => $currentRoute]);
@@ -47,9 +44,7 @@ class CheckUserStatus
                 'status_type' => gettype($user->status)
             ]);
 
-            // التأكد من حالة الحساب (مفعل/غير مفعل)
-            // 1 يعني غير فعال، 0 يعني فعال (أو أياً كان المنطق لديك)
-            if ($user->status == 1) { // استخدم == لمرونة التحويل التلقائي للنوع
+            if ($user->status == 1) {
                 Log::info('User account deactivated, logging out', ['user_id' => $user->id]);
 
                 Auth::logout();
@@ -61,12 +56,9 @@ class CheckUserStatus
                 ]);
             }
 
-            // --- بداية منطق صلاحيات 'مدخل بيانات' ---
-            // هنا بنفترض إن فيه عمود 'role' في جدول المستخدمين
             if ($user->role === 'مدخل بيانات') {
-                // الصفحات المسموح بيها لـ 'مدخل بيانات'
                 $allowedRoutes = [
-                    'admin.dashboard', // لو عايز تسمح بالوصول للداشبورد
+                    'admin.dashboard',
                     'admin.recipes.index',
                     'admin.recipes.create',
                     'admin.recipes.store',
@@ -82,19 +74,17 @@ class CheckUserStatus
                     'admin.recipeView.edit',
                     'admin.recipeView.update',
                     'admin.recipeView.destroy',
-                    'profile.edit', // صفحات البروفايل مسموح بيها
+                    'profile.edit',
                     'profile.update',
                     'profile.destroy',
                 ];
 
-                // تأكد إن الـ Route الحالي مسموح بيه
                 if (!in_array($currentRoute, $allowedRoutes)) {
                     Log::warning('User tried to access forbidden route', [
                         'user_id' => $user->id,
                         'user_role' => $user->role,
                         'attempted_route' => $currentRoute
                     ]);
-                    // لو مش مسموح بيه، اعمل redirect لصفحة معينة أو ارجع خطأ 403
                     return redirect()->route('admin.dashboard')->with('error', 'ليس لديك صلاحية للوصول لهذه الصفحة.');
                     // أو يمكنك استخدام:
                     // abort(403, 'غير مصرح لك بالوصول لهذه الصفحة.');

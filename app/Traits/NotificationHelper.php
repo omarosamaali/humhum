@@ -40,10 +40,11 @@ trait NotificationHelper
             return false;
         }
 
-        // حفظ في قاعدة البيانات
         Notification::create([
             'user_id' => $user->id,
-            'message' => $message
+            'family_member_id' => session('family_id'),
+            'message' => $message,
+            'is_read' => false
         ]);
 
         // إرسال Firebase (لو موجود token)

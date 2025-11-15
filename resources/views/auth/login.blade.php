@@ -1,3 +1,5 @@
+<title>تسجيل الدخول</title>
+
 <img src="{{ asset('assets/img/g.jpeg') }}" alt="" class=""
     style="position: fixed;
     top: 0px;

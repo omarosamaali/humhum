@@ -7,14 +7,16 @@ use App\Models\User;
 
 class Message extends Model
 {
-    protected $fillable = ['title','user_id' ,'content', 'file_path', 'status', 'response'];
+    protected $fillable = ['user_id', 'title', 'content', 'file_path', 'status', 'type'];
 
-    public function user(){
-        return $this->belongsTo(User::class);
-    }
-
+    // علاقة Polymorphic مع MessageReply
     public function replies()
     {
-        return $this->hasMany(MessageReply::class);
+        return $this->morphMany(MessageReply::class, 'messageable');
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 }

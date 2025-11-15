@@ -4,7 +4,7 @@
 <script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js"></script>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/feather-icons@4.29.0/dist/feather.min.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+{!! $swalScript !!}
 
 <style>
     /* Container for challenge categories */
@@ -257,7 +257,7 @@
                     <h4 class="title">جميع التحديات</h4>
                 </div>
                 <div class="left-content">
-                    <a href="{{ url('/') }}" class="back-btn">
+                    <a href="{{ url('/') }}" id="back-btn">
                         <i class="feather icon-arrow-left"></i>
                     </a>
                 </div>
@@ -378,11 +378,11 @@
                                                     </h6>
                                                     <ul class="tag-list">
                                                         <li>
-                                                            <a href="javascript:void(0);" style="flex-direction: row-reverse; display: flex; align-items: center; gap: 5px;">
+                                                            <a href="{{ url()->previous() ?: route('home') }}" style="flex-direction: row-reverse; display: flex; align-items: center; gap: 5px;">
                                                                 {{ \Carbon\Carbon::parse($challenge->start_at)->format('Y-m-d h:i A') }}
                                                                 <i class="feather icon-calendar"></i>
                                                             </a>
-                                                            <a href="javascript:void(0);" style="flex-direction: row-reverse; display: flex; align-items: center; gap: 5px;">
+                                                            <a href="{{ url()->previous() ?: route('home') }}" style="flex-direction: row-reverse; display: flex; align-items: center; gap: 5px;">
                                                                 {{ \Carbon\Carbon::parse($challenge->end_at)->format('Y-m-d h:i A') }}
                                                                 <i class="feather icon-calendar"></i>
                                                             </a>
@@ -408,7 +408,7 @@
                                                     @if (Auth::check() && Auth::user()->id != $challenge->user_id)
                                                     @if ($challenge->challengeResponses->isEmpty())
                                                     @if ($challenge->challenge_type == 'users')
-                                                    <a href="javascript:void(0);" class="dz-btn prevent-user-challenge-acceptance accept-challenge" data-challenge-id="{{ $challenge->id }}">
+                                                    <a href="{{ url()->previous() ?: route('home') }}" class="dz-btn prevent-user-challenge-acceptance accept-challenge" data-challenge-id="{{ $challenge->id }}">
                                                         إقبل التحدي
                                                     </a>
                                                     @else
@@ -417,7 +417,7 @@
                                                     </a>
                                                     @endif
                                                     @else
-                                                    <a href="javascript:void(0);" class="dz-btn accepted-challenge-btn">
+                                                    <a href="{{ url()->previous() ?: route('home') }}" class="dz-btn accepted-challenge-btn">
                                                         تم قبول التحدي
                                                     </a>
                                                     @endif
@@ -462,7 +462,7 @@
                                                     </h6>
                                                     <ul class="tag-list">
                                                         <li>
-                                                            <a href="javascript:void(0);" style="flex-direction: row-reverse; display: flex; align-items: center; gap: 5px;">
+                                                            <a href="{{ url()->previous() ?: route('home') }}" style="flex-direction: row-reverse; display: flex; align-items: center; gap: 5px;">
                                                                 {{ \Carbon\Carbon::parse($response->created_at)->format('Y-m-d h:i A') }}
                                                                 <i class="feather icon-calendar"></i>
                                                             </a>

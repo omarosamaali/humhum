@@ -108,7 +108,7 @@
         </div>
 
         <div class="btn-section">
-            <a href="{{ route('admin.families.index') }}" class="back-btn">
+            <a href="{{ route('admin.families.index') }}" id="back-btn">
                 <i class="fas fa-arrow-right ms-1"></i>
                 العودة لقائمة العائلات
             </a>

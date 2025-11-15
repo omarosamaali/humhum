@@ -146,8 +146,7 @@ class ChefAuthenticatedSessionController extends Controller
             ],
             'password' => 'required|string|min:8',
             'role' => 'required|in:مدير,مشرف,مدخل بيانات,طاه',
-            'status' => 'sometimes|in:فعال,غير فعال,بانتظار التفعيل',
-        ];
+            'status' => 'sometimes|in:فعال,غير فعال,بانتظار التفعيل',        ];
 
         $messages = [
             'name.required' => 'حقل الاسم مطلوب',
@@ -186,6 +185,8 @@ class ChefAuthenticatedSessionController extends Controller
             'email_verified_at' => null,
             'otp' => null,
             'otp_expires_at' => null,
+            'country' => $request->country, // ✅ أضف هذا السطر
+
         ];
 
         $tr = new GoogleTranslate();

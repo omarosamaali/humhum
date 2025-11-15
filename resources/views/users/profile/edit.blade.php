@@ -73,10 +73,11 @@
                     </a>
                 </div>
                 <div class="mid-content">
-                    <h4 class="title">تعديل الملف الشخصى</h4>
+                    <h4 class="title">{{ __('messages.edit_profile') }}</h4>
                 </div>
                 <div class="right-content d-flex align-items-center gap-4">
-                    <a href="javascript:void(0);" id="submitForm" style="border: none; background-color: transparent;">
+                    <a href="javascript:void(0);" id="submitForm"
+                        style="border: none; background-color: transparent;">
                         <i class="feather icon-check" style="font-size: 29px; font-weight: bold; color: green;"></i>
                     </a>
                 </div>
@@ -102,13 +103,14 @@
                             </div>
                         </div>
                     </div>
+
                     <form id="editProfileForm" method="POST"
                         action="{{ route('users.profile.update', Auth::user()->id) }}">
                         @csrf
                         @method('PUT')
 
                         <div class="mb-4" style="text-align: center;">
-                            <label class="form-label" for="name">الاسم</label>
+                            <label class="form-label" for="name">{{ __('messages.name') }}</label>
                             <div class="input-group input-mini input-sm">
                                 <input type="text" id="name" name="name" value="{{ old('name', Auth::user()->name) }}"
                                     class="form-control">
@@ -116,7 +118,7 @@
                         </div>
 
                         <div class="mb-4" style="text-align: center;">
-                            <label class="form-label" for="email">البريد الالكتروني</label>
+                            <label class="form-label" for="email">{{ __('messages.email') }}</label>
                             <div class="input-group input-mini input-sm">
                                 <input type="email" id="email" name="email"
                                     value="{{ old('email', Auth::user()->email) }}" class="form-control">
@@ -128,10 +130,11 @@
                         @endphp
 
                         <div class="mb-4">
-                            <label class="form-label" style="justify-content: center; display: flex;">الدولة</label>
+                            <label class="form-label" style="justify-content: center; display: flex;">{{
+                                __('messages.country') }}</label>
                             <select name="country" class="form-select w-full text-right" style="direction: rtl;"
                                 required>
-                                <option>اختر الدولة</option>
+                                <option>{{ __('messages.select_country') }}</option>
                                 @foreach ($countries as $code => $name)
                                 <option value="{{ $code }}" {{ $selectedCountry==$code ? 'selected' : '' }}>
                                     {{ $name }}
@@ -140,7 +143,7 @@
                             </select>
                         </div>
                     </form>
-                    <!-- Form مخفي للحذف -->
+
                     <form id="delete-account-form" method="POST" action="{{ route('users.profile.destroy') }}"
                         style="display: none;">
                         @csrf
@@ -150,30 +153,30 @@
                     <button onclick="deleteUser()"
                         style="border: 1px solid red; background-color: white !important; color: red !important;"
                         class="btn btn-secondary btn-lg btn-thin rounded-xl w-100">
-                        حذف الحساب
+                        {{ __('messages.delete_account') }}
                     </button>
 
                     <script>
                         function deleteUser() {
         Swal.fire({
-            title: "هل أنت متأكد من حذف حسابك؟",
+            title: "{{ __('messages.delete_confirmation') }}",
             html: `
                 <p style="color: red; font-weight: bold; margin-bottom: 15px;">
-                    تحذير: سيتم حذف جميع بياناتك نهائياً ولن تتمكن من استرجاعها!
+                    {{ __('messages.delete_warning') }}
                 </p>
-                <p style="margin-bottom: 15px;">اكتب كلمة <strong>DELETE</strong> للتأكيد</p>
+                <p style="margin-bottom: 15px;">{{ __('messages.type_delete_confirm') }}</p>
                 <input type="text" id="delete-confirm" class="swal2-input" placeholder="DELETE" style="width: 80%;">
             `,
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#d33',
             cancelButtonColor: '#3085d6',
-            confirmButtonText: 'نعم، احذف حسابي',
-            cancelButtonText: 'إلغاء',
+            confirmButtonText: "{{ __('messages.yes_delete') }}",
+            cancelButtonText: "{{ __('messages.cancel') }}",
             preConfirm: () => {
                 const input = document.getElementById('delete-confirm').value;
                 if (input !== 'DELETE') {
-                    Swal.showValidationMessage('يجب كتابة DELETE بشكل صحيح');
+                    Swal.showValidationMessage("{{ __('messages.must_type_delete') }}");
                     return false;
                 }
                 return true;
@@ -193,7 +196,7 @@
 
         <!-- Footer Fixed Button -->
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    {!! $swalScript !!}
     <script src="{{ asset('assets/js/password.js') }}"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {

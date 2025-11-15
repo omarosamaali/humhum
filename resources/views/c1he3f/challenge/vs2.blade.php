@@ -247,7 +247,7 @@
 
                 </div>
                 <div class="left-content">
-                    <a href="index.html" class="back-btn">
+                    <a href="index.html" id="back-btn">
                         <i class="feather icon-arrow-left"></i>
                     </a>
                 </div>

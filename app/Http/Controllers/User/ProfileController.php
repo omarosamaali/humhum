@@ -53,7 +53,6 @@ class ProfileController extends Controller
     /**
      * Update the specified resource in storage.
      */
-
     public function update(User $user, Request $request)
     {
         $validated = $request->validate([
@@ -61,9 +60,7 @@ class ProfileController extends Controller
             'email' => 'required|email|unique:users,email,' . $user->id,
             'country' => 'required|string',
         ]);
-
         $user->update($validated);
-
         return redirect()->route('users.profile.index', $user)->with('success', 'تم تحديث البيانات بنجاح');
     }
 
@@ -72,7 +69,7 @@ class ProfileController extends Controller
      */
     public function chooseImage(User $user)
     {
-        $avatars = Family::where('status', 1)->get();
+        $avatars = Family::where('status', '1')->get();
         return view('users.profile.chooseImage', compact('user', 'avatars'));
     }
 
@@ -81,12 +78,6 @@ class ProfileController extends Controller
      */
     public function updateImage(User $user, Request $request)
     {
-        // if($request->hasFile('avatar')) {
-        //     $path = $request->file('avatar')->store('avatars', 'public');
-        //     $user->update([
-        //         'avatar' => $path,
-        //     ]);
-        // }
         $request->validate([
             'avatar' => 'required|string'
         ]);
@@ -97,7 +88,7 @@ class ProfileController extends Controller
 
         return redirect()->route('users.profile.edit', $user->id)->with('success', 'تم تحديث الصورة بنجاح');
     }
-
+    
     /**
      * Remove the specified resource from storage.
      */

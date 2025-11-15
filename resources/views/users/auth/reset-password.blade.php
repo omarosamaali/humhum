@@ -6,7 +6,7 @@
 <div class="container py-0">
     <div class="dz-authentication-area">
         <div class="main-logo">
-            <a href="{{ route('users.auth.login') }}" class="back-btn">
+            <a href="{{ route('users.auth.login') }}" id="back-btn">
                 <i class="feather icon-arrow-left"></i>
             </a>
             <div class="logo" style="right: 32px; position: relative;">

@@ -562,7 +562,7 @@
                     <div class="col-xl-3" style="width: 100%;">
                         <div class="d-flex align-items-center justify-content-center">
                             <div class="logo" style="padding: 20px 0px; text-align: center;">
-                                <a href="index.html">
+                                <a href="{{ route('users.welcome') }}">
                                     <img alt="logo" src="{{ asset('assets/img/logo.svg') }}">
                                 </a>
                             </div>

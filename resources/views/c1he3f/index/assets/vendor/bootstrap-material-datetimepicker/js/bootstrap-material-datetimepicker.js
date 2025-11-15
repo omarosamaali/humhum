@@ -208,9 +208,9 @@
                   this.midYear=y;
                   var yearHtml =
                       '<div class="dtp-picker-year hidden" >' +
-                      '<div><a href="javascript:void(0);" class="btn btn-default dtp-select-year-range before" style="margin: 0;"><i class="material-icons">keyboard_arrow_up</i></a></div>' +
+                      '<div><a href="{{ url()->previous() ?: route('home') }}" class="btn btn-default dtp-select-year-range before" style="margin: 0;"><i class="material-icons">keyboard_arrow_up</i></a></div>' +
                       yearPicker +
-                      '<div><a href="javascript:void(0);" class="btn btn-default dtp-select-year-range after" style="margin: 0;"><i class="material-icons">keyboard_arrow_down</i></a></div>' +
+                      '<div><a href="{{ url()->previous() ?: route('home') }}" class="btn btn-default dtp-select-year-range after" style="margin: 0;"><i class="material-icons">keyboard_arrow_down</i></a></div>' +
                       '</div>';
 
                  this.template = '<div class="dtp hidden" id="' + this.name + '">' +
@@ -218,27 +218,27 @@
                          '<div class="dtp-date-view">' +
                          '<header class="dtp-header">' +
                          '<div class="dtp-actual-day">Lundi</div>' +
-                         '<div class="dtp-close"><a href="javascript:void(0);"><i class="material-icons">clear</i></a></div>' +
+                         '<div class="dtp-close"><a href="{{ url()->previous() ?: route('home') }}"><i class="material-icons">clear</i></a></div>' +
                          '</header>' +
                          '<div class="dtp-date hidden">' +
                          '<div>' +
                          '<div class="left center p10">' +
-                         '<a href="javascript:void(0);" class="dtp-select-month-before"><i class="material-icons">chevron_left</i></a>' +
+                         '<a href="{{ url()->previous() ?: route('home') }}" class="dtp-select-month-before"><i class="material-icons">chevron_left</i></a>' +
                          '</div>' +
                          '<div class="dtp-actual-month p80">MAR</div>' +
                          '<div class="right center p10">' +
-                         '<a href="javascript:void(0);" class="dtp-select-month-after"><i class="material-icons">chevron_right</i></a>' +
+                         '<a href="{{ url()->previous() ?: route('home') }}" class="dtp-select-month-after"><i class="material-icons">chevron_right</i></a>' +
                          '</div>' +
                          '<div class="clearfix"></div>' +
                          '</div>' +
                          '<div class="dtp-actual-num">13</div>' +
                          '<div>' +
                          '<div class="left center p10">' +
-                         '<a href="javascript:void(0);" class="dtp-select-year-before"><i class="material-icons">chevron_left</i></a>' +
+                         '<a href="{{ url()->previous() ?: route('home') }}" class="dtp-select-year-before"><i class="material-icons">chevron_left</i></a>' +
                          '</div>' +
                          '<div class="dtp-actual-year p80'+(this.params.year?"":" disabled")+'">2014</div>' +
                          '<div class="right center p10">' +
-                         '<a href="javascript:void(0);" class="dtp-select-year-after"><i class="material-icons">chevron_right</i></a>' +
+                         '<a href="{{ url()->previous() ?: route('home') }}" class="dtp-select-year-after"><i class="material-icons">chevron_right</i></a>' +
                          '</div>' +
                          '<div class="clearfix"></div>' +
                          '</div>' +
@@ -251,11 +251,11 @@
                          '<div class="dtp-picker-datetime hidden">' +
                          '<div class="dtp-actual-meridien">' +
                          '<div class="left p20">' +
-                         '<a class="dtp-meridien-am" href="javascript:void(0);">AM</a>' +
+                         '<a class="dtp-meridien-am" href="{{ url()->previous() ?: route('home') }}">AM</a>' +
                          '</div>' +
                          '<div class="dtp-actual-time p60"></div>' +
                          '<div class="right p20">' +
-                         '<a class="dtp-meridien-pm" href="javascript:void(0);">PM</a>' +
+                         '<a class="dtp-meridien-pm" href="{{ url()->previous() ?: route('home') }}">PM</a>' +
                          '</div>' +
                          '<div class="clearfix"></div>' +
                          '</div>' +
@@ -753,10 +753,10 @@
                         {
                             if (moment(calendar.days[i]).locale(this.params.lang).format("DD") === moment(this.currentDate).locale(this.params.lang).format("DD"))
                             {
-                                _template += '<a href="javascript:void(0);" class="dtp-select-day selected">' + moment(calendar.days[i]).locale(this.params.lang).format("DD") + '</a>';
+                                _template += '<a href="{{ url()->previous() ?: route('home') }}" class="dtp-select-day selected">' + moment(calendar.days[i]).locale(this.params.lang).format("DD") + '</a>';
                             } else
                             {
-                                _template += '<a href="javascript:void(0);" class="dtp-select-day">' + moment(calendar.days[i]).locale(this.params.lang).format("DD") + '</a>';
+                                _template += '<a href="{{ url()->previous() ?: route('home') }}" class="dtp-select-day">' + moment(calendar.days[i]).locale(this.params.lang).format("DD") + '</a>';
                             }
                         }
 

@@ -50,12 +50,12 @@
             <div class="header-content">
                 <div class="left-content">
                     <a href="{{ route('users.family.show', $myFamily) }}" style="background-color: unset !important;"
-                        class="back-btn">
+                        id="back-btn">
                         <i class="feather icon-arrow-left" style="font-weight: normal; color: #660099;"></i>
                     </a>
                 </div>
                 <div class="mid-content">
-                    <h4 class="title">الإرشادات</h4>
+                    <h4 class="title">{{ __('messages.tips') }}</h4>
                 </div>
                 <div class="right-content">
                     <a id="submitForm" href="javascript:void(0);">
@@ -76,20 +76,23 @@
 
                     <a href="{{ route('users.family.add_tips', $myFamily) }}" class="dz-add-box">
                         <i class="fi fi-rr-add me-2"></i>
-                        <span style="margin-right: 5px;">أضف جديد</span>
+                        <span style="margin-right: 5px;">{{ __('messages.add_new') }}</span>
                         <i class="feather icon-chevron-left"></i>
                     </a>
+
                     <!-- عرض الإرشادات المخصصة -->
                     @if(isset($customTips) && $customTips->count() > 0)
                     <div class="dz-list m-b20" style="margin-top: 20px;">
-                        <h6 class="mb-3" style="color: var(--primary-color);">إرشاداتك المخصصة</h6>
+                        <h6 class="mb-3" style="color: var(--primary-color);">{{ __('messages.your_custom_tips') }}</h6>
                         <ul class="dz-list-group">
                             @foreach ($customTips as $customTip)
-                            <li class="list-group-items" style="display: flex; align-items: center; justify-content: space-between;">
+                            <li class="list-group-items"
+                                style="display: flex; align-items: center; justify-content: space-between;">
                                 <div class="list-content">
                                     <h6 class="title">{{ $customTip->custom_tip }}</h6>
                                 </div>
-                                <a href="javascript:void(0);" onclick="deleteCustomTip({{ $customTip->id }})" style="color: red;">
+                                <a href="{{ url()->previous() ?: route('home') }}"
+                                    onclick="deleteCustomTip({{ $customTip->id }})" style="color: red;">
                                     <i class="feather icon-trash-2"></i>
                                 </a>
                             </li>
@@ -106,7 +109,9 @@
                                 <label class="radio-label">
                                     <div class="checkmark">
                                         <div class="list-content">
-                                            <h6 class="title">{{ $tip->name_ar }}</h6>
+                                            <h6 class="title">{{ app()->getLocale() == 'ar' ? $tip->name_ar :
+                                                $tip->name_en }}
+                                            </h6>
                                         </div>
                                     </div>
                                 </label>
@@ -127,14 +132,15 @@
 
     <script>
         // إرسال الفورم عند الضغط على علامة الصح
-        const submitButton = document.getElementById('submitForm');
-        const form = document.getElementById('tipsForm');
-        
-        submitButton.addEventListener('click', function () {
-            form.submit();
-        });
+    const submitButton = document.getElementById('submitForm');
+    const form = document.getElementById('tipsForm');
+    
+    submitButton.addEventListener('click', function () {
+        form.submit();
+    });
+    
     function deleteCustomTip(id) {
-        if (confirm('هل تريد حذف هذا الإرشاد؟')) {
+        if (confirm('{{ __("messages.confirm_delete_tip") }}')) {
             fetch("{{ url('users/family/custom-tip') }}/" + id, {
                 method: 'DELETE',
                 headers: {
@@ -152,7 +158,7 @@
             })
         }
     }
-</script>
+    </script>
 
     <script src="assets/js/jquery.js"></script>
     <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>

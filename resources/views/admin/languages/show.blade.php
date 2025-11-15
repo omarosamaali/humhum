@@ -107,7 +107,7 @@
         </div>
 
         <div class="btn-section">
-            <a href="{{ route('admin.languages.index') }}" class="back-btn">
+            <a href="{{ route('admin.languages.index') }}" id="back-btn">
                 <i class="fas fa-arrow-right ms-1"></i>
                 العودة لقائمة اللغات
             </a>

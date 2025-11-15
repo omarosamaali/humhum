@@ -584,7 +584,7 @@
         </div>
         <header class="header header-fixed border-bottom">
             <div class="header-content">
-                <div class="left-content"> <a href="javascript:void(0);" class="back-btn"> <i class="feather icon-arrow-left"></i> </a> </div>
+                <div class="left-content"> <a href="{{ url()->previous() ?: route('home') }}" id="back-btn"> <i class="feather icon-arrow-left"></i> </a> </div>
                 <div class="mid-content">
                     <h4 class="title">عدسة الطاهي - إضافة</h4>
                 </div>

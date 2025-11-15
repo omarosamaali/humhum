@@ -124,7 +124,7 @@
         @endforeach
     </div>
     <div class="btn-section">
-        <a href="{{ route('admin.tips.index') }}" class="back-btn">
+        <a href="{{ route('admin.tips.index') }}" id="back-btn">
             <i class="fas fa-arrow-right ms-1"></i>
             العودة لقائمة الإرشادات
         </a>

@@ -24,7 +24,7 @@
     <meta name="twitter:card" content="summary_large_image">
     <meta name="viewport"
         content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, minimal-ui, viewport-fit=cover">
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    {!! $swalScript !!}
     <!-- Favicons Icon -->
     <link rel="shortcut icon" type="image/x-icon" href="{{ asset('assets/images/app-logo/favicon.png') }}">
 
@@ -842,7 +842,7 @@
                     <h4 class="title">تعديل المكونات</h4>
                 </div>
                 <div class="left-content">
-                    <a href="{{ url()->previous() }}" class="back-btn">
+                    <a href="{{ url()->previous() }}" id="back-btn">
                         <i class="feather icon-arrow-left"></i>
                     </a>
                 </div>

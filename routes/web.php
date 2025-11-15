@@ -21,6 +21,7 @@ use App\Models\Challenge;
 use App\Models\ChefProfile;
 use App\Models\ChallengeReview;
 use App\Http\Controllers\ContactController;
+use App\Http\Controllers\MealPlanController;
 use Carbon\Carbon;
 
 require __DIR__ . '/auth.php';
@@ -44,9 +45,9 @@ Route::prefix('c1he3f')->middleware(['auth'])->group(function () {
     Route::put('/profile/delivery-location/{id}', [ProfileController::class, 'updateDeliveryLocation'])->name('c1he3f.profile.delivery-location.update');
     Route::delete('/profile/delivery-location/{id}', [ProfileController::class, 'destroyDeliveryLocation'])->name('c1he3f.profile.delivery-location.destroy');
     Route::get('/coming-soon', [ProfileController::class, 'comingSoon'])->name('c1he3f.coming-soon');
-    Route::get('/', function () {
-        return view('chef.index');
-    })->name('c1he3f.index');
+    // Route::get('/', function () {
+    //     return view('chef.index');
+    // })->name('c1he3f.index');
 });
 
 Route::get('/', function () {
@@ -224,7 +225,6 @@ Route::middleware(['auth'])->group(function () {
 Route::middleware(['auth'])->group(function () {
     Route::get('/challenge-review-chat/{reviewId}', [ChallengeReviewChatController::class, 'show'])
         ->name('challenge.review.chat');
-    // روت جلب الرسائل (للتحديث التلقائي)
     Route::get('/challenge-review-chat/{reviewId}/messages', [ChallengeReviewChatController::class, 'getMessages'])
         ->name('challenge.review.chat.messages');
 });
@@ -240,3 +240,7 @@ require __DIR__ . '/chef_routes.php';
 require __DIR__ . '/admin_routes.php';
 
 require __DIR__ . '/user.php';
+
+require __DIR__ . '/families.php';
+
+require __DIR__ . '/chef.php';

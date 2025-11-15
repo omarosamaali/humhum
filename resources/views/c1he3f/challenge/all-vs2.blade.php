@@ -44,7 +44,7 @@
                     <h4 class="title">جميع التحديات</h4>
                 </div>
                 <div class="left-content">
-                    <a href="{{ url('/') }}" class="back-btn">
+                    <a href="{{ url('/') }}" id="back-btn">
                         <i class="feather icon-arrow-left"></i>
                     </a>
                 </div>
@@ -105,11 +105,11 @@
                                                     </h6>
                                                     <ul class="tag-list">
                                                         <li>
-                                                            <a href="javascript:void(0);" style="flex-direction: row-reverse; display: flex; align-items: center; gap: 5px;">
+                                                            <a href="{{ url()->previous() ?: route('home') }}" style="flex-direction: row-reverse; display: flex; align-items: center; gap: 5px;">
                                                                 {{ \Carbon\Carbon::parse($challenge->start_date . ' ' . $challenge->start_time)->format('Y-m-d h:i A') }}
                                                                 <i class="feather icon-calendar"></i>
                                                             </a>
-                                                            <a href="javascript:void(0);" style="flex-direction: row-reverse; display: flex; align-items: center; gap: 5px;">
+                                                            <a href="{{ url()->previous() ?: route('home') }}" style="flex-direction: row-reverse; display: flex; align-items: center; gap: 5px;">
                                                                 {{ \Carbon\Carbon::parse($challenge->end_date . ' ' . $challenge->end_time)->format('Y-m-d h:i A') }}
                                                                 <i class="feather icon-calendar"></i>
                                                             </a>
@@ -175,11 +175,11 @@
                                                     </h6>
                                                     <ul class="tag-list">
                                                         <li>
-                                                            <a href="javascript:void(0);" style="flex-direction: row-reverse; display: flex; align-items: center; gap: 5px;">
+                                                            <a href="{{ url()->previous() ?: route('home') }}" style="flex-direction: row-reverse; display: flex; align-items: center; gap: 5px;">
                                                                 {{ \Carbon\Carbon::parse($challenge->start_date . ' ' . $challenge->start_time)->format('Y-m-d h:i A') }}
                                                                 <i class="feather icon-calendar"></i>
                                                             </a>
-                                                            <a href="javascript:void(0);" style="flex-direction: row-reverse; display: flex; align-items: center; gap: 5px;">
+                                                            <a href="{{ url()->previous() ?: route('home') }}" style="flex-direction: row-reverse; display: flex; align-items: center; gap: 5px;">
                                                                 {{ \Carbon\Carbon::parse($challenge->end_date . ' ' . $challenge->end_time)->format('Y-m-d h:i A') }}
                                                                 <i class="feather icon-calendar"></i>
                                                             </a>

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Message;
+use App\Models\MessageUser;
 use App\Models\MessageReply;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -35,7 +36,7 @@ class MessageController extends Controller
             'content' => $request->content,
             'file_path' => $filePath,
             'status' => 'unread',
-            'type' => 'user_to_admin',
+            // 'type' => 'user_to_admin',
         ]);
 
         return redirect()->route('c1he3f.messages')->with('success', 'تم إرسال الرسالة بنجاح!');
@@ -50,37 +51,67 @@ class MessageController extends Controller
             ->with('user', 'replies.user')
             ->latest()
             ->get();
-
         return view('c1he3f.messages', compact('messages'));
     }
 
-    public function show(Message $message)
+    // في MessageController.php
+
+    public function show($id)
     {
-        if ($message->user_id !== Auth::id() && !$message->replies->contains('user_id', Auth::id())) {
+        // البحث في كلا الجدولين
+        $message = Message::find($id);
+
+        if (!$message) {
+            $message = MessageUser::find($id);
+        }
+
+        // إذا لم توجد الرسالة في أي من الجدولين
+        if (!$message) {
+            abort(404, 'الرسالة غير موجودة');
+        }
+
+        // التحقق من الصلاحية: المستخدم الحالي يجب أن يكون صاحب الرسالة
+        if ($message->user_id !== Auth::id()) {
             abort(403, 'غير مصرح لك بمشاهدة هذه الرسالة.');
         }
 
-        if ($message->user_id !== Auth::id() && $message->status === 'unread') {
-            $message->status = 'opened';
-            $message->save();
+        // تحديث حالة الرسالة من unread إلى opened
+        if ($message->status === 'unread') {
+            $message->update(['status' => 'opened']);
         }
 
+        // تحديث حالة جميع الردود غير المقروءة
         foreach ($message->replies as $reply) {
             if ($reply->status === 'unread' && $reply->user_id !== Auth::id()) {
-                $reply->status = 'read';
-                $reply->save();
+                $reply->update(['status' => 'read']);
             }
         }
 
         return view('c1he3f.chat', compact('message'));
     }
 
-    public function reply(Request $request, Message $message)
+    public function reply(Request $request, $id)
     {
         $request->validate([
             'content' => 'required_without_all:file|nullable|string',
             'file' => 'nullable|file|mimes:jpeg,png,jpg,gif,mp4,mov,avi|max:20480',
         ]);
+
+        // البحث في كلا الجدولين
+        $message = Message::find($id);
+
+        if (!$message) {
+            $message = MessageUser::find($id);
+        }
+
+        if (!$message) {
+            abort(404, 'الرسالة غير موجودة');
+        }
+
+        // التحقق من الصلاحية
+        if ($message->user_id !== Auth::id()) {
+            abort(403, 'غير مصرح لك بالرد على هذه الرسالة.');
+        }
 
         $filePath = null;
         if ($request->hasFile('file')) {
@@ -88,18 +119,17 @@ class MessageController extends Controller
         }
 
         if ($request->filled('content') || $request->hasFile('file')) {
-            $reply = MessageReply::create([
-                'message_id' => $message->id,
+            $message->replies()->create([
                 'user_id' => Auth::id(),
                 'content' => $request->content,
                 'file_path' => $filePath,
                 'status' => 'unread',
             ]);
 
-            $message->status = 'replied';
-            $message->save();
+            $message->update(['status' => 'replied']);
 
             Log::info('New Message Reply created by user ID: ' . Auth::id() . ' for message ID: ' . $message->id);
+
             return back()->with('success', 'تم إرسال ردك بنجاح!');
         }
 
@@ -108,67 +138,147 @@ class MessageController extends Controller
 
     public function adminIndex()
     {
-        $messages = Message::latest()->paginate(10);
-        return view('admin.messages.index', compact('messages'));
+        $messages = Message::with(['user' => function ($query) {
+            $query->withDefault(['name' => 'مستخدم محذوف']);
+        }])->latest()->paginate(10);
+        $messagesUser = MessageUser::with(['user' => function ($query) {
+            $query->withDefault(['name' => 'مستخدم محذوف']);
+        }])->latest()->paginate(10);
+        return view('admin.messages.index', compact('messages', 'messagesUser'));
     }
 
-    public function adminShow(Message $message)
+    public function adminShow($id)
     {
-        $message->load(['user', 'replies.user']);
+        // البحث في Message أو MessageUser
+        $message = Message::find($id);
 
-        if ($message->status === 'unread') {
-            $message->status = 'opened';
-            $message->save();
+        if (!$message) {
+            $message = MessageUser::find($id);
         }
 
+        if (!$message) {
+            abort(404, 'الرسالة غير موجودة');
+        }
+
+        // تحديث حالة الرسالة إلى "مفتوحة" إذا كانت غير مقروءة
+        if ($message->status === 'unread') {
+            $message->update(['status' => 'opened']);
+        }
+
+        // تحديث حالة الردود إلى "مقروءة"
         foreach ($message->replies as $reply) {
             if ($reply->status === 'unread' && $reply->user_id !== Auth::id()) {
-                $reply->status = 'read';
-                $reply->save();
+                $reply->update(['status' => 'read']);
             }
         }
 
         return view('admin.messages.show', compact('message'));
     }
 
-    public function adminReplyAndStatus(Request $request, Message $message)
+    public function adminUpdateStatusAndReply(Request $request, $id)
     {
         $request->validate([
-            'content' => 'required_without_all:file|nullable|string',
+            'status' => 'nullable|in:unread,opened,replied,closed',
+            'content' => 'nullable|string|max:5000',
             'file' => 'nullable|file|mimes:jpeg,png,jpg,gif,mp4,mov,avi|max:20480',
-            'status' => 'required|string|in:unread,opened,replied,closed',
         ]);
+
+        // البحث في كلا الجدولين
+        $message = Message::find($id) ?? MessageUser::find($id);
+
+        if (!$message) {
+            abort(404, 'الرسالة غير موجودة');
+        }
 
         $filePath = null;
         if ($request->hasFile('file')) {
-            $filePath = $request->file('file')->store('replies_attachments', 'public');
+            $filePath = $request->file('file')->store('message_replies', 'public');
         }
 
-        if ($request->filled('content') || $request->hasFile('file')) {
-            MessageReply::create([
-                'message_id' => $message->id,
+        // إضافة رد جديد باستخدام Polymorphic Relationship
+        if ($request->filled('content') || $filePath) {
+            $message->replies()->create([
                 'user_id' => Auth::id(),
                 'content' => $request->content,
                 'file_path' => $filePath,
                 'status' => 'unread',
             ]);
-            $message->status = 'replied';
-        } else {
-            $message->status = $request->input('status');
+
+            $message->update(['status' => 'replied']);
+
+            Log::info('Admin reply created by user ID: ' . Auth::id() . ' for message ID: ' . $message->id);
         }
 
-        $message->save();
+        if ($request->filled('status') && !$request->filled('content') && !$filePath) {
+            $message->update(['status' => $request->status]);
+        }
 
-        return redirect()->route('admin.messages.show', $message->id)->with('success', 'تم تحديث الرسالة وإرسال الرد بنجاح!');
+        return redirect()->back()->with('success', 'تم التحديث بنجاح!');
     }
 
-    public function adminDestroy(Message $message)
+    public function adminDestroy($id)
     {
+        $message = Message::find($id);
+
+        if (!$message) {
+            $message = MessageUser::findOrFail($id);
+        }
+
+        // حذف الملف المرفق إن وُجد
         if ($message->file_path) {
             Storage::disk('public')->delete($message->file_path);
         }
+
+        // حذف ملفات الردود
+        foreach ($message->replies as $reply) {
+            if ($reply->file_path) {
+                Storage::disk('public')->delete($reply->file_path);
+            }
+        }
+
         $message->delete();
 
         return redirect()->route('admin.messages.index')->with('success', 'تم حذف الرسالة بنجاح!');
+    }
+
+    public function adminUpdateStatus(Request $request, $id)
+    {
+        $request->validate([
+            'status' => 'required|in:unread,opened,replied,closed',
+        ]);
+
+        $message = Message::find($id);
+
+        if (!$message) {
+            $message = MessageUser::findOrFail($id);
+        }
+
+        $message->update(['status' => $request->status]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'تم تحديث الحالة بنجاح',
+            'status' => $message->status
+        ]);
+    }
+    public function adminReply(Request $request, $id)
+    {
+        $request->validate([
+            'content' => 'required|string|max:5000',
+            'file' => 'nullable|file|mimes:jpeg,png,jpg,gif,mp4|max:20480',
+        ]);
+        $message = Message::find($id) ?? MessageUser::findOrFail($id);
+        $filePath = null;
+        if ($request->hasFile('file')) {
+            $filePath = $request->file('file')->store('message_replies', 'public');
+        }
+        $message->replies()->create([
+            'user_id' => Auth::id(),
+            'content' => $request->content,
+            'file_path' => $filePath,
+            'status' => 'unread',
+        ]);
+        $message->update(['status' => 'replied']);
+        return redirect()->back()->with('success', 'تم إرسال الرد بنجاح!');
     }
 }

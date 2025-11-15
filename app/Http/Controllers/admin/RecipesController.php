@@ -134,22 +134,20 @@ class RecipesController extends Controller
 
     public function showIngredientsForm(Recipe $recipe)
     {
-        // If 'ingredients' is cast to 'array' in the Recipe model, it will already be an array.
-        // Use null coalescing operator to ensure it's an empty array if null.
         $ingredientsData = $recipe->ingredients ?? [];
         return view('c1he3f.recpies.ingredients', compact('recipe', 'ingredientsData'));
     }
+
     public function updateIngredients(Request $request, Recipe $recipe)
     {
         Log::info('Update Ingredients Request received for recipe ID: ' . $recipe->id);
-
         $request->validate([
             'ingredients_data' => 'nullable|string',
-            'redirect_url' => 'nullable|string', // تحقق من حقل إعادة التوجيه
+            'redirect_url' => 'nullable|string',
         ]);
 
         $ingredientsDataString = $request->input('ingredients_data');
-        $formattedIngredients = ''; // Initialize as empty string
+        $formattedIngredients = '';
 
         if (!empty($ingredientsDataString)) {
             $ingredientsArray = json_decode($ingredientsDataString, true);
@@ -175,51 +173,41 @@ class RecipesController extends Controller
                     'json_error' => json_last_error_msg(),
                     'input_data' => $ingredientsDataString
                 ]);
-
                 if ($request->expectsJson()) {
                     return response()->json([
                         'success' => false,
                         'message' => 'حدث خطأ في معالجة بيانات المكونات (JSON). الرجاء المحاولة مرة أخرى.'
                     ], 422);
                 }
-
                 return back()->with('error', 'حدث خطأ في معالجة بيانات المكونات (JSON). الرجاء المحاولة مرة أخرى.');
             }
         } else {
             Log::info('ingredients_data was empty. Saving empty string to database.');
         }
-
         $recipe->ingredients = $formattedIngredients;
-
         try {
             $recipe->save();
             Log::info('Recipe ingredients updated successfully for ID: ' . $recipe->id);
-
             $redirectUrl = $request->input('redirect_url', url()->previous());
-
             if ($request->expectsJson()) {
                 return response()->json([
                     'success' => true,
                     'message' => 'تم تحديث المكونات بنجاح!',
-                    'redirect' => $redirectUrl  // أضف هذا لإرجاع عنوان الإعادة إلى JS
+                    'redirect' => $redirectUrl
                 ]);
             }
-
             return redirect($redirectUrl)->with('success', 'تم تحديث المكونات بنجاح!');
         } catch (\Exception $e) {
             Log::error('Database save error for recipe ID: ' . $recipe->id, [
                 'error' => $e->getMessage()
             ]);
-
             $errorMessage = 'حدث خطأ أثناء حفظ المكونات في قاعدة البيانات: ' . $e->getMessage();
-
             if ($request->expectsJson()) {
                 return response()->json([
                     'success' => false,
                     'message' => $errorMessage
                 ], 500);
             }
-
             return back()->with('error', $errorMessage);
         }
     }

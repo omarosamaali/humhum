@@ -18,7 +18,7 @@
                 </div>
                 <div class="title-bar mb-0">
                     <h4 class="title font-w600" style="visibility: collapse;">Main وصفة</h4>
-                    <a href="javascript:void(0);" class="floating-close"><i class="feather icon-x"></i></a>
+                    <a href="{{ url()->previous() ?: route('home') }}" class="floating-close"><i class="feather icon-x"></i></a>
                 </div>
             </div>
             <ul class="nav navbar-nav" style="direction: ltr;">
@@ -104,13 +104,15 @@
                         </div>
                     </div>
                     <div class="right-content d-flex align-items-center gap-4">
-                        <a href="javascript:void(0);" class="icon dz-floating-toggler">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <a href="javascript:void(0);" class="icon dz-floating-toggler">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
                                 <rect y="2" width="20" height="3" rx="1.5" fill="#5F5F5F" />
                                 <rect y="18" width="20" height="3" rx="1.5" fill="#5F5F5F" />
                                 <rect x="4" y="10" width="20" height="3" rx="1.5" fill="#5F5F5F" />
                             </svg>
                         </a>
+
                     </div>
                 </div>
             </header>

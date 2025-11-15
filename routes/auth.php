@@ -101,13 +101,7 @@ Route::middleware('check.user')->group(function () {
     Route::post('users.cooks_members.login', [CooksController::class, 'cook_login_post'])
         ->name('users.cooks.login.post');
 
-    // Family Login Routes
-    Route::get('users.family_members.login', [FamilyController::class, 'family_login'])
-        ->name('users.family_members.login');
-    Route::post('users.family_members.login', [FamilyController::class, 'family_login_post'])
-        ->name('users.family_members.login.post');
-
-    // Registration OTP Routes (for new user registration)
+        // Registration OTP Routes (for new user registration)
     Route::get('users.auth.register.verify-otp', [OtpController::class, 'showForm'])
         ->name('users.register.verify.otp');
     Route::post('users.auth.register.verify-otp', [OtpController::class, 'verify'])

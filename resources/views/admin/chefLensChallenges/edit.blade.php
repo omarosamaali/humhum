@@ -285,7 +285,7 @@
         </div> {{-- End of chef-fields --}}
 
         <div class="btn-section mt-4">
-            <a href="{{ route('admin.users.index') }}" class="back-btn">
+            <a href="{{ route('admin.users.index') }}" id="back-btn">
                 <i class="fas fa-arrow-right ms-1"></i>
                 العودة لقائمة المستخدمين
             </a>

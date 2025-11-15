@@ -299,7 +299,8 @@
             <h1 class="recpie-title">
                 {{ $translatedTitle }}
             </h1>
-            <h1 class="headphone-icon" style="cursor: pointer;" onclick="speakText('{{ addslashes($translatedTitle) }}', '{{ $currentLanguageCode }}')">
+            <h1 class="headphone-icon" style="cursor: pointer;" 
+            onclick="speakText('{{ addslashes($translatedTitle) }}', '{{ $currentLanguageCode }}')">
                 <i style="color: #ffffff;" class="fa-solid fa-headphones"></i>
             </h1>
             <script src="https://code.responsivevoice.org/responsivevoice.js?key=vm7hFTHk"></script>

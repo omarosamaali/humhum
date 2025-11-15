@@ -11,9 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('cook_tables', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
+        Schema::table('cooks', function (Blueprint $table) {
+            $table->string('language')->change();
         });
     }
 
@@ -22,6 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('cook_tables');
+        Schema::table('cooks', function (Blueprint $table) {
+            //
+        });
     }
 };

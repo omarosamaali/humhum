@@ -56,7 +56,7 @@ class BlockedController extends Controller
             }
         }
 
-        return back()->with('success', 'تم حظر الوجبة بنجاح!');
+        return redirect()->route('users.blocked.show')->with('success', 'تم حظر الوجبة بنجاح!');
     }
 
 

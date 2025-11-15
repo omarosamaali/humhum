@@ -57,7 +57,7 @@
         <header class="header header-fixed">
             <div class="header-content">
                 <div class="left-content">
-                    <a href="javascript:void(0);" class="back-btn">
+                    <a href="{{ url()->previous() ?: route('home') }}" id="back-btn">
                         <i class="feather icon-arrow-left"></i>
                     </a>
                 </div>
@@ -92,13 +92,13 @@
                     <div class="dz-content">
                         <div class="dz-head">
                             <h6 class="title font-w500 max-100">
-                                <a href="javascript:void(0);" style="font-weight: bold;">
+                                <a href="{{ url()->previous() ?: route('home') }}" style="font-weight: bold;">
                                     {{ $challengeResponse->user->name ?? 'اسم المستخدم غير متاح' }}
                                 </a>
                             </h6>
                         </div>
                         <ul class="tag-list">
-                            <li><a href="javascript:void(0);" style="    display: flex
+                            <li><a href="{{ url()->previous() ?: route('home') }}" style="    display: flex
 ;
     align-items: center;
     gap: 8px;color: #776e6e;">

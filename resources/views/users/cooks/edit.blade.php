@@ -70,12 +70,12 @@
         <header class="header header-fixed">
             <div class="header-content">
                 <div class="left-content">
-                    <a href="javascript:void(0);" class="back-btn">
+                    <a href="{{ url()->previous() ?: route('home') }}" id="back-btn">
                         <i class="feather icon-arrow-left"></i>
                     </a>
                 </div>
                 <div class="mid-content">
-                    <h4 class="title">إضافة طباخ</h4>
+                    <h4 class="title">{{ __('messages.edit') }}</h4>
                 </div>
                 <div class="right-content d-flex align-items-center gap-4">
                     <a href="javascript:void(0);" id="submitForm">
@@ -108,7 +108,7 @@
                             </div>
                         </div>
                         <div class="mb-4" style="text-align: center;">
-                            <label class="form-label" for="name">الاسم</label>
+                            <label class="form-label" for="name">{{ __('messages.name') }}</label>
                             <div class="input-group input-mini input-sm">
                                 <input type="text" id="name" class="form-control" value="{{ old('name', $cook->name) }}"
                                     name="name" required>
@@ -116,21 +116,22 @@
                         </div>
 
                         <div class="mb-3" style="text-align: center;">
-                            <label class="form-label">اللغة</label>
+                            <label class="form-label">{{ __('messages.language') }}</label>
                             <select class="form-select" name="language" required
                                 style="width: 100%; text-align: center; color: black;">
-                                <option value="">اختر اللغة</option>
-                                <option value="العربية" {{ $cook->language == 'العربية' ? 'selected' : '' }}>العربية
+                                <option value="">{{ __('messages.choose_language') }}</option>
+                                <option value="العربية" {{ $cook->language == 'العربية' ? 'selected' : '' }}>{{ __('messages.arabic') }}
                                 </option>
                                 <option value="الإنجليزية" {{ $cook->language == 'الإنجليزية' ? 'selected' : '' }}>
-                                    الإنجليزية</option>
+                                    {{ __('messages.english') }}</option>
                             </select>
                         </div>
 
                         <div class="col-md-12" id="passwordSection">
                             <div class="password-label">
-                                <label class="form-label" style="display: flex; justify-content: center;">أدخل كلمة
-                                    المرور (4 أرقام)</label>
+                                <label class="form-label" style="display: flex; justify-content: center;">
+                                    {{ __('messages.enter_password_4_digits') }}
+                                </label>
                             </div>
                             <div class="otp-group" style="display: flex; gap:11px;" id="otpGroup"
                                 aria-label="حقل كلمة المرور المكوّن من 4 خانات">

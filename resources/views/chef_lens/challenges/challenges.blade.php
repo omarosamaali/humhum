@@ -16,7 +16,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700;800;900&family=Raleway:wght@300;400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('assets/css/challenges.css') }}">
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    {!! $swalScript !!}
 </head>
 <body>
     <div class="page-wrapper">
@@ -30,7 +30,7 @@
                         <img src="{{ asset('assets/images/Isolation_Mode.png') }}" class="logo" alt="">
                     </div>
                     <div class="right-content d-flex align-items-center gap-4">
-                        <a href="javascript:void(0);" class="back-btn">
+                        <a href="{{ url()->previous() ?: route('home') }}" id="back-btn">
                             <i class="fa-solid fa-angle-left"></i>
                         </a>
                     </div>
@@ -43,7 +43,7 @@
                             <img src="./assets/images/Isolation_Mode.png" style="height: 53px; position: relative; right: 11px;" alt="">
                         </div>
                         <div class="right-content d-flex align-items-center gap-4">
-                            <a href="javascript:void(0);" class="icon dz-floating-toggler">
+                            <a href="{{ url()->previous() ?: route('home') }}" class="icon dz-floating-toggler">
                                 <svg width="24" height="24" viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
                                     <rect y="2" width="20" height="3" rx="1.5" fill="white" />
                                     <rect y="18" width="20" height="3" rx="1.5" fill="white" />
@@ -235,6 +235,6 @@
         <script src="{{ asset('assets/js/custom.js') }}"></script>
         <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        {!! $swalScript !!}
 </body>
 </html>

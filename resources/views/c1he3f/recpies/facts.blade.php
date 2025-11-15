@@ -28,7 +28,7 @@
     <!-- Mobile Specific -->
     <meta name="viewport"
         content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, minimal-ui, viewport-fit=cover">
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    {!! $swalScript !!}
     <!-- Favicons Icon -->
     <link rel="shortcut icon" type="image/x-icon" href="{{ asset('assets/images/app-logo/favicon.png') }}">
 
@@ -919,7 +919,7 @@
         <header class="header header-fixed border-bottom">
             <div class="header-content">
                 <div class="left-content">
-                    <a href="{{ url()->previous() }}" class="back-btn">
+                    <a href="{{ url()->previous() }}" id="back-btn">
                         <i class="feather icon-arrow-left"></i>
                     </a>
                 </div>
@@ -984,7 +984,7 @@
     {{-- <script src="{{ asset('index.js') }}"></script> --}}
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    {!! $swalScript !!}
 
 </body>
 

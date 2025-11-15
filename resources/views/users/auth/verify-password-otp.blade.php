@@ -7,7 +7,7 @@
     <div class="dz-authentication-area">
 
         <div class="main-logo">
-            <a href="{{ route('users.auth.password.request') }}" class="back-btn">
+            <a href="{{ route('users.auth.password.request') }}" id="back-btn">
                 <i class="feather icon-arrow-left"></i>
             </a>
             <div class="logo" style="right: 32px; position: relative;">

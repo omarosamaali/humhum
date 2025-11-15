@@ -11,6 +11,7 @@ use App\Models\Kitchens;
 use App\Models\User;
 use App\Models\SubCategory;
 use App\Models\RecipeStep;
+use Stichoza\GoogleTranslate\GoogleTranslate;
 
 class Recipe extends Model
 {
@@ -18,6 +19,72 @@ class Recipe extends Model
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id');
+    }
+
+    protected static $translator = null;
+
+    protected static function getTranslator()
+    {
+        if (self::$translator === null) {
+            self::$translator = new GoogleTranslate();
+            self::$translator->setSource('ar');
+            self::$translator->setTarget('en');
+        }
+        return self::$translator;
+    }
+
+    public function getTitleAttribute($value)
+    {
+        $locale = app()->getLocale();
+        if ($locale == 'ar') {
+            return $value;
+        }
+        try {
+            $translator = self::getTranslator();
+            return $translator->translate($value);
+        } catch (\Exception $e) {
+            return $value;
+        }
+    }
+
+    public function getIngredientsAttribute($value)
+    {
+        $locale = app()->getLocale();
+        if ($locale == 'ar') {
+            return $value;
+        }
+        try {
+            $translator = self::getTranslator();
+            return $translator->translate($value);
+        } catch (\Exception $e) {
+            return $value;
+        }
+    }
+    public function getStepsAttribute($value)
+    {
+        $steps = is_string($value) ? json_decode($value, true) : $value;
+        $locale = app()->getLocale();
+
+        // لو اللغة العربية، نرجع النص كما هو
+        if ($locale == 'ar' || empty($steps)) {
+            return $steps;
+        }
+
+        try {
+            $translator = self::getTranslator();
+
+            // نترجم كل وصف داخل الخطوات
+            foreach ($steps as &$step) {
+                if (isset($step['description']) && !empty($step['description'])) {
+                    $step['description'] = $translator->translate($step['description']);
+                }
+            }
+        } catch (\Exception $e) {
+            // لو حصل خطأ في الترجمة نرجع النص الأصلي
+            return $steps;
+        }
+
+        return $steps;
     }
     protected $fillable = [
         'title',
@@ -201,5 +268,19 @@ class Recipe extends Model
     public function favoritedBy()
     {
         return $this->belongsToMany(User::class, 'favorites')->withTimestamps();
+    }
+
+    public function favorites()
+    {
+        return $this->hasMany(Favorite::class, 'recipe_id');
+    }
+    public function mainCategory()
+    {
+        return $this->belongsTo(MainCategories::class, 'main_category_id');
+    }
+
+    public function blockeds()
+    {
+        return $this->hasMany(Blocked::class, 'recipe_id');
     }
 }

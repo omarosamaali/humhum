@@ -11,7 +11,9 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Traits\NotificationHelper;
 use App\Traits\NotificationHelperUser;
-
+use App\Models\Family;
+use App\Models\User;
+use Illuminate\Support\Str;
 
 class FamilyController extends Controller
 {
@@ -53,16 +55,30 @@ class FamilyController extends Controller
             'language' => 'required',
         ]);
 
-        MyFamily::create([
+        // إنشاء سجل في جدول MyFamily
+        $familyMember = MyFamily::create([
             'name' => $request->name,
             'language' => $request->language,
             'user_id' => $user->id,
             'owner' => '0',
         ]);
 
+        // إنشاء حساب مستخدم جديد مربوط بـ MyFamily
+        $newUser = User::create([
+            'name' => $request->name,
+            'email' => 'family_' . $familyMember->id . '@family.local',
+            'password' => bcrypt(Str::random(16)),
+            'language' => $request->language,
+            'family_member_id' => $familyMember->id,
+            'country'  => Auth::user()->country,
+            'role' => 'مستخدم',
+            'status' => 'فعال'
+            // الربط هنا
+        ]);
+
         $this->sendNotification(
-            "تمت إضافة {$request->name} بنجاح!",
-            'عضو جديد!',
+            __("messages.member_added_success", ['member_name' => $request->name]),
+            __('messages.new_member_title'),
             'new_member',
             ['member_name' => $request->name]
         );
@@ -75,7 +91,8 @@ class FamilyController extends Controller
      */
     public function chooseImage(MyFamily $myFamily)
     {
-        return view('users.family.chooseImage', compact('myFamily'));
+        $avatars = Family::where('status', '1')->get();
+        return view('users.family.chooseImage', compact('myFamily', 'avatars'));
     }
 
     /**
@@ -92,8 +109,8 @@ class FamilyController extends Controller
         ]);
 
         $this->sendNotification(
-            "تم تحديث صورة {$myFamily->name}",
-            'تحديث الصورة',
+            __("messages.avatar_updated_message", ['member_name' => $myFamily->name]),
+            __('messages.avatar_updated_title'),
             'avatar_updated',
             ['member_name' => $myFamily->name]
         );
@@ -134,8 +151,8 @@ class FamilyController extends Controller
         ]);
 
         $this->sendNotification(
-            "تم تحديث اسم {$oldName} إلى {$request->name}",
-            'تحديث الاسم',
+            __("messages.name_updated_message", ['old_name' => $oldName, 'new_name' => $request->name]),
+            __('messages.name_updated_title'),
             'name_updated',
             ['old_name' => $oldName, 'new_name' => $request->name]
         );
@@ -168,13 +185,20 @@ class FamilyController extends Controller
 
         $myFamily->update($updateData);
 
-        $status = $request->has_email == '1' ? 'تفعيل' : 'تعطيل';
+        $statusText = $request->has_email == '1' ? __('messages.activated') : __('messages.deactivated');
 
         $this->sendNotification(
-            "تم {$status} صلاحية الدخول للحساب للعضو {$myFamily->name}",
-            "{$status} صلاحية الدخول",
+            __("messages.access_status_changed_message", [
+                'status' => $statusText,
+                'member_name' => $myFamily->name
+            ]),
+            __("messages.access_status_changed_title", ['status' => $statusText]),
             'access_status_changed',
-            ['member_name' => $myFamily->name, 'status' => $request->has_email]
+            [
+                'member_name' => $myFamily->name,
+                'status' => $request->has_email,
+                'status_text' => $statusText
+            ]
         );
 
         return redirect()->route('users.family.show', $myFamily)->with('success', 'تم تحديث البيانات بنجاح');
@@ -195,13 +219,20 @@ class FamilyController extends Controller
             'send_notification' => $request->send_notification,
         ]);
 
-        $status = $request->send_notification == '1' ? 'تفعيل' : 'تعطيل';
+        $statusText = $request->send_notification == '1' ? __('messages.enabled') : __('messages.disabled');
 
         $this->sendNotification(
-            "تم {$status} الإشعارات لـ {$myFamily->name}",
-            "{$status} الإشعارات",
+            __("messages.notification_status_changed_message", [
+                'status' => $statusText,
+                'member_name' => $myFamily->name
+            ]),
+            __("messages.notification_status_changed_title", ['status' => $statusText]),
             'notification_status_changed',
-            ['member_name' => $myFamily->name, 'status' => $request->send_notification]
+            [
+                'member_name' => $myFamily->name,
+                'status' => $request->send_notification,
+                'status_text' => $statusText
+            ]
         );
 
         return redirect()->route('users.family.show', $myFamily)->with('success', 'تم تحديث البيانات بنجاح');
@@ -223,10 +254,17 @@ class FamilyController extends Controller
         ]);
 
         $this->sendNotification(
-            "تم تغيير لغة {$myFamily->name} إلى {$request->language}",
-            'تغيير اللغة',
+            __("messages.language_changed_message", [
+                'member_name' => $myFamily->name,
+                'language' => __('messages.' . $request->language)
+            ]),
+            __('messages.language_changed_title'),
             'language_changed',
-            ['member_name' => $myFamily->name, 'language' => $request->language]
+            [
+                'member_name' => $myFamily->name,
+                'language' => $request->language,
+                'language_text' => __('messages.' . $request->language)
+            ]
         );
 
         return redirect()->route('users.family.show', $myFamily)->with('success', 'تم تحديث البيانات بنجاح');
@@ -240,8 +278,8 @@ class FamilyController extends Controller
         $myFamily->delete();
 
         $this->sendNotification(
-            "تم حذف العضو {$memberName}",
-            'حذف عضو',
+            __("messages.member_deleted_message", ['member_name' => $memberName]),
+            __('messages.member_deleted_title'),
             'member_deleted',
             ['member_name' => $memberName]
         );
@@ -249,80 +287,99 @@ class FamilyController extends Controller
         return redirect()->route('users.family.index')->with('success', 'تم حذف الفرد بنجاح');
     }
 
-    public function family_login()
+    public function family_login($family_number = null, $member_id = null)
     {
         if (session('is_family_logged_in')) {
-            return redirect()->route('users.welcome');
+            return redirect()->route('families.welcome');
         }
 
+        // إذا كان هناك رقم عائلة وعضو في الرابط
+        $memberData = null;
+        if ($family_number && $member_id) {
+            $memberData = MyFamily::where('family_number', $family_number)
+                ->where('id', $member_id)
+                ->first();
+        }
+
+        // التحقق من الـ cookie
         if (request()->cookie('family_remember')) {
             try {
                 $data = json_decode(decrypt(request()->cookie('family_remember')), true);
 
-                // استخدم MyFamily Model بدلاً من DB::table
                 $familyMember = MyFamily::where('family_number', $data['family_number'])
                     ->where('password', $data['password'])
                     ->first();
 
                 if ($familyMember) {
+                    // ✅ تسجيل دخول الـ User المرتبط
+                    if ($familyMember->user_id) {
+                        $user = User::find($familyMember->user_id);
+                        if ($user) {
+                            Auth::login($user);
+                        }
+                    }
+
                     session([
                         'family_id' => $familyMember->id,
                         'family_number' => $familyMember->family_number,
+                        'family_name' => $familyMember->name,
+                        'family_avatar' => $familyMember->avatar,
+                        'family_language' => $familyMember->language, // ✅ أضف ده
                         'is_family_logged_in' => true
                     ]);
 
-                    // إرسال الإشعار لليوزر
-                    $this->sendFamilyLoginNotification($familyMember);
 
-                    return redirect()->route('users.welcome');
+
+                    $this->sendFamilyLoginNotification($familyMember);
+                    return redirect()->route('families.welcome');
                 }
             } catch (\Exception $e) {
-                // Cookie invalid, continue to login page
+                // Cookie invalid
             }
         }
 
-        return view('users.family_members.login');
+        return view('users.family_members.login', compact('memberData', 'family_number'));
     }
 
     public function family_login_post(Request $request)
     {
         $request->validate([
             'family_number' => 'required',
+            'member_id' => 'required|numeric',
             'password' => 'required|size:4',
-        ], [
-            'family_number.required' => 'رقم العضوية مطلوب',
-            'password.required' => 'رمز الدخول مطلوب',
-            'password.size' => 'رمز الدخول يجب أن يكون 4 أرقام',
         ]);
 
-        // استخدم MyFamily Model بدلاً من DB::table
+        // تحقق من الـ family_number + member_id + password مع بعض
         $familyMember = MyFamily::where('family_number', $request->family_number)
-            ->where('password', $request->password)
+            ->where('id', $request->member_id)
+            ->where('password', $request->password) // تحقق من الباسورد
             ->first();
 
-        if ($familyMember) {
-            session([
-                'family_id' => $familyMember->id,
-                'family_number' => $familyMember->family_number,
-                'is_family_logged_in' => true
-            ]);
-
-            cookie()->queue('family_remember', encrypt(json_encode([
-                'family_number' => $familyMember->family_number,
-                'password' => $request->password
-            ])), 43200);
-
-            // إرسال الإشعار
-            $this->sendFamilyLoginNotification($familyMember);
-
-            return redirect()->route('users.welcome')
-                ->with('success', 'تم تسجيل الدخول بنجاح');
+        if (!$familyMember) {
+            return back()->withErrors(['login' => 'رقم العضوية أو رمز الدخول غير صحيح']);
         }
 
-        return back()
-            ->withInput($request->only('family_number'))
-            ->withErrors(['login' => 'رقم العضوية أو رمز الدخول غير صحيح']);
+        session([
+            'family_id' => $familyMember->id,
+            'family_number' => $familyMember->family_number,
+            'family_name' => $familyMember->name,
+            'family_avatar' => $familyMember->avatar,
+            'family_language' => $familyMember->language,
+            'is_family_logged_in' => true
+        ]);
+
+        // حفظ cookie بناءً على id بدل password
+        cookie()->queue('family_remember', encrypt(json_encode([
+            'family_number' => $familyMember->family_number,
+            'member_id' => $familyMember->id
+        ])), 43200);
+
+        $this->sendFamilyLoginNotification($familyMember);
+
+        return redirect()->route('families.welcome')
+            ->with('success', 'تم تسجيل الدخول بنجاح');
     }
+
     public function edit_tips(MyFamily $myFamily)
     {
         $tips = Tip::where('status', 1)->get();
@@ -351,10 +408,9 @@ class FamilyController extends Controller
                 ]);
             }
         }
-
         $this->sendNotification(
-            "تم تحديث الإرشادات لـ {$myFamily->name}",
-            'تحديث الإرشادات',
+            __("messages.tips_updated_message", ['member_name' => $myFamily->name]),
+            __('messages.tips_updated_title'),
             'tips_updated',
             ['member_name' => $myFamily->name]
         );
@@ -370,8 +426,8 @@ class FamilyController extends Controller
         $customTip->delete();
 
         $this->sendNotification(
-            "تم حذف إرشاد من {$myFamily->name}",
-            'حذف إرشاد',
+            __("messages.tip_deleted_message", ['member_name' => $myFamily->name]),
+            __('messages.tip_deleted_title'),
             'tip_deleted',
             ['member_name' => $myFamily->name]
         );
@@ -396,8 +452,8 @@ class FamilyController extends Controller
         ]);
 
         $this->sendNotification(
-            "تم إضافة إرشاد إلى {$myFamily->name}",
-            'إضافة إرشاد',
+            __("messages.tip_added_message", ['member_name' => $myFamily->name]),
+            __('messages.tip_added_title'),
             'tip_added',
             ['member_name' => $myFamily->name]
         );

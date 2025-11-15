@@ -361,7 +361,7 @@
 
     </style>
 
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    {!! $swalScript !!}
 </head>
 
 <body>
@@ -376,7 +376,7 @@
                         <img src="./assets/images/Isolation_Mode.png" style="height: 53px; position: relative; right: 11px;" alt="">
                     </div>
                     <div class="right-content d-flex align-items-center gap-4">
-                        <a href="{{ route('chef_lens') }}" class="back-btn">
+                        <a href="{{ route('chef_lens') }}" id="back-btn">
                             <i class="fa-solid fa-angle-left"></i>
                         </a>
                     </div>

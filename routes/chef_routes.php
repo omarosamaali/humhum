@@ -29,6 +29,21 @@ use Illuminate\Support\Facades\DB;
 use App\Models\ChallengeReview;
 use App\Http\Controllers\SocialMediaController;
 
+Route::middleware(['auth'])->prefix('c1he3f')->name('c1he3f.')->group(function () {
+    // قائمة الرسائل
+    Route::get('/messages', [MessageController::class, 'index'])->name('messages');
+
+    // إنشاء رسالة جديدة
+    Route::get('/messages/create', [MessageController::class, 'create'])->name('messages.create');
+    Route::post('/messages', [MessageController::class, 'store'])->name('messages.store');
+
+    // عرض رسالة محددة
+    Route::get('/messages/{id}', [MessageController::class, 'show'])->name('messages.show');
+
+    // الرد على رسالة
+    Route::post('/messages/{id}/reply', [MessageController::class, 'reply'])->name('messages.reply');
+});
+
 Route::group(['prefix' => 'c1he3f/profile'], function () {
     Route::get('/social-media', [SocialMediaController::class, 'index'])->name('social-media.index');
     Route::post('/social-media', [SocialMediaController::class, 'store'])->name('social-media.store');
@@ -259,8 +274,8 @@ Route::delete('/c1he3f/products/{product}', [ProductController::class, 'destroy'
 Route::get('/c1he3f/new-message', [MessageController::class, 'create'])->name('c1he3f.new-message');
 Route::post('/c1he3f/messages', [MessageController::class, 'store'])->name('c1he3f.messages.store');
 Route::get('/c1he3f/messages', [MessageController::class, 'index'])->name('c1he3f.messages');
-Route::get('/c1he3f/messages/{id}', [MessageController::class, 'show'])->name('c1he3f.messages.show');
-Route::post('/c1he3f/messages/{id}/reply', [MessageController::class, 'reply'])->name('c1he3f.messages.reply');
+// Route::get('/c1he3f/messages/{id}', [MessageController::class, 'show'])->name('c1he3f.messages.show');
+// Route::post('/c1he3f/messages/{id}/reply', [MessageController::class, 'reply'])->name('c1he3f.messages.reply');
 Route::get('/c1he3f/recpies/{recipe}/edit', [RecipesController::class, 'edit'])->name('c1he3f.recpies.edit');
 // Route::put('/c1he3f/recpies/{recipe}/updateChef', [RecipesController::class, 'updateChef'])->name('c1he3f.recpies.updateChef');
 Route::put('/c1he3f/recipes/{recipe}', [RecipesController::class, 'updateChef'])->name('c1he3f.recipes.updateChef');

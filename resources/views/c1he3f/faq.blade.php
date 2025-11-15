@@ -24,7 +24,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-LCY/8p2NaW6Bsmo1g3+6j+EkH0dY1o+2C73AVM0DIA3A92vN0bFz5H6uX3bM6+0F5a1g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <!-- Mobile Specific -->
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, minimal-ui, viewport-fit=cover">
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    {!! $swalScript !!}
     <!-- Favicons Icon -->
     <link rel="shortcut icon" type="image/x-icon" href="{{ asset('assets/images/app-logo/favicon.png') }}">
 
@@ -66,7 +66,7 @@
                 </div>
                 <div class="title-bar mb-0">
                     <h4 class="title font-w600" style="visibility: collapse;">Main وصفة</h4>
-                    <a href="javascript:void(0);" class="floating-close"><i class="feather icon-x"></i></a>
+                    <a href="{{ url()->previous() ?: route('home') }}" class="floating-close"><i class="feather icon-x"></i></a>
                 </div>
             </div>
             <ul class="nav navbar-nav" style="direction: ltr;">
@@ -154,13 +154,15 @@
             <header class="header header-fixed border-bottom">
                 <div class="header-content">
                     <div class="left-content">
-                        <a href="javascript:void(0);" class="icon dz-floating-toggler">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <a href="javascript:void(0);" class="icon dz-floating-toggler">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                xmlns="http://www.w3.org/2000/svg">
                                 <rect y="2" width="20" height="3" rx="1.5" fill="#5F5F5F" />
                                 <rect y="18" width="20" height="3" rx="1.5" fill="#5F5F5F" />
                                 <rect x="4" y="10" width="20" height="3" rx="1.5" fill="#5F5F5F" />
                             </svg>
                         </a>
+
                     </div>
                     <div class="mid-content">
                         <h4 class="title">الأسئلة الشائعة</h4>
@@ -181,7 +183,7 @@
                     <div class="accordion dz-accordion style-2" id="faqAccordionParent"> {{-- Give a common ID to the parent accordion container --}}
                         <div class="accordion-item">
                             <h2 class="accordion-header" id="heading{{ $faq->id }}"> {{-- Unique ID for the header --}}
-                                <a href="javascript:void(0);" class="accordion-button collapsed" {{-- Add 'collapsed' initially --}} data-bs-toggle="collapse" data-bs-target="#collapse{{ $faq->id }}" {{-- Target the unique collapse ID --}} aria-expanded="false" {{-- Start as false --}} aria-controls="collapse{{ $faq->id }}"> {{-- Reference the unique collapse ID --}}
+                                <a href="{{ url()->previous() ?: route('home') }}" class="accordion-button collapsed" {{-- Add 'collapsed' initially --}} data-bs-toggle="collapse" data-bs-target="#collapse{{ $faq->id }}" {{-- Target the unique collapse ID --}} aria-expanded="false" {{-- Start as false --}} aria-controls="collapse{{ $faq->id }}"> {{-- Reference the unique collapse ID --}}
                                     {{ $faq->question_ar }}
                                 </a>
                             </h2>

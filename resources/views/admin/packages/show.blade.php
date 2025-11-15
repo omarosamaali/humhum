@@ -102,7 +102,7 @@
             </a>
         </div> --}}
                 <div class="btn-section">
-            <a href="{{ route('admin.packages.index') }}" class="back-btn">
+            <a href="{{ route('admin.packages.index') }}" id="back-btn">
                 <i class="fas fa-arrow-right ms-1"></i>
                 العودة لقائمة الباقات
             </a>

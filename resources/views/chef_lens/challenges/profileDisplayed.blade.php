@@ -17,7 +17,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700;800;900&family=Raleway:wght@300;400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('assets/css/profileDisplayed.css') }}">
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    {!! $swalScript !!}
 </head>
 
 <body>
@@ -42,7 +42,7 @@
                         <img src="{{ asset('assets/images/Isolation_Mode.png') }}" class="logo" alt="">
                     </div>
                     <div class="right-content d-flex align-items-center gap-4">
-                        <a href="javascript:void(0);" class="back-btn">
+                        <a href="{{ url()->previous() ?: route('home') }}" id="back-btn">
                             <i class="fa-solid fa-angle-left"></i>
                         </a>
                     </div>
@@ -326,7 +326,7 @@
     <script src="{{ asset('assets/js/custom.js') }}"></script>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    {!! $swalScript !!}
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const tabButtons = document.querySelectorAll('.tab-button');

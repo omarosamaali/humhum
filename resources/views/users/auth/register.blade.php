@@ -7,9 +7,7 @@
     <div class="dz-authentication-area">
 
         <div class="main-logo">
-            <a href="javascript:void(0);" class="back-btn">
-                <i class="feather icon-arrow-left"></i>
-            </a>
+           
             <div class="logo" style="right: 32px; position: relative;">
                 <img src="assets/images/user-logo/logo.png" alt="logo">
             </div>
@@ -29,22 +27,23 @@
                     <label class="form-label">الإسم</label>
                     <input type="text" name="name" class="form-control" required>
                 </div>
-<select name="country" class="form-select w-full text-right" style="direction: rtl;" required>
-    <option value="">اختر الدولة</option>
-    @foreach($countries as $code => $name)
-    <option value="{{ $code }}" {{ old('country', strtolower(Auth::user()->country ?? '')) == $code ? 'selected' : ''
-        }}>
-        {{ $name }}
-    </option>
-    @endforeach
-</select>
+                {{-- <select name="country" class="form-select w-full text-right" style="direction: rtl;" required> --}}
+                    <select name="country" class="form-select">
+                    <option value="">اختر الدولة</option>
+                    @foreach($countries as $code => $name)
+                    <option value="{{ $code }}" {{ old('country', strtolower(Auth::user()->country ?? '')) == $code ?
+                        'selected' : ''}}>
+                        {{ $name }}
+                    </option>
+                    @endforeach
+                </select>
                 <div class="mb-4">
                     <label class="form-label">البريد الإلكتروني</label>
                     <input type="email" name="email" class="form-control" required>
                 </div>
                 <label class="form-label">كلمة المرور</label>
                 <div class="otp-group" id="otpGroup" aria-label="حقل كلمة المرور المكوّن من 4 خانات"
-                    style="display: flex;  gap: 5px; margin-bottom: 40px;">
+                    style="display: flex; direction: rtl; gap: 5px; margin-bottom: 40px;">
                     <input inputmode="numeric" pattern="[0-9]*" maxlength="1" data-index="0"
                         autocomplete="one-time-code" class="form-control otp-input" type="password" id="digit-2"
                         الاسم="الرقم ٢" عنصر نائب="" البيانات-التالي="الرقم ٣" البيانات-السابق="الرقم ١">

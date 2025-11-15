@@ -85,7 +85,7 @@
                     </a>
                 </div>
                 <div class="mid-content">
-                    <h4 class="title">تعديل بيانات الفرد</h4>
+                    <h4 class="title">{{ __('messages.edit_member_data') }}</h4>
                 </div>
                 <div class="right-content d-flex align-items-center gap-4">
                     <a id="submitForm" href="javascript:void(0);">
@@ -104,12 +104,16 @@
                         <div id="chef-fields" class="chef-fields">
                             <div class="col-md-12" style="text-align: center;">
                                 <div class="mb-3">
-                                    <label class="form-label">السماح للمستخدم بتلقي الإشعارات</label>
-                                    <select class="form-select" name="send_notification" value="{{ old('send_notification') }}"
-                                        style="width: 100%; text-align: center;">
-                                        <option value="">اختر الحالة</option>
-                                        <option value="1" {{ $myFamily->send_notification == '1' ? 'selected' : '' }}>نعم
-                                        <option value="0" {{ $myFamily->send_notification == '0' ? 'selected' : '' }}>لا
+                                    <label class="form-label">{{ __('messages.allow_user_receive_notifications')
+                                        }}</label>
+                                    <select class="form-select" name="send_notification"
+                                        value="{{ old('send_notification') }}" style="width: 100%; text-align: center;">
+                                        <option value="">{{ __('messages.choose_status') }}</option>
+                                        <option value="1" {{ $myFamily->send_notification == '1' ? 'selected' : '' }}>
+                                            {{ __('messages.yes') }}
+                                        </option>
+                                        <option value="0" {{ $myFamily->send_notification == '0' ? 'selected' : '' }}>
+                                            {{ __('messages.no') }}
                                         </option>
                                     </select>
                                 </div>
@@ -122,7 +126,7 @@
         <!-- Main Content End -->
 
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    {!! $swalScript !!}
     <script>
         const submitButton = document.getElementById('submitForm');
                 const form = document.querySelector('form');

@@ -8,6 +8,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Stichoza\GoogleTranslate\GoogleTranslate;
 
 
 class User extends Authenticatable implements MustVerifyEmail
@@ -40,8 +41,35 @@ class User extends Authenticatable implements MustVerifyEmail
         'otp_expires_at',
         'contract_signed_at',
         'avatar',
+        'family_member_id',
         'system'
     ];
+
+
+    protected static $translator = null;
+
+    protected static function getTranslator()
+    {
+        if (self::$translator === null) {
+            self::$translator = new GoogleTranslate();
+            self::$translator->setSource('ar');
+            self::$translator->setTarget('en');
+        }
+        return self::$translator;
+    }
+    public function getNameAttribute($value)
+    {
+        $locale = app()->getLocale();
+        if ($locale == 'ar') {
+            return $value;
+        }
+        try {
+            $translator = self::getTranslator();
+            return $translator->translate($value);
+        } catch (\Exception $e) {
+            return $value;
+        }
+    }
 
     public function challenges()
     {
@@ -168,8 +196,30 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany(Cook::class);
     }
 
-
+    public function familyMember()
+    {
+        return $this->belongsTo(MyFamily::class, 'family_member_id');
+    }
+    
     public function tip(){
         return $this->hasMany(Tip::class);
+    }
+
+    public function familyMembers()
+    {
+        return $this->hasMany(MyFamily::class, 'user_id');
+    }
+
+    public function allNotifications()
+    {
+        // جلب IDs جميع أفراد العائلة
+        $familyIds = $this->familyMembers()->pluck('id');
+
+        // دمج ID المستخدم الرئيسي مع IDs أفراد العائلة
+        $allIds = $familyIds->push($this->id);
+
+        return Notification::whereIn('user_id', $allIds)
+            ->orderBy('created_at', 'desc')
+            ->get();
     }
 }

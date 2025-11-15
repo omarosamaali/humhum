@@ -7,7 +7,7 @@
     <div class="dz-authentication-area">
 
         <div class="main-logo">
-            <a href="{{ route('users.auth.register') }}" class="back-btn">
+            <a href="{{ route('users.auth.register') }}" id="back-btn">
                 <i class="feather icon-arrow-left"></i>
             </a>
             <div class="logo" style="right: 32px; position: relative;">
@@ -46,7 +46,7 @@
 
             <div class="text-center form-text mt-2">
                 إذا لم تستلم الرمز!
-                <a href="javascript:void(0);" class="text-underline link">إعادة إرسال</a>
+                <a href="{{ url()->previous() ?: route('home') }}" class="text-underline link">إعادة إرسال</a>
             </div>
 {{-- 
             <div class="text-center mt-3 form-text">

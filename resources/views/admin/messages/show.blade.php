@@ -11,12 +11,6 @@
         box-sizing: border-box;
     }
 
-    /* body {
-            font-family: 'Cairo', sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: #333;
-            overflow-x: hidden;
-        } */
     .media-content img,
     .media-content video {
         height: 300px;
@@ -376,7 +370,6 @@
         display: none;
         /* الطريقة الأكثر شيوعًا لإخفائه تمامًا */
     }
-
 </style>
 
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -399,7 +392,7 @@
             <div class="chat-box-area">
                 <span class="active-date">
                     <i class="fas fa-calendar-alt ms-1"></i>
-                    {{ $message->created_at->format('d M Y') }}
+                    {{ $message->created_at?->format('d M Y') }}
                 </span>
 
                 <!-- الرسالة الأصلية -->
@@ -419,7 +412,8 @@
                                     <source src="{{ Storage::url($message->file_path) }}" type="video/{{ $extension }}">
                                 </video>
                                 @else
-                                <p><a href="{{ Storage::url($message->file_path) }}" target="_blank" class="btn btn-sm btn-outline-primary">عرض المرفق</a></p>
+                                <p><a href="{{ Storage::url($message->file_path) }}" target="_blank"
+                                        class="btn btn-sm btn-outline-primary">عرض المرفق</a></p>
                                 @endif
                             </div>
                             @endif
@@ -427,8 +421,9 @@
                         <div class="message-time">
                             {{-- <i class="fas fa-user-circle ms-1"></i> --}}
                             {{-- <img src="{{ $message->chef_profile->official_image }}" alt=""> --}}
-                            {{ $message->user->name ?? 'مستخدم محذوف' }} - {{ $message->created_at->format('h:i A') }}
-                            <span class="badge {{ $message->status === 'unread' ? 'bg-secondary' : ($message->status === 'opened' ? 'bg-info' : ($message->status === 'closed' ? 'bg-danger' : 'bg-success')) }}">
+                            {{ $message->user?->name ?? 'مستخدم محذوف' }} - {{ $message->created_at?->format('h:i A') }}
+                            <span
+                                class="badge {{ $message->status === 'unread' ? 'bg-secondary' : ($message->status === 'opened' ? 'bg-info' : ($message->status === 'closed' ? 'bg-danger' : 'bg-success')) }}">
                                 @switch($message->status)
                                 @case('unread')
                                 غير مقروءة
@@ -472,7 +467,8 @@
                                     <source src="{{ Storage::url($reply->file_path) }}" type="video/{{ $extension }}">
                                 </video>
                                 @else
-                                <p><a href="{{ Storage::url($reply->file_path) }}" target="_blank" class="btn btn-sm btn-outline-info">عرض المرفق</a></p>
+                                <p><a href="{{ Storage::url($reply->file_path) }}" target="_blank"
+                                        class="btn btn-sm btn-outline-info">عرض المرفق</a></p>
                                 @endif
                             </div>
                             @endif
@@ -495,11 +491,11 @@
         </main>
 
         <!-- منطقة الرد المحسنة -->
-        <form action="{{ route('admin.messages.update-status-and-reply', $message->id) }}" method="POST" enctype="multipart/form-data">
-            {{-- <div class="chat-footer">
-                <form action="{{ route('admin.messages.reply', $message->id) }}" method="POST"
-            enctype="multipart/form-data"> --}}
+        <form action="{{ route('admin.messages.update-status-and-reply', $message->id) }}" method="POST"
+            enctype="multipart/form-data">
+
             @csrf
+
 
             <!-- حالة الرسالة -->
             <div class="mb-3">
@@ -525,7 +521,8 @@
             <!-- الرد النصي -->
             <div class="mb-3">
 
-                <textarea class="form-control" name="content" id="content" rows="1" placeholder="اكتب ردك هنا...">{{ old('content') }}</textarea>
+                <textarea class="form-control" name="content" id="content" rows="1"
+                    placeholder="اكتب ردك هنا...">{{ old('content') }}</textarea>
                 @error('content')
                 <div class="text-danger">{{ $message }}</div>
                 @enderror
@@ -577,14 +574,16 @@
                     @endphp
 
                     @if (in_array($extension, ['jpg', 'jpeg', 'png', 'gif']))
-                    <img src="{{ Storage::url($message->file_path) }}" class="img-fluid rounded" alt="Attached Image" style="max-width: 300px;">
+                    <img src="{{ Storage::url($message->file_path) }}" class="img-fluid rounded" alt="Attached Image"
+                        style="max-width: 300px;">
                     @elseif (in_array($extension, ['mp4', 'mov', 'avi']))
                     <video controls width="320" height="240" class="rounded">
                         <source src="{{ Storage::url($message->file_path) }}" type="video/{{ $extension }}">
                         متصفحك لا يدعم عرض الفيديو.
                     </video>
                     @else
-                    <a href="{{ Storage::url($message->file_path) }}" target="_blank" class="btn btn-sm btn-outline-primary">عرض المرفق</a>
+                    <a href="{{ Storage::url($message->file_path) }}" target="_blank"
+                        class="btn btn-sm btn-outline-primary">عرض المرفق</a>
                     @endif
                 </div>
                 @endif
@@ -593,7 +592,8 @@
                     ({{ $message->user->role ?? 'غير معروف' }})</p>
                 <p class="card-subtitle text-muted">تاريخ: {{ $message->created_at->format('d/m/Y H:i') }}</p>
                 <p class="card-subtitle text-muted">الحالة:
-                    <span class="badge {{ $message->status === 'unread' ? 'bg-secondary' : ($message->status === 'opened' ? 'bg-info' : ($message->status === 'closed' ? 'bg-danger' : 'bg-success')) }}">
+                    <span
+                        class="badge {{ $message->status === 'unread' ? 'bg-secondary' : ($message->status === 'opened' ? 'bg-info' : ($message->status === 'closed' ? 'bg-danger' : 'bg-success')) }}">
                         @switch($message->status)
                         @case('unread')
                         غير مقروءة
@@ -634,14 +634,16 @@
                     @endphp
 
                     @if (in_array($extension, ['jpg', 'jpeg', 'png', 'gif']))
-                    <img src="{{ Storage::url($reply->file_path) }}" class="img-fluid rounded" alt="Reply Attached Image" style="max-width: 200px;">
+                    <img src="{{ Storage::url($reply->file_path) }}" class="img-fluid rounded"
+                        alt="Reply Attached Image" style="max-width: 200px;">
                     @elseif (in_array($extension, ['mp4', 'mov', 'avi']))
                     <video controls width="240" height="180" class="rounded">
                         <source src="{{ Storage::url($reply->file_path) }}" type="video/{{ $extension }}">
                         متصفحك لا يدعم عرض الفيديو.
                     </video>
                     @else
-                    <a href="{{ Storage::url($reply->file_path) }}" target="_blank" class="btn btn-sm btn-outline-info">عرض المرفق</a>
+                    <a href="{{ Storage::url($reply->file_path) }}" target="_blank"
+                        class="btn btn-sm btn-outline-info">عرض المرفق</a>
                     @endif
                 </div>
                 @endif
@@ -668,7 +670,8 @@
 
         {{-- فورم إرسال رد جديد - مخفي --}}
         <h4 class="mb-3 mt-4">إرسال رد جديد:</h4>
-        <form action="{{ route('admin.messages.reply', $message->id) }}" method="POST" enctype="multipart/form-data" style="display: none;">
+        <form action="{{ route('admin.messages.reply', $message->id) }}" method="POST" enctype="multipart/form-data"
+            style="display: none;">
             @csrf
             <div class="mb-3">
                 <label for="content_old" class="form-label">الرد (اختياري)</label>

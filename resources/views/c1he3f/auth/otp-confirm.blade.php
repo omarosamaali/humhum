@@ -57,7 +57,7 @@
             <div class="container py-0">
                 <div class="dz-authentication-area">
                     <div class="main-logo">
-                        <a href="javascript:history.back();" class="back-btn"> {{-- Changed to history.back() for better navigation --}}
+                        <a href="javascript:history.back();" id="back-btn"> {{-- Changed to history.back() for better navigation --}}
                             <i class="feather icon-arrow-left"></i>
                         </a>
                         <div class="logo" style="right: 32px; position: relative;">

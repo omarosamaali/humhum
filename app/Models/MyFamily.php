@@ -30,16 +30,39 @@ class MyFamily extends Model
         return $this->belongsToMany(Tip::class, 'my_family_tip')
             ->withTimestamps();
     }
-
+    // في App\Models\MyFamily
+    public function tip()
+    {
+        return $this->hasMany(MyFamilyTip::class, 'my_family_id');
+    }
     public function customTips()
     {
         return $this->hasMany(MyFamilyTip::class)
             ->whereNotNull('custom_tip');
     }
 
-    // جلب كل الإرشادات (الجاهزة + المخصصة)
     public function allTips()
     {
         return $this->hasMany(MyFamilyTip::class);
+    }
+
+    public function familyMember()
+    {
+        return $this->belongsTo(MyFamily::class, 'family_member_id', 'id');
+    }
+
+    public function owner()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function notifications()
+    {
+        return $this->hasMany(Notification::class, 'user_id', 'id');
+    }
+
+    public function spceialRequests()
+    {
+        return $this->hasMany(SpecialRequest::class);
     }
 }

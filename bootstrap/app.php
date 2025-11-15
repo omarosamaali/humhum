@@ -9,10 +9,8 @@ return Application::configure(basePath: dirname(__DIR__))
         web: __DIR__ . '/../routes/web.php',
         commands: __DIR__ . '/../routes/console.php',
         health: '/up',
-
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        
         $middleware->alias([
             'admin' => \App\Http\Middleware\AdminRole::class,
             'auth.chef' => \App\Http\Middleware\ChefAuthMiddleware::class,

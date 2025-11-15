@@ -70,7 +70,7 @@
                     <h4 class="title">إضافة منتجات</h4>
                 </div>
                 <div class="left-content">
-                    <a href="javascript:void(0);" class="back-btn">
+                    <a href="{{ url()->previous() ?: route('home') }}" id="back-btn">
                         <i class="feather icon-arrow-left"></i>
                     </a>
                 </div>

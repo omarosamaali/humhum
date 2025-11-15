@@ -20,12 +20,12 @@ class FavoriteController extends Controller
         // لو موجود بالفعل في المفضلة → نحذف
         if ($user->favorites()->where('recipe_id', $recipeId)->exists()) {
             $user->favorites()->detach($recipeId);
-            return response()->json(['status' => 'removed', 'message' => 'تم إزالة الوجبة من المفضلة']);
+            return response()->json(['status' => 'removed', 'message' => __('messages.removed_from_favorites')]);
         }
         // غير موجود → نضيف
         else {
             $user->favorites()->attach($recipeId);
-            return response()->json(['status' => 'added', 'message' => 'تم إضافة الوجبة إلى المفضلة']);
+            return response()->json(['status' => 'added', 'message' => __('messages.added_to_favorites')]);
         }
     }
 }

@@ -26,7 +26,7 @@
     <!-- Mobile Specific -->
     <meta name="viewport"
         content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, minimal-ui, viewport-fit=cover">
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    {!! $swalScript !!}
     <!-- Favicons Icon -->
     <link rel="shortcut icon" type="image/x-icon" href="{{ asset('assets/images/app-logo/favicon.png') }}">
 
@@ -102,8 +102,8 @@
                                     <div class="dz-head">
                                         <h6 class="title"><a href="product-detail.html">كشري</a></h6>
                                         <ul class="tag-list">
-                                            <li><a href="javascript:void(0);">غداء</a></li>
-                                            <li><a href="javascript:void(0);">عشاء</a></li>
+                                            <li><a href="{{ url()->previous() ?: route('home') }}">غداء</a></li>
+                                            <li><a href="{{ url()->previous() ?: route('home') }}">عشاء</a></li>
                                         </ul>
                                         <div class="dz-status">
                                             <span class="item-time">
@@ -134,8 +134,8 @@
                                     <div class="dz-head">
                                         <h6 class="title"><a href="product-detail.html">كشري</a></h6>
                                         <ul class="tag-list">
-                                            <li><a href="javascript:void(0);">غداء</a></li>
-                                            <li><a href="javascript:void(0);">عشاء</a></li>
+                                            <li><a href="{{ url()->previous() ?: route('home') }}">غداء</a></li>
+                                            <li><a href="{{ url()->previous() ?: route('home') }}">عشاء</a></li>
                                         </ul>
                                         <div class="dz-status">
                                             <span class="item-time">
@@ -163,8 +163,8 @@
                                     <div class="dz-head">
                                         <h6 class="title"><a href="product-detail.html">كشري</a></h6>
                                         <ul class="tag-list">
-                                            <li><a href="javascript:void(0);">غداء</a></li>
-                                            <li><a href="javascript:void(0);">عشاء</a></li>
+                                            <li><a href="{{ url()->previous() ?: route('home') }}">غداء</a></li>
+                                            <li><a href="{{ url()->previous() ?: route('home') }}">عشاء</a></li>
                                         </ul>
                                         <div class="dz-status">
                                             <span class="item-time">

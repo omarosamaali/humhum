@@ -58,7 +58,7 @@
         <header class="header header-fixed transparent">
             <div class="header-content">
                 <div class="left-content">
-                    <a href="{{ route('c1he3f.index') }}" class="back-btn">
+                    <a href="{{ route('c1he3f.index') }}" id="back-btn">
                         <i class="feather icon-arrow-left"></i>
                     </a>
                 </div>
