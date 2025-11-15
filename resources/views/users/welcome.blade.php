@@ -65,7 +65,7 @@
         display: flex;
         align-items: start;
         position: relative;
-        top: 25px;
+        /* top: 25px; */
     }
 </style>
 @section('content')
