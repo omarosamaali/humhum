@@ -506,10 +506,12 @@
                                     <div style="font-size: 18px;">
                                         <sub><i class="fa fa-clock"
                                                 style="font-size: 14px; margin-left: 5px;"></i></sub>
-                                        {{ $recipe->preparation_time }} {{ $minutesShortText }}
+                                        {{ $recipe->preparation_time }} 
+                                        {{ app()->getLocale() == 'ar' ? 'دقيقة' : 'minute' }}
                                     </div>
                                     <div style="width: fit-content; font-size: 12px; color: gray;">
-                                        {{ $prepTimeText }}
+                                        {{-- {{ $prepTimeText }} --}}
+                                        {{ app()->getLocale() == 'ar' ? 'وقت التحضير' : 'Preparation time' }}
                                     </div>
                                 </div>
 
@@ -520,7 +522,8 @@
                                         }}
                                     </div>
                                     <div style="width: fit-content; font-size: 12px; color: gray;">
-                                        {{ $priceText }}
+                                        {{-- {{ $priceText }} --}}
+                                        {{ app()->getLocale() == 'ar' ? 'قيمة الوجبة' : 'Meal price' }}
                                     </div>
                                 </div>
                                 @endif
