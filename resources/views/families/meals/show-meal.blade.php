@@ -470,13 +470,10 @@
                 <div style="display: flex;">
                     <div class="dz-item-rating"
                         style="background-color: #29A500; font-size: 17px; overflow: hidden; line-height: unset; border: 2px solid #29A500;">
-                
-                        {{-- ✅ الحل 1: التحقق المتسلسل (Null Safe) --}}
                         @if($recipe->user?->chefProfile?->official_image)
                         <img src="{{ asset('storage/' . $recipe->user->chefProfile->official_image) }}"
                             style="width: 100%; height: 100%;" alt="{{ $recipe->user->name }}">
                         @else
-                        {{-- ✅ صورة افتراضية لو مفيش صورة --}}
                         <img src="{{ asset('images/default-chef.png') }}" style="width: 100%; height: 100%;" alt="Chef">
                         @endif
                     </div>
@@ -534,30 +531,30 @@
 <div class="item-wrapper"
     style="justify-content: center; display: flex; align-items: center; gap: 5px; flex-direction: row; margin-top: 30px;">
 
-    <button class="btn btn-primary" style="padding: 6px 9px !important;">
-        <a href="{{ route('families.meals.ingredients', $recipe->id) }}" style="font-size: 11px; color: white;">
+    <button class="btn btn-primary" style="padding: 6px 5px !important;">
+        <a href="{{ route('families.meals.ingredients', $recipe->id) }}" style="font-size: 14px; color: white;">
             {{-- {{ $ingredientsText }} --}}
             {{ app()->getLocale() == 'ar' ? 'المكونات' : 'ingredients' }}
         </a>
     </button>
 
-    <button class="btn btn-warning" style="padding: 6px 9px !important;">
-        <a href="{{ route('families.meals.steps', $recipe->id) }}" style="font-size: 11px; color: white;">
+    <button class="btn btn-warning" style="padding: 6px 5px !important;">
+        <a href="{{ route('families.meals.steps', $recipe->id) }}" style="font-size: 14px; color: white;">
             {{-- {{ $stepsText }} --}}
             {{ app()->getLocale() == 'ar' ? 'خطوات التحضير' : 'Preparation steps' }}
         </a>
     </button>
 
-    <button class="btn btn-info" style="padding: 6px 9px !important;">
+    <button class="btn btn-info" style="padding: 6px 5px !important;">
         <a href="{{ route('families.meals.families', $recipe->id) }}?meal_plan_id={{ $mealPlan->id ?? '' }}"
-            style="font-size: 11px; width: 79px; color: white;">
+            style="font-size: 14px; width: 79px; color: white;">
             {{-- {{ $familyMembersText }} --}}
             {{ app()->getLocale() == 'ar' ? 'عدد الافراد' : 'Number of people' }}
         </a>
     </button>
 
-    <button class="btn btn-success" style="padding: 6px 9px !important;">
-        <a href="{{ route('families.meals.facts', $recipe->id) }}" style="font-size: 11px; color: white;">
+    <button class="btn btn-success" style="padding: 6px 5px !important;">
+        <a href="{{ route('families.meals.facts', $recipe->id) }}" style="font-size: 14px; color: white;">
             {{-- {{ $factsText }} --}}
             {{ app()->getLocale() == 'ar' ? 'الحقائق' : 'Facts' }}
         </a>
