@@ -497,7 +497,8 @@
                                         $recipe->servings }}
                                     </div>
                                     <div style="width: fit-content; font-size: 12px; color: gray;">
-                                        {{ $numberOfPeopleText }}
+                                    
+                                        {{ app()->getLocale() == 'ar' ? 'عدد الأشخاص' : 'Number of people' }}
                                     </div>
                                 </div>
 
