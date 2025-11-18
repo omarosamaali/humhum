@@ -86,6 +86,11 @@ class MealController extends Controller
     public function show(string $id)
     {
         $recipe = Recipe::find($id);
+        $cookieName = 'recipe_view_' . $id;
+        if(!request()->cookie($cookieName)){
+            $recipe->increment('views');
+            cookie()->queue($cookieName, 'true', 43200);
+        }
         return view('users.meals.show', compact('recipe'));
     }
 

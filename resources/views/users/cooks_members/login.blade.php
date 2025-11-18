@@ -80,7 +80,11 @@
                                 <label class="form-label" for="password">رمز الدخول</label>
                                 <div class="account-section">
                                     <input type="hidden" name="password" id="password-hidden">
-                                    <div id="otp" class="digit-group input-mini">
+                                    @php
+                                                                $rtlLanguages = ['ar', 'ur', 'ps'];
+                                                                $dir = in_array($memberData->language, $rtlLanguages) ? 'direction:rtl;' : 'direction:ltr;';
+                                                                @endphp
+                                    <div style="{{ $dir }}" id="otp" class="digit-group input-mini">
                                         <input class="form-control otp-input" type="text" maxlength="1" data-index="0">
                                         <input class="form-control otp-input" type="text" maxlength="1" data-index="1">
                                         <input class="form-control otp-input" type="text" maxlength="1" data-index="2">

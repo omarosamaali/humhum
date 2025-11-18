@@ -78,9 +78,9 @@
                 </div>
                 <div class="mid-content"></div>
                 <div class="right-content">
-                    <a href="search.html" class="icon font-20">
+                    {{-- <a href="search.html" class="icon font-20">
                         <i class="icon feather icon-search"></i>
-                    </a>
+                    </a> --}}
                 </div>
             </div>
         </header>

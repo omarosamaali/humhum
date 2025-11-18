@@ -38,10 +38,69 @@
 </style>
 
 <div class="container">
+    @php
+    $translations = [
+    'ar' => [
+    'cooking_schedule' => '🍳 جدول الطبخ',
+    'new_request' => '📝 طلب جديد'
+    ],
+    'en' => [
+    'cooking_schedule' => '🍳 Cooking Schedule',
+    'new_request' => '📝 New Request'
+    ],
+    'id' => [
+    'cooking_schedule' => '🍳 Jadwal Memasak',
+    'new_request' => '📝 Permintaan Baru'
+    ],
+    'am' => [
+    'cooking_schedule' => '🍳 የማብሰል መርሃ ግብር',
+    'new_request' => '📝 አዲስ ጥያቄ'
+    ],
+    'hi' => [
+    'cooking_schedule' => '🍳 खाना पकाने का कार्यक्रम',
+    'new_request' => '📝 नई अनुरोध'
+    ],
+    'bn' => [
+    'cooking_schedule' => '🍳 রান্নার সময়সূচী',
+    'new_request' => '📝 নতুন অনুরোধ'
+    ],
+    'ml' => [
+    'cooking_schedule' => '🍳 പാചക ഷെഡ്യൂൾ',
+    'new_request' => '📝 പുതിയ അഭ്യർത്ഥന'
+    ],
+    'fil' => [
+    'cooking_schedule' => '🍳 Iskedyul ng Pagluluto',
+    'new_request' => '📝 Bagong Kahilingan'
+    ],
+    'ur' => [
+    'cooking_schedule' => '🍳 کھانا پکانے کا شیڈول',
+    'new_request' => '📝 نئی درخواست'
+    ],
+    'ta' => [
+    'cooking_schedule' => '🍳 சமையல் அட்டவணை',
+    'new_request' => '📝 புதிய கோரிக்கை'
+    ],
+    'ne' => [
+    'cooking_schedule' => '🍳 खाना पकाउने तालिका',
+    'new_request' => '📝 नयाँ अनुरोध'
+    ],
+    'ps' => [
+    'cooking_schedule' => '🍳 د پخلي مهالوېش',
+    'new_request' => '📝 نوې غوښتنه'
+    ],
+    'fr' => [
+    'cooking_schedule' => '🍳 Planning des repas',
+    'new_request' => '📝 Nouvelle demande'
+    ],
+    ];
+
+    $lang =$lang = session('cook_language', 'ar');
+    $t = $translations[$lang] ?? $translations['ar'];
+    @endphp
     <a href="{{ route('families.meals.index') }}" class="btn">
-        🍳 جدول الطبخ
+        {{ $t['cooking_schedule'] }}
     </a>
     <a href="{{ route('chefs.special-requests') }}" class="btn">
-        📝 طلب جديد
+        {{ $t['new_request'] }}
     </a>
 </div>

@@ -282,6 +282,440 @@
                 </div>
             </div>
         </div>
+        @php
+        // تحديد اللغة
+         $lang = $lang = session('cook_language') 
+            ?? session('family_language') 
+            ?? 'ar';
+        $lang = $lang = session('cook_language') 
+            ?? session('family_language') 
+            ?? 'ar';
+        if (!in_array($lang, ['ar', 'en', 'hi', 'id', 'am', 'bn', 'ml', 'fil', 'ur', 'ta', 'ne', 'ps', 'fr'])) {
+        $lang = 'ar';
+        }
+        $t = [
+        'special_request' => [
+        'ar' => 'طلب خاص',
+        'en' => 'Special Request',
+        'hi' => 'विशेष अनुरोध',
+        'id' => 'Permintaan Khusus',
+        'am' => 'ልዩ ጥያቄ',
+        'bn' => 'বিশেষ অনুরোধ',
+        'ml' => 'പ്രത്യേക അഭ്യർത്ഥന',
+        'fil' => 'Espesyal na Kahilingan',
+        'ur' => 'خاص درخواست',
+        'ta' => 'சிறப்பு கோரிக்கை',
+        'ne' => 'विशेष अनुरोध',
+        'ps' => 'ځانګړی غوښتنه',
+        'fr' => 'Demande spéciale',
+        ],
+        'who_is_responsible_for_cooking' => [
+        'ar' => 'من المسؤول عن الطبخ؟',
+        'en' => 'Who is responsible for cooking?',
+        'hi' => 'खाना बनाने की जिम्मेदारी किसकी है?',
+        'id' => 'Siapa yang bertanggung jawab memasak?',
+        'am' => 'ማብሰል ለማን ነው የሚመጣው?',
+        'bn' => 'রান্নার দায়িত্ব কার?',
+        'ml' => 'പാചകം ആരാണ് ഉത്തരവാദി?',
+        'fil' => 'Sino ang may pananagutan sa pagluluto?',
+        'ur' => 'کھانا پکانے کی ذمہ داری کس کی ہے؟',
+        'ta' => 'சமைப்பதற்கு யார் பொறுப்பு?',
+        'ne' => 'खाना पकाउने जिम्मेवاری कसको हो?',
+        'ps' => 'د پخلي مسؤلیت چا ته دی؟',
+        'fr' => 'Qui est responsable de la cuisson?',
+        ],
+        'family_members' => [
+        'ar' => 'أفراد العائلة',
+        'en' => 'Family Members',
+        'hi' => 'परिवार के सदस्य',
+        'id' => 'Anggota Keluarga',
+        'am' => 'የቤተሰብ አባላት',
+        'bn' => 'পরিবারের সদস্যরা',
+        'ml' => 'കുടുംബാംഗങ്ങൾ',
+        'fil' => 'Mga Miyembro ng Pamilya',
+        'ur' => 'خاندان کے افراد',
+        'ta' => 'குடும்ப உறுப்பினர்கள்',
+        'ne' => 'परिवारका सदस्यहरू',
+        'ps' => 'د کورنۍ غړي',
+        'fr' => 'Membres de la famille',
+        ],
+        'cooks' => [
+        'ar' => 'الطباخين',
+        'en' => 'Cooks',
+        'hi' => 'रसोइये',
+        'id' => 'Koki',
+        'am' => 'ማብሰያዎች',
+        'bn' => 'রাঁধুনি',
+        'ml' => 'പാചകക്കാർ',
+        'fil' => 'Mga Kusinero',
+        'ur' => 'باورچی',
+        'ta' => 'சமையல்காரர்கள்',
+        'ne' => 'भान्सेहरू',
+        'ps' => 'پخلی کوونکي',
+        'fr' => 'Cuisiniers',
+        ],
+        'select_cook_responsible' => [
+        'ar' => 'اختر الطباخ المسؤول عن تحضير الوجبة',
+        'en' => 'Select the cook responsible for preparing the meal',
+        'hi' => 'भोजन तैयार करने के लिए जिम्मेदार रसोइये का चयन करें',
+        'id' => 'Pilih koki yang bertanggung jawab menyiapkan makanan',
+        'am' => 'ምግብ ለማዘጋጀት የሚመለከተውን ማብሰያ ይምረጡ',
+        'bn' => 'খাবার প্রস্তুতের জন্য দায়ী রাঁধুনি নির্বাচন করুন',
+        'ml' => 'ഭക്ഷണം തയ്യാറാക്കുന്നതിന് ഉത്തരവാദിയായ പാചകക്കാരനെ തിരഞ്ഞെടുക്കുക',
+        'fil' => 'Piliin ang kusinero na may pananagutan sa paghahanda ng pagkain',
+        'ur' => 'کھانا تیار کرنے کے ذمہ دار باورچی کا انتخاب کریں',
+        'ta' => 'உணவை தயாரிப்பதற்கு பொறுப்பான சமையல்காரரை தேர்வு செய்யவும்',
+        'ne' => 'खाना तयार गर्न जिम्मेवार भान्सेको छनोट गर्नुहोस्',
+        'ps' => 'د خواړو چمتو کولو لپاره مسؤل پخلی کوونکی غوره کړئ',
+        'fr' => 'Sélectionnez le cuisinier responsable de la préparation du repas',
+        ],
+        'professional_cook' => [
+        'ar' => 'طباخ محترف',
+        'en' => 'Professional Cook',
+        'hi' => 'पेशेवर रसोइया',
+        'id' => 'Koki Profesional',
+        'am' => 'ፕሮፌሽናል ማብሰያ',
+        'bn' => 'পেশাদার রাঁধুনি',
+        'ml' => 'പ്രൊഫഷണൽ പാചകക്കാരൻ',
+        'fil' => 'Propesyonal na Kusinero',
+        'ur' => 'پروفیشنل باورچی',
+        'ta' => 'தொழில்முறை சமையல்காரர்',
+        'ne' => 'व्यावसायिक भान्से',
+        'ps' => 'مسلکي پخلی کوونکی',
+        'fr' => 'Cuisinier professionnel',
+        ],
+        'select_family_cook_one_only' => [
+        'ar' => 'اختر من سيقوم بالطبخ من أفراد العائلة (شخص واحد فقط)',
+        'en' => 'Select who will cook from family members (one person only)',
+        'hi' => 'परिवार के सदस्यों में से कौन खाना बनाएगा चुनें (केवल एक व्यक्ति)',
+        'id' => 'Pilih siapa yang akan memasak dari anggota keluarga (satu orang saja)',
+        'am' => 'ከቤተሰብ አባላት መካከል ማብሰል የሚፈልገውን ይምረጡ (አንድ ሰው ብቻ)',
+        'bn' => 'পরিবারের সদস্যদের মধ্যে কে রান্না করবে তা নির্বাচন করুন (শুধুমাত্র একজন)',
+        'ml' => 'കുടുംബാംഗങ്ങളിൽ നിന്ന് ആരാണ് പാചകം ചെയ്യുക എന്ന് തിരഞ്ഞെടുക്കുക (ഒരു വ്യക്തി മാത്രം)',
+        'fil' => 'Piliin kung sino ang magluluto mula sa mga miyembro ng pamilya (isang tao lamang)',
+        'ur' => 'خاندان کے افراد میں سے کون کھانا بنائے گا منتخب کریں (صرف ایک شخص)',
+        'ta' => 'குடும்ப உறுப்பினர்களில் யார் சமைப்பார் என்பதை தேர்வு செய்யவும் (ஒரு நபர் மட்டும்)',
+        'ne' => 'परिवारका सदस्यहरू मध्ये को पकाउनेछ छनोट गर्नुहोस् (एक व्यक्ति मात्र)',
+        'ps' => 'د کورنۍ له غړو څخه څوک به پخلی کوي غوره کړئ (یو شخص یوازې)',
+        'fr' => 'Sélectionnez qui cuisinera parmi les membres de la famille (une personne seulement)',
+        ],
+        'family_member' => [
+        'ar' => 'فرد من العائلة',
+        'en' => 'Family Member',
+        'hi' => 'परिवार का सदस्य',
+        'id' => 'Anggota Keluarga',
+        'am' => 'የቤተሰብ አባል',
+        'bn' => 'পরিবারের সদস্য',
+        'ml' => 'കുടുംബാംഗം',
+        'fil' => 'Miyembro ng Pamilya',
+        'ur' => 'خاندان کا فرد',
+        'ta' => 'குடுமப உறுப்பினர்',
+        'ne' => 'परिवारका सदस्य',
+        'ps' => 'د کورنۍ غړی',
+        'fr' => 'Membre de la famille',
+        ],
+        'who_will_attend_meal' => [
+        'ar' => 'من سيحضر الوجبة من أفراد العائلة ؟',
+        'en' => 'Who will attend the meal from family members?',
+        'hi' => 'परिवार के सदस्यों में से कौन भोजन में शामिल होगा?',
+        'id' => 'Siapa yang akan menghadiri makanan dari anggota keluarga?',
+        'am' => 'ከቤተሰብ አባላት መካከል ምግብ ለመብላት ማን ይመጣል?',
+        'bn' => 'পরিবারের সদস্যদের মধ্যে কে খাবারে উপস্থিত থাকবে?',
+        'ml' => 'കുടുംബാംഗങ്ങളിൽ നിന്ന് ആരാണ് ഭക്ഷണത്തിൽ പങ്കെടുക്കുക?',
+        'fil' => 'Sino ang dadalo sa pagkain mula sa mga miyembro ng pamilya?',
+        'ur' => 'خاندان کے افراد میں سے کون کھانے میں شرکت کرے گا؟',
+        'ta' => 'குடும்ப உறுப்பினர்களில் யார் உணவில் கலந்துகொள்வார்?',
+        'ne' => 'परिवारका सदस्यहरू मध्ये को खानामा उपस्थित हुनेछ?',
+        'ps' => 'د کورنۍ له غړو څخه به څوک په خواړو کې ګډون کوي؟',
+        'fr' => 'Qui assistera au repas parmi les membres de la famille ?',
+        ],
+        'select_attendees_multiple' => [
+        'ar' => 'اختر الحضور من أفراد العائلة (يمكن اختيار أكثر من شخص)',
+        'en' => 'Select attendees from family members (multiple allowed)',
+        'hi' => 'परिवार के सदस्यों से उपस्थित लोगों का चयन करें (एक से अधिक की अनुमति है)',
+        'id' => 'Pilih peserta dari anggota keluarga (boleh lebih dari satu)',
+        'am' => 'ከቤተሰብ አባላት መካከል የሚገኙትን ይምረጡ (ከአንድ በላይ መምረጥ ይችላሉ)',
+        'bn' => 'পরিবারের সদস্যদের থেকে উপস্থিতি নির্বাচন করুন (একাধিক অনুমোদিত)',
+        'ml' => 'കുടുംബാംഗങ്ങളിൽ നിന്ന് പങ്കെടുക്കുന്നവരെ തിരഞ്ഞെടുക്കുക (ഒന്നിലധികം അനുവദനೀയം)',
+        'fil' => 'Pumili ng mga dadalo mula sa mga miyembro ng pamilya (maramihang pinapayagan)',
+        'ur' => 'خاندان کے افراد سے حاضرین کا انتخاب کریں (ایک سے زیادہ کی اجازت ہے)',
+        'ta' => 'குடுமப உறுப்பினர்களிடமிருந்து வருகை தருபவர்களை தேர்ந்தெடுக்கவும் (பலரை அனுமதி)',
+        'ne' => 'परिवारका सदस्यहरू बाट उपस्थितहरूलाई छनोट गर्नुहोस् (बहुविध अनुमति)',
+        'ps' => 'د کورنۍ له غړو څخه ګډون کوونکي غوره کړئ (څو ځله اجازه ده)',
+        'fr' => 'Sélectionnez les personnes présentes parmi les membres de la famille (plusieurs autorisés)',
+        ],
+        'are_there_guests' => [
+        'ar' => 'هل يوجد ضيوف',
+        'en' => 'Are there guests?',
+        'hi' => 'क्या मेहमान हैं?',
+        'id' => 'Apakah ada tamu?',
+        'am' => 'እንግዳዎች አሉ?',
+        'bn' => 'অতিথি আছে কি?',
+        'ml' => 'അതിഥികളുണ്ടോ?',
+        'fil' => 'May mga bisita ba?',
+        'ur' => 'کیا مہمان ہیں؟',
+        'ta' => 'விருந்தினர்கள் உள்ளனரா?',
+        'ne' => 'पाहुनाहरू छन्?',
+        'ps' => 'میلمانه شته؟',
+        'fr' => 'Y a-t-il des invités ?',
+        ],
+        'yes' => [
+        'ar' => 'نعم',
+        'en' => 'Yes',
+        'hi' => 'हाँ',
+        'id' => 'Ya',
+        'am' => 'አዎ',
+        'bn' => 'হ্যাঁ',
+        'ml' => 'അതെ',
+        'fil' => 'Oo',
+        'ur' => 'ہاں',
+        'ta' => 'ஆம்',
+        'ne' => 'हो',
+        'ps' => 'هو',
+        'fr' => 'Oui',
+        ],
+        'specify_guests_count' => [
+        'ar' => 'حدد عدد الضيوف',
+        'en' => 'Specify number of guests',
+        'hi' => 'मेहमानों की संख्या निर्दिष्ट करें',
+        'id' => 'Tentukan jumlah tamu',
+        'am' => 'የእንግዳዎችን ቁጥር ይወስኑ',
+        'bn' => 'অতিথির সংখ্যা নির্দিষ্ট করুন',
+        'ml' => 'അതിഥികളുടെ എണ്ണം വ്യക്തമാക്കുക',
+        'fil' => 'Tukuyin ang bilang ng mga bisita',
+        'ur' => 'مہمانوں کی تعداد متعین کریں',
+        'ta' => 'விருந்தினர்களின் எண்ணிக்கையை குறிப்பிடவும்',
+        'ne' => 'पाहुनाहरूको संख्या तोक्नुहोस्',
+        'ps' => 'د میلمنو شمېر مشخص کړئ',
+        'fr' => 'Précisez le nombre d\'invités',
+        ],
+        'meal_type' => [
+        'ar' => 'نوع الوجبة',
+        'en' => 'Meal Type',
+        'hi' => 'भोजन का प्रकार',
+        'id' => 'Jenis Makanan',
+        'am' => 'የምግብ አይነት',
+        'bn' => 'খাবারের ধরন',
+        'ml' => 'ഭക്ഷണ തരം',
+        'fil' => 'Uri ng Pagkain',
+        'ur' => 'کھانے کی قسم',
+        'ta' => 'உணவு வகை',
+        'ne' => 'खानाको प्रकार',
+        'ps' => 'د خواړو ډول',
+        'fr' => 'Type de repas',
+        ],
+        'select_meal_type' => [
+        'ar' => 'اختر نوع الوجبة',
+        'en' => 'Select meal type',
+        'hi' => 'भोजन प्रकार चुनें',
+        'id' => 'Pilih jenis makanan',
+        'am' => 'የምግብ አይነት ይምረጡ',
+        'bn' => 'খাবারের ধরন নির্বাচন করুন',
+        'ml' => 'ഭക്ഷണ തരം തിരഞ്ഞെടുക്കുക',
+        'fil' => 'Pumili ng uri ng pagkain',
+        'ur' => 'کھانے کی قسم منتخب کریں',
+        'ta' => 'உணவு வகையை தேர்ந்தெடுக்கவும்',
+        'ne' => 'खानाको प्रकार छनोट गर्नुहोस्',
+        'ps' => 'د خواړو ډول غوره کړئ',
+        'fr' => 'Sélectionnez le type de repas',
+        ],
+        'breakfast' => [
+        'ar' => 'إفطار',
+        'en' => 'Breakfast',
+        'hi' => 'नाश्ता',
+        'id' => 'Sarapan',
+        'am' => 'ቁርስ',
+        'bn' => 'সকালের খাবার',
+        'ml' => 'പ്രഭാതഭക്ഷണം',
+        'fil' => 'Almusal',
+        'ur' => 'ناشتہ',
+        'ta' => 'காலை உணவு',
+        'ne' => 'बिहानको खाना',
+        'ps' => 'سهار',
+        'fr' => 'Petit-déjeuner',
+        ],
+        'lunch' => [
+        'ar' => 'غداء',
+        'en' => 'Lunch',
+        'hi' => 'दोपहर का भोजन',
+        'id' => 'Makan Siang',
+        'am' => 'ምሳ',
+        'bn' => 'দুপুরের খাবার',
+        'ml' => 'ഉച്ചഭക്ഷണം',
+        'fil' => 'Tanghalian',
+        'ur' => 'دوپہر کا کھانا',
+        'ta' => 'மதிய உணவு',
+        'ne' => 'दिउँसोको खाना',
+        'ps' => 'غرمه',
+        'fr' => 'Déjeuner',
+        ],
+        'dinner' => [
+        'ar' => 'عشاء',
+        'en' => 'Dinner',
+        'hi' => 'रात का खाना',
+        'id' => 'Makan Malam',
+        'am' => 'እራት',
+        'bn' => 'রাতের খাবার',
+        'ml' => 'രാത്രിഭക്ഷണം',
+        'fil' => 'Hapunan',
+        'ur' => 'رات کا کھانا',
+        'ta' => 'இரவு உணவு',
+        'ne' => 'रातिको खाना',
+        'ps' => 'ماخوستن',
+        'fr' => 'Dîner',
+        ],
+        'time' => [
+        'ar' => 'الوقت',
+        'en' => 'Time',
+        'hi' => 'समय',
+        'id' => 'Waktu',
+        'am' => 'ሰዓት',
+        'bn' => 'সময়',
+        'ml' => 'സമയം',
+        'fil' => 'Oras',
+        'ur' => 'وقت',
+        'ta' => 'நேரம்',
+        'ne' => 'समय',
+        'ps' => 'وخت',
+        'fr' => 'Heure',
+        ],
+        'date' => [
+        'ar' => 'التاريخ',
+        'en' => 'Date',
+        'hi' => 'तारीख',
+        'id' => 'Tanggal',
+        'am' => 'ቀን',
+        'bn' => 'তারিখ',
+        'ml' => 'തീയതി',
+        'fil' => 'Petsa',
+        'ur' => 'تاریخ',
+        'ta' => 'தேதி',
+        'ne' => 'मिति',
+        'ps' => 'نېټه',
+        'fr' => 'Date',
+        ],
+        'next' => [
+        'ar' => 'التالي',
+        'en' => 'Next',
+        'hi' => 'अगला',
+        'id' => 'Berikutnya',
+        'am' => 'ቀጣይ',
+        'bn' => 'পরবর্তী',
+        'ml' => 'അടുത്തത്',
+        'fil' => 'Susunod',
+        'ur' => 'اگلا',
+        'ta' => 'அடுத்து',
+        'ne' => 'अर्को',
+        'ps' => 'بل',
+        'fr' => 'Suivant',
+        ],
+        'search_meal' => [
+        'ar' => 'ابحث عن الوجبة',
+        'en' => 'Search for meal',
+        'hi' => 'भोजन खोजें',
+        'id' => 'Cari makanan',
+        'am' => 'ምግብ ፈልግ',
+        'bn' => 'খাবার খুঁজুন',
+        'ml' => 'ഭക്ഷണം തിരയുക',
+        'fil' => 'Maghanap ng pagkain',
+        'ur' => 'کھانا تلاش کریں',
+        'ta' => 'உணவைத் தேடவும்',
+        'ne' => 'खाना खोज्नुहोस्',
+        'ps' => 'خواړه لټون کړئ',
+        'fr' => 'Rechercher un repas',
+        ],
+        'search_meal_placeholder' => [
+        'ar' => 'ابحث عن الوجبة...',
+        'en' => 'Search for meal...',
+        'hi' => 'भोजन खोजें...',
+        'id' => 'Cari makanan...',
+        'am' => 'ምግብ ፈልግ...',
+        'bn' => 'খাবার খুঁজুন...',
+        'ml' => 'ഭക്ഷണം തിരയുക...',
+        'fil' => 'Maghanap ng pagkain...',
+        'ur' => 'کھانا تلاش کریں...',
+        'ta' => 'உணவைத் தேடவும்...',
+        'ne' => 'खाना खोज्नुहोस्...',
+        'ps' => 'خواړه لټون کړئ...',
+        'fr' => 'Rechercher un repas...',
+        ],
+        'select_meal' => [
+        'ar' => 'اختر الوجبة',
+        'en' => 'Select meal',
+        'hi' => 'भोजन चुनें',
+        'id' => 'Pilih makanan',
+        'am' => 'ምግብ ይምረጡ',
+        'bn' => 'খাবার নির্বাচন করুন',
+        'ml' => 'ഭക്ഷണം തിരഞ്ഞെടുക്കുക',
+        'fil' => 'Pumili ng pagkain',
+        'ur' => 'کھانا منتخب کریں',
+        'ta' => 'உணவைத் தேர்ந்தெடுக்கவும்',
+        'ne' => 'खाना छनोट गर्नुहोस्',
+        'ps' => 'خواړه غوره کړئ',
+        'fr' => 'Sélectionnez le repas',
+        ],
+        'load_more' => [
+        'ar' => 'عرض المزيد',
+        'en' => 'Load More',
+        'hi' => 'और लोड करें',
+        'id' => 'Muat Lebih Banyak',
+        'am' => 'ተጨማሪ አሳይ',
+        'bn' => 'আরো লোড করুন',
+        'ml' => 'കൂടുതൽ ലോഡുചെയ്യുക',
+        'fil' => 'Mag-load ng Higit Pa',
+        'ur' => 'مزید لوڈ کریں',
+        'ta' => 'மேலும் ஏற்றவும்',
+        'ne' => 'थप लोड गर्नुहोस्',
+        'ps' => 'نور بار کړئ',
+        'fr' => 'Charger plus',
+        ],
+        'no_results' => [
+        'ar' => 'لا توجد نتائج',
+        'en' => 'No results',
+        'hi' => 'कोई परिणाम नहीं',
+        'id' => 'Tidak ada hasil',
+        'am' => 'ምንም ውጤት የለም',
+        'bn' => 'কোনো ফলাফল নেই',
+        'ml' => 'ഫലങ്ങൾ ഇല്ല',
+        'fil' => 'Walang resulta',
+        'ur' => 'کوئی نتائج نہیں',
+        'ta' => 'முடிவுகள் இல்லை',
+        'ne' => 'कुनै नतिजा छैन',
+        'ps' => 'هیڅ پایلې نشته',
+        'fr' => 'Aucun résultat',
+        ],
+        'previous' => [
+        'ar' => 'السابق',
+        'en' => 'Previous',
+        'hi' => 'पिछला',
+        'id' => 'Sebelumnya',
+        'am' => 'ቀዳሚ',
+        'bn' => 'পূর্ববর্তী',
+        'ml' => 'മുൻപത്തെ',
+        'fil' => 'Nakaraan',
+        'ur' => 'پچھلا',
+        'ta' => 'முந்தைய',
+        'ne' => 'अघिल्लो',
+        'ps' => 'مخکینی',
+        'fr' => 'Précédent',
+        ],
+        'submit_request' => [
+        'ar' => 'إرسال الطلب',
+        'en' => 'Submit Request',
+        ' tch' => 'अनुरोध सबमिट करें',
+        'id' => 'Kirim Permintaan',
+        'am' => 'ጥያቄ ላክ',
+        'bn' => 'অনুরোধ জমা দিন',
+        'ml' => 'അഭ്യർത്ഥന സമർപ്പിക്കുക',
+        'fil' => 'Isumite ang Kahilingan',
+        'ur' => 'درخواست جمع کرائیں',
+        'ta' => 'கோரிக்கையை சமர்ப்பிக்கவும்',
+        'ne' => 'अनुरोध पेश गर्नुहोस्',
+        'ps' => 'غوښتنه وسپارئ',
+        'fr' => 'Soumettre la demande',
+        ],
+        ];
+        @endphp
 
         <!-- Header -->
         <header class="header header-fixed">
@@ -292,7 +726,7 @@
                     </a>
                 </div>
                 <div class="mid-content">
-                    <h4 class="title">طلب خاص</h4>
+                    <h4 class="title">{{ $t['special_request'][$lang] ?? $t['special_request']['ar'] }}</h4>
                 </div>
                 <div class="right-content"></div>
             </div>
@@ -316,20 +750,22 @@
 
                         <!-- اختيار من (الطباخين أو أفراد العائلة) -->
                         <div class="mb-4">
-                            <h5 class="section-title text-right">من المسؤول عن الطبخ؟</h5>
+                            <h5 class="section-title text-right">{{ $t['who_is_responsible_for_cooking'][$lang] ??
+                                $t['who_is_responsible_for_cooking']['ar'] }}</h5>
 
                             <!-- Toggle Buttons -->
                             <div class="btn-group w-100 mb-3" role="group">
                                 <input type="radio" class="btn-check" name="cooking_by" id="cooking_by_family"
                                     value="family" checked>
                                 <label class="btn btn-outline-primary" style="gap:5px;" for="cooking_by_family">
-                                    <i class="feather icon-users"></i> أفراد العائلة
+                                    <i class="feather icon-users"></i> {{ $t['family_members'][$lang] ??
+                                    $t['family_members']['ar'] }}
                                 </label>
 
                                 <input type="radio" class="btn-check" name="cooking_by" id="cooking_by_cook"
                                     value="cook">
                                 <label class="btn btn-outline-primary" style="gap:5px;" for="cooking_by_cook">
-                                    <i class="feather icon-user"></i> الطباخين
+                                    <i class="feather icon-user"></i> {{ $t['cooks'][$lang] ?? $t['cooks']['ar'] }}
                                 </label>
                             </div>
 
@@ -337,7 +773,7 @@
                             <div id="cooksSection" style="display: none;">
                                 <div class="alert alert-info mb-3 text-right">
                                     <i class="feather icon-info"></i>
-                                    اختر الطباخ المسؤول عن تحضير الوجبة
+                                    {{ $t['select_cook_responsible'][$lang] ?? $t['select_cook_responsible']['ar'] }}
                                 </div>
                                 @foreach ($cooks as $cook)
                                 <div class="member-card cook-card" style="direction: rtl;"
@@ -348,7 +784,8 @@
                                         <label for="cook-{{ $cook->id }}" class="ms-3 mb-0 flex-grow-1"
                                             style="cursor: pointer;">
                                             <div class="fw-bold">{{ $cook->name }}</div>
-                                            <small class="text-muted">طباخ محترف</small>
+                                            <small class="text-muted">{{ $t['professional_cook'][$lang] ??
+                                                $t['professional_cook']['ar'] }}</small>
                                         </label>
                                     </div>
                                 </div>
@@ -359,7 +796,8 @@
                             <div id="familySection">
                                 <div class="alert alert-info mb-3 text-right">
                                     <i class="feather icon-info"></i>
-                                    اختر من سيقوم بالطبخ من أفراد العائلة (شخص واحد فقط)
+                                    {{ $t['select_family_cook_one_only'][$lang] ??
+                                    $t['select_family_cook_one_only']['ar'] }}
                                 </div>
                                 @foreach ($family_members as $member)
                                 <div class="member-card family-cook-card" style="direction: rtl;"
@@ -370,7 +808,9 @@
                                         <label for="family-cook-{{ $member->id }}" class="ms-3 mb-0 flex-grow-1"
                                             style="cursor: pointer;">
                                             <div class="fw-bold">{{ $member->name }}</div>
-                                            <small class="text-muted">{{ $member->relationship ?? 'فرد من العائلة' }}
+                                            <small class="text-muted">{{ $member->relationship ??
+                                                ($t['family_member'][$lang] ??
+                                                $t['family_member']['ar']) }}
                                             </small>
                                         </label>
                                     </div>
@@ -381,12 +821,14 @@
 
                         <!-- من سيحضر الوجبة؟ -->
                         <div class="mb-4">
-                            <h5 class="section-title text-right">من سيحضر الوجبة من أفراد العائلة ؟</h5>
+                            <h5 class="section-title text-right">{{ $t['who_will_attend_meal'][$lang] ??
+                                $t['who_will_attend_meal']['ar'] }}</h5>
 
                             <div>
                                 <div class="alert alert-info mb-3 text-right">
                                     <i class="feather icon-info"></i>
-                                    اختر الحضور من أفراد العائلة (يمكن اختيار أكثر من شخص)
+                                    {{ $t['select_attendees_multiple'][$lang] ?? $t['select_attendees_multiple']['ar']
+                                    }}
                                 </div>
 
                                 @foreach ($family_members as $member)
@@ -398,8 +840,9 @@
                                         <label for="attendee-{{ $member->id }}" class="ms-3 mb-0 flex-grow-1"
                                             style="cursor: pointer;">
                                             <div class="fw-bold">{{ $member->name }}</div>
-                                            <small class="text-muted">{{ $member->relationship ?? 'فرد من العائلة'
-                                                }}</small>
+                                            <small class="text-muted">{{ $member->relationship ??
+                                                ($t['family_member'][$lang] ??
+                                                $t['family_member']['ar']) }}</small>
                                         </label>
                                     </div>
                                 </div>
@@ -407,19 +850,21 @@
 
                                 <!-- عدد الضيوف مع checkbox -->
                                 <div class="mb-4">
-                                    <h5 class="section-title text-right">هل يوجد ضيوف</h5>
+                                    <h5 class="section-title text-right">{{ $t['are_there_guests'][$lang] ??
+                                        $t['are_there_guests']['ar'] }}</h5>
                                     <input type="hidden" name="user_id" value="{{ auth()->id() }}">
                                     <div class="d-flex align-items-center mb-3" style="justify-content: right;">
                                         <label for="has_guests" class="mb-0"
                                             style="margin-right:10px; cursor:pointer;font-weight:600;">
-                                            نعم
+                                            {{ $t['yes'][$lang] ?? $t['yes']['ar'] }}
                                         </label>
                                         <input type="checkbox" id="has_guests" class="me-2"
                                             style="width:18px;height:18px;accent-color:var(--primary-color);">
                                     </div>
                                     <!-- العداد (مخفي في البداية) -->
                                     <div id="guestCounterSection" style="display:none;">
-                                        <span style="display: block; width:100%; text-align: center;">حدد عدد الضيوف
+                                        <span style="display: block; width:100%; text-align: center;">{{
+                                            $t['specify_guests_count'][$lang] ?? $t['specify_guests_count']['ar'] }}
                                         </span>
                                         <div class="guest-counter">
                                             <div class="counter-btn" id="decreaseGuests">-</div>
@@ -435,30 +880,33 @@
 
                         <!-- نوع الوجبة -->
                         <div class="mb-4">
-                            <h5 class="section-title text-right">نوع الوجبة</h5>
+                            <h5 class="section-title text-right">{{ $t['meal_type'][$lang] ?? $t['meal_type']['ar'] }}
+                            </h5>
                             <select name="meal_type" id="meal_type" class="form-select"
                                 style="text-align: center; width: 100%;" required>
-                                <option value="">اختر نوع الوجبة</option>
-                                <option value="breakfast">إفطار</option>
-                                <option value="lunch">غداء</option>
-                                <option value="dinner">عشاء</option>
+                                <option value="">{{ $t['select_meal_type'][$lang] ?? $t['select_meal_type']['ar'] }}
+                                </option>
+                                <option value="breakfast">{{ $t['breakfast'][$lang] ?? $t['breakfast']['ar'] }}</option>
+                                <option value="lunch">{{ $t['lunch'][$lang] ?? $t['lunch']['ar'] }}</option>
+                                <option value="dinner">{{ $t['dinner'][$lang] ?? $t['dinner']['ar'] }}</option>
                             </select>
                         </div>
 
                         <!-- التاريخ والوقت -->
                         <div class="row mb-4">
                             <div class="col-6">
-                                <h5 class="section-title text-right">الوقت</h5>
+                                <h5 class="section-title text-right">{{ $t['time'][$lang] ?? $t['time']['ar'] }}</h5>
                                 <input type="time" name="time" id="time" class="form-control" required>
                             </div>
                             <div class="col-6">
-                                <h5 class="section-title text-right">التاريخ</h5>
+                                <h5 class="section-title text-right">{{ $t['date'][$lang] ?? $t['date']['ar'] }}</h5>
                                 <input type="date" name="date" id="date" class="form-control" required
                                     min="{{ date('Y-m-d') }}">
                             </div>
                         </div>
 
-                        <button type="button" class="btn btn-primary w-100" id="nextStep">التالي</button>
+                        <button type="button" class="btn btn-primary w-100" id="nextStep">{{ $t['next'][$lang] ??
+                            $t['next']['ar'] }}</button>
                     </div>
 
                     <!-- Step 2 -->
@@ -466,16 +914,19 @@
 
                         <!-- البحث عن الوجبة -->
                         <div class="mb-4">
-                            <h5 class="section-title text-right">ابحث عن الوجبة</h5>
+                            <h5 class="section-title text-right">{{ $t['search_meal'][$lang] ?? $t['search_meal']['ar']
+                                }}</h5>
                             <div class="search-box">
-                                <input type="text" class="form-control" id="mealSearch" placeholder="ابحث عن الوجبة...">
+                                <input type="text" class="form-control" id="mealSearch"
+                                    placeholder="{{ $t['search_meal_placeholder'][$lang] ?? $t['search_meal_placeholder']['ar'] }}">
                                 <i class="feather icon-search"></i>
                             </div>
                         </div>
 
                         <!-- قائمة الوجبات -->
                         <div class="mb-4">
-                            <h5 class="section-title text-right">اختر الوجبة</h5>
+                            <h5 class="section-title text-right">{{ $t['select_meal'][$lang] ?? $t['select_meal']['ar']
+                                }}</h5>
                             <div id="mealsContainer">
                                 @foreach ($meals as $meal)
                                 <div class="meal-card" data-meal-name="{{ strtolower($meal->name) }}">
@@ -487,12 +938,16 @@
                                                 class="meal-image me-3">
                                             @endif
                                             <div class="flex-grow-1">
-                                                <div class="fw-bold">{{ $meal->title }}</div>
-                                                {{ $meal->id }}
+                                                <div class="fw-bold">
+                                                    {{ \App\Helpers\TranslationHelper::translate($meal->title ?? '',
+                                                    $lang) }}
+                                                </div>
+                                                {{-- {{ $meal->id }} --}}
                                                 <small class="text-muted">{{ $meal->description ?? '' }}</small>
                                                 @if ($meal->price)
                                                 <div class="text-primary fw-bold mt-1">{{ $meal->price }}
-                                                    جنيه</div>
+                                                    {{-- جنيه --}}
+                                                </div>
                                                 @endif
                                             </div>
                                         </label>
@@ -506,20 +961,21 @@
                             <!-- زر عرض المزيد -->
                             <div class="text-center mt-3" id="loadMoreContainer">
                                 <button type="button" class="btn btn-outline-primary" id="loadMoreBtn">
-                                    عرض المزيد
+                                    {{ $t['load_more'][$lang] ?? $t['load_more']['ar'] }}
                                 </button>
                             </div>
 
                             <div class="no-results" id="noResults" style="display: none;">
                                 <i class="feather icon-search" style="font-size: 48px; color: #ddd;"></i>
-                                <p>لا توجد نتائج</p>
+                                <p>{{ $t['no_results'][$lang] ?? $t['no_results']['ar'] }}</p>
                             </div>
                         </div>
 
                         <div class="d-flex gap-2">
-                            <button type="button" class="btn btn-outline-primary flex-grow-1"
-                                id="prevStep">السابق</button>
-                            <button type="submit" class="btn btn-primary flex-grow-1">إرسال الطلب</button>
+                            <button type="button" class="btn btn-outline-primary flex-grow-1" id="prevStep">{{
+                                $t['previous'][$lang] ?? $t['previous']['ar'] }}</button>
+                            <button type="submit" class="btn btn-primary flex-grow-1">{{ $t['submit_request'][$lang] ??
+                                $t['submit_request']['ar'] }}</button>
                         </div>
                     </div>
 
@@ -531,14 +987,11 @@
     <script src="{{ asset('assets/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-
-                // ================= Global Variables =================
                 let currentStep = 1;
                 let guestCount = 0;
                 let mealSkip = {{ $meals->count() }};
                 let loadingMeals = false;
 
-                // ================= DOM Elements =================
                 const step1 = document.getElementById('step1');
                 const step2 = document.getElementById('step2');
                 const stepDots = document.querySelectorAll('.step-dot');

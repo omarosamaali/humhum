@@ -357,7 +357,31 @@
         <header class="header header-fixed border-bottom">
             <div class="header-content">
                 <div class="mid-content">
-                    <h4 class="title">{{ __('messages.أفراد العائلة') }}</h4>
+                    @php
+                    $familyLabels = [
+                    'ar' => 'أفراد العائلة',
+                    'en' => 'Family Members',
+                    'hi' => 'परिवार के सदस्य',
+                    'id' => 'Anggota Keluarga',
+                    'am' => 'የቤተሰብ አባላት',
+                    'bn' => 'পরিবারের সদস্যরা',
+                    'ml' => 'കുടുംബാംഗങ്ങൾ',
+                    'fil' => 'Mga Miyembro ng Pamilya',
+                    'ur' => 'خاندانی افراد',
+                    'ta' => 'குடும்ப உறுப்பினர்கள்',
+                    'ne' => 'परिवारका सदस्यहरू',
+                    'ps' => 'د کورنۍ غړي',
+                    'fr' => 'Membres de la famille',
+                    ];
+                    $lang = $lang = session('cook_language') 
+            ?? session('family_language') 
+            ?? 'ar';
+                    function tFamily($lang, $labels) {
+                    return $labels[$lang] ?? $labels['ar'];
+                    }
+                    @endphp
+                    
+                    <h4 class="title">{{ tFamily($lang, $familyLabels) }}</h4>
                 </div>
                 <div class="left-content">
                     <a href="{{ url()->previous() ?: route('home') }}" id="back-btn">
@@ -394,11 +418,13 @@
 
                         @if(!empty($member->family_notes))
                         <p style="margin: 0; color: #666; font-size: 14px;">
-                            {{ $member->family_notes }}
+                            {{-- {{ $member->family_notes }} --}}
+                            {{ \App\Helpers\TranslationHelper::translate($member->family_notes ?? '', $lang) }}
                         </p>
                         @else
                         <p style="margin: 0; color: #999; font-size: 14px; font-style: italic;">
-                            لا توجد ملاحظات
+                            
+                            {{ \App\Helpers\TranslationHelper::translate('لا توجد ملاحظات' ?? '', $lang) }}
                         </p>
                         @endif
                     </div>

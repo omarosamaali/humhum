@@ -57,7 +57,29 @@
                 <div class="left-content">
                 </div>
                 <div class="mid-content">
-                    <h4 class="title">{{ __('messages.أفراد منزلي') }}</h4>
+                    <h4 class="title">@php
+                    $lang = session('cook_language')
+            ?? session('family_language')
+            ?? 'ar';
+                    
+                    $t = [
+                    'ar' => 'أفراد منزلي',
+                    'en' => 'My Household Members',
+                    'id' => 'Anggota Rumah Tangga Saya',
+                    'am' => 'የቤተሰቤ አባላት',
+                    'hi' => 'मेरे घर के सदस्य',
+                    'bn' => 'আমার পরিবারের সদস্যরা',
+                    'ml' => 'എന്റെ വീട്ടിലെ അംഗങ്ങൾ',
+                    'fil' => 'Mga Miyembro ng Aking Tahanan',
+                    'ur' => 'میرے گھر کے افراد',
+                    'ta' => 'என் வீட்டு உறுப்பினர்கள்',
+                    'ne' => 'मेरो घरका सदस्यहरू',
+                    'ps' => 'زما د کورنۍ غړي',
+                    'fr' => 'Membres de mon foyer',
+                    ][$lang] ?? 'أفراد منزلي';
+                    @endphp
+                    
+                    <h4 class="title">{{ $t }}</h4></h4>
                 </div>
                 <div class="right-content">
                     <a href="{{ route('families.welcome') }}"
@@ -83,12 +105,87 @@
             {{ session('error') }}
         </div>
         @endif
+        @php
+        $lang = session('cook_language')
+            ?? session('family_language')
+            ?? 'ar';
+        
+        // ترجمات ستاتيك
+        $t = [
+        'my_family_members' => [
+        'ar' => 'أفراد عائلتي',
+        'en' => 'My Family Members',
+        'id' => 'Anggota Keluarga Saya',
+        'am' => 'የቤተሰቤ አባላት',
+        'hi' => 'मेरे परिवार के सदस्य',
+        'bn' => 'আমার পরিবারের সদস্যরা',
+        'ml' => 'എന്റെ കുടുംബാംഗങ്ങൾ',
+        'fil' => 'Aking Mga Miyembro ng Pamilya',
+        'ur' => 'میرے خاندان کے افراد',
+        'ta' => 'என் குடும்ப உறுப்பினர்கள்',
+        'ne' => 'मेरो परिवारका सदस्यहरू',
+        'ps' => 'زما د کورنۍ غړي',
+        'fr' => 'Membres de ma famille',
+        ],
+        'yes' => [
+        'ar' => 'نعم',
+        'en' => 'Yes',
+        'id' => 'Ya',
+        'am' => 'አዎ',
+        'hi' => 'हाँ',
+        'bn' => 'হ্যাঁ',
+        'ml' => 'അതെ',
+        'fil' => 'Oo',
+        'ur' => 'ہاں',
+        'ta' => 'ஆம்',
+        'ne' => 'हो',
+        'ps' => 'هو',
+        'fr' => 'Oui',
+        ],
+        'no' => [
+        'ar' => 'لا',
+        'en' => 'No',
+        'id' => 'Tidak',
+        'am' => 'አይ',
+        'hi' => 'नहीं',
+        'bn' => 'না',
+        'ml' => 'ഇല്ല',
+        'fil' => 'Hindi',
+        'ur' => 'نہیں',
+        'ta' => 'இல்லை',
+        'ne' => 'होइन',
+        'ps' => 'نه',
+        'fr' => 'Non',
+        ],
+        'lang_names' => [
+        'ar' => 'العربية',
+        'en' => 'English',
+        'id' => 'Indonesia',
+        'am' => 'አማርኛ',
+        'hi' => 'हिन्दी',
+        'bn' => 'বাংলা',
+        'ml' => 'മലയാളം',
+        'fil' => 'Filipino',
+        'ur' => 'اردو',
+        'ta' => 'தமிழ்',
+        'ne' => 'नेपाली',
+        'ps' => 'پښتو',
+        'fr' => 'Français',
+        ],
+        ];
+        
+        // دالة ترجمة بسيطة
+        $trans = fn($group, $key = null) =>
+        $key ? ($t[$group][$key][$lang] ?? $t[$group][$key]['ar'] ?? $key)
+        : ($t[$group][$lang] ?? $t[$group]['ar'] ?? $group);
+        @endphp
         <main class="page-content space-top">
             <div style="text-align: center; margin-bottom: 10px;">
                 <span class="img-fluid icon">
                     👪
                 </span>
-                {{ __('messages.my_family_members') }}
+                {{-- {{ __('messages.my_family_members') }} --}}
+                {{ $trans('my_family_members') }}
             </div>
             <ul class="featured-list">
                 <div>
@@ -111,19 +208,45 @@
                         <ul class="tag-list" style="display: flex; gap: 10px; justify-content: space-evenly;">
                             <li class="dz-price" style="text-align: center; font-size: 14px;">
                                 <i class="fa-solid fa-user" style="color: var(--primary-color);"></i>
-                                {{ $myFamily?->has_email == '1' ? __('messages.yes') : __('messages.no') }}
+                                {{ $myFamily?->has_email == '1' ? $trans('yes') : $trans('no') }}
                             </li>
-                            <li class="dz-price" style="text-align: center; font-size: 14px;">
-                                <i class="fa-solid fa-earth" style="color: var(--primary-color);"></i>
-                                {{ __('messages.' . $myFamily->language) }}
-                            </li>
+                           @php
+                        $lang = session('cook_language')
+            ?? session('family_language')
+            ?? 'ar';
+                        
+                        // مصفوفة أسماء اللغات (مترجمة)
+                        $langNames = [
+                        'ar' => 'العربية',
+                        'en' => 'English',
+                        'id' => 'Indonesia',
+                        'am' => 'አማርኛ',
+                        'hi' => 'हिन्दी',
+                        'bn' => 'বাংলা',
+                        'ml' => 'മലയാളം',
+                        'fil' => 'Filipino',
+                        'ur' => 'اردو',
+                        'ta' => 'தமிழ்',
+                        'ne' => 'नेपाली',
+                        'ps' => 'پښتو',
+                        'fr' => 'Français',
+                        ];
+                        
+                        // دالة بسيطة لجلب اسم اللغة
+                        $getLangName = fn($code) => $langNames[$code] ?? ucfirst($code);
+                        @endphp
+                        
+                        <li class="dz-price" style="text-align: center; font-size: 14px;">
+                            <i class="fa-solid fa-earth" style="color: var(--primary-color);"></i>
+                            {{ $getLangName($myFamily->language) }}
+                        </li>
                             <li class="dz-price" style="text-align: center; font-size: 14px;">
                                 <i class="fa-solid fa-list-check" style="color: var(--primary-color);"></i>
                                 0
                             </li>
                             <li class="dz-price" style="text-align: center; font-size: 14px;">
                                 <i class="fa-solid fa-bell" style="color: var(--primary-color);"></i>
-                                {{ $myFamily->send_notification == '1' ? __('messages.yes') : __('messages.no') }}
+                                {{ $myFamily->send_notification == '1' ? $trans('yes') : $trans('no') }}
                             </li>
                         </ul>
                     </li>
@@ -131,56 +254,7 @@
                 </div>
             </ul>
         </main>
-        <!-- Page Content End -->
-
     </div>
-
-    {!! $swalScript !!}
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-        const toast = document.getElementById('toast-message');
-        if (toast) {
-            setTimeout(() => {
-                toast.style.animation = 'slideOut 0.5s ease-out';
-                setTimeout(() => {
-                    toast.remove();
-                }, 500);
-            }, 3000);
-        }
-    });
-    </script>
-
-    <script>
-        function deleteUser(familyId) {
-        Swal.fire({
-            title: "{{ __('messages.confirm_delete_member') }}",
-            html: `
-                <p style="margin-bottom: 15px;">{{ __('messages.type_delete_confirm') }}</p>
-                <input type="text" id="delete-confirm" class="swal2-input" placeholder="DELETE" style="width: 80%;">
-            `,
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#d33',
-            cancelButtonColor: '#3085d6',
-            confirmButtonText: "{{ __('messages.yes_delete') }}",
-            cancelButtonText: "{{ __('messages.cancel') }}",
-            preConfirm: () => {
-                const input = document.getElementById('delete-confirm').value;
-                if (input !== 'DELETE') {
-                    Swal.showValidationMessage("{{ __('messages.must_type_delete') }}");
-                    return false;
-                }
-                return true;
-            }
-        }).then((result) => {
-            if (result.isConfirmed) {
-                document.getElementById('delete-form-' + familyId).submit();
-            }
-        });
-    }
-    </script>
-
     <script src="assets/js/jquery.js"></script>
     <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script src="assets/vendor/swiper/swiper-bundle.min.js"></script><!-- Swiper -->

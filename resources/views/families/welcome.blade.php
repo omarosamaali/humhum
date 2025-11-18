@@ -493,6 +493,120 @@
 
 <body>
     <div class="container">
+        @php
+        $translations = [
+        'ar' => [
+        'my_account' => 'حسابي',
+        'my_family' => 'عائلتي',
+        'chefs' => 'الطباخين',
+        'blacklist' => 'المحظورات',
+        'cooking_schedule' => 'جدول الطبخ',
+        'notifications' => 'الإشعارات',
+        ],
+        'en' => [
+        'my_account' => 'My Account',
+        'my_family' => 'My Family',
+        'chefs' => 'Chefs',
+        'blacklist' => 'Blacklist',
+        'cooking_schedule' => 'Cooking Schedule',
+        'notifications' => 'Notifications',
+        ],
+        'id' => [
+        'my_account' => 'Akun Saya',
+        'my_family' => 'Keluarga Saya',
+        'chefs' => 'Koki',
+        'blacklist' => 'Daftar Hitam',
+        'cooking_schedule' => 'Jadwal Memasak',
+        'notifications' => 'Notifikasi',
+        ],
+        'am' => [
+        'my_account' => 'የእኔ መለያ',
+        'my_family' => 'ቤተሰቤ',
+        'chefs' => 'ኩኪዎች',
+        'blacklist' => 'ጥቁር ዝርዝር',
+        'cooking_schedule' => 'የማብሰያ መርሃ ግብር',
+        'notifications' => 'ማሳወቂያዎች',
+        ],
+        'hi' => [
+        'my_account' => 'मेरा खाता',
+        'my_family' => 'मेरा परिवार',
+        'chefs' => 'रसोइये',
+        'blacklist' => 'ब्लैकलिस्ट',
+        'cooking_schedule' => 'खाना पकाने का शेड्यूल',
+        'notifications' => 'सूचनाएँ',
+        ],
+        'bn' => [
+        'my_account' => 'আমার অ্যাকাউন্ট',
+        'my_family' => 'আমার পরিবার',
+        'chefs' => 'শেফ',
+        'blacklist' => 'ব্ল্যাকলিস্ট',
+        'cooking_schedule' => 'রান্নার সময়সূচী',
+        'notifications' => 'বিজ্ঞপ্তি',
+        ],
+        'ml' => [
+        'my_account' => 'എന്റെ അക്കൗണ്ട്',
+        'my_family' => 'എന്റെ കുടുംബം',
+        'chefs' => 'ഷെഫുമാർ',
+        'blacklist' => 'ബ്ലാക്ക്‌ലിസ്റ്റ്',
+        'cooking_schedule' => 'പാചക ഷെഡ്യൂൾ',
+        'notifications' => 'അറിയിപ്പുകൾ',
+        ],
+        'fil' => [
+        'my_account' => 'Aking Account',
+        'my_family' => 'Aking Pamilya',
+        'chefs' => 'Mga Chef',
+        'blacklist' => 'Blacklist',
+        'cooking_schedule' => 'Iskedyul ng Pagluluto',
+        'notifications' => 'Mga Abiso',
+        ],
+        'ur' => [
+        'my_account' => 'میرا اکاؤنٹ',
+        'my_family' => 'میری فیملی',
+        'chefs' => 'شیف',
+        'blacklist' => 'بلیک لسٹ',
+        'cooking_schedule' => 'کھانا پکانے کا شیڈول',
+        'notifications' => 'اطلاعات',
+        ],
+        'ta' => [
+        'my_account' => 'என் கணக்கு',
+        'my_family' => 'என் குடும்பம்',
+        'chefs' => 'சமையல்காரர்கள்',
+        'blacklist' => 'கருப்பு பட்டியல்',
+        'cooking_schedule' => 'சமையல் அட்டவணை',
+        'notifications' => 'அறிவிப்புகள்',
+        ],
+        'ne' => [
+        'my_account' => 'मेरो खाता',
+        'my_family' => 'मेरो परिवार',
+        'chefs' => 'भान्सेहरू',
+        'blacklist' => 'कालोसूची',
+        'cooking_schedule' => 'खाना पकाउने तालिका',
+        'notifications' => 'सूचनाहरू',
+        ],
+        'ps' => [
+        'my_account' => 'زما حساب',
+        'my_family' => 'زما کورنۍ',
+        'chefs' => 'پخلیان',
+        'blacklist' => 'تور لیست',
+        'cooking_schedule' => 'د پخلي مهالویش',
+        'notifications' => 'خبرتیاوې',
+        ],
+        'fr' => [
+        'my_account' => 'Mon compte',
+        'my_family' => 'Ma famille',
+        'chefs' => 'Chefs',
+        'blacklist' => 'Liste noire',
+        'cooking_schedule' => 'Planning cuisine',
+        'notifications' => 'Notifications',
+        ],
+        ];
+
+        // تحديد اللغة: من العضو أو الـ session
+        $lang = $lang = session('cook_language') 
+            ?? session('family_language') 
+            ?? 'ar';
+        $t = $translations[$lang] ?? $translations['ar'];
+        @endphp
         <div>
             <div
                 style="display: flex; justify-content: space-between; align-items: center; margin: 0px 0px; width: 100%; margin-bottom: 10px;">
@@ -500,19 +614,18 @@
                     <span class="img-fluid icon">
                         😀
                     </span>
-                    {{ __('messages.my_account') }}
+                    {{ $t['my_account'] }}
                 </a>
                 <a href="{{ route('families.family.index') }}" style="text-align: center; width: 105px;">
                     <span class="img-fluid icon">
                         👪
                     </span>
-                    {{ __('messages.my_family') }}
-                </a>
+                    {{ $t['my_family'] }} </a>
                 <a href="{{ route('families.cooks.index') }}" style="text-align: center; width: 105px;">
                     <span class="img-fluid icon">
                         👨‍🍳
                     </span>
-                    {{ __('messages.chefs') }}
+                    {{ $t['chefs'] }}
                 </a>
             </div>
 
@@ -522,58 +635,209 @@
                     <span class="img-fluid icon">
                         ❌
                     </span>
-                    {{ __('messages.blacklist') }}
+                    {{ $t['blacklist'] }}
                 </a>
                 <a href="{{ route('families.meals.index') }}" style="text-align: center; width: 105px;">
                     <span class="img-fluid icon">
                         📋
                     </span>
-                    {{ __('messages.cooking_schedule') }}
-                </a>
+                    {{ $t['cooking_schedule'] }} </a>
                 <a href="{{ route('families.notifications.index') }}" style="text-align: center; width: 105px;">
                     <span class="img-fluid icon">
                         🔔
                     </span>
-                    {{ __('messages.notifications') }}
+                    {{ $t['notifications'] }}
                 </a>
             </div>
         </div>
-        
+        @php
+        $translations = [
+        'ar' => [
+        'special_requests' => 'طلبات خاصة',
+        'special_requests_log' => 'سجل الطلبات',
+        ],
+        'en' => [
+        'special_requests' => 'Special Requests',
+        'special_requests_log' => 'Requests Log',
+        ],
+        'id' => [
+        'special_requests' => 'Permintaan Khusus',
+        'special_requests_log' => 'Log Permintaan',
+        ],
+        'am' => [
+        'special_requests' => 'ልዩ ጥያቄዎች',
+        'special_requests_log' => 'የጥያቄ መዝገብ',
+        ],
+        'hi' => [
+        'special_requests' => 'विशेष अनुरोध',
+        'special_requests_log' => 'अनुरोध लॉग',
+        ],
+        'bn' => [
+        'special_requests' => 'বিশেষ অনুরোধ',
+        'special_requests_log' => 'অনুরোধ লগ',
+        ],
+        'ml' => [
+        'special_requests' => 'പ്രത്യേക അഭ്യർത്ഥനകൾ',
+        'special_requests_log' => 'അഭ്യർത്ഥന ലോഗ്',
+        ],
+        'fil' => [
+        'special_requests' => 'Mga Espesyal na Kahilingan',
+        'special_requests_log' => 'Log ng Kahilingan',
+        ],
+        'ur' => [
+        'special_requests' => 'خصوصی درخواستیں',
+        'special_requests_log' => 'درخواستوں کا لاگ',
+        ],
+        'ta' => [
+        'special_requests' => 'சிறப்பு கோரிக்கைகள்',
+        'special_requests_log' => 'கோரிக்கை பதிவு',
+        ],
+        'ne' => [
+        'special_requests' => 'विशेष अनुरोधहरू',
+        'special_requests_log' => 'अनुरोध लग',
+        ],
+        'ps' => [
+        'special_requests' => 'ځانګړي غوښتنې',
+        'special_requests_log' => 'غوښتنو لاگ',
+        ],
+        'fr' => [
+        'special_requests' => 'Demandes spéciales',
+        'special_requests_log' => 'Journal des demandes',
+        ],
+        ];
+
+        $lang = $lang = session('cook_language') 
+            ?? session('family_language') 
+            ?? 'ar';
+        $t = $translations[$lang] ?? $translations['ar'];
+        @endphp
+
         <div class="container--cart">
             <a href="{{ route('families.special.create') }}" style="border-radius: 0px 15px 15px 0px;"
                 class="special-request">
-                {{ __('messages.special_requests') }}
+                {{ $t['special_requests'] }}
             </a>
             <a href="{{ route('families.special.index') }}" style="border-radius: 15px 0px 0px 15px;"
                 class="special-request">
-                {{-- {{ __('messages.special_requests') }} --}}
-                سجل الطلبات
+                {{ $t['special_requests_log'] }}
             </a>
         </div>
-        <div class="swiper categories-swiper dz-swiper m-b20" style="height: 170px !important;">
+
+        <div class="swiper categories-swiper dz-swiper m-b20" style="height: 190px !important;">
+            @php
+            // 1. مصفوفة الترجمات العامة
+            $translations = [
+            'ar' => [
+            'next_meal_is' => 'الوجبة القادمة هي',
+            'none' => 'لا يوجد',
+            'no_plans' => 'لا توجد خطط حاليًا',
+            ],
+            'en' => [
+            'next_meal_is' => 'Next meal is',
+            'none' => 'None',
+            'no_plans' => 'No plans yet',
+            ],
+            'id' => [
+            'next_meal_is' => 'Makanan berikutnya adalah',
+            'none' => 'Tidak ada',
+            'no_plans' => 'Belum ada rencana',
+            ],
+            'am' => [
+            'next_meal_is' => 'የሚቀጥለው ምግብ',
+            'none' => 'ምንም',
+            'no_plans' => 'እስካሁን ምንም እቅድ',
+            ],
+            'hi' => [
+            'next_meal_is' => 'अगला भोजन है',
+            'none' => 'कोई नहीं',
+            'no_plans' => 'अभी कोई योजना नहीं',
+            ],
+            'bn' => [
+            'next_meal_is' => 'পরবর্তী খাবার হলো',
+            'none' => 'কোনোটিই নয়',
+            'no_plans' => 'এখনো কোনো পরিকল্পনা নেই',
+            ],
+            'ml' => [
+            'next_meal_is' => 'അടുത്ത ഭക്ഷണം',
+            'none' => 'ഒന്നുമില്ല',
+            'no_plans' => 'ഇതുവരെ പ്ലാനുകളില്ല',
+            ],
+            'fil' => [
+            'next_meal_is' => 'Ang susunod na pagkain ay',
+            'none' => 'Wala',
+            'no_plans' => 'Wala pang plano',
+            ],
+            'ur' => [
+            'next_meal_is' => 'اگلا کھانا ہے',
+            'none' => 'کوئی نہیں',
+            'no_plans' => 'ابھی تک کوئی منصوبہ نہیں',
+            ],
+            'ta' => [
+            'next_meal_is' => 'அடுத்த உணவு',
+            'none' => 'ஏதுமில்லை',
+            'no_plans' => 'இதுவரை திட்டமில்லை',
+            ],
+            'ne' => [
+            'next_meal_is' => 'अर्को खाना',
+            'none' => 'कुनै पनि छैन',
+            'no_plans' => 'अहिलेसम्म कुनै योजना छैन',
+            ],
+            'ps' => [
+            'next_meal_is' => 'بل خواړه',
+            'none' => 'هیڅ',
+            'no_plans' => 'تر اوسه کوم پلان نشته',
+            ],
+            'fr' => [
+            'next_meal_is' => 'Le prochain repas est',
+            'none' => 'Aucun',
+            'no_plans' => 'Aucun plan pour l\'instant',
+            ],
+            ];
+
+            // 2. تحديد اللغة
+            $lang = $lang = session('cook_language') 
+            ?? session('family_language') 
+            ?? 'ar';
+            $t = $translations[$lang] ?? $translations['ar'];
+
+            // 3. دالة لجلب الحقل حسب اللغة (مثل name_ar, name_en, ...)
+            function getFieldByLang($model, $fieldBase)
+            {
+            global $lang;
+            $field = $fieldBase . '_' . $lang;
+            return $model->$field ?? $model->{$fieldBase . '_ar'} ?? $model->{$fieldBase} ?? '—';
+            }
+            @endphp
             <div class="title-bar mb-0 chef-title-container">
-                {{-- @auth --}}
                 @if ($recipe)
                 <a href="{{ route('families.meals.show-meal', $recipe->recipe->id) }}">
                     <li class="container-cart">
                         <div class="dz-card list"
                             style="flex-direction: column; border: 1px solid #ccc; box-shadow: 0px 0px 0px 2px #cccccc7a;">
                             <p class="recpie-name">
-                                {{ __('messages.next_meal_is') }}
+                                {{-- {{ __('messages.next_meal_is') }} --}}
+                                {{ $t['next_meal_is'] }}
                             </p>
                             <div class="dz-media"
-                                style="position: relative; display: flex; align-items: center; gap: 20px;">
+                                style=" position: relative; display: flex; align-items: center; gap: 20px;">
                                 <img src="assets/images/background.png"
-                                    style="width: 150px; border-bottom-right-radius: 15px !important;" alt="">
+                                    style="height: 136px !important; width: 150px; border-bottom-right-radius: 15px !important;"
+                                    alt="">
                                 <div class="dz-head">
                                     <h6 class="title">
-                                        <span>{{ $recipe->recipe->title }}</span>
-                                    </h6>
+                                        @php
+                                        $langs = $lang = session('cook_language') 
+            ?? session('family_language') 
+            ?? 'ar';
+                                        @endphp
+                                        {{ \App\Helpers\TranslationHelper::translate($recipe->recipe->title ?? '',
+                                        $langs) }}</h6>
                                     @forelse ($recipe->recipe->subCategories as $subCategory)
-                                    <span class="badge badge-info">{{ $subCategory?->recipe?->name_ar
-                                        }}</span>
+                                    <span class="badge badge-info">
+                                        {{ tdb($subCategory?->recipe, $lang, 'name') }}
+                                    </span>
                                     @empty
-                                    <span class="text-muted">{{ __('messages.none') }}</span>
+                                    <span class="text-muted">{{ $t['none'] }}</span>
                                     @endforelse
                                     <ul class="tag-list" style="display: flex; gap: 10px;">
                                         <li class="dz-price" style="text-align: center; font-size: 14px;">
@@ -595,7 +859,21 @@
                                             <img src="{{ asset('storage/' . $recipe->recipe->kitchen->image) }}"
                                                 style="border-radius: 50% !important; width: 30px !important; height: 30px !important;"
                                                 alt="">
-                                            {{ trans_field($recipe->recipe->kitchen, 'name') }}
+                                            @php
+                                            $lang = session('cook_language')
+                                            ?? session('family_language')
+                                            ?? 'ar';
+                                            function tdb($model, $lang, $field = 'name')
+                                            {
+                                            if (!$model) return '—';
+                                            $key = "{$field}_{$lang}";
+                                            return $model->$key
+                                            ?? $model->{"{$field}_ar"}
+                                            ?? $model->$field
+                                            ?? '—';
+                                            }
+                                            @endphp
+                                            <span>{{ tdb($recipe->recipe->kitchen, $lang, 'name') }}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -604,18 +882,79 @@
                     </li>
                 </a>
                 @else
-                <p style="text-align: center; font-size: 21px;">{{ __('messages.no_plans') }}</p>
+                <p style="text-align: center; font-size: 21px;">{{ $t['no_plans'] }}</p>
                 @endif
-                {{-- @endauth --}}
             </div>
         </div>
     </div>
     <div style="display: flex; width: 100%; height: 35%;">
+        @php
+        $lang = session('cook_language')
+        ?? session('family_language')
+        ?? 'ar';
+        $static = [
+        'ar' => [
+        'new_request' => 'طلب جديد',
+        'cooking_schedule' => 'جدول الطبخ',
+        ],
+        'en' => [
+        'new_request' => 'New Request',
+        'cooking_schedule' => 'Cooking Schedule',
+        ],
+        'id' => [
+        'new_request' => 'Permintaan Baru',
+        'cooking_schedule' => 'Jadwal Memasak',
+        ],
+        'am' => [
+        'new_request' => 'አዲስ ጥያቄ',
+        'cooking_schedule' => 'የማብሰያ መርሃ ግብር',
+        ],
+        'hi' => [
+        'new_request' => 'नया अनुरोध',
+        'cooking_schedule' => 'खाना पकाने का शेड्यूल',
+        ],
+        'bn' => [
+        'new_request' => 'নতুন অনুরোধ',
+        'cooking_schedule' => 'রান্নার সময়সূচী',
+        ],
+        'ml' => [
+        'new_request' => 'പുതിയ അഭ്യർത്ഥന',
+        'cooking_schedule' => 'പാചക ഷെഡ്യൂൾ',
+        ],
+        'fil' => [
+        'new_request' => 'Bagong Kahilingan',
+        'cooking_schedule' => 'Iskedyul ng Pagluluto',
+        ],
+        'ur' => [
+        'new_request' => 'نیا درخواست',
+        'cooking_schedule' => 'کھانا پکانے کا شیڈول',
+        ],
+        'ta' => [
+        'new_request' => 'புதிய கோரிக்கை',
+        'cooking_schedule' => 'சமையல் அட்டவணை',
+        ],
+        'ne' => [
+        'new_request' => 'नयाँ अनुरोध',
+        'cooking_schedule' => 'खाना पकाउने तालिका',
+        ],
+        'ps' => [
+        'new_request' => 'نوې غوښتنه',
+        'cooking_schedule' => 'د پخلي مهالویش',
+        ],
+        'fr' => [
+        'new_request' => 'Nouvelle demande',
+        'cooking_schedule' => 'Planning cuisine',
+        ],
+        ];
+
+        $t = $static[$lang] ?? $static['ar'];
+        @endphp
+
         <a href="{{ route('families.meals.show', $recipe->id) }}" class="button-special-request">
-            طلب جديد
+            {{ $t['new_request'] }}
         </a>
         <a href="{{ route('families.meals.index') }}" class="button-special-request">
-            جدول الطبخ
+            {{ $t['cooking_schedule'] }}
         </a>
     </div>
 </body>

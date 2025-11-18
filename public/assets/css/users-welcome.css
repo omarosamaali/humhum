@@ -1,0 +1,202 @@
+.dz-card.list .dz-media img {
+    border-radius: 0px !important;
+    height: 114px !important;
+}
+
+:root {
+    --primary: #660099 !important;
+}
+
+.btn:hover {
+    background-color: #4a006e !important;
+    border-color: #4a006e !important;
+}
+
+.dz-card.list .dz-media {
+    max-width: 100% !important;
+}
+
+.recpie-name {
+    text-align: center;
+    background: black;
+    color: white;
+    border-radius: 15px 15px 0px 0px;
+    padding: 8px;
+    margin-bottom: 0px;
+}
+
+.dz-card.list .dz-media img {
+    border-radius: 0px !important;
+    height: 114px;
+}
+
+.special-request {
+    background: #660099;
+    color: white;
+    width: 100%;
+    text-align: center;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    margin-top: 12px;
+}
+
+.container--cart {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1px;
+}
+
+.cart-items {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    justify-content: space-between;
+}
+
+.bottom-container {
+    flex-direction: row;
+    display: flex;
+    align-items: start;
+    position: relative;
+}
+
+.chef-title-container {
+    flex-direction: column;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.chef-icon {
+    width: 50px;
+}
+
+.recipe-media {
+    position: relative;
+}
+
+.recipe-stats {
+    display: flex;
+    gap: 10px;
+}
+
+.stat-item {
+    text-align: center;
+    font-size: 14px;
+}
+
+.primary-icon {
+    color: var(--primary-color);
+}
+
+.cuisine-tag {
+    display: flex;
+    gap: 10px;
+    font-size: 13px;
+    align-items: center;
+}
+
+.cuisine-flag {
+    border-radius: 50% !important;
+    width: 30px;
+    height: 30px;
+}
+
+.favorite-btn {
+    border: 0;
+    background-color: unset;
+}
+
+.kitchen-title,
+.top-rated-title {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+}
+
+.kitchen-icon,
+.badge-icon {
+    width: 50px;
+}
+
+.kitchen-slide {
+    width: 200px !important;
+}
+
+.kitchen-card {
+    padding: 15px;
+}
+
+.kitchen-image {
+    width: 50px;
+    min-width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--primary-color);
+}
+
+.kitchen-name {
+    width: 105px;
+    display: block;
+}
+
+.top-rated-title {
+    flex-direction: column;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.top-recipes-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.recipe-card {
+    position: relative;
+    box-shadow: 0px 0px 3px 3px #ededed;
+    border-radius: 15px;
+    width: 33%;
+}
+
+.recipe-image {
+    width: 100%;
+    height: 122px;
+    border-radius: 15px 15px 0px 0px;
+}
+
+.recipe-name {
+    text-align: center;
+    font-size: 13px;
+    padding: 5px 0px;
+}
+
+.notifications-title {
+    margin-right: 0px !important;
+}
+
+.notification-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.lunch-tag {
+    color: green;
+}
+
+.status-unavailable {
+    color: red;
+}
+
+.status-new {
+    color: rgb(38, 0, 255);
+}

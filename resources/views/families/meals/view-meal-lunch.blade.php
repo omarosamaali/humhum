@@ -134,15 +134,17 @@
             padding: 7.8px 10px;
             color: white;
         }
-:root {
-        --primary: #29A500 !important;
-        --primary-color: #29A500 !important;
+
+        :root {
+            --primary: #29A500 !important;
+            --primary-color: #29A500 !important;
         }
+
         .menu {
-        background: #29A500;
-        color: white;
-        border-radius: 5px;
-        padding: 7.5px 10px;
+            background: #29A500;
+            color: white;
+            border-radius: 5px;
+            padding: 7.5px 10px;
         }
 
         .recpie-name {
@@ -195,13 +197,38 @@
         <!-- Header -->
         <header class="header header-fixed">
             <div class="header-content">
-                <!-- <div class="right-content d-flex align-items-center gap-4">
-					<a href="javascript:void(0);" class="font-24">
-						<i class="font-w700 feather icon-more-vertical-"></i>
-					</a>
-				</div> -->
                 <div class="mid-content">
-                    <h4 class="title">وجبة غداء {{ $recipe->meal_date }} </h4>
+                    @php
+                    $lang = $lang = session('cook_language') 
+            ?? session('family_language') 
+            ?? 'ar';
+
+                    $mealTranslations = [
+'ar' => 'وجبة غداء',
+'en' => 'Lunch Meal',
+'hi' => 'दोपहर का भोजन',
+'id' => 'Makan Siang',
+'am' => 'የምሳ ምግብ',
+'bn' => 'দুপুরের খাবার',
+'ml' => 'ഉച്ചഭക്ഷണം',
+'fil' => 'Tanghalian na Pagkain',
+'ur' => 'دوپہر کا کھانا',
+'ta' => 'மதிய உணவு',
+'ne' => 'दिउँसोको खाना',
+'ps' => 'د غرمې ډوډۍ',
+'fr' => 'Repas du déjeuner',
+                    ];
+                    $mealTitle = $mealTranslations[$lang] ?? $mealTranslations['ar'];
+
+                    function tdb($model, $lang, $field = 'name')
+                    {
+                    if (!$model || !is_object($model)) return '—';
+                    $key = "{$field}_{$lang}";
+                    $value = $model->$key ?? $model->{"{$field}_ar"} ?? $model->$field ?? '';
+                    return is_string($value) ? trim($value) : '—';
+                    }
+                    @endphp
+                    <h4 class="title">{{ $mealTitle }} {{ $recipe->meal_date }}</h4>
                 </div>
                 <div class="left-content">
                     <a href="{{ route('families.meals.show' , $recipe->id) }}" class="back-btn">
@@ -221,127 +248,264 @@
                         <div class="swiper-slide">
                             <ul class="featured-list">
                                 <!-- الوجبة الرئيسية -->
-                                {{-- <a href="#" style="display: block; margin-bottom: 20px;" class="container-cart">
-                                    --}}
-                                    <a href="{{ route('families.meals.show-meal', $recipe->recipe->id) }}" style="display: block; margin-bottom: 20px;"
-                                                                        class="container-cart">
-                                    <p class="recpie-name">الوجبة الرئيسية</p>
-                                    <div>
-                                        <div class="dz-card list" style="margin-bottom: 16px !important;">
-                                            <div class="dz-media" style="position: relative;">
-                                                <img style="border-radius: 0px; border-top-right-radius: 0px !important; border-bottom-right-radius: 15px;"
-                                                    src="{{ asset('storage/' . $recipe->recipe->dish_image) }}"
-                                                    alt="{{ $recipe->recipe->title }}">
-                                            </div>
-                                            <div class="dz-content">
-                                                <div class="dz-head">
-                                                    <h6 class="title">
-                                                        <a
-                                                            href="{{ route('families.meals.show-meal', $recipe->recipe->id) }}">
-                                                            <span>{{ $recipe->recipe->title }}</span>
-                                                        </a>
-                                                    </h6>
-                                                    <ul class="tag-list"></ul>
-                                                    <span class="text-muted">
-                                                        @forelse ($recipe->recipe->subCategories as $subCategory)
-                                                        <span class="badge" style="color: black;">{{
-                                                            $subCategory->name_ar
-                                                            }}</span>
-                                                        @empty
-                                                        لا توجد
-                                                        @endforelse
+                                <a href="{{ route('families.meals.show-meal', $recipe->recipe->id) }}"
+                                    style="display: block; margin-bottom: 20px;" class="container-cart">
+                                    @php
+                                    // 1. تحديد اللغة
+                                    $lang = $lang = session('cook_language') 
+            ?? session('family_language') 
+            ?? 'ar';
+
+                                    // 2. ترجمة "الوجبة الرئيسية" فقط (13 لغة)
+                                    $mainMealTranslations = [
+                                    'ar' => 'الوجبة الرئيسية',
+                                    'en' => 'Main Meal',
+                                    'hi' => 'मुख्य भोजन',
+                                    'id' => 'Makanan Utama',
+                                    'am' => 'ዋናው ምግብ',
+                                    'bn' => 'প্রধান খাবার',
+                                    'ml' => 'പ്രധാന ഭക്ഷണം',
+                                    'fil' => 'Pangunahing Pagkain',
+                                    'ur' => 'بنیادی کھانا',
+                                    'ta' => 'முதன்மை உணவு',
+                                    'ne' => 'मुख्य खाना',
+                                    'ps' => 'اصلي خواړه',
+                                    'fr' => 'Repas principal',
+                                    ];
+                                    $translations = [
+                                    'ar' => [
+                                    'next_meal_is' => 'الوجبة القادمة هي',
+                                    'none' => 'لا يوجد',
+                                    'no_plans' => 'لا توجد خطط حاليًا',
+                                    'cooking_schedule_details' => 'تفاصيل جدول الطبخ',
+                                    'meal' => 'وجبة',
+                                    'person' => 'شخص',
+                                    ],
+                                    'en' => [
+                                    'next_meal_is' => 'Next meal is',
+                                    'none' => 'None',
+                                    'no_plans' => 'No plans yet',
+                                    'cooking_schedule_details' => 'Cooking Schedule Details',
+                                    'meal' => 'meal',
+                                    'person' => 'person',
+                                    ],
+                                    'id' => [
+                                    'next_meal_is' => 'Makanan berikutnya adalah',
+                                    'none' => 'Tidak ada',
+                                    'no_plans' => 'Belum ada rencana',
+                                    'cooking_schedule_details' => 'Detail Jadwal Memasak',
+                                    'meal' => 'makanan',
+                                    'person' => 'orang',
+                                    ],
+                                    'am' => [
+                                    'next_meal_is' => 'የሚቀጥለው ምግብ',
+                                    'none' => 'ምንም',
+                                    'no_plans' => 'እስካሁን ምንም እቅድ',
+                                    'cooking_schedule_details' => 'የማብሰል መርሃ ግብር ዝርዝሮች',
+                                    'meal' => 'ምግብ',
+                                    'person' => 'ሰው',
+                                    ],
+                                    'hi' => [
+                                    'next_meal_is' => 'अगला भोजन है',
+                                    'none' => 'कोई नहीं',
+                                    'no_plans' => 'अभी कोई योजना नहीं',
+                                    'cooking_schedule_details' => 'खाना पकाने की समय-सारणी विवरण',
+                                    'meal' => 'भोजन',
+                                    'person' => 'व्यक्ति',
+                                    ],
+                                    'bn' => [
+                                    'next_meal_is' => 'পরবর্তী খাবার হলো',
+                                    'none' => 'কোনোটিই নয়',
+                                    'no_plans' => 'এখনো কোনো পরিকل্পনা নেই',
+                                    'cooking_schedule_details' => 'রান্নার সময়সূচীর বিস্তারিত',
+                                    'meal' => 'খাবার',
+                                    'person' => 'ব্যক্তি',
+                                    ],
+                                    'ml' => [
+                                    'next_meal_is' => 'അടുത്ത ഭക്ഷണം',
+                                    'none' => 'ഒന്നുമില്ല',
+                                    'no_plans' => 'ഇതുവരെ പ്ലാനുകളില്ല',
+                                    'cooking_schedule_details' => 'പാചക പട്ടികയുടെ വിശദാംശങ്ങൾ',
+                                    'meal' => 'ഭക്ഷണം',
+                                    'person' => 'വ്യക്തി',
+                                    ],
+                                    'fil' => [
+                                    'next_meal_is' => 'Ang susunod na pagkain ay',
+                                    'none' => 'Wala',
+                                    'no_plans' => 'Wala pang plano',
+                                    'cooking_schedule_details' => 'Mga Detalye ng Iskedyul ng Pagluluto',
+                                    'meal' => 'pagkain',
+                                    'person' => 'tao',
+                                    ],
+                                    'ur' => [
+                                    'next_meal_is' => 'اگلا کھانا ہے',
+                                    'none' => 'کوئی نہیں',
+                                    'no_plans' => 'ابھی تک کوئی منصوبہ نہیں',
+                                    'cooking_schedule_details' => 'کھانا پکانے کے شیڈول کی تفصیلات',
+                                    'meal' => 'کھانا',
+                                    'person' => 'شخص',
+                                    ],
+                                    'ta' => [
+                                    'next_meal_is' => 'அடுத்த உணவு',
+                                    'none' => 'ஏதுமில்லை',
+                                    'no_plans' => 'இதுவரை திட்டமில்லை',
+                                    'cooking_schedule_details' => 'சமையல் அட்டவணை விவரங்கள்',
+                                    'meal' => 'உணவு',
+                                    'person' => 'நபர்',
+                                    ],
+                                    'ne' => [
+                                    'next_meal_is' => 'अर्को खाना',
+                                    'none' => 'कुनै पनि छैन',
+                                    'no_plans' => 'अहिलेसम्म कुनै योजना छैन',
+                                    'cooking_schedule_details' => 'खाना पकाउने तालिकाको विवरण',
+                                    'meal' => 'खाना',
+                                    'person' => 'व्यक्ति',
+                                    ],
+                                    'ps' => [
+                                    'next_meal_is' => 'بل خواړه',
+                                    'none' => 'هیڅ',
+                                    'no_plans' => 'تر اوسه کوم پلان نشته',
+                                    'cooking_schedule_details' => 'د پخلي د مهالوېش تفصیلات',
+                                    'meal' => 'خواړه',
+                                    'person' => 'شخص',
+                                    ],
+                                    'fr' => [
+                                    'next_meal_is' => 'Le prochain repas est',
+                                    'none' => 'Aucun',
+                                    'no_plans' => 'Aucun plan pour l\'instant',
+                                    'cooking_schedule_details' => 'Détails du planning de cuisine',
+                                    'meal' => 'repas',
+                                    'person' => 'personne',
+                                    ],
+                                    ];
+                                    $t = $translations[$lang] ?? $translations['ar'];
+                                    // 3. جلب الترجمة
+                                    $mainMealTitle = $mainMealTranslations[$lang] ?? $mainMealTranslations['ar'];
+                                    @endphp
+
+                                    <p class="recpie-name">{{ $mainMealTitle }}
+
+
+                                    </p>
+                                    </button>
+                                    <div class="dz-card list">
+                                        <div class="dz-media" style="position: relative;">
+                                            <img style="border-radius: 0px; border-top-right-radius: 0px !important;"
+                                                src="{{ asset('storage/' . $recipe->recipe->dish_image) }}"
+                                                alt="{{ $recipe->recipe->title }}">
+                                        </div>
+                                        <div class="dz-content">
+                                            <div class="dz-head">
+                                                <h6 class="title">
+                                                    <span>
+                                                        {{
+                                                        \App\Helpers\TranslationHelper::translate($recipe->recipe->title
+                                                        ?? '', $lang) }}
                                                     </span>
-                                                    <ul class="tag-list" style="display: flex; gap: 10px;">
-                                                        <li class="dz-price"
-                                                            style="text-align: center; font-size: 14px;">
-                                                            <i class="fa-solid fa-clock"
-                                                                style="color: var(--primary-color);"></i>
-                                                            {{ $recipe->recipe->preparation_time ?? 0 }}
-                                                        </li>
-                                                        <li class="dz-price"
-                                                            style="text-align: center; font-size: 14px;">
-                                                            <i class="fa-solid fa-eye"
-                                                                style="color: var(--primary-color);"></i>
-                                                            {{ $recipe->recipe->views ?? 0 }}
-                                                        </li>
-                                                        <li class="dz-price"
-                                                            style="text-align: center; font-size: 14px;">
-                                                            <i class="fa-solid fa-heart"
-                                                                style="color: var(--primary-color);"></i>
-                                                            {{ $recipe->recipe->favorited_by_count ?? 0 }}
-                                                        </li>
-                                                    </ul>
-                                                    <div>
-                                                        <div style="display: flex; gap: 10px; font-size: 13px; align-items: center;"
-                                                            class="tags">
-                                                            @if($recipe->recipe->kitchen)
-                                                            <img src="{{ asset('storage/' . $recipe->recipe->kitchen->image) }}"
-                                                                style="border-radius: 50% !important; width: 30px; height: 30px;"
-                                                                alt="{{ $recipe->recipe->kitchen->name_ar }}">
-                                                            {{ $recipe->recipe->kitchen->name_ar }}
-                                                            @else
-                                                            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/fe/Flag_of_Egypt.svg/800px-Flag_of_Egypt.svg.png"
-                                                                style="border-radius: 50% !important; width: 30px; height: 30px;"
-                                                                alt="المطبخ المصري">
-                                                            المطبخ المصري
-                                                            @endif
-                                                        </div>
+                                                </h6>
+                                                <ul class="tag-list"></ul>
+                                                @forelse ($recipe->recipe->subCategories as $subCategory)
+                                                <span class="badge badge-info">
+                                                    {{ tdb($subCategory?->recipe, $lang, 'name') }}
+                                                </span>
+                                                @empty
+                                                <span class="text-muted">{{ $t['none'] }}</span>
+                                                @endforelse
+                                                <ul class="tag-list" style="display: flex; gap: 10px;">
+                                                    <li class="dz-price" style="text-align: center; font-size: 14px;">
+                                                        <i class="fa-solid fa-clock"
+                                                            style="color: var(--primary-color);"></i>
+                                                        {{ $recipe->recipe->preparation_time ?? 0 }}
+                                                    </li>
+                                                    <li class="dz-price" style="text-align: center; font-size: 14px;">
+                                                        <i class="fa-solid fa-eye"
+                                                            style="color: var(--primary-color);"></i>
+                                                        {{ $recipe->recipe->views ?? 0 }}
+                                                    </li>
+                                                    <li class="dz-price" style="text-align: center; font-size: 14px;">
+                                                        <i class="fa-solid fa-heart"
+                                                            style="color: var(--primary-color);"></i>
+                                                        {{ $recipe->recipe->favorited_by_count ?? 0 }}
+                                                    </li>
+                                                </ul>
+                                                <div>
+                                                    <div style="display: flex; gap: 10px; font-size: 13px; align-items: center;"
+                                                        class="tags">
+                                                        @if($recipe->recipe->kitchen)
+                                                        <img src="{{ asset('storage/' . $recipe->recipe->kitchen->image) }}"
+                                                            style="border-radius: 50% !important; width: 30px; height: 30px;"
+                                                            alt="{{ $recipe->recipe->kitchen->name_ar }}">
+                                                        {{-- {{ $recipe->recipe->kitchen->name_ar }} --}}
+                                                        {{ tdb($recipe->recipe->kitchen, $lang, 'name') }}
+                                                        @else
+                                                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/fe/Flag_of_Egypt.svg/800px-Flag_of_Egypt.svg.png"
+                                                            style="border-radius: 50% !important; width: 30px; height: 30px;"
+                                                            alt="المطبخ المصري">
+                                                        المطبخ المصري
+                                                        @endif
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                    </a>
-                                    <!-- الإضافات -->
-                                    @php
-                                    $additionalRecipes = [
-                                    'salad' => [
-                                    'title' => 'السلطات',
-                                    'recipe' => $recipe->salad,
-                                    'icon' => '🥗'
-                                    ],
-                                    'drink' => [
-                                    'title' => 'المشروبات',
-                                    'recipe' => $recipe->drink,
-                                    'icon' => '🍹'
-                                    ],
-                                    'appetizer' => [
-                                    'title' => 'المقبلات',
-                                    'recipe' => $recipe->appetizer,
-                                    'icon' => '🥡'
-                                    ],
-                                    'healthyFood' => [
-                                    'title' => 'الأكل الصحي',
-                                    'recipe' => $recipe->healthyFood,
-                                    'icon' => '🥬'
-                                    ],
-                                    'soup' => [
-                                    'title' => 'الشوربات',
-                                    'recipe' => $recipe->soup,
-                                    'icon' => '🍲'
-                                    ],
-                                    'dessert' => [
-                                    'title' => 'الحلويات',
-                                    'recipe' => $recipe->dessert,
-                                    'icon' => '🍰'
-                                    ],
-                                    'sauce' => [
-                                    'title' => 'الصلصات',
-                                    'recipe' => $recipe->sauce,
-                                    'icon' => '🧴'
-                                    ],
-                                    'sideDish' => [
-                                    'title' => 'طبق جانبي',
-                                    'recipe' => $recipe->sideDish,
-                                    'icon' => '🍽️'
-                                    ]
-                                    ];
-                                    @endphp
+                                </a>
 
-@foreach($additionalRecipes as $key => $additional)
+                                <!-- الإضافات -->
+                                @php
+                                $additionalRecipes = [
+                                'salad' => [
+                                'title' => 'السلطات',
+                                'recipe' => $recipe->salad,
+                                'icon' => '🥗'
+                                ],
+                                'drink' => [
+                                'title' => 'المشروبات',
+                                'recipe' => $recipe->drink,
+                                'icon' => '🍹'
+                                ],
+                                'appetizer' => [
+                                'title' => 'المقبلات',
+                                'recipe' => $recipe->appetizer,
+                                'icon' => '🥡'
+                                ],
+                                'healthyFood' => [
+                                'title' => 'الأكل الصحي',
+                                'recipe' => $recipe->healthyFood,
+                                'icon' => '🥬'
+                                ],
+                                'soup' => [
+                                'title' => 'الشوربات',
+                                'recipe' => $recipe->soup,
+                                'icon' => '🍲'
+                                ],
+                                'dessert' => [
+                                'title' => 'الحلويات',
+                                'recipe' => $recipe->dessert,
+                                'icon' => '🍰'
+                                ],
+                                'sauce' => [
+                                'title' => 'الصلصات',
+                                'recipe' => $recipe->sauce,
+                                'icon' => '🧴'
+                                ],
+                                'sideDish' => [
+                                'title' => 'طبق جانبي',
+                                'recipe' => $recipe->sideDish,
+                                'icon' => '🍽️'
+                                ]
+                                ];
+                                @endphp
+
+                                @foreach($additionalRecipes as $key => $additional)
                                 @if($additional['recipe'])
-                                <a href="{{ route('families.meals.show-meal', parameters: $additional['recipe']->id) }}">
-                                    <p class="recpie-name">{{ $additional['title'] }}</p>
+                                <a
+                                    href="{{ route('families.meals.show-meal', parameters: $additional['recipe']->id) }}">
+                                    <p class="recpie-name">
+                                        {{-- {{ $additional['title'] }} --}}
+                                        {{
+                                        \App\Helpers\TranslationHelper::translate($additional['title']
+                                        ?? '', $lang) }}
+                                    </p>
                                     <div class="dz-card list" style="margin-bottom: 16px !important;">
                                         <div class="dz-media" style="position: relative;">
                                             @if($additional['recipe']->dish_image)
@@ -357,43 +521,52 @@
                                         <div class="dz-content">
                                             <div class="dz-head">
                                                 <h6 class="title">
-                                                    <a href="{{ route('families.meals.show-meal', $recipe->recipe->id) }}">
-                                                        <span>{{ $additional['recipe']->title }}</span>
+                                                    <a
+                                                        href="{{ route('families.meals.show-meal', $recipe->recipe->id) }}">
+                                                        <span>
+                                                            {{
+                                                            \App\Helpers\TranslationHelper::translate($additional['recipe']->title
+                                                            ?? '', $lang) }}
+                                                        </span>
                                                     </a>
                                                 </h6>
                                                 <ul class="tag-list"></ul>
-                                                <span class="text-muted">
-                                                    @if($additional['recipe']->description)
-                                                    {{ Str::limit($additional['recipe']->description, 50) }}
-                                                    @else
-                                                    لا توجد وصف
-                                                    @endif
+                                                @forelse ($recipe->recipe->subCategories as $subCategory)
+                                                <span class="badge badge-info">
+                                                    {{ tdb($subCategory?->recipe, $lang, 'name') }}
                                                 </span>
+                                                @empty
+                                                <span class="text-muted">{{ $t['none'] }}</span>
+                                                @endforelse
                                                 <ul class="tag-list" style="display: flex; gap: 10px;">
                                                     <li class="dz-price" style="text-align: center; font-size: 14px;">
-                                                        <i class="fa-solid fa-clock" style="color: var(--primary-color);"></i>
+                                                        <i class="fa-solid fa-clock"
+                                                            style="color: var(--primary-color);"></i>
                                                         {{ $additional['recipe']->preparation_time ?? 5 }}
                                                     </li>
                                                     <li class="dz-price" style="text-align: center; font-size: 14px;">
-                                                        <i class="fa-solid fa-eye" style="color: var(--primary-color);"></i>
+                                                        <i class="fa-solid fa-eye"
+                                                            style="color: var(--primary-color);"></i>
                                                         {{ $additional['recipe']->views ?? 2 }}
                                                     </li>
                                                     <li class="dz-price" style="text-align: center; font-size: 14px;">
-                                                        <i class="fa-solid fa-heart" style="color: var(--primary-color);"></i>
+                                                        <i class="fa-solid fa-heart"
+                                                            style="color: var(--primary-color);"></i>
                                                         {{ $additional['recipe']->favorited_by_count ?? 4 }}
                                                     </li>
                                                 </ul>
                                                 <div>
-                                                    <div style="display: flex; gap: 10px; font-size: 13px; align-items: center;" class="tags">
+                                                    <div style="display: flex; gap: 10px; font-size: 13px; align-items: center;"
+                                                        class="tags">
                                                         @if($additional['recipe']->kitchen &&
                                                         $additional['recipe']->kitchen->image)
                                                         <img src="{{ asset('storage/' . $additional['recipe']->kitchen->image) }}"
                                                             style="border-radius: 50% !important; width: 30px; height: 30px;"
                                                             alt="{{ $additional['recipe']->kitchen->name_ar }}">
-                                                        {{ $additional['recipe']->kitchen->name_ar }}
-                                                        @else
+                                                        {{ tdb($recipe->recipe->kitchen, $lang, 'name') }} @else
                                                         <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/fe/Flag_of_Egypt.svg/800px-Flag_of_Egypt.svg.png"
-                                                            style="border-radius: 50% !important; width: 30px; height: 30px;" alt="المطبخ المصري">
+                                                            style="border-radius: 50% !important; width: 30px; height: 30px;"
+                                                            alt="المطبخ المصري">
                                                         المطبخ المصري
                                                         @endif
                                                     </div>
@@ -404,25 +577,26 @@
                                 </a>
                                 @endif
                                 @endforeach
-                                    <!-- إذا مفيش إضافات -->
-                                    @php
-                                    $hasAdditionalRecipes = false;
-                                    foreach($additionalRecipes as $additional) {
-                                    if($additional['recipe']) {
-                                    $hasAdditionalRecipes = true;
-                                    break;
-                                    }
-                                    }
-                                    @endphp
 
-                                    @if(!$hasAdditionalRecipes)
-                                    <li style="margin-bottom: 20px;" class="container-cart">
-                                        <div class="alert alert-info text-center" style="margin: 20px;">
-                                            <i class="fa fa-info-circle"></i>
-                                            لا توجد إضافات لهذه الوجبة
-                                        </div>
-                                    </li>
-                                    @endif
+                                <!-- إذا مفيش إضافات -->
+                                @php
+                                $hasAdditionalRecipes = false;
+                                foreach($additionalRecipes as $additional) {
+                                if($additional['recipe']) {
+                                $hasAdditionalRecipes = true;
+                                break;
+                                }
+                                }
+                                @endphp
+
+                                @if(!$hasAdditionalRecipes)
+                                <li style="margin-bottom: 20px;" class="container-cart">
+                                    <div class="alert alert-info text-center" style="margin: 20px;">
+                                        <i class="fa fa-info-circle"></i>
+                                        لا توجد إضافات لهذه الوجبة
+                                    </div>
+                                </li>
+                                @endif
                             </ul>
                         </div>
                     </div>

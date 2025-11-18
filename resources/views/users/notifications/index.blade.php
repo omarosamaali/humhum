@@ -110,12 +110,19 @@
                     </a>
                 </div>
                 <div class="mid-content">
-                    <h4 class="title">({{ $notifications->count() }}) {{ __('messages.notifications') }}</h4>
+                    <h4 class="title">({{ $notifications->count() }})
+                        @php
+                        $lang = $lang = session('cook_language') 
+            ?? session('family_language') 
+            ?? 'ar';
+                        @endphp
+                        {{ \App\Helpers\TranslationHelper::translate('الإشعارات' ?? '', $lang) }}
+                    </h4>
                 </div>
                 <div class="right-content">
-                    <a href="search.html" class="icon font-24">
+                    {{-- <a href="search.html" class="icon font-24">
                         <i class="icon feather icon-search"></i>
-                    </a>
+                    </a> --}}
                 </div>
             </div>
         </header>
@@ -130,14 +137,20 @@
                         <li class="list-items" data-id="{{ $notification->id }}" style="position: relative;">
                             <div class="media">
                                 <div class="list-content">
-                                    <h5 class="title">{{ $notification->message }}</h5>
-                                    <span class="date">{{ $notification->created_at->diffForHumans() }}</span>
+                                    <h5 class="title">
+                                        {{ \App\Helpers\TranslationHelper::translate($notification->message ?? '', $lang) }}
+                                    </h5>
+                                    <span class="date">
+                                    {{ \App\Helpers\TranslationHelper::translate($notification->created_at->diffForHumans() ?? '', $lang) }}
+                                    </span>
                                 </div>
                             </div>
+                            @auth
                             <button class="btn-delete" onclick="deleteNotification({{ $notification->id }}, this)"
                                 style="background: #dc3545; color: white; border: none; border-radius: 5px; padding: 8px 15px; cursor: pointer;">
                                 <i class="feather icon-trash-2"></i>
                             </button>
+                            @endauth
                         </li>
                         @endforeach
                     </ul>

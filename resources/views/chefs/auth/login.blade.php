@@ -1,3 +1,73 @@
+@php
+$translations = [
+'ar' => ['welcome' => 'أهلاً', 'family_number' => 'رقم العضوية', 'password' => 'رمز الدخول', 'login' => 'دخول'],
+'en' => [
+'welcome' => 'Hello',
+'family_number' => 'Membership Number',
+'password' => 'Access Code',
+'login' => 'Login',
+],
+'id' => [
+'welcome' => 'Halo',
+'family_number' => 'Nomor Keanggotaan',
+'password' => 'Kode Akses',
+'login' => 'Masuk',
+],
+'am' => ['welcome' => 'ሰላም', 'family_number' => 'የአባልነት ቁጥር', 'password' => 'የመዳረሻ ኮድ', 'login' => 'ግባ'],
+'hi' => [
+'welcome' => 'नमस्ते',
+'family_number' => 'सदस्यता संख्या',
+'password' => 'पहुँच कोड',
+'login' => 'लॉगिन',
+],
+'bn' => [
+'welcome' => 'হ্যালো',
+'family_number' => 'সদস্য নম্বর',
+'password' => 'অ্যাক্সেস কোড',
+'login' => 'লগইন',
+],
+'ml' => [
+'welcome' => 'ഹലോ',
+'family_number' => 'അംഗത്വ നമ്പർ',
+'password' => 'ആക്സസ് കോഡ്',
+'login' => 'ലോഗിൻ',
+],
+'fil' => [
+'welcome' => 'Kumusta',
+'family_number' => 'Numero ng Miyembro',
+'password' => 'Access Code',
+'login' => 'Mag-login',
+],
+'ur' => ['welcome' => 'ہیلو', 'family_number' => 'ممبرشپ نمبر', 'password' => 'رسائی کوڈ', 'login' => 'لاگ ان'],
+'ta' => [
+'welcome' => 'வணக்கம்',
+'family_number' => 'உறுப்பினர் எண்',
+'password' => 'அணுகல் குறியீடு',
+'login' => 'உள்நுழை',
+],
+'ne' => [
+'welcome' => 'नमस्ते',
+'family_number' => 'सदस्यता नम्बर',
+'password' => 'पहुँच कोड',
+'login' => 'लगइन',
+],
+'ps' => [
+'welcome' => 'سلام',
+'family_number' => 'د غړیتوب شمېره',
+'password' => 'د لاسرسي کوډ',
+'login' => 'ننوتل',
+],
+'fr' => [
+'welcome' => 'Bonjour',
+'family_number' => 'Numéro de membre',
+'password' => 'Code d\'accès',
+'login' => 'Connexion',
+],
+];
+
+$lang = $cookData->language ?? 'ar';
+$t = $translations[$lang] ?? $translations['ar'];
+@endphp
 <!DOCTYPE html>
 <html lang="en" dir="rtl">
 
@@ -83,10 +153,9 @@
                     <div class="main-logo text-center mb-4">
                         <img src="{{ asset('assets/images/family-logo/logo.png') }}" alt="logo" style="width: 100px;">
                     </div>
-
-                    @if($cookData)
+                    @if ($cookData)
                     <div class="member-info text-center mb-4">
-                        <div class="member-number">مرحبًا</div>
+                        <div class="member-number">{{ $t['welcome'] }}</div>
                         <img src="{{ $cookData->image ? $cookData->image : asset('assets/images/default.jpg') }}"
                             class="member-avatar" alt="{{ $cookData->name }}" style="border-radius: 50%; width: 100px;">
                         <div class="member-name">{{ $cookData->name }}</div>
@@ -96,12 +165,12 @@
                     <form method="POST" action="{{ route('chef.auth.store') }}">
                         @csrf
 
-                        @if($cookData)
+                        @if ($cookData)
                         <input type="hidden" name="cook_number" value="{{ $cookData->cook_number }}">
                         <input type="hidden" name="cook_id" value="{{ $cookData->id }}">
                         @else
                         <div class="mb-4">
-                            <label class="form-label" for="cook_number">رقم العضوية</label>
+                            <label class="form-label" for="cook_number">{{ $t['family_number'] }}</label>
                             <input type="text" name="cook_number" id="cook_number"
                                 class="form-control @error('cook_number') is-invalid @enderror"
                                 value="{{ old('cook_number', $cook_number) }}" maxlength="5" pattern="\d{1,5}"
@@ -113,11 +182,14 @@
                         @endif
 
                         <div class="mb-4">
-                            <label class="form-label" for="password" style="text-align: center;
-    align-items: center;
-    justify-content: center;
-    display: flex;">رمز الدخول</label>
-                            <div id="otp" class="digit-group input-mini">
+                            <label class="form-label" for="password"
+                                style="text-align: center; align-items: center; justify-content: center; display: flex;">{{
+                                $t['password'] }}</label>
+                            @php
+                            $rtlLanguages = ['ar', 'ur', 'ps'];
+                            $dir = in_array($memberData->language, $rtlLanguages) ? 'direction:rtl;' : 'direction:ltr;';
+                            @endphp
+                            <div style="{{ $dir }}" id="otp" class="digit-group input-mini">
                                 <input class="form-control otp-input" type="text" maxlength="1" data-index="0" required>
                                 <input class="form-control otp-input" type="text" maxlength="1" data-index="1" required>
                                 <input class="form-control otp-input" type="text" maxlength="1" data-index="2" required>
@@ -129,28 +201,28 @@
                             @enderror
                         </div>
 
-                        <button type="submit" class="btn btn-primary w-100 rounded-xl">دخول</button>
+                        <button type="submit" class="btn btn-primary w-100 rounded-xl">{{ $t['login'] }}</button>
                     </form>
 
                     <script>
                         document.addEventListener('DOMContentLoaded', function() {
-                    const inputs = document.querySelectorAll('.otp-input');
-                    const hiddenInput = document.getElementById('password-hidden');
-                    inputs.forEach((input, index) => {
-                        input.addEventListener('input', function() {
-                            if (this.value.length === 1 && index < inputs.length - 1) {
-                                inputs[index + 1].focus();
-                            }
-                            hiddenInput.value = [...inputs].map(i => i.value).join('');
+                            const inputs = document.querySelectorAll('.otp-input');
+                            const hiddenInput = document.getElementById('password-hidden');
+                            inputs.forEach((input, index) => {
+                                input.addEventListener('input', function() {
+                                    if (this.value.length === 1 && index < inputs.length - 1) {
+                                        inputs[index + 1].focus();
+                                    }
+                                    hiddenInput.value = [...inputs].map(i => i.value).join('');
+                                });
+                                input.addEventListener('keydown', function(e) {
+                                    if (e.key === 'Backspace' && this.value === '' && index > 0) {
+                                        inputs[index - 1].focus();
+                                    }
+                                });
+                            });
+                            inputs[0].focus();
                         });
-                        input.addEventListener('keydown', function(e) {
-                            if (e.key === 'Backspace' && this.value === '' && index > 0) {
-                                inputs[index - 1].focus();
-                            }
-                        });
-                    });
-                    inputs[0].focus();
-                });
                     </script>
                 </div>
             </div>

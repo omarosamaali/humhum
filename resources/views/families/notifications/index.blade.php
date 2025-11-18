@@ -110,12 +110,18 @@
                     </a>
                 </div>
                 <div class="mid-content">
-                    <h4 class="title">({{ $notifications->count() }}) {{ __('messages.notifications') }}</h4>
+                    <h4 class="title">({{ $notifications->count() }})
+                        @php
+                        $lang = $lang = session('cook_language') 
+            ?? session('family_language') 
+            ?? 'ar';
+                        @endphp
+                        {{ \App\Helpers\TranslationHelper::translate('الإشعارات' ?? '', $lang) }} </h4>
                 </div>
                 <div class="right-content">
-                    <a href="search.html" class="icon font-24">
+                    {{-- <a href="search.html" class="icon font-24">
                         <i class="icon feather icon-search"></i>
-                    </a>
+                    </a> --}}
                 </div>
             </div>
         </header>

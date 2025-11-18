@@ -96,6 +96,7 @@
             justify-content: center;
         }
     </style>
+
 </head>
 
 <body>

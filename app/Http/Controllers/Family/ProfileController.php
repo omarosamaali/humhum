@@ -17,16 +17,12 @@ class ProfileController extends Controller
     public function notifications()
     {
         $userId = session('user_id') ?? auth()->id();
-
-        // إذا كان فرد من العائلة، نحصل على owner
         if (session('family_id')) {
             $familyMember = MyFamily::find(session('family_id'));
             $userId = $familyMember->user_id;
         }
-
         $user = User::find($userId);
         $notifications = $user->allNotifications();
-
         return view('users.notifications.index', compact('notifications'));
     }
 

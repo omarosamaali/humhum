@@ -291,6 +291,15 @@
             background: var(--primary-color) !important;
         }
     </style>
+
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#000000">
+    
+    <script>
+        if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js');
+    }
+    </script>
 </head>
 
 <body>
@@ -311,7 +320,7 @@
                 </div>
                 <div class="title-bar mb-0">
                     <h4 class="title font-w600" style="visibility: collapse;">Main وصفة</h4>
-                    <a href="{{ url()->previous() ?: route('home') }}" class="floating-close"><i
+                    <a class="floating-close"><i
                             class="feather icon-x"></i></a>
                 </div>
             </div>
@@ -330,40 +339,6 @@
                     </a>
                 </li>
                 <li>
-                    @auth
-                    <a class="nav-link" href="{{ route('users.meals.index') }}">
-                        <span class="dz-icon">
-                            <i class="fa-solid fa-bowl-food"></i>
-                        </span>
-                        <span>{{ __('messages.meals') }}</span>
-                    </a>
-                    @else
-                    <a class="nav-link" href="#">
-                        <span class="dz-icon">
-                            <i class="fa-solid fa-bowl-food"></i>
-                        </span>
-                        <span>{{ __('messages.meals') }}</span>
-                    </a>
-                    @endauth
-                </li>
-                <li>
-                    @auth
-                    <a class="nav-link" href="{{ route('users.meals.table-cook') }}">
-                        <span class="dz-icon">
-                            <i class="fa-solid fa-table-cells"></i> </span>
-                        <span>{{ __('messages.cooking_table') }}</span>
-                    </a>
-                    @else
-                    <a class="nav-link" href="#">
-                        <span class="dz-icon">
-                            <i class="fa-solid fa-table-cells"></i>
-                        </span>
-                        <span>{{ __('messages.cooking_table') }}</span>
-                    </a>
-                    @endauth
-                </li>
-
-                <li>
                     <a class="nav-link" href="{{ route('users.faq.index') }}">
                         <span class="dz-icon">
                             <i class="fi fi-rr-comments text-dark"></i>
@@ -380,6 +355,16 @@
                     </a>
                 </li>
 
+                
+                <li>
+                    <a class="nav-link" href="{{ route('users.terms.index') }}">
+                        <span class="dz-icon">
+                            <i class="fi fi-rr-info text-dark"></i>
+                        </span>
+                        <span>{{ __('messages.terms') }}</span>
+                    </a>
+                </li>
+                
                 <li>
                     @auth
                     <a class="nav-link" href="{{ route('users.messages.index') }}">
@@ -396,15 +381,6 @@
                         <span>{{ __('messages.contact_us') }}</span>
                     </a>
                     @endauth
-                </li>
-
-                <li>
-                    <a class="nav-link" href="{{ route('users.terms.index') }}">
-                        <span class="dz-icon">
-                            <i class="fi fi-rr-info text-dark"></i>
-                        </span>
-                        <span>{{ __('messages.terms') }}</span>
-                    </a>
                 </li>
 
                 <li>

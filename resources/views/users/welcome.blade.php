@@ -74,7 +74,55 @@
         position: relative;
         /* top: 25px; */
     }
+
+    .badge-text {
+        font-size: 13px;
+        position: absolute;
+        top: -7px;
+        right: -1px;
+        background: red;
+        color: white;
+        border-radius: 50%;
+        width: 20px;
+        height: 20px;
+    }
 </style>
+<!-- Firebase SDK للـ Web (هتشتغل حتى في الـ WebView) -->
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-messaging-compat.js"></script>
+
+<script>
+    const firebaseConfig = {
+                apiKey: "AIzaSyB8x9v5K8jJ8v5K8jJ8v5K8jJ8v5K8jJ8v", // مش لازم تحطه، الويب مش بيحتاجه
+                authDomain: "omdachina25.firebaseapp.com",
+                projectId: "omdachina25",
+                storageBucket: "omdachina25.appspot.com",
+                messagingSenderId: "110645786836070014770",
+                appId: "1:110645786836070014770:web:chinomda" // ده المهم جدًا
+            };
+            firebase.initializeApp(firebaseConfig);
+            const messaging = firebase.messaging();
+            Notification.requestPermission().then((permission) => {
+                if (permission === "granted") {
+                    messaging.getToken({
+                        vapidKey: "BB168ueRnlIhDY0r5lrLD7pvQydPk467794F97CWizmwnvzxAWtlx3fuZ9NQtxc0QeokXdnBjiYoiINBIRvCQiY"
+                    }).then((token) => {
+                        fetch('/save-fcmtoken', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                            },
+                            body: JSON.stringify({
+                                fcm_token: token
+                            })
+                        });
+                    }).catch((err) => {
+                        console.log('فشل جلب التوكن', err);
+                    });
+                }
+            });
+</script>
 @section('content')
 <div class="container">
 
@@ -121,7 +169,10 @@
                 {{ __('messages.cooking_schedule') }}
             </a>
             <a href="{{ route('users.notifications.index') }}" style="text-align: center; width: 105px;">
-                <span class="img-fluid icon">
+                <span class="img-fluid icon" style="position: relative;">
+                    @if($notifications)
+                    <span class="badge-text">{{ $notifications->count() }}</span>
+                    @endif
                     🔔
                 </span>
                 {{ __('messages.notifications') }}
@@ -466,8 +517,9 @@
                 <img src="{{ asset('storage/' . $recipe->dish_image) }}" alt="{{ $recipe->name }}" class="recipe-image">
                 <img src="{{ asset('assets/images/user-logo/' . ($loop->index + 1) . '.png') }}" class="chef-logo"
                     alt="">
-                <p class="recipe-name" style="padding: 2px;">
-                   {{ Str::words($recipe->title, 2) }}
+                <p class="recipe-name">
+                    {{ Str::limit($recipe->title, 20) }}
+                    {{ substr($recipe->title, 0, 10) }}
                 </p>
             </a>
             @endforeach

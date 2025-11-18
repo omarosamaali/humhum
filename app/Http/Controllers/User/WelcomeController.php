@@ -9,6 +9,9 @@ use App\Models\Kitchens;
 use App\Models\Recipe;
 use App\Models\MealPlanDetail;
 use Illuminate\Support\Facades\Auth;
+use App\Models\MyFamily;
+use App\Models\Notification;
+use App\Models\User;
 
 class WelcomeController extends Controller
 {
@@ -64,6 +67,21 @@ class WelcomeController extends Controller
             }
         }
 
+        // تحديد الـ user_id من السيشن أو الأوث
+        $userId = session('user_id') ?? auth()->id() ?? null;
+
+        if (session('family_id')) {
+            $familyMember = MyFamily::find(session('family_id'));
+            $userId = $familyMember->user_id ?? null;
+        }
+
+        // الإشعارات تكون اختيارية
+        $notifications = null;
+
+        if (Auth::check()) {       // <<< هنا التعويض الصحيح
+            $notifications = User::find(Auth::id())->allNotifications();
+        }
+
         return view('users.welcome', compact(
             'favorites_count',
             'latest_recipes',
@@ -73,7 +91,8 @@ class WelcomeController extends Controller
             'kitchens',
             'topRecipes',
             'recipe',
-            'completedSteps'
+            'completedSteps',
+            'notifications'
         ));
     }
 

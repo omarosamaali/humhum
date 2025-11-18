@@ -6,28 +6,15 @@
 <div class="container py-0">
     <div class="dz-authentication-area">
 
-        {{-- الشعار --}}
         <div class="main-logo">
-            {{-- <a href="{{ url('/') }}" id="back-btn">
-                <i class="feather icon-arrow-left"></i>
-            </a> --}}
             <div class="logo" style="right: 32px; position: relative;">
                 <img src="{{ asset('assets/images/user-logo/logo.png') }}" alt="logo">
             </div>
         </div>
 
-        {{-- عنوان الصفحة --}}
-        <div class="section-head text-center">
-            <h3 class="title">تسجيل دخول المستخدم</h3>
-            <p>أدخل البيانات المطلوبة لتسجيل الدخول</p>
-        </div>
-
-        {{-- نموذج تسجيل الدخول --}}
         <div class="account-section">
             <form action="{{ route('users.auth.post') }}" method="POST" class="m-b30">
                 @csrf
-
-                {{-- البريد الإلكتروني --}}
                 <div class="mb-4">
                     <label class="form-label" for="email">البريد الإلكتروني</label>
                     <div class="input-group input-mini input-lg">
@@ -39,10 +26,10 @@
                     @enderror
                 </div>
 
-                {{-- كلمة المرور --}}
                 <div class="m-b30">
                     <div class="input-group input-mini input-lg" style="justify-content: center;">
                         <label class="form-label">كلمة المرور</label>
+                        
                         <div class="otp-group" id="otpGroup" aria-label="حقل كلمة المرور المكوّن من 4 خانات"
                             style="display: flex;  gap: 5px; margin-bottom: 40px; direction: rtl;">
                             <input inputmode="numeric" pattern="[0-9]*" maxlength="1" data-index="0"

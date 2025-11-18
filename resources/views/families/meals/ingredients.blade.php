@@ -353,11 +353,91 @@
         </div>
         <!-- Preloader end-->
 
+        @php
+            // تحديد اللغة
+            $lang = $lang = session('cook_language') 
+            ?? session('family_language') 
+            ?? 'ar';
+
+            // ترجمة "المكونات"
+            $ingredientsTitleTranslations = [
+                'ar' => 'المكونات',
+                'en' => 'Ingredients',
+                'hi' => 'सामग्री',
+                'id' => 'Bahan',
+                'am' => 'እቃዎች',
+                'bn' => 'উপাদান',
+                'ml' => 'ഘടകങ്ങൾ',
+                'fil' => 'Mga Sangkap',
+                'ur' => 'اجزاء',
+                'ta' => 'பொருட்கள்',
+                'ne' => 'सामग्री',
+                'ps' => 'مواد',
+                'fr' => 'Ingrédients',
+            ];
+            $ingredientsTitle = $ingredientsTitleTranslations[$lang] ?? $ingredientsTitleTranslations['ar'];
+
+            // ترجمة "إرسال إشعار المكون غير متوفر"
+            $sendUnavailableTranslations = [
+                'ar' => 'إرسال إشعار المكون غير متوفر',
+                'en' => 'Send Unavailable Ingredient Notification',
+                'hi' => 'अनुपलब्ध सामग्री सूचना भेजें',
+                'id' => 'Kirim Pemberitahuan Bahan Tidak Tersedia',
+                'am' => 'ያልተገኘ እቃ ማሳወቂያ ላክ',
+                'bn' => 'অপলব্ধ উপাদান বিজ্ঞপ্তি পাঠান',
+                'ml' => 'ലഭ്യമല്ലാത്ത ഘടകം അറിയിപ്പ് അയയ്ക്കുക',
+                'fil' => 'Magpadala ng Abiso ng Hindi Magagamit na Sangkap',
+                'ur' => 'غیر دستیاب اجزاء کی اطلاع بھیجیں',
+                'ta' => 'கிடைக்காத பொருள் அறிவிப்பு அனுப்பு',
+                'ne' => 'उपलब्ध नभएको सामग्री सूचना पठाउनुहोस्',
+                'ps' => 'د نشت مواد خبرتیا واستوئ',
+                'fr' => 'Envoyer une notification d’ingrédient indisponible',
+            ];
+            $sendUnavailableText = $sendUnavailableTranslations[$lang] ?? $sendUnavailableTranslations['ar'];
+
+            // ترجمة "تشغيل النطق"
+            $speakTextTranslations = [
+                'ar' => 'تشغيل النطق',
+                'en' => 'Speak Text',
+                'hi' => 'पाठ बोलें',
+                'id' => 'Bicarakan Teks',
+                'am' => 'ጽሑፍ ንነጋገር',
+                'bn' => 'পাঠ বলুন',
+                'ml' => 'വാചകം സംസാരിക്കുക',
+                'fil' => 'Magsalita ng Teksto',
+                'ur' => 'متن پڑھیں',
+                'ta' => 'உரை பேசவும்',
+                'ne' => 'पाठ बोल्नुहोस्',
+                'ps' => 'متن وویئل',
+                'fr' => 'Lire le texte',
+            ];
+            $speakTextText = $speakTextTranslations[$lang] ?? $speakTextTranslations['ar'];
+
+            // ترجمة "لا توجد مكونات لهذه الوصفة"
+            $noIngredientsTranslations = [
+                'ar' => 'لا توجد مكونات لهذه الوصفة',
+                'en' => 'No ingredients for this recipe',
+                'hi' => 'इस नुस्खे के लिए कोई सामग्री नहीं है',
+                'id' => 'Tidak ada bahan untuk resep ini',
+                'am' => 'ለዚህ እንግዳ አንደኛ እቃዎች የሉም',
+                'bn' => 'এই রেসিপির কোনো উপাদান নেই',
+                'ml' => 'ഈ റസിപ്പിക്ക് ഘടകങ്ങൾ ഇല്ല',
+                'fil' => 'Walang sangkap para sa recipe na ito',
+                'ur' => 'اس نسخے کے لیے کوئی اجزاء نہیں ہیں',
+                'ta' => 'இந்த செய்முறைக்கு எந்தப் பொருட்களும் இல்லை',
+                'ne' => 'यस विधिको लागि कुनै सामग्री छैन',
+                'ps' => 'د دې ترکیب لپاره کوم مواد نشته',
+                'fr' => 'Aucun ingrédient pour cette recette',
+            ];
+            $noIngredientsText = $noIngredientsTranslations[$lang] ?? $noIngredientsTranslations['ar'];
+
+        @endphp
+
         <!-- Header -->
         <header class="header header-fixed border-bottom">
             <div class="header-content">
                 <div class="mid-content">
-                    <h4 class="title">{{ __('messages.المكونات') }}</h4>
+                    <h4 class="title">{{ $ingredientsTitle }}</h4>
                 </div>
                 <div class="left-content">
                     <a href="{{ url()->previous() ?: route('home') }}" id="back-btn">
@@ -373,6 +453,7 @@
                 $ingredients = explode("\n", $recipe->ingredients);
                 $ingredients = array_filter(array_map('trim', $ingredients));
             @endphp
+
             @if (count($ingredients) > 0)
                 @foreach ($ingredients as $ingredient)
                     @php
@@ -381,65 +462,123 @@
                             : $ingredient;
                     @endphp
 
-                    @if (Str::startsWith($ingredient, '##'))
-                        <div
-                            style="display: flex; gap: 10px; align-items: center; justify-content: space-between; font-weight: bold; border-bottom: 1px solid var(--primary); padding-bottom: 5px;">
-                            {{ $textToSpeak }} 🍴
-                            <div style="display: flex; gap: 5px; align-items: center;">
-                                <div onclick="sendUnavailableNotification('{{ addslashes($textToSpeak) }}', event)"
-                                    style="cursor: pointer; background-color: var(--primary); color: white; padding: 5px; border-radius: 5px; width: fit-content; margin-top: 10px;"
-                                    title="إرسال إشعار المكون غير متوفر">
-                                    <i style="font-size: 20px; color: #ffffff;" class="fa-solid fa-bag-shopping"></i>
-                                </div>
-                                <div onclick="speakText('{{ addslashes($textToSpeak) }}')"
-                                    style="cursor: pointer; background-color: var(--primary); color: white; padding: 5px; border-radius: 5px; width: fit-content; margin-top: 10px;"
-                                    title="تشغيل النطق">
-                                    <i style="font-size: 20px; color: #ffffff;" class="fa-solid fa-headphones"></i>
-                                </div>
+                    <div
+                        style="display: flex; gap: 10px; align-items: center; justify-content: space-between; 
+                        {{ Str::startsWith($ingredient, '##') ? 'font-weight: bold; border-bottom: 1px solid var(--primary); padding-bottom: 5px;' : '' }}">
+                        {{ \App\Helpers\TranslationHelper::translate($textToSpeak ?? '', $lang) }}
+                        {{-- {{ $textToSpeak }} --}}
+
+                        {{ Str::startsWith($ingredient, '##') ? '🍴' : '' }}
+
+                        <div style="display: flex; gap: 5px; align-items: center;">
+                            <div onclick="sendUnavailableNotification('{{ addslashes($textToSpeak) }}', event)"
+                                style="cursor: pointer; background-color: var(--primary); color: white; padding: 5px; border-radius: 5px; width: fit-content; margin-top: 10px;"
+                                title="{{ $sendUnavailableText }}">
+                                <i style="font-size: 20px; color: #ffffff;" class="fa-solid fa-bag-shopping"></i>
+                            </div>
+
+                            <div onclick="speakText('{{ addslashes($textToSpeak) }}')"
+                                style="cursor: pointer; background-color: var(--primary); color: white; padding: 5px; border-radius: 5px; width: fit-content; margin-top: 10px;"
+                                title="{{ $speakTextText }}">
+                                <i style="font-size: 20px; color: #ffffff;" class="fa-solid fa-headphones"></i>
                             </div>
                         </div>
-                    @else
-                        <div style="display: flex; gap: 10px; align-items: center; justify-content: space-between;">
-                            {{ $textToSpeak }}
-                            <div style="display: flex; gap: 5px; align-items: center;">
-                                <div onclick="sendUnavailableNotification('{{ addslashes($textToSpeak) }}', event)"
-                                    style="cursor: pointer; background-color: var(--primary); color: white; padding: 5px; border-radius: 5px; width: fit-content; margin-top: 10px;"
-                                    title="إرسال إشعار المكون غير متوفر">
-                                    <i style="font-size: 20px; color: #ffffff;" class="fa-solid fa-bag-shopping"></i>
-                                </div>
-                                <div onclick="speakText('{{ addslashes($textToSpeak) }}')"
-                                    style="cursor: pointer; background-color: var(--primary); color: white; padding: 5px; border-radius: 5px; width: fit-content; margin-top: 10px;"
-                                    title="تشغيل النطق">
-                                    <i style="font-size: 20px; color: #ffffff;" class="fa-solid fa-headphones"></i>
-                                </div>
-                            </div>
-                        </div>
-                    @endif
+                    </div>
                 @endforeach
             @else
-                <p>لا توجد مكونات لهذه الوصفة</p>
+                <p>{{ $noIngredientsText }}</p>
             @endif
-            <script src="https://code.responsivevoice.org/responsivevoice.js?key=vm7hFTHk"></script>
-            <script>
-                function speakText(text) {
-                    const isArabic = /[\u0600-\u06FF]/.test(text);
-                    const lang = isArabic ? 'ar' : 'en';
-                    responsiveVoice.speak(text, getVoiceForLang(lang), {
-                        rate: 0.9
-                    });
-                }
-
-                function getVoiceForLang(lang) {
-                    const voices = {
-                        'ar': 'Arabic Female',
-                        'en': 'UK English Female',
-                    };
-                    return voices[lang] || 'UK English Female';
-                }
-            </script>
         </div>
     </div>
+    @php
+    $jsTranslations = [
+    'ar' => [
+    'sent_success_title' => 'تم الإرسال',
+    'sent_success_text' => 'تم إرسال المكون الناقص بنجاح',
+    'sent_success_button' => 'تم الإرسال بنجاح',
+    ],
+    'en' => [
+    'sent_success_title' => 'Sent',
+    'sent_success_text' => 'The missing ingredient has been sent successfully',
+    'sent_success_button' => 'Sent successfully',
+    ],
+    'hi' => [
+    'sent_success_title' => 'भेज दिया गया',
+    'sent_success_text' => 'लापता सामग्री सफलतापूर्वक भेज दी गई है',
+    'sent_success_button' => 'सफलतापूर्वक भेजा गया',
+    ],
+    'id' => [
+    'sent_success_title' => 'Terkirim',
+    'sent_success_text' => 'Bahan yang hilang telah berhasil dikirim',
+    'sent_success_button' => 'Berhasil dikirim',
+    ],
+    'am' => [
+    'sent_success_title' => 'ተላከ',
+    'sent_success_text' => 'አልተገኘው እቃ በትክክል ተላከ',
+    'sent_success_button' => 'በትክክል ተላከ',
+    ],
+    'bn' => [
+    'sent_success_title' => 'প্রেরণ করা হয়েছে',
+    'sent_success_text' => 'অপ্রাপ্য উপাদান সফলভাবে প্রেরণ করা হয়েছে',
+    'sent_success_button' => 'সফলভাবে প্রেরণ করা হয়েছে',
+    ],
+    'ml' => [
+    'sent_success_title' => 'അയച്ചു',
+    'sent_success_text' => 'അപ്രാപ്യ ഘടകം വിജയകരമായി അയച്ചു',
+    'sent_success_button' => 'വിജയകരമായി അയച്ചു',
+    ],
+    'fil' => [
+    'sent_success_title' => 'Naipadala',
+    'sent_success_text' => 'Ang nawawalang sangkap ay matagumpay na naipadala',
+    'sent_success_button' => 'Matagumpay na naipadala',
+    ],
+    'ur' => [
+    'sent_success_title' => 'بھیج دیا گیا',
+    'sent_success_text' => 'غیر موجود جز کامیابی کے ساتھ بھیج دیا گیا',
+    'sent_success_button' => 'کامیابی کے ساتھ بھیج دیا گیا',
+    ],
+    'ta' => [
+    'sent_success_title' => 'அனுப்பப்பட்டது',
+    'sent_success_text' => 'கிடைக்காத பொருள் வெற்றிகரமாக அனுப்பப்பட்டது',
+    'sent_success_button' => 'வெற்றிகரமாக அனுப்பப்பட்டது',
+    ],
+    'ne' => [
+    'sent_success_title' => 'पठाइयो',
+    'sent_success_text' => 'हराएको सामग्री सफलतापूर्वक पठाइयो',
+    'sent_success_button' => 'सफलतापूर्वक पठाइयो',
+    ],
+    'ps' => [
+    'sent_success_title' => 'لېږل شوی',
+    'sent_success_text' => 'د نشت مواد په بریالیتوب سره واستول شول',
+    'sent_success_button' => 'په بریالیتوب سره واستول شول',
+    ],
+    'fr' => [
+    'sent_success_title' => 'Envoyé',
+    'sent_success_text' => "L'ingrédient manquant a été envoyé avec succès",
+    'sent_success_button' => 'Envoyé avec succès',
+    ],
+    ];
+    
+    $jsTexts = $jsTranslations[$lang] ?? $jsTranslations['ar'];
+    @endphp
+    <script src="https://code.responsivevoice.org/responsivevoice.js?key=vm7hFTHk"></script>
     <script>
+        function speakText(text) {
+            const isArabic = /[\u0600-\u06FF]/.test(text);
+            const lang = isArabic ? 'ar' : 'en';
+            responsiveVoice.speak(text, getVoiceForLang(lang), {
+                rate: 0.9
+            });
+        }
+
+        function getVoiceForLang(lang) {
+            const voices = {
+                'ar': 'Arabic Female',
+                'en': 'UK English Female',
+            };
+            return voices[lang] || 'UK English Female';
+        }
+
         function sendUnavailableNotification(componentName, event) {
             const buttonElement = event.currentTarget;
             buttonElement.style.pointerEvents = 'none';
@@ -464,23 +603,19 @@
                 })
                 .then(data => {
                     if (data.success) {
-                        // تغيير الأيقونة واللون بعد النجاح
-                        buttonElement.innerHTML =
-                            '<i style="font-size: 20px; color: #ffffff;" class="fa-solid fa-check"></i>';
+                        buttonElement.innerHTML = '<i style="font-size: 20px; color: #ffffff;" class="fa-solid fa-check"></i>';
                         buttonElement.style.backgroundColor = '#28a745';
-                        buttonElement.title = "تم الإرسال بنجاح";
-
-                        Swal.fire({
-                            title: "تم الإرسال",
-                            text: "تم إرسال المكون الناقص بنجاح",
-                            icon: "success"
-                        });
+buttonElement.title = "{{ $jsTexts['sent_success_button'] }}";
+    
+    Swal.fire({
+    title: "{{ $jsTexts['sent_success_title'] }}",
+    text: "{{ $jsTexts['sent_success_text'] }}",
+    icon: "success"
+    });
                     } else {
-                        // إعادة تفعيل الزر في حالة الخطأ
                         buttonElement.style.pointerEvents = 'auto';
                         buttonElement.style.opacity = '1';
                         buttonElement.style.cursor = 'pointer';
-
                         Swal.fire({
                             title: "خطأ",
                             text: data.message || 'حدث خطأ في إرسال الإشعار',

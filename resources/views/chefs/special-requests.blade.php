@@ -125,57 +125,217 @@
             </div>
         </div>
 
-        <!-- Header -->
-        <header class="header header-fixed">
-            <div class="header-content">
-                <div class="right-content"></div>
-                <div class="mid-content">
-                    <h4 class="title">الطلبات الخاصة</h4>
-                </div>
-                <div class="left-content">
-                    <a href="{{ route('chefs.welcome') }}" id="back-btn">
-                        <i class="feather icon-arrow-left"></i>
-                    </a>
-                </div>
-            </div>
-        </header>
+@php
+$translations = [
+'ar' => [
+'special_requests' => 'الطلبات الخاصة',
+'no_requests' => 'لا توجد طلبات خاصة حالياً',
+'request_from' => 'طلب من',
+'to' => 'إلى',
+'unknown' => 'غير محدد',
+'breakfast' => 'إفطار',
+'lunch' => 'غداء',
+'dinner' => 'عشاء',
+'snack' => 'وجبة خفيفة',
+],
+'en' => [
+'special_requests' => 'Special Requests',
+'no_requests' => 'No special requests at the moment',
+'request_from' => 'Request from',
+'to' => 'to',
+'unknown' => 'Unknown',
+'breakfast' => 'Breakfast',
+'lunch' => 'Lunch',
+'dinner' => 'Dinner',
+'snack' => 'Snack',
+],
+'id' => [
+'special_requests' => 'Permintaan Khusus',
+'no_requests' => 'Tidak ada permintaan khusus saat ini',
+'request_from' => 'Permintaan dari',
+'to' => 'ke',
+'unknown' => 'Tidak diketahui',
+'breakfast' => 'Sarapan',
+'lunch' => 'Makan Siang',
+'dinner' => 'Makan Malam',
+'snack' => 'Cemilan',
+],
+'am' => [
+'special_requests' => 'ልዩ ጥያቄዎች',
+'no_requests' => 'በአሁኑ ጊዜ ልዩ ጥያቄዎች የሉም',
+'request_from' => 'ጥያቄ ከ',
+'to' => 'ወደ',
+'unknown' => 'ያልታወቀ',
+'breakfast' => 'ቁርስ',
+'lunch' => 'ምሳ',
+'dinner' => 'እራት',
+'snack' => 'መክሰስ',
+],
+'hi' => [
+'special_requests' => 'विशेष अनुरोध',
+'no_requests' => 'वर्तमान में कोई विशेष अनुरोध नहीं',
+'request_from' => 'अनुरोध से',
+'to' => 'को',
+'unknown' => 'अज्ञात',
+'breakfast' => 'नाश्ता',
+'lunch' => 'दोपहर का भोजन',
+'dinner' => 'रात का खाना',
+'snack' => 'नाश्ता',
+],
+'bn' => [
+'special_requests' => 'বিশেষ অনুরোধ',
+'no_requests' => 'বর্তমানে কোনো বিশেষ অনুরোধ নেই',
+'request_from' => 'অনুরোধ থেকে',
+'to' => 'প্রতি',
+'unknown' => 'অজানা',
+'breakfast' => 'সকালের নাস্তা',
+'lunch' => 'দুপুরের খাবার',
+'dinner' => 'রাতের খাবার',
+'snack' => 'জলখাবার',
+],
+'ml' => [
+'special_requests' => 'പ്രത്യേക അഭ്യർത്ഥനകൾ',
+'no_requests' => 'നിലവിൽ പ്രത്യേക അഭ്യർത്ഥനകളൊന്നുമില്ല',
+'request_from' => 'അഭ്യർത്ഥന',
+'to' => 'ലേക്ക്',
+'unknown' => 'അജ്ഞാതം',
+'breakfast' => 'പ്രാതൽ',
+'lunch' => 'ഉച്ചഭക്ഷണം',
+'dinner' => 'അത്താഴം',
+'snack' => 'ലഘുഭക്ഷണം',
+],
+'fil' => [
+'special_requests' => 'Mga Espesyal na Kahilingan',
+'no_requests' => 'Walang espesyal na kahilingan sa ngayon',
+'request_from' => 'Kahilingan mula kay',
+'to' => 'kay',
+'unknown' => 'Hindi kilala',
+'breakfast' => 'Almusal',
+'lunch' => 'Tanghalian',
+'dinner' => 'Hapunan',
+'snack' => 'Meryenda',
+],
+'ur' => [
+'special_requests' => 'خصوصی درخواستیں',
+'no_requests' => 'اس وقت کوئی خصوصی درخواست نہیں',
+'request_from' => 'درخواست سے',
+'to' => 'کو',
+'unknown' => 'نامعلوم',
+'breakfast' => 'ناشتہ',
+'lunch' => 'دوپہر کا کھانا',
+'dinner' => 'رات کا کھانا',
+'snack' => 'ہلکا ناشتہ',
+],
+'ta' => [
+'special_requests' => 'சிறப்பு கோரிக்கைகள்',
+'no_requests' => 'தற்போது சிறப்பு கோரிக்கைகள் இல்லை',
+'request_from' => 'கோரிக்கை',
+'to' => 'க்கு',
+'unknown' => 'தெரியவில்லை',
+'breakfast' => 'காலை உணவு',
+'lunch' => 'மதிய உணவு',
+'dinner' => 'இரவு உணவு',
+'snack' => 'தின்பண்டம்',
+],
+'ne' => [
+'special_requests' => 'विशेष अनुरोधहरू',
+'no_requests' => 'हाल कुनै विशेष अनुरोध छैन',
+'request_from' => 'अनुरोधबाट',
+'to' => 'लाई',
+'unknown' => 'अज्ञात',
+'breakfast' => 'बिहानको खाना',
+'lunch' => 'दिउँसोको खाना',
+'dinner' => 'रातिको खाना',
+'snack' => 'खाजा',
+],
+'ps' => [
+'special_requests' => 'ځانګړې غوښتنې',
+'no_requests' => 'اوس مهال ځانګړې غوښتنې نشته',
+'request_from' => 'غوښتنه له',
+'to' => 'ته',
+'unknown' => 'نامعلوم',
+'breakfast' => 'سهارنۍ',
+'lunch' => 'غرمه',
+'dinner' => 'ماخوستن',
+'snack' => 'لږ خواړه',
+],
+'fr' => [
+'special_requests' => 'Demandes spéciales',
+'no_requests' => 'Aucune demande spéciale pour le moment',
+'request_from' => 'Demande de',
+'to' => 'à',
+'unknown' => 'Inconnu',
+'breakfast' => 'Petit-déjeuner',
+'lunch' => 'Déjeuner',
+'dinner' => 'Dîner',
+'snack' => 'Collation',
+],
+];
 
-        <div style="margin-top: 10px !important;" class="container">
-            <h1>الطلبات الخاصة</h1>
-            <div class="requests-grid">
-                @forelse($requests as $specialRequest)
-                <a href="{{ route('families.meals.show-meal', $specialRequest->recipe->id) }}">
-                    <div class="order-card">
-                        <div class="order-header">
-                            <img src="{{ asset('storage/' . $specialRequest->recipe->dish_image) }}" alt="صورة المرسل"
-                                class="order-avatar">
-                            <div class="order-info">
-                                <p class="order-date">
-                                    <i class="far fa-calendar-alt"></i> {{ $specialRequest->created_at->format('Y/m/d')
-                                    }}
-                                    <i class="far fa-clock"></i> {{ $specialRequest->created_at->format('h:i A') }}
-                                </p>
-                                <p class="order-title">طلب من
-                                    {{ $specialRequest->user->name ?? 'غير محدد' }} إلى
-                                    @if($specialRequest->cook_id && $specialRequest->cook)
-                                    {{ $specialRequest->cook->name }}
-                                    @elseif($specialRequest->familyMember)
-                                    {{ $specialRequest->familyMember->name }}
-                                    @else
-                                    غير محدد
-                                    @endif
-                                </p>
-                                <p>{{ __('messages.' . $specialRequest->meal_type) }}</p>
-                                <p>{{ $specialRequest->recipe->title }}</p>
-                            </div>
-                        </div>
-                    </div>
-                </a>
-                @empty
-                <p style="text-align: center; grid-column: 1/-1;">لا توجد طلبات خاصة حالياً</p>
-                @endforelse
-            </div>
+// قراءة اللغة من السيشن (آمنة من null)
+$lang = session('cook_language', 'ar');
+$t = $translations[$lang] ?? $translations['ar'];
+@endphp
+
+<header class="header header-fixed">
+    <div class="header-content">
+        <div class="right-content"></div>
+        <div class="mid-content">
+            <h4 class="title">{{ $t['special_requests'] }}</h4>
         </div>
+        <div class="left-content">
+            <a href="{{ route('chefs.welcome') }}" id="back-btn">
+                <i class="feather icon-arrow-left"></i>
+            </a>
+        </div>
+    </div>
+</header>
+
+<div style="margin-top: 10px !important;" class="container">
+    <h1>{{ $t['special_requests'] }}</h1>
+    <div class="requests-grid">
+        @forelse($requests as $specialRequest)
+        <a href="{{ route('families.meals.show-meal', $specialRequest->recipe->id) }}">
+            <div class="order-card">
+                <div class="order-header">
+                    <img src="{{ asset('storage/' . $specialRequest->recipe->dish_image) }}" alt="صورة الطبق"
+                        class="order-avatar">
+                    <div class="order-info">
+                        <p class="order-date">
+                            <i class="far fa-calendar-alt"></i>
+                            {{ $specialRequest->created_at->format('Y/m/d') }}
+                            <i class="far fa-clock"></i>
+                            {{ $specialRequest->created_at->format('h:i A') }}
+                        </p>
+                        <p class="order-title">
+                            {{ $t['request_from'] }}
+                            {{ $specialRequest->user->name ?? $t['unknown'] }}
+                            {{ $t['to'] }}
+                            @if($specialRequest->cook_id && $specialRequest->cook)
+                            {{ $specialRequest->cook->name }}
+                            @elseif($specialRequest->familyMember)
+                            {{ $specialRequest->familyMember->name }}
+                            @else
+                            {{ $t['unknown'] }}
+                            @endif
+                        </p>
+                        <p>
+                            {{ $t[strtolower($specialRequest->meal_type)] ?? $specialRequest->meal_type }}
+                        </p>
+                        <p>
+                            {{ \App\Helpers\TranslationHelper::translate($specialRequest->recipe->title ?? '', $lang) }}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </a>
+        @empty
+        <p style="text-align: center; grid-column: 1/-1;">
+            {{ $t['no_requests'] }}
+        </p>
+        @endforelse
+    </div>
+</div>
 
         <script src="{{ asset('assets/js/jquery.js') }}"></script>
         <script src="{{ asset('assets/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>

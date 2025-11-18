@@ -275,7 +275,29 @@
     <header class="header header-fixed border-bottom">
         <div class="header-content">
             <div class="mid-content">
-                <h4 class="title">{{ __('messages.facts') }}</h4>
+                @php
+                $lang = $lang = session('cook_language') 
+            ?? session('family_language') 
+            ?? 'ar';
+                $factsTranslations = [
+                'ar' => 'حقائق',
+                'en' => 'Facts',
+                'hi' => 'तथ्य',
+                'id' => 'Fakta',
+                'am' => 'እውነታዎች',
+                'bn' => 'তথ্য',
+                'ml' => 'തത്വങ്ങൾ',
+                'fil' => 'Mga Katotohanan',
+                'ur' => 'حقائق',
+                'ta' => 'வास्तவங்கள்',
+                'ne' => 'तथ्यहरू',
+                'ps' => 'حقایق',
+                'fr' => 'Faits',
+                ];
+                $factsText = $factsTranslations[$lang] ?? $factsTranslations['ar'];
+                @endphp
+
+                <h4 class="title">{{ $factsText }}</h4>
             </div>
             <div class="left-content">
                 <a href="{{ url()->previous() }}" id="back-btn">
@@ -293,75 +315,178 @@
     </div>
 
     <div class="container">
-       <div class="nutrition-card">
-        <!-- السعرات الحرارية -->
-        <div class="nutrition-item">
-            <div class="icon-container">
-                <svg viewBox="0 0 24 24" fill="white">
-                    <path
-                        d="M12,2A7,7 0 0,0 5,9C5,11.38 6.19,13.47 8,14.74V17A1,1 0 0,0 9,18H15A1,1 0 0,0 16,17V14.74C17.81,13.47 19,11.38 19,9A7,7 0 0,0 12,2M9,21V20H15V21A1,1 0 0,1 14,22H10A1,1 0 0,1 9,21M12,11.5A2.5,2.5 0 0,1 9.5,9A2.5,2.5 0 0,1 12,6.5A2.5,2.5 0 0,1 14.5,9A2.5,2.5 0 0,1 12,11.5Z" />
-                </svg>
-            </div>
-            <div class="nutrition-content">
-                <div class="nutrition-label">{{ __('messages.calories') }}</div>
-                <div class="nutrition-value">
-                    {{ $recipe->calories }}
-                    <span style="font-size: 16px; color: #999;">{{ __('messages.calorie') }}</span>
-                </div>
-            </div>
-        </div>
-    
-        <!-- الدهون -->
-        <div class="nutrition-item">
-            <div class="icon-container">
-                <svg viewBox="0 0 24 24" fill="white">
-                    <path
-                        d="M12,2A3,3 0 0,1 15,5V11A3,3 0 0,1 12,14A3,3 0 0,1 9,11V5A3,3 0 0,1 12,2M12,16A1,1 0 0,1 13,17V21A1,1 0 0,1 12,22A1,1 0 0,1 11,21V17A1,1 0 0,1 12,16Z" />
-                </svg>
-            </div>
-            <div class="nutrition-content">
-                <div class="nutrition-label">{{ __('messages.fats') }}</div>
-                <div class="nutrition-value">
-                    {{ $recipe->fats }}
-                    <span style="font-size: 16px; color: #999;">{{ __('messages.gram') }}</span>
-                </div>
-            </div>
-        </div>
-    
-        <!-- الكربوهيدرات -->
-        <div class="nutrition-item">
-            <div class="icon-container">
-                <svg viewBox="0 0 24 24" fill="white">
-                    <path
-                        d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,4A8,8 0 0,1 20,12A8,8 0 0,1 12,20A8,8 0 0,1 4,12A8,8 0 0,1 12,4M12,6A6,6 0 0,0 6,12A6,6 0 0,0 12,18A6,6 0 0,0 18,12A6,6 0 0,0 12,6M12,8A4,4 0 0,1 16,12A4,4 0 0,1 12,16A4,4 0 0,1 8,12A4,4 0 0,1 12,8Z" />
-                </svg>
-            </div>
-            <div class="nutrition-content">
-                <div class="nutrition-label">{{ __('messages.carbs') }}</div>
-                <div class="nutrition-value">
-                    {{ $recipe->carbs }}
-                    <span style="font-size: 16px; color: #999;">{{ __('messages.gram') }}</span>
-                </div>
-            </div>
-        </div>
-    
-        <!-- البروتين -->
-        <div class="nutrition-item">
-            <div class="icon-container">
-                <svg viewBox="0 0 24 24" fill="white">
-                    <path
-                        d="M12,2C13.1,2 14,2.9 14,4C14,5.1 13.1,6 12,6C10.9,6 10,5.1 10,4C10,2.9 10.9,2 12,2M21,9V7L15,13L13.5,7.5C13.1,6.2 11.9,5.2 10.5,5.2C9.1,5.2 7.9,6.2 7.5,7.5L6,13L0,7V9L6,15L7.5,9.5C7.9,8.2 9.1,7.2 10.5,7.2C11.9,7.2 13.1,8.2 13.5,9.5L15,15L21,9Z" />
-                </svg>
-            </div>
-            <div class="nutrition-content">
-                <div class="nutrition-label">{{ __('messages.protein') }}</div>
-                <div class="nutrition-value">
-                    {{ $recipe->protein }}
-                    <span style="font-size: 16px; color: #999;">{{ __('messages.gram') }}</span>
-                </div>
-            </div>
+        <div class="nutrition-card">
+@php
+$lang = $lang = session('cook_language') 
+            ?? session('family_language') 
+            ?? 'ar';
+
+$nutritionLabels = [
+'calories' => [
+'ar' => 'السعرات الحرارية',
+'en' => 'Calories',
+'hi' => 'कैलोरीज़',
+'id' => 'Kalori',
+'am' => 'ካሎሪ',
+'bn' => 'ক্যালোরি',
+'ml' => 'കാൽറീസ്',
+'fil' => 'Kaloriya',
+'ur' => 'کیلوریز',
+'ta' => 'கலோரி',
+'ne' => 'क्यालोरी',
+'ps' => 'کالوري',
+'fr' => 'Calories',
+],
+'calorie' => [
+'ar' => 'سعرة',
+'en' => 'cal',
+'hi' => 'कैल',
+'id' => 'kal',
+'am' => 'ካሎሪ',
+'bn' => 'কাল',
+'ml' => 'കാൽ',
+'fil' => 'kal',
+'ur' => 'کیل',
+'ta' => 'காலரி',
+'ne' => 'काल',
+'ps' => 'کال',
+'fr' => 'cal',
+],
+'fats' => [
+'ar' => 'الدهون',
+'en' => 'Fats',
+'hi' => 'वसा',
+'id' => 'Lemak',
+'am' => 'ስብ',
+'bn' => 'চর্বি',
+'ml' => 'ചെറുകഷണം',
+'fil' => 'Taba',
+'ur' => 'چربی',
+'ta' => 'கொழுப்பு',
+'ne' => 'फ्याट्स',
+'ps' => 'وړتیاوې',
+'fr' => 'Graisses',
+],
+'carbs' => [
+'ar' => 'الكربوهيدرات',
+'en' => 'Carbs',
+'hi' => 'कार्बोहाइड्रेट्स',
+'id' => 'Karbohidrat',
+'am' => 'ካርቦሃይድሬት',
+'bn' => 'ক্যাবস',
+'ml' => 'കാർബ്സ്',
+'fil' => 'Carbs',
+'ur' => 'کاربوہائیڈریٹس',
+'ta' => 'கார்ப்ஸ்',
+'ne' => 'कार्ब्स',
+'ps' => 'کاربوهایدریټ',
+'fr' => 'Glucides',
+],
+'protein' => [
+'ar' => 'البروتين',
+'en' => 'Protein',
+'hi' => 'प्रोटीन',
+'id' => 'Protein',
+'am' => 'ፕሮቲን',
+'bn' => 'প্রোটিন',
+'ml' => 'പ്രോട്ടീൻ',
+'fil' => 'Protina',
+'ur' => 'پروٹین',
+'ta' => 'புரோட்டீன்',
+'ne' => 'प्रोटिन',
+'ps' => 'پروټین',
+'fr' => 'Protéines',
+],
+'gram' => [
+'ar' => 'جرام',
+'en' => 'g',
+'hi' => 'ग्राम',
+'id' => 'g',
+'am' => 'ግራም',
+'bn' => 'গ্রাম',
+'ml' => 'ഗ്രാം',
+'fil' => 'g',
+'ur' => 'گرام',
+'ta' => 'கிராம்',
+'ne' => 'ग्राम',
+'ps' => 'ګرام',
+'fr' => 'g',
+],
+];
+
+function t($key, $lang, $labels) {
+return $labels[$key][$lang] ?? $labels[$key]['ar'];
+}
+@endphp
+
+<!-- السعرات الحرارية -->
+<div class="nutrition-item">
+    <div class="icon-container">
+        <svg viewBox="0 0 24 24" fill="white">
+            <path
+                d="M12,2A7,7 0 0,0 5,9C5,11.38 6.19,13.47 8,14.74V17A1,1 0 0,0 9,18H15A1,1 0 0,0 16,17V14.74C17.81,13.47 19,11.38 19,9A7,7 0 0,0 12,2M9,21V20H15V21A1,1 0 0,1 14,22H10A1,1 0 0,1 9,21M12,11.5A2.5,2.5 0 0,1 9.5,9A2.5,2.5 0 0,1 12,6.5A2.5,2.5 0 0,1 14.5,9A2.5,2.5 0 0,1 12,11.5Z" />
+        </svg>
+    </div>
+    <div class="nutrition-content">
+        <div class="nutrition-label">{{ t('calories', $lang, $nutritionLabels) }}</div>
+        <div class="nutrition-value">
+            {{ $recipe->calories }}
+            <span style="font-size: 16px; color: #999;">{{ t('calorie', $lang, $nutritionLabels) }}</span>
         </div>
     </div>
+</div>
+
+<!-- الدهون -->
+<div class="nutrition-item">
+    <div class="icon-container">
+        <svg viewBox="0 0 24 24" fill="white">
+            <path
+                d="M12,2A3,3 0 0,1 15,5V11A3,3 0 0,1 12,14A3,3 0 0,1 9,11V5A3,3 0 0,1 12,2M12,16A1,1 0 0,1 13,17V21A1,1 0 0,1 12,22A1,1 0 0,1 11,21V17A1,1 0 0,1 12,16Z" />
+        </svg>
+    </div>
+    <div class="nutrition-content">
+        <div class="nutrition-label">{{ t('fats', $lang, $nutritionLabels) }}</div>
+        <div class="nutrition-value">
+            {{ $recipe->fats }}
+            <span style="font-size: 16px; color: #999;">{{ t('gram', $lang, $nutritionLabels) }}</span>
+        </div>
+    </div>
+</div>
+
+<!-- الكربوهيدرات -->
+<div class="nutrition-item">
+    <div class="icon-container">
+        <svg viewBox="0 0 24 24" fill="white">
+            <path
+                d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,4A8,8 0 0,1 20,12A8,8 0 0,1 12,20A8,8 0 0,1 4,12A8,8 0 0,1 12,4M12,6A6,6 0 0,0 6,12A6,6 0 0,0 12,18A6,6 0 0,0 18,12A6,6 0 0,0 12,6M12,8A4,4 0 0,1 16,12A4,4 0 0,1 12,16A4,4 0 0,1 8,12A4,4 0 0,1 12,8Z" />
+        </svg>
+    </div>
+    <div class="nutrition-content">
+        <div class="nutrition-label">{{ t('carbs', $lang, $nutritionLabels) }}</div>
+        <div class="nutrition-value">
+            {{ $recipe->carbs }}
+            <span style="font-size: 16px; color: #999;">{{ t('gram', $lang, $nutritionLabels) }}</span>
+        </div>
+    </div>
+</div>
+
+<!-- البروتين -->
+<div class="nutrition-item">
+    <div class="icon-container">
+        <svg viewBox="0 0 24 24" fill="white">
+            <path
+                d="M12,2C13.1,2 14,2.9 14,4C14,5.1 13.1,6 12,6C10.9,6 10,5.1 10,4C10,2.9 10.9,2 12,2M21,9V7L15,13L13.5,7.5C13.1,6.2 11.9,5.2 10.5,5.2C9.1,5.2 7.9,6.2 7.5,7.5L6,13L0,7V9L6,15L7.5,9.5C7.9,8.2 9.1,7.2 10.5,7.2C11.9,7.2 13.1,8.2 13.5,9.5L15,15L21,9Z" />
+        </svg>
+    </div>
+    <div class="nutrition-content">
+        <div class="nutrition-label">{{ t('protein', $lang, $nutritionLabels) }}</div>
+        <div class="nutrition-value">
+            {{ $recipe->protein }}
+            <span style="font-size: 16px; color: #999;">{{ t('gram', $lang, $nutritionLabels) }}</span>
+        </div>
+    </div>
+</div>
+        </div>
     </div>
 </body>
 

@@ -14,6 +14,7 @@ use App\Traits\NotificationHelperUser;
 use App\Models\Family;
 use App\Models\User;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\App;
 
 class FamilyController extends Controller
 {
@@ -293,32 +294,28 @@ class FamilyController extends Controller
             return redirect()->route('families.welcome');
         }
 
-        // إذا كان هناك رقم عائلة وعضو في الرابط
         $memberData = null;
         if ($family_number && $member_id) {
             $memberData = MyFamily::where('family_number', $family_number)
                 ->where('id', $member_id)
                 ->first();
+            if($memberData && $memberData->language) {
+                App::setLocale($memberData->language);
+            }
         }
-
-        // التحقق من الـ cookie
         if (request()->cookie('family_remember')) {
             try {
                 $data = json_decode(decrypt(request()->cookie('family_remember')), true);
-
                 $familyMember = MyFamily::where('family_number', $data['family_number'])
                     ->where('password', $data['password'])
                     ->first();
-
                 if ($familyMember) {
-                    // ✅ تسجيل دخول الـ User المرتبط
                     if ($familyMember->user_id) {
                         $user = User::find($familyMember->user_id);
                         if ($user) {
                             Auth::login($user);
                         }
                     }
-
                     session([
                         'family_id' => $familyMember->id,
                         'family_number' => $familyMember->family_number,
@@ -327,8 +324,6 @@ class FamilyController extends Controller
                         'family_language' => $familyMember->language, // ✅ أضف ده
                         'is_family_logged_in' => true
                     ]);
-
-
 
                     $this->sendFamilyLoginNotification($familyMember);
                     return redirect()->route('families.welcome');

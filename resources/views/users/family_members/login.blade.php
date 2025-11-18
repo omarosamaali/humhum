@@ -1,3 +1,74 @@
+@php
+$translations = [
+'ar' => ['welcome' => 'أهلاً', 'family_number' => 'رقم العضوية', 'password' => 'رمز الدخول', 'login' => 'دخول'],
+'en' => [
+'welcome' => 'Hello',
+'family_number' => 'Membership Number',
+'password' => 'Access Code',
+'login' => 'Login',
+],
+'id' => [
+'welcome' => 'Halo',
+'family_number' => 'Nomor Keanggotaan',
+'password' => 'Kode Akses',
+'login' => 'Masuk',
+],
+'am' => ['welcome' => 'ሰላም', 'family_number' => 'የአባልነት ቁጥር', 'password' => 'የመዳረሻ ኮድ', 'login' => 'ግባ'],
+'hi' => [
+'welcome' => 'नमस्ते',
+'family_number' => 'सदस्यता संख्या',
+'password' => 'पहुँच कोड',
+'login' => 'लॉगिन',
+],
+'bn' => [
+'welcome' => 'হ্যালো',
+'family_number' => 'সদস্য নম্বর',
+'password' => 'অ্যাক্সেস কোড',
+'login' => 'লগইন',
+],
+'ml' => [
+'welcome' => 'ഹലോ',
+'family_number' => 'അംഗത്വ നമ്പർ',
+'password' => 'ആക്സസ് കോഡ്',
+'login' => 'ലോഗിൻ',
+],
+'fil' => [
+'welcome' => 'Kumusta',
+'family_number' => 'Numero ng Miyembro',
+'password' => 'Access Code',
+'login' => 'Mag-login',
+],
+'ur' => ['welcome' => 'ہیلو', 'family_number' => 'ممبرشپ نمبر', 'password' => 'رسائی کوڈ', 'login' => 'لاگ ان'],
+'ta' => [
+'welcome' => 'வணக்கம்',
+'family_number' => 'உறுப்பினர் எண்',
+'password' => 'அணுகல் குறியீடு',
+'login' => 'உள்நுழை',
+],
+'ne' => [
+'welcome' => 'नमस्ते',
+'family_number' => 'सदस्यता नम्बर',
+'password' => 'पहुँच कोड',
+'login' => 'लगइन',
+],
+'ps' => [
+'welcome' => 'سلام',
+'family_number' => 'د غړیتوب شمېره',
+'password' => 'د لاسرسي کوډ',
+'login' => 'ننوتل',
+],
+'fr' => [
+'welcome' => 'Bonjour',
+'family_number' => 'Numéro de membre',
+'password' => 'Code d\'accès',
+'login' => 'Connexion',
+],
+];
+
+$lang = $memberData->language ?? 'ar';
+$t = $translations[$lang] ?? $translations['ar'];
+@endphp
+
 <!DOCTYPE html>
 <html lang="en" dir="rtl">
 
@@ -85,11 +156,11 @@
                             <img src="assets/images/family-logo/logo.png" alt="logo">
                         </div>
                     </div>
-                    @if($memberData)
+                    @if ($memberData)
                     <div class="member-info">
-                        <div class="member-number">اهلا</div>
-                        <img src="{{ $memberData->avatar ? $memberData->avatar : asset('assets/images/default.jpg') }}"
-                            class="member-avatar" alt="{{ $memberData->name }}">
+                        <div class="member-number">{{ $t['welcome'] }}</div>
+                        <img src="{{ $memberData->avatar ?? asset('assets/images/default.jpg') }}" class="member-avatar"
+                            alt="{{ $memberData->name }}">
                         <div class="member-name">{{ $memberData->name }}</div>
                     </div>
                     @endif
@@ -98,55 +169,51 @@
                         <form method="POST" action="{{ route('family_members.login.post') }}">
                             @csrf
 
-                            @if($memberData)
+                            @if ($memberData)
                             <input type="hidden" name="family_number" value="{{ $memberData->family_number }}">
                             <input type="hidden" name="member_id" value="{{ $memberData->id }}">
                             @else
                             <div class="mb-4">
-                                <label class="form-label" for="family_number">رقم العضوية</label>
-                                <div class="input-group input-mini input-lg">
-                                    <input type="text" name="family_number" id="family_number"
-                                        class="form-control @error('family_number') is-invalid @enderror"
-                                        value="{{ old('family_number', $family_number) }}" maxlength="5"
-                                        pattern="\d{1,5}" inputmode="numeric">
-                                </div>
-                                @error('password')
+                                <label>{{ $t['family_number'] }}</label>
+                                <input type="text" name="family_number"
+                                    value="{{ old('family_number', $family_number ?? '') }}"
+                                    class="form-control @error('family_number') is-invalid @enderror" maxlength="5">
+                                @error('family_number')
                                 <span class="text-danger">{{ $message }}</span>
                                 @enderror
                             </div>
                             @endif
 
                             <div class="m-b30">
-                                <label class="form-label" for="password">رمز الدخول</label>
-                                <div class="account-section">
-                                    <input type="hidden" name="password" id="password-hidden">
-                                    <div id="otp" class="digit-group input-mini">
-                                        <input class="form-control otp-input" type="text" maxlength="1" data-index="0"
-                                            required>
-                                        <input class="form-control otp-input" type="text" maxlength="1" data-index="1"
-                                            required>
-                                        <input class="form-control otp-input" type="text" maxlength="1" data-index="2"
-                                            required>
-                                        <input class="form-control otp-input" type="text" maxlength="1" data-index="3"
-                                            required>
-                                    </div>
-                                    @if ($errors->any())
-                                            @foreach ($errors->all() as $error)
-                                            {{ $error }}
-                                            @endforeach
-                                    @endif
+                                <label>{{ $t['password'] }}</label>
+                                <input type="hidden" name="password" id="password-hidden">
+                                @php
+                                $rtlLanguages = ['ar', 'ur', 'ps'];
+                                $dir = in_array($memberData->language, $rtlLanguages) ? 'direction:rtl;' : 'direction:ltr;';
+                                @endphp
+                                <div style="{{ $dir }}" id="otp" class="digit-group">
+                                    @for ($i = 0; $i < 4; $i++) <input class="form-control otp-input" type="text"
+                                        maxlength="1" data-index="{{ $i }}" required>
+                                        @endfor
                                 </div>
+                                @error('password')
+                                <span class="text-danger">{{ $message }}</span>
+                                @enderror
+                                @if ($errors->has('login'))
+                                <div class="text-danger">{{ $errors->first('login') }}</div>
+                                @endif
                             </div>
 
-                            <button type="submit"
-                                class="btn btn-thin btn-lg w-100 btn-primary rounded-xl mb-3">دخول</button>
+                            <button type="submit" class="btn btn-primary w-100">
+                                {{ $t['login'] }}
+                            </button>
                         </form>
 
                         <script>
                             document.addEventListener('DOMContentLoaded', function() {
                                 const inputs = document.querySelectorAll('.otp-input');
                                 const hiddenInput = document.getElementById('password-hidden');
-                                
+
                                 inputs.forEach((input, index) => {
                                     input.addEventListener('input', function(e) {
                                         if (this.value.length === 1) {
@@ -156,14 +223,14 @@
                                         }
                                         updateHiddenInput();
                                     });
-                                    
+
                                     input.addEventListener('keydown', function(e) {
                                         if (e.key === 'Backspace' && this.value === '' && index > 0) {
                                             inputs[index - 1].focus();
                                         }
                                     });
                                 });
-                                
+
                                 function updateHiddenInput() {
                                     let password = '';
                                     inputs.forEach(input => {

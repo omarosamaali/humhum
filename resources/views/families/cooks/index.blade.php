@@ -42,6 +42,8 @@
             justify-content: center;
             display: flex;
             flex-direction: column;
+            margin: auto;
+            padding: 15px;
         }
     </style>
 </head>
@@ -65,10 +67,33 @@
                 <div class="left-content">
                 </div>
                 <div class="mid-content">
-                    <h4 class="title">{{ __('messages.chefs') }}</h4>
+                    <div class="mid-content">
+                        @php
+                        $lang = session('cook_language')
+            ?? session('family_language')
+            ?? 'ar';
+                        $t = [
+                        'ar' => 'الطباخين',
+                        'en' => 'Cooks',
+                        'id' => 'Koki', // تم تصحيحها
+                        'am' => 'የማብሰያ ሰዎች',
+                        'hi' => 'रसोइये',
+                        'bn' => 'রাঁধুনি',
+                        'ml' => 'പാചകക്കാർ',
+                        'fil' => 'Mga Kusinero',
+                        'ur' => 'باورچی',
+                        'ta' => 'சமையல்காரர்கள்',
+                        'ne' => 'खाना पकाउनेहरू',
+                        'ps' => 'پخلی کوونکي',
+                        'fr' => 'Cuisiniers',
+                        ][$lang] ?? 'الطباخين';
+                        @endphp
+                        <h4 class="title">{{ $t }}</h4>
+                    </div>
                 </div>
                 <div class="right-content">
-                    <a href="{{ route('families.welcome') }}" style="background-color: unset !important; font-size: 24px;">
+                    <a href="{{ route('families.welcome') }}"
+                        style="background-color: unset !important; font-size: 24px;">
                         <i class="feather icon-home" style="font-weight: normal; color: #29A500;"></i>
                     </a>
                 </div>
@@ -95,7 +120,7 @@
                 <span class="img-fluid icon">
                     👨‍🍳
                 </span>
-                {{ __('messages.chefs') }}
+                {{ $t }}
             </div>
             <ul class="featured-list">
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">

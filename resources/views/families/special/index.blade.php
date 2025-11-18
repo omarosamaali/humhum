@@ -126,6 +126,125 @@
             </div>
         </div>
 
+        @php
+        // تحديد اللغة
+        $lang = $lang = session('cook_language')
+        ?? session('family_language')
+        ?? 'ar';
+
+        $t = $t ?? []; // لو سبق وعرفت $t في مكان تاني استخدمه، وإلا خليه موجود لتجنب أخطاء
+        // ترجمات ثابتة للنصوص في هذا الصفحة
+        $t = [
+        'meal_type' => [
+        'breakfast' => [
+        'ar' => 'فطور',
+        'en' => 'Breakfast',
+        'hi' => 'नाश्ता',
+        'id' => 'Sarapan',
+        'am' => 'ቁርስ',
+        'bn' => 'নাশতা',
+        'ml' => 'പ്രഭാതഭക്ഷണം',
+        'fil' => 'Almusal',
+        'ur' => 'ناشتہ',
+        'ta' => 'காலை உணவு',
+        'ne' => 'बिहानीको खाजा',
+        'ps' => 'ناشته',
+        'fr' => 'Petit déjeuner',
+        ],
+        'lunch' => [
+        'ar' => 'غداء',
+        'en' => 'Lunch',
+        'hi' => 'दोपहर का भोजन',
+        'id' => 'Makan Siang',
+        'am' => 'ቀትር',
+        'bn' => 'দুপুরের খাবার',
+        'ml' => 'ഉച്ചഭക്ഷണം',
+        'fil' => 'Tanghalian',
+        'ur' => 'دوپہر کا کھانا',
+        'ta' => 'மதிய உணவு',
+        'ne' => 'मध्यान्ह भोजन',
+        'ps' => 'غرمنۍ ډوډۍ',
+        'fr' => 'Déjeuner',
+        ],
+        'dinner' => [
+        'ar' => 'عشاء',
+        'en' => 'Dinner',
+        'hi' => 'रात का खाना',
+        'id' => 'Makan Malam',
+        'am' => 'እራት',
+        'bn' => 'রাতের খাবার',
+        'ml' => 'വൈകുന്നേര ഭക്ഷണം',
+        'fil' => 'Hapunan',
+        'ur' => 'رات کا کھانا',
+        'ta' => 'இரவு உணவு',
+        'ne' => 'बेलुकीको खाना',
+        'ps' => 'ماښامنۍ ډوډۍ',
+        'fr' => 'Dîner',
+        ],
+        'snack' => [
+        'ar' => 'وجبة خفيفة',
+        'en' => 'Snack',
+        'hi' => 'नाश्ता',
+        'id' => 'Camilan',
+        'am' => 'ቅቤ',
+        'bn' => 'হালকা খাবার',
+        'ml' => 'ലഘുഭക്ഷണം',
+        'fil' => 'Meryenda',
+        'ur' => 'ہلکی پھلکی خوراک',
+        'ta' => 'இலேசான சிற்றுண்டி',
+        'ne' => 'हल्का खाना',
+        'ps' => 'لنډه ډوډۍ',
+        'fr' => 'Collation',
+        ],
+        ],
+        'special_requests' => [
+        'ar' => 'الطلبات الخاصة',
+        'en' => 'Special Requests',
+        'hi' => 'विशेष अनुरोध',
+        'id' => 'Permintaan Khusus',
+        'am' => 'ልዩ ጥያቄዎች',
+        'bn' => 'বিশেষ অনুরোধসমূহ',
+        'ml' => 'പ്രത്യേക അഭ്യർത്ഥനകൾ',
+        'fil' => 'Mga Espesyal na Kahilingan',
+        'ur' => 'خاص درخواستیں',
+        'ta' => 'சிறப்பு கோரிக்கைகள்',
+        'ne' => 'विशेष अनुरोधहरू',
+        'ps' => 'ځانګړې غوښتنې',
+        'fr' => 'Demandes spéciales',
+        ],
+        'request_from' => [
+        'ar' => 'طلب من',
+        'en' => 'Request from',
+        'hi' => 'अनुरोध से',
+        'id' => 'Permintaan dari',
+        'am' => 'ጥያቄ ከ',
+        'bn' => 'অনুরোধ থেকে',
+        'ml' => 'അഭ്യർത്ഥനയിൽ നിന്ന്',
+        'fil' => 'Kahilingan mula sa',
+        'ur' => 'درخواست از',
+        'ta' => 'கோரிக்கை இருந்து',
+        'ne' => 'अनुरोध बाट',
+        'ps' => 'غوښتنه له',
+        'fr' => 'Demande de',
+        ],
+        'to' => [
+        'ar' => 'إلى',
+        'en' => 'to',
+        'hi' => 'को',
+        'id' => 'kepada',
+        'am' => 'ወደ',
+        'bn' => 'প্রতি',
+        'ml' => 'ലേക്ക്',
+        'fil' => 'sa',
+        'ur' => 'کو',
+        'ta' => 'க்கு',
+        'ne' => 'लाई',
+        'ps' => 'ته',
+        'fr' => 'à',
+        ],
+        ];
+        @endphp
+
         <!-- Header -->
         <header class="header header-fixed" style="border-bottom: 1px solid #bababa;">
             <div class="header-content">
@@ -135,7 +254,7 @@
                     </a>
                 </div>
                 <div class="mid-content">
-                    <h4 class="title">الطلبات الخاصة</h4>
+                    <h4 class="title">{{ $t['special_requests'][$lang] ?? $t['special_requests']['ar'] }}</h4>
                 </div>
                 <div class="right-content"></div>
             </div>
@@ -145,36 +264,65 @@
         <div style="direction: rtl; margin-top: 100px;" class="tab-content" id="ordersTabsContent">
             <!-- My Orders Tab -->
             <div class="tab-pane fade show active" id="my-orders" role="tabpanel">
-                @foreach ($specialRequests as $specialRequest)
+                @forelse ($specialRequests as $specialRequest)
                 <a href="{{ route('families.meals.show-meal', $specialRequest->recipe->id) }}">
                     <div style="border: 1px solid #bababa; border-radius: 16px;" class="order-card">
                         <div class="order-header">
-                            <img src="{{ asset('storage/' . $specialRequest->recipe->dish_image) }}"
-                                alt="صورة المرسل" class="order-avatar">
+                            <img src="{{ asset('storage/' . $specialRequest->recipe->dish_image) }}" alt="صورة الوجبة"
+                                class="order-avatar">
                             <div class="order-info">
                                 <p class="order-date">
-                                    <i class="far fa-calendar-alt"></i> {{ $specialRequest->created_at->format('Y/m/d') }}
-                                    <i class="far fa-clock"></i> {{ $specialRequest->created_at->format('h:i A') }}
+                                    <i class="far fa-calendar-alt"></i>
+                                    {{ $specialRequest->created_at->translatedFormat('Y/m/d') }}
+                                    <i class="far fa-clock"></i>
+                                    {{ $specialRequest->created_at->translatedFormat('h:i A') }}
                                 </p>
-                                <p class="order-title">طلب من 
-                                    {{ $specialRequest->familyUserRecipe->name }}
-                                    إلى 
-                                    @if($specialRequest->cook_id)
-                                    {{ $specialRequest->cook->name }}
-                                    @else
-                                    {{ $specialRequest->familyMember->name }}
-                                    @endif
+                                <p class="order-title">
+                                    {{ $t['request_from'][$lang] ?? $t['request_from']['ar'] }}
+                                    <strong>{{ $specialRequest->familyUserRecipe->name }}</strong>
+                                    {{ $t['to'][$lang] ?? $t['to']['ar'] }}
+                                    <strong>
+                                        @if($specialRequest->cook_id)
+                                        {{ $specialRequest->cook->name }}
+                                        @else
+                                        {{ $specialRequest->familyMember->name }}
+                                        @endif
+                                    </strong>
                                 </p>
-                                <p>{{ __('messages.' . $specialRequest->meal_type) }}</p>
-                                <p>{{ $specialRequest->recipe->title }}</p>
+                                <p>
+                                    @php
+                                    // جلب نوع الوجبة بناءً على اللغة
+                                    $mealType = $t['meal_type'][$specialRequest->meal_type][$lang]
+                                    ?? ucfirst($specialRequest->meal_type);
+                                    @endphp
+                                    {{ $mealType }}
+                                </p>
+                                <p>
+                                    @php
+                                    $translatedTitle =
+                                    \App\Helpers\TranslationHelper::translate($specialRequest->recipe->title
+                                    ?? '', $lang);
+                                    if (empty($translatedTitle) || $translatedTitle === $specialRequest->recipe->title)
+                                    {
+                                    $translatedTitle = $t[$specialRequest->recipe->title][$lang] ??
+                                    $specialRequest->recipe->title;
+                                    }
+                                    echo $translatedTitle;
+                                    @endphp
+                                </p>
                             </div>
-    
                         </div>
                     </div>
                 </a>
-                @endforeach
+                @empty
+                <div class="text-center py-5">
+                    <i class="feather icon-inbox" style="font-size: 48px; color: #ddd;"></i>
+                    <p class="text-muted mt-3">{{ __('messages.no_special_requests') }}</p>
+                </div>
+                @endforelse
             </div>
         </div>
+
     </div>
 
     <script src="{{ asset('assets/js/jquery.js') }}"></script>
