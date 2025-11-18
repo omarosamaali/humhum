@@ -536,26 +536,30 @@
 
     <button class="btn btn-primary" style="padding: 6px 9px !important;">
         <a href="{{ route('families.meals.ingredients', $recipe->id) }}" style="font-size: 11px; color: white;">
-            {{ $ingredientsText }}
+            {{-- {{ $ingredientsText }} --}}
+            {{ app()->getLocale() == 'ar' ? 'المكونات' : 'ingredients' }}
         </a>
     </button>
 
     <button class="btn btn-warning" style="padding: 6px 9px !important;">
         <a href="{{ route('families.meals.steps', $recipe->id) }}" style="font-size: 11px; color: white;">
             {{ $stepsText }}
+            {{ app()->getLocale() == 'ar' ? 'خطوات التحضير' : 'Preparation steps' }}
         </a>
     </button>
 
     <button class="btn btn-info" style="padding: 6px 9px !important;">
         <a href="{{ route('families.meals.families', $recipe->id) }}?meal_plan_id={{ $mealPlan->id ?? '' }}"
             style="font-size: 11px; width: 79px; color: white;">
-            {{ $familyMembersText }}
+            {{-- {{ $familyMembersText }} --}}
+            {{ app()->getLocale() == 'ar' ? 'عدد الافراد' : 'Number of people' }}
         </a>
     </button>
 
     <button class="btn btn-success" style="padding: 6px 9px !important;">
         <a href="{{ route('families.meals.facts', $recipe->id) }}" style="font-size: 11px; color: white;">
-            {{ $factsText }}
+            {{-- {{ $factsText }} --}}
+            {{ app()->getLocale() == 'ar' ? 'الحقائق' : 'Facts' }}
         </a>
     </button>
 
