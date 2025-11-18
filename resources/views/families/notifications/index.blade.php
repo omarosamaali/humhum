@@ -133,7 +133,7 @@
                 <div class="notification-list">
                     <ul>
                         @foreach($notifications as $notification)
-                        <li class="list-items" data-id="{{ $notification->id }}" style="position: relative;">
+                        <li class="list-items" data-id="{{ $notification->id }}" style="align-items: start; gap: 5px; position: relative;">
                             <div class="media">
                                 <div class="list-content">
                                     <h5 class="title">{{ $notification->message }}</h5>
