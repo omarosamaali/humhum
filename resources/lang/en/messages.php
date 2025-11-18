@@ -306,6 +306,7 @@ return [
     'صلصات' => 'Sauces',
     'طبق جانبي' => 'Side Dish',
     'special_requests' => 'Special Request',
+    'سجل الطلبات' => 'Special Requests',
 
     'ar' => 'Arabic',
     'en' => 'English',

@@ -236,7 +236,7 @@
         </a>
         <a href="{{ route('users.special.index') }}" style="border-radius: 15px 0px 0px 15px;" class="special-request">
             {{-- {{ __('messages.special_requests') }} --}}
-            سجل الطلبات
+            {{ __('messages.سجل الطلبات') }}
         </a>
     </div>
     {{-- End Special request --}}

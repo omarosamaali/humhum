@@ -18,7 +18,7 @@ return [
     'login' => 'تسجيل دخول',
     'welcome' => 'مرحبا بك..',
     'choose_language' => 'اختر اللغة',
-
+    'سجل الطلبات' => 'سجل الطلبات',
     // Chef suggestion section
     'chef_suggestion' => 'اقتراح الطاهي',
     'no_meals_available' => 'لا توجد وجبات متاحة',
