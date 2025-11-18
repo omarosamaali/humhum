@@ -466,18 +466,26 @@
                         </div>
                     </div>
 
-                    @if($recipe->chef_id != null)
-                    <div style="display: flex;">
-                        <div class="dz-item-rating"
-                            style="background-color: #29A500; font-size: 17px; overflow: hidden; line-height: unset; border: 2px solid #29A500;">
-                            <img src="{{ asset('storage/' . $recipe->user->chefProfile->official_image) }}"
-                                style="width: 100%; height: 100%;" alt="{{ $recipe->user->name }}">
-                        </div>
-                        <h5 style="position: absolute; right: 100px; top: 10px; font-size: 14px; color: gray;">
-                            {{ __('messages.chef_recipes', ['name' => $recipe->user->name]) }}
-                        </h5>
+                  @if($recipe->chef_id != null)
+                <div style="display: flex;">
+                    <div class="dz-item-rating"
+                        style="background-color: #29A500; font-size: 17px; overflow: hidden; line-height: unset; border: 2px solid #29A500;">
+                
+                        {{-- ✅ الحل 1: التحقق المتسلسل (Null Safe) --}}
+                        @if($recipe->user?->chefProfile?->official_image)
+                        <img src="{{ asset('storage/' . $recipe->user->chefProfile->official_image) }}"
+                            style="width: 100%; height: 100%;" alt="{{ $recipe->user->name }}">
+                        @else
+                        {{-- ✅ صورة افتراضية لو مفيش صورة --}}
+                        <img src="{{ asset('images/default-chef.png') }}" style="width: 100%; height: 100%;" alt="Chef">
+                        @endif
                     </div>
-                    @endif
+                
+                    <h5 style="position: absolute; right: 100px; top: 10px; font-size: 14px; color: gray;">
+                        {{ __('messages.chef_recipes', ['name' => $recipe->user?->name ?? 'Chef']) }}
+                    </h5>
+                </div>
+                @endif
 
                     <div class="item-wrapper">
                         <div class="dz-meta-items">
