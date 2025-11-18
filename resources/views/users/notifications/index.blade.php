@@ -112,9 +112,7 @@
                 <div class="mid-content">
                     <h4 class="title">({{ $notifications->count() }})
                         @php
-                        $lang = $lang = session('cook_language') 
-            ?? session('family_language') 
-            ?? 'ar';
+                        $lang = $lang = session('cook_language') ?? session('family_language') ?? 'ar';
                         @endphp
                         {{ \App\Helpers\TranslationHelper::translate('الإشعارات' ?? '', $lang) }}
                     </h4>
