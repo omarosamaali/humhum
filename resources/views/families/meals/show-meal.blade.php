@@ -543,7 +543,7 @@
 
     <button class="btn btn-warning" style="padding: 6px 9px !important;">
         <a href="{{ route('families.meals.steps', $recipe->id) }}" style="font-size: 11px; color: white;">
-            {{ $stepsText }}
+            {{-- {{ $stepsText }} --}}
             {{ app()->getLocale() == 'ar' ? 'خطوات التحضير' : 'Preparation steps' }}
         </a>
     </button>
