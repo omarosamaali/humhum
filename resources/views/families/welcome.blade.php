@@ -833,9 +833,9 @@
                                         {{ \App\Helpers\TranslationHelper::translate($recipe->recipe->title ?? '',
                                         $langs) }}</h6>
                                     @forelse ($recipe->recipe->subCategories as $subCategory)
-                                    <span class="badge badge-info">
-                                        {{ tdb($subCategory?->recipe, $lang, 'name') }}
-                                    </span>
+                                   <span class="badge badge-info">
+                                    {{ $subCategory?->recipe?->getTranslation('name', $lang) ?? $subCategory?->recipe?->name }}
+                                </span>
                                     @empty
                                     <span class="text-muted">{{ $t['none'] }}</span>
                                     @endforelse
