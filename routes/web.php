@@ -22,11 +22,10 @@ use App\Models\ChefProfile;
 use App\Models\ChallengeReview;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\MealPlanController;
-use App\Http\Controllers\User\NotificationController;
 use Carbon\Carbon;
 
 require __DIR__ . '/auth.php';
-Route::get('/send-test', [NotificationController::class, 'sendTest']);
+
 Route::post('/contacts', [ContactController::class, 'store'])->name('contacts.store');
 Route::get('/contacts', [ContactController::class, 'index'])->name('contacts.index');
 Route::patch('/contacts/{id}/read', [ContactController::class, 'markAsRead'])->name('contacts.read');

@@ -644,7 +644,7 @@
     {{-- End Kitchens --}}
 
     <!-- Featured Beverages -->
-    <div class="title-bar">
+    {{-- <div class="title-bar">
         <h5 class="title notifications-title">{{ __('messages.latest_notifications') }}</h5>
         <a href="{{ route('users.notifications.index') }}">{{ __('messages.all') }}</a>
     </div>
@@ -690,7 +690,7 @@
             </div>
         </li>
         @endforeach
-    </ul>
+    </ul> --}}
 
     <style>
         .notifications-title {
