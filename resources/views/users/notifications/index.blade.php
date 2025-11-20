@@ -157,7 +157,31 @@
         </main>
         <!-- Main Content End -->
     </div>
+<script src="https://cdn.onesignal.com/sdks/OneSignalSDK.js" async=""></script>
+<script>
+    window.OneSignal = window.OneSignal || [];
+  OneSignal.push(function() {
+    OneSignal.init({
+      appId: "008f1fac-93f0-43ee-9545-2ea058405cd1",  // ده الـ ID بتاعك
+      safari_web_id: "web.onesignal.auto", // مش مهم في الأندرويد
+      notifyButton: {
+        enable: false,
+      },
+      allowLocalhostAsSecureOrigin: true, // لو بتجرب على localhost
+    });
 
+    // ده عشان يطلب الإشعارات أوتوماتيك لما التطبيق يفتح
+    OneSignal.showNativePrompt();
+
+    // لما يضغط على الإشعار هيفتح اللينك اللي إنت بعته
+    OneSignal.on('notificationClick', function(event) {
+      console.log('OneSignal notification clicked:', event);
+      if (event.notification.url) {
+        window.location.href = event.notification.url;
+      }
+    });
+  });
+</script>
     <script>
         function deleteNotification(id, button) {
         const li = button.closest('li');

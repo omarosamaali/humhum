@@ -9,9 +9,25 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\MyFamily;
 use App\Models\Cook;
 use Illuminate\Support\Facades\Log;
+use Berkayk\OneSignal\OneSignalFacade as OneSignal;
 
 class NotificationController extends Controller
 {
+    public function sendTest()
+    {
+        OneSignal::sendNotificationToAll(
+            "مرحبا يا وحش! الإشعارات شغالة دلوقتي حتى لو التطبيق مقفول 🔥",
+            $url = url('/notifications'),
+            $data = null,
+            $buttons = null,
+            $schedule = null,
+            $headings = "تجربة ناجحة",
+            $subtitle = null
+        );
+
+        return "تم الإرسال بنجاح يا بطل!";
+    }
+
     public function index()
     {
         $notifications = Notification::where('user_id', Auth::id())->orderBy('created_at', 'desc')->get();

@@ -38,4 +38,9 @@ return [
         ],
     ],
 
+    'onesignal' => [
+        'app_id' => '008f1fac-93f0-43ee-9545-2ea058405cd1',
+        'rest_api_key' => 'ZTVjZDNiNzAtZTM4Yi00MjlkLWE2NzQtM2U5M2Q0N2QwMzE3', // حط اللي نسخته هنا
+    ],
+
 ];

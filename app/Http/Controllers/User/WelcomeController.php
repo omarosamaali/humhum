@@ -49,8 +49,6 @@ class WelcomeController extends Controller
             ->get();
 
         $latest_recipes = Recipe::latest()->take(5)->get();
-
-        // ✅ التحقق من وجود user مسجل دخول أولاً
         $recipe = null;
         $completedSteps = [];
 
@@ -60,25 +58,19 @@ class WelcomeController extends Controller
                     $q->withCount('favorites');
                 }, 'mealPlan'])
                 ->first();
-
-            // جلب الخطوات المكتملة فقط لو الـ recipe موجودة
             if ($recipe && $recipe->recipe) {
                 $completedSteps = session()->get("recipe_{$recipe->recipe->id}_completed_steps", []);
             }
         }
-
-        // تحديد الـ user_id من السيشن أو الأوث
+        
         $userId = session('user_id') ?? auth()->id() ?? null;
-
         if (session('family_id')) {
             $familyMember = MyFamily::find(session('family_id'));
             $userId = $familyMember->user_id ?? null;
         }
 
-        // الإشعارات تكون اختيارية
         $notifications = null;
-
-        if (Auth::check()) {       // <<< هنا التعويض الصحيح
+        if (Auth::check()) {
             $notifications = User::find(Auth::id())->allNotifications();
         }
 
