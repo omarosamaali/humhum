@@ -39,26 +39,27 @@ class AuthenticatedSessionController extends Controller
             'password' => ['required', 'string'],
         ]);
 
-        // البحث عن المستخدم بالإيميل
         $user = User::where('email', $credentials['email'])->first();
 
-        // مقارنة الباسورد مباشرة بدون تشفير
         if (!$user || $user->password !== $credentials['password']) {
             throw ValidationException::withMessages([
                 'email' => __('البريد الإلكتروني أو كلمة المرور غير صحيحة'),
             ]);
         }
 
-        // تسجيل دخول المستخدم يدوياً
         Auth::login($user, true);
-
         $request->session()->regenerate();
 
-        if ($request->filled('onesignal_player_id')) {
-            $user->update(['onesignal_player_id' => $request->onesignal_player_id]);
+        // لو Ajax request
+        if ($request->expectsJson()) {
+            return response()->json([
+                'success' => true,
+                'user_id' => $user->id,
+                'redirect' => route('users.welcome')
+            ]);
         }
 
-        return redirect()->intended(route('users.welcome', absolute: false))
+        return redirect()->route('users.welcome')
             ->with('success', 'تم تسجيل الدخول بنجاح');
     }
     public function saveFcmToken(Request $request)

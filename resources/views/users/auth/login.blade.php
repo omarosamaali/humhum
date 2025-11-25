@@ -52,18 +52,7 @@
                     @enderror
                 </div>
                 <input type="hidden" name="password" id="passwordHidden" />
-<script>
-    document.querySelector('form').addEventListener('submit', function(e) {
-    var playerId = localStorage.getItem('onesignal-notification-player-id');
-    if (playerId) {
-        var input = document.createElement('input');
-        input.type = 'hidden';
-        input.name = 'onesignal_player_id';
-        input.value = playerId;
-        this.appendChild(input);
-    }
-});
-</script>                {{-- زر الدخول --}}
+                {{-- زر الدخول --}}
                 <button type="submit" class="btn btn-thin btn-lg w-100 btn-primary rounded-xl mb-3">
                     دخول
                 </button>
@@ -87,6 +76,36 @@
 
     </div>
 </div>
+<script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+<script>
+    window.OneSignalDeferred = window.OneSignalDeferred || [];
 
+OneSignalDeferred.push(async function(OneSignal) {
+  await OneSignal.init({
+    appId: "7f1a49f4-0d09-43d8-a0df-1a13b6c8b085",
+  });
+});
+
+// بعد نجاح اللوجن
+document.querySelector('form').addEventListener('submit', function(e) {
+  e.preventDefault();
+  
+  fetch(this.action, {
+    method: 'POST',
+    body: new FormData(this)
+  })
+  .then(response => response.json())
+  .then(async data => {
+    if (data.success && data.user_id) {
+      // ربط OneSignal
+      if (window.OneSignal) {
+        await window.OneSignal.login(data.user_id.toString());
+      }
+      // redirect
+      window.location.href = data.redirect || '/welcome';
+    }
+  });
+});
+</script>
 <script src="{{ asset('assets/js/password.js') }}"></script>
 @endsection
