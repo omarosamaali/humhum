@@ -494,15 +494,7 @@
                 const switcher = document.getElementById('languageSwitcher');
                 const arIcon = document.getElementById('arIcon');
                 const enIcon = document.getElementById('enIcon');
-    
-                console.log('Current locale:', '{{ app()->getLocale() }}');
-                console.log('AR Icon src:', arIcon.src);
-                console.log('EN Icon src:', enIcon.src);
-    
-                // دالة لتحديث الصور
                 function updateIcons(selectedLang) {
-                    console.log('Switching to:', selectedLang);
-                    
                     if (selectedLang === 'ar') {
                         arIcon.src = './assets/images/ar-man-white.png';
                         enIcon.src = './assets/images/en-man.png';
@@ -512,9 +504,6 @@
                         enIcon.src = './assets/images/en-man-white.png';
                         switcher.classList.add('en-active');
                     }
-                    
-                    console.log('Updated AR Icon src:', arIcon.src);
-                    console.log('Updated EN Icon src:', enIcon.src);
                 }
                     arIcon.addEventListener('click', () => {
                     updateIcons('ar');
@@ -529,7 +518,6 @@
                     })
                     .then(res => res.json())
                     .then(data => {
-                        console.log('Response:', data);
                         if (data.success) {
                             location.reload();
                         } else {
@@ -551,7 +539,6 @@
                     })
                     .then(res => res.json())
                     .then(data => {
-                        console.log('Response:', data);
                         if (data.success) {
                             location.reload();
                         } else {

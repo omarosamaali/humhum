@@ -957,6 +957,9 @@
             {{ $t['cooking_schedule'] }}
         </a>
     </div>
+    @if(auth()->check() || session('is_family_logged_in') || session('is_cook_logged_in'))
+
+@endif
 </body>
 
 </html>

@@ -4,12 +4,29 @@ namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Models\MyFamily;
+use App\Models\Cook;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 
 class AuthenticatedSessionController extends Controller
 {
+    private function getUserId()
+    {
+        if (Auth::check()) {
+            return Auth::id();
+        }
+        if (session('is_family_logged_in') && session('family_id')) {
+            return MyFamily::find(session('family_id'))?->user_id;
+        }
+
+        if (session('is_cook_logged_in') && session('cook_id')) {
+            return Cook::find(session('cook_id'))?->user_id;
+        }
+        return null;
+    }
+
     public function create()
     {
         return view('users.auth.login');
@@ -37,8 +54,22 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
+        if ($request->has('fcm_token')) {
+            $user->update(['fcm_token' => $request->fcm_token]);
+        }
+
         return redirect()->intended(route('users.welcome', absolute: false))
             ->with('success', 'تم تسجيل الدخول بنجاح');
+    }
+    public function saveFcmToken(Request $request)
+    {
+        $request->validate(['fcm_token' => 'required|string']);
+
+        auth()->user()->update([
+            'fcm_token' => $request->fcm_token
+        ]);
+
+        return response()->json(['success' => true]);
     }
 
     public function destroy(Request $request)

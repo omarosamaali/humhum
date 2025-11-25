@@ -7,7 +7,11 @@ use App\Http\Controllers\Family\ProfileController;
 use App\Http\Controllers\Family\MealFamilyController;
 use App\Http\Controllers\Family\SpecialFamilyController;
 use App\Http\Controllers\User\NotificationController;
+use App\Http\Controllers\User\AuthenticatedSessionController;
 
+Route::post('/save-onesignal-id', [NotificationController::class, 'saveOneSignalId'])
+        ->middleware('auth')
+        ->name('save-onesignal-id');
 // Create Special request
 Route::get('families.special.index', [SpecialFamilyController::class, 'index'])->name('families.special.index');
 Route::get('families.special.create', [SpecialFamilyController::class, 'create'])->name('families.special.create');

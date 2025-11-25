@@ -11,6 +11,7 @@ use App\Models\SubCategory;
 use App\Models\Recipe;
 use App\Models\Kitchens;
 use App\Http\Controllers\Admin\RecipesController;
+use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\SnapController;
 use App\Http\Controllers\ChallengeReviewChatController;
 use App\Models\Snap;
@@ -21,11 +22,13 @@ use App\Models\Challenge;
 use App\Models\ChefProfile;
 use App\Models\ChallengeReview;
 use App\Http\Controllers\ContactController;
-use App\Http\Controllers\MealPlanController;
+use App\Http\Controllers\User\NotificationController;
+
 use Carbon\Carbon;
 
 require __DIR__ . '/auth.php';
 
+Route::post('/save-player-id', [NotificationController::class, 'savePlayerId'])->name('save.player.id');
 Route::post('/contacts', [ContactController::class, 'store'])->name('contacts.store');
 Route::get('/contacts', [ContactController::class, 'index'])->name('contacts.index');
 Route::patch('/contacts/{id}/read', [ContactController::class, 'markAsRead'])->name('contacts.read');

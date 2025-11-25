@@ -21,7 +21,6 @@ use App\Http\Controllers\User\NotificationController;
 use App\Http\Controllers\User\CooksController;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Auth;
-
 Route::middleware('auth.user')->group(function () {
     // Cooks Routes
     Route::get('users.cooks.index', [CooksController::class, 'index'])->name('users.cooks.index');
@@ -35,10 +34,7 @@ Route::middleware('auth.user')->group(function () {
     Route::post('users.cooks.choose-image.{cook}', [CooksController::class, 'updateImage'])
         ->name('users.cooks.updateImage');
 
-    Route::post('/save-fcm-token', function (Request $request) {
-        Auth::user()->update(['fcm_token' => $request->token]);
-        return response()->json(['success' => true]);
-    });
+
 
     // Notification Routes
     Route::get('users.notifications.index', [NotificationController::class, 'index'])->name('users.notifications.index');

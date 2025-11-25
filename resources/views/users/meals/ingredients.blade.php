@@ -340,7 +340,9 @@
         }
     </style>
 </head>
-
+{{-- OneSignal + Natively SDK --}}
+<script async onload="nativelyOnLoad()" src="https://cdn.jsdelivr.net/npm/[email protected]/natively-frontend.min.js">
+</script>
 <body class="bg-light">
     <div class="page-wrapper">
         <!-- Preloader -->
@@ -507,7 +509,59 @@
     <script src="assets/js/dz.carousel.js"></script>
     <script src="assets/js/settings.js"></script>
     <script src="assets/js/custom.js"></script>
-
+{{-- OneSignal Integration Script --}}
+    <script>
+        function nativelyOnLoad() {
+            if (typeof NativelyNotifications === 'undefined') {
+                console.log('Not in Natively app');
+                return;
+            }
+        
+            console.log('Initializing OneSignal');
+            const notifications = new NativelyNotifications();
+            
+            notifications.onesignal_request_permission(function(resp) {
+                console.log('Permission:', resp.status);
+                
+                if (resp.status === 'granted') {
+                    notifications.onesignal_get_player_id(function(idResp) {
+                        if (idResp.player_id) {
+                            console.log('Player ID:', idResp.player_id);
+                            savePlayerIdToServer(idResp.player_id);
+                        }
+                    });
+                }
+            });
+        }
+        
+        function savePlayerIdToServer(playerId) {
+            if (!playerId) return;
+            
+            var savedId = localStorage.getItem('onesignal_player_id');
+            if (savedId === playerId) return;
+            
+            fetch('/save-player-id', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: JSON.stringify({
+                    player_id: playerId
+                })
+            })
+            .then(function(response) { return response.json(); })
+            .then(function(data) {
+                if (data.success) {
+                    localStorage.setItem('onesignal_player_id', playerId);
+                    console.log('Player ID saved');
+                }
+            })
+            .catch(function(error) {
+                console.error('Error:', error);
+            });
+        }
+    </script>
 </body>
 
 </html>

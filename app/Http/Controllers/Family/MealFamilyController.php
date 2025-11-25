@@ -255,54 +255,6 @@ class MealFamilyController extends Controller
         return view('families.meals.steps', compact('recipe', 'steps', 'completedSteps'));
     }
 
-    // public function completeStep(Request $request)
-    // {
-    //     try {
-    //         \Log::info('Complete step called', $request->all());
-
-    //         $recipeId = $request->recipe_id;
-    //         $stepIndex = $request->step_index;
-    //         $completedSteps = session()->get("recipe_{$recipeId}_completed_steps", []);
-
-    //         if (!in_array($stepIndex, $completedSteps)) {
-    //             $completedSteps[] = $stepIndex;
-    //             session()->put("recipe_{$recipeId}_completed_steps", $completedSteps);
-
-    //             // إضافة الإشعار
-    //             $familyId = session('family_id');
-    //             \Log::info('Family ID from session: ' . $familyId);
-
-    //             if ($familyId) {
-    //                 $familyMember = \App\Models\MyFamily::find($familyId);
-    //                 \Log::info('Family member found: ' . ($familyMember ? 'yes' : 'no'));
-
-    //                 if ($familyMember) {
-    //                     $notification = \App\Models\Notification::create([
-    //                         'user_id' => $familyMember->user_id,
-    //                         'family_member_id' => $familyId,
-    //                         'message' => "تم إكمال خطوة في الوصفة",
-    //                         'is_read' => false
-    //                     ]);
-    //                     \Log::info('Notification created: ' . $notification->id);
-    //                 }
-    //             } else {
-    //                 \Log::warning('No family_id in session');
-    //             }
-    //         }
-
-    //         return response()->json([
-    //             'success' => true,
-    //             'completed_steps' => $completedSteps
-    //         ]);
-    //     } catch (\Exception $e) {
-    //         \Log::error('Complete step error: ' . $e->getMessage());
-    //         return response()->json([
-    //             'success' => false,
-    //             'error' => $e->getMessage()
-    //         ], 500);
-    //     }
-    // }
-
     public function families(string $id)
     {
         $recipe = Recipe::findOrFail($id);

@@ -87,42 +87,7 @@
         height: 20px;
     }
 </style>
-<!-- Firebase SDK للـ Web (هتشتغل حتى في الـ WebView) -->
-<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-messaging-compat.js"></script>
 
-<script>
-    const firebaseConfig = {
-                apiKey: "AIzaSyB8x9v5K8jJ8v5K8jJ8v5K8jJ8v5K8jJ8v", // مش لازم تحطه، الويب مش بيحتاجه
-                authDomain: "omdachina25.firebaseapp.com",
-                projectId: "omdachina25",
-                storageBucket: "omdachina25.appspot.com",
-                messagingSenderId: "110645786836070014770",
-                appId: "1:110645786836070014770:web:chinomda" // ده المهم جدًا
-            };
-            firebase.initializeApp(firebaseConfig);
-            const messaging = firebase.messaging();
-            Notification.requestPermission().then((permission) => {
-                if (permission === "granted") {
-                    messaging.getToken({
-                        vapidKey: "BB168ueRnlIhDY0r5lrLD7pvQydPk467794F97CWizmwnvzxAWtlx3fuZ9NQtxc0QeokXdnBjiYoiINBIRvCQiY"
-                    }).then((token) => {
-                        fetch('/save-fcmtoken', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                            },
-                            body: JSON.stringify({
-                                fcm_token: token
-                            })
-                        });
-                    }).catch((err) => {
-                        console.log('فشل جلب التوكن', err);
-                    });
-                }
-            });
-</script>
 @section('content')
 <div class="container">
 
@@ -784,3 +749,57 @@
  }
     </script>
     @endsection
+
+    @if(env('APP_ENV') !== 'local')
+    <!-- OneSignal Production -->
+    <script src="https://cdn.onesignal.com/sdks/OneSignalSDK.js" async=""></script>
+    @else
+    <!-- OneSignal Localhost -->
+    <script src="https://cdn.onesignal.com/sdks/OneSignalSDK.js" async=""></script>
+    @endif
+    
+    <script>
+        window.OneSignal = window.OneSignal || [];
+        OneSignal.push(function() {
+            OneSignal.init({
+                appId: "{{ env('ONESIGNAL_APP_ID') }}", // 7f1a49f4-0d09-43d8-a0df-1a13b6c8b085
+                safari_web_id: "web.onesignal.auto",
+                notifyButton: { enable: false },
+                allowLocalhostAsSecureOrigin: true, // مهم للـ localhost
+                autoResubscribe: true,
+                persistNotification: false,
+            });
+    
+            // حفظ Player ID تلقائي بعد الاشتراك
+            OneSignal.on('subscriptionChange', function(isSubscribed) {
+                if (isSubscribed) {
+                    OneSignal.getUserId().then(function(playerId) {
+                        if (playerId) {
+                            fetch('/save-onesignal-id', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                                },
+                                body: JSON.stringify({ player_id: playerId })
+                            });
+                        }
+                    });
+                }
+            });
+    
+            // لو اليوزر مشترك من قبل، احفظ الـ ID فورًا
+            OneSignal.getUserId().then(function(playerId) {
+                if (playerId) {
+                    fetch('/save-onesignal-id', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        },
+                        body: JSON.stringify({ player_id: playerId })
+                    });
+                }
+            });
+        });
+    </script>

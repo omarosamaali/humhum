@@ -432,65 +432,7 @@
             $noIngredientsText = $noIngredientsTranslations[$lang] ?? $noIngredientsTranslations['ar'];
 
         @endphp
-
-        <!-- Header -->
-        <header class="header header-fixed border-bottom">
-            <div class="header-content">
-                <div class="mid-content">
-                    <h4 class="title">{{ $ingredientsTitle }}</h4>
-                </div>
-                <div class="left-content">
-                    <a href="{{ url()->previous() ?: route('home') }}" id="back-btn">
-                        <i class="feather icon-arrow-left"></i>
-                    </a>
-                </div>
-            </div>
-        </header>
-        <!-- Header -->
-
-        <div style="padding-top: 100px; margin: 0px 20px;">
-            @php
-                $ingredients = explode("\n", $recipe->ingredients);
-                $ingredients = array_filter(array_map('trim', $ingredients));
-            @endphp
-
-            @if (count($ingredients) > 0)
-                @foreach ($ingredients as $ingredient)
-                    @php
-                        $textToSpeak = Str::startsWith($ingredient, '##')
-                            ? Str::replace('##', '', $ingredient)
-                            : $ingredient;
-                    @endphp
-
-                    <div
-                        style="display: flex; gap: 10px; align-items: center; justify-content: space-between; 
-                        {{ Str::startsWith($ingredient, '##') ? 'font-weight: bold; border-bottom: 1px solid var(--primary); padding-bottom: 5px;' : '' }}">
-                        {{ \App\Helpers\TranslationHelper::translate($textToSpeak ?? '', $lang) }}
-                        {{-- {{ $textToSpeak }} --}}
-
-                        {{ Str::startsWith($ingredient, '##') ? '🍴' : '' }}
-
-                        <div style="display: flex; gap: 5px; align-items: center;">
-                            <div onclick="sendUnavailableNotification('{{ addslashes($textToSpeak) }}', event)"
-                                style="cursor: pointer; background-color: var(--primary); color: white; padding: 5px; border-radius: 5px; width: fit-content; margin-top: 10px;"
-                                title="{{ $sendUnavailableText }}">
-                                <i style="font-size: 20px; color: #ffffff;" class="fa-solid fa-bag-shopping"></i>
-                            </div>
-
-                            <div onclick="speakText('{{ addslashes($textToSpeak) }}')"
-                                style="cursor: pointer; background-color: var(--primary); color: white; padding: 5px; border-radius: 5px; width: fit-content; margin-top: 10px;"
-                                title="{{ $speakTextText }}">
-                                <i style="font-size: 20px; color: #ffffff;" class="fa-solid fa-headphones"></i>
-                            </div>
-                        </div>
-                    </div>
-                @endforeach
-            @else
-                <p>{{ $noIngredientsText }}</p>
-            @endif
-        </div>
-    </div>
-    @php
+@php
     $jsTranslations = [
     'ar' => [
     'sent_success_title' => 'تم الإرسال',
@@ -561,6 +503,64 @@
     
     $jsTexts = $jsTranslations[$lang] ?? $jsTranslations['ar'];
     @endphp
+        <!-- Header -->
+        <header class="header header-fixed border-bottom">
+            <div class="header-content">
+                <div class="mid-content">
+                    <h4 class="title">{{ $ingredientsTitle }}</h4>
+                </div>
+                <div class="left-content">
+                    <a href="{{ url()->previous() ?: route('home') }}" id="back-btn">
+                        <i class="feather icon-arrow-left"></i>
+                    </a>
+                </div>
+            </div>
+        </header>
+        <!-- Header -->
+
+        <div style="padding-top: 100px; margin: 0px 20px;">
+            @php
+                $ingredients = explode("\n", $recipe->ingredients);
+                $ingredients = array_filter(array_map('trim', $ingredients));
+            @endphp
+
+            @if (count($ingredients) > 0)
+                @foreach ($ingredients as $ingredient)
+                    @php
+                        $textToSpeak = Str::startsWith($ingredient, '##')
+                            ? Str::replace('##', '', $ingredient)
+                            : $ingredient;
+                    @endphp
+
+                    <div
+                        style="display: flex; gap: 10px; align-items: center; justify-content: space-between; 
+                        {{ Str::startsWith($ingredient, '##') ? 'font-weight: bold; border-bottom: 1px solid var(--primary); padding-bottom: 5px;' : '' }}">
+                        {{ \App\Helpers\TranslationHelper::translate($textToSpeak ?? '', $lang) }}
+                        {{-- {{ $textToSpeak }} --}}
+
+                        {{ Str::startsWith($ingredient, '##') ? '🍴' : '' }}
+
+                        <div style="display: flex; gap: 5px; align-items: center;">
+                            <div onclick="sendUnavailableNotification('{{ addslashes($textToSpeak) }}', event)"
+                                style="cursor: pointer; background-color: var(--primary); color: white; padding: 5px; border-radius: 5px; width: fit-content; margin-top: 10px;"
+                                title="{{ $sendUnavailableText }}">
+                                <i style="font-size: 20px; color: #ffffff;" class="fa-solid fa-bag-shopping"></i>
+                            </div>
+
+                            <div onclick="speakText('{{ addslashes($textToSpeak) }}')"
+                                style="cursor: pointer; background-color: var(--primary); color: white; padding: 5px; border-radius: 5px; width: fit-content; margin-top: 10px;"
+                                title="{{ $speakTextText }}">
+                                <i style="font-size: 20px; color: #ffffff;" class="fa-solid fa-headphones"></i>
+                            </div>
+                        </div>
+                    </div>
+                @endforeach
+            @else
+                <p>{{ $noIngredientsText }}</p>
+            @endif
+        </div>
+    </div>
+
     <script src="https://code.responsivevoice.org/responsivevoice.js?key=vm7hFTHk"></script>
     <script>
         function speakText(text) {
@@ -652,3 +652,56 @@ buttonElement.title = "{{ $jsTexts['sent_success_button'] }}";
 </body>
 
 </html>
+@if(env('APP_ENV') !== 'local')
+<!-- OneSignal Production -->
+<script src="https://cdn.onesignal.com/sdks/OneSignalSDK.js" async=""></script>
+@else
+<!-- OneSignal Localhost -->
+<script src="https://cdn.onesignal.com/sdks/OneSignalSDK.js" async=""></script>
+@endif
+
+<script>
+    window.OneSignal = window.OneSignal || [];
+    OneSignal.push(function() {
+        OneSignal.init({
+            appId: "{{ env('ONESIGNAL_APP_ID') }}", // 7f1a49f4-0d09-43d8-a0df-1a13b6c8b085
+            safari_web_id: "web.onesignal.auto",
+            notifyButton: { enable: false },
+            allowLocalhostAsSecureOrigin: true, // مهم للـ localhost
+            autoResubscribe: true,
+            persistNotification: false,
+        });
+
+        // حفظ Player ID تلقائي بعد الاشتراك
+        OneSignal.on('subscriptionChange', function(isSubscribed) {
+            if (isSubscribed) {
+                OneSignal.getUserId().then(function(playerId) {
+                    if (playerId) {
+                        fetch('/save-onesignal-id', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                            },
+                            body: JSON.stringify({ player_id: playerId })
+                        });
+                    }
+                });
+            }
+        });
+
+        // لو اليوزر مشترك من قبل، احفظ الـ ID فورًا
+        OneSignal.getUserId().then(function(playerId) {
+            if (playerId) {
+                fetch('/save-onesignal-id', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    body: JSON.stringify({ player_id: playerId })
+                });
+            }
+        });
+    });
+</script>
