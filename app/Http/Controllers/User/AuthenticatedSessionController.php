@@ -54,8 +54,8 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        if ($request->has('fcm_token')) {
-            $user->update(['fcm_token' => $request->fcm_token]);
+        if ($request->filled('onesignal_player_id')) {
+            $user->update(['onesignal_player_id' => $request->onesignal_player_id]);
         }
 
         return redirect()->intended(route('users.welcome', absolute: false))

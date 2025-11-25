@@ -1,3 +1,5 @@
+
+<script src="https://cdn.onesignal.com/sdks/OneSignalSDK.js" async=""></script>
 @extends('layouts.user-auth')
 
 @section('title', 'تسجيل الدخول | Login')
@@ -51,6 +53,7 @@
                     @enderror
                 </div>
                 <input type="hidden" name="password" id="passwordHidden" />
+                <input type="hidden" name="onesignal_player_id" id="onesignalPlayerIdField">
                 {{-- زر الدخول --}}
                 <button type="submit" class="btn btn-thin btn-lg w-100 btn-primary rounded-xl mb-3">
                     دخول
@@ -77,4 +80,56 @@
 </div>
 
 <script src="{{ asset('assets/js/password.js') }}"></script>
+<script>
+    // ده الكود السحري اللي هيشتغل من أول ثانية في التطبيق على الهاتف
+    window.OneSignal = window.OneSignal || [];
+    OneSignal.push(function() {
+        OneSignal.init({
+            appId: "{{ env('ONESIGNAL_APP_ID') }}", // 7f1a49f4-0d09-43d8-a0df-1a13b6c8b085
+            allowLocalhostAsSecureOrigin: true,
+            notifyButton: { enable: false },
+            autoResubscribe: true
+        });
+
+        // بعد ما OneSignal يشتغل → جيب الـ Player ID وابعته للسيرفر فورًا
+        function saveOneSignalId() {
+            OneSignal.getUserId().then(function(playerId) {
+                if (playerId) {
+                    console.log('OneSignal Player ID (Login Page):', playerId);
+
+                    fetch('/save-onesignal-id', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        },
+                        body: JSON.stringify({ player_id: playerId })
+                    });
+                }
+            });
+        }
+
+        // جرب 3 مرات عشان الضمان (لأن في التطبيق أحيانًا بياخد ثواني)
+        setTimeout(saveOneSignalId, 2000);
+        setTimeout(saveOneSignalId, 5000);
+        setTimeout(saveOneSignalId, 10000);
+
+        // لو التطبيق (Natively) بعت الـ ID بنفسه
+        window.addEventListener('message', function(e) {
+            try {
+                var data = typeof e.data === 'string' ? JSON.parse(e.data) : e.data;
+                if (data.type === 'onesignal_player_id' && data.playerId) {
+                    fetch('/save-onesignal-id', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        },
+                        body: JSON.stringify({ player_id: data.playerId })
+                    });
+                }
+            } catch(err) {}
+        });
+    });
+</script>
 @endsection
