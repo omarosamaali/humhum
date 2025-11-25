@@ -759,49 +759,31 @@
 
 {{-- ضع هذا الكود في آخر صفحة welcome.blade.php --}}
 
+<script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
 <script>
-    // طريقة Natively الصحيحة
-document.addEventListener('DOMContentLoaded', function() {
+    window.OneSignalDeferred = window.OneSignalDeferred || [];
+  
+  OneSignalDeferred.push(async function(OneSignal) {
+    await OneSignal.init({
+      appId: "7f1a49f4-0d09-43d8-a0df-1a13b6c8b085",
+    });
     
-    // محاولة 1: Natively Bridge
-    if (window.NativelyBridge) {
-        window.NativelyBridge.getOneSignalPlayerId(function(playerId) {
-            if (playerId) {
-                savePlayerId(playerId);
-            }
-        });
-    }
+    // ربط User ID
+    await OneSignal.login("{{ Auth::id() }}");
     
-    // محاولة 2: OneSignal SDK مباشرة
-    setTimeout(function() {
-        if (window.OneSignal) {
-            window.OneSignal.push(function() {
-                window.OneSignal.getUserId(function(userId) {
-                    if (userId) {
-                        savePlayerId(userId);
-                    }
-                });
-            });
-        }
-    }, 3000);
+    // جلب Player ID
+    const userId = await OneSignal.User.PushSubscription.id;
     
-    // محاولة 3: localStorage (backup)
-    setTimeout(function() {
-        var playerId = localStorage.getItem('onesignal-notification-player-id');
-        if (playerId) {
-            savePlayerId(playerId);
-        }
-    }, 5000);
-});
-
-function savePlayerId(playerId) {
-    fetch('/save-onesignal-id', {
+    if (userId) {
+      // حفظه في قاعدة البيانات
+      fetch('/save-onesignal-id', {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+          'Content-Type': 'application/json',
+          'X-CSRF-TOKEN': '{{ csrf_token() }}'
         },
-        body: JSON.stringify({ player_id: playerId })
-    });
-}
+        body: JSON.stringify({ player_id: userId })
+      });
+    }
+  });
 </script>

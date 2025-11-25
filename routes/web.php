@@ -26,19 +26,16 @@ use App\Http\Controllers\User\NotificationController;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
-Route::post('/onesignal-webhook', function (Request $request) {
-    \Log::info('OneSignal Webhook:', $request->all());
+Route::post('/save-onesignal-id', function (Request $request) {
+    \Log::info('🔥 وصل Player ID: ' . $request->player_id);
 
-    $playerId = $request->input('id'); // Player ID
-    $externalId = $request->input('external_user_id'); // User ID
-
-    if ($playerId && $externalId) {
-        \App\Models\User::where('id', $externalId)
-            ->update(['onesignal_player_id' => $playerId]);
+    if ($user = auth()->user()) {
+        $user->update(['onesignal_player_id' => $request->player_id]);
+        \Log::info('✅ تم الحفظ للمستخدم: ' . $user->id);
     }
 
     return response()->json(['success' => true]);
-});
+})->middleware('auth');
 
 require __DIR__ . '/auth.php';
 
