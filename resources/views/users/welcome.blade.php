@@ -89,73 +89,74 @@
 </style>
 
 @section('content')
-<div class="container">
+    <div class="container">
 
-    {{-- Start Cheifs Lens --}}
-    <div>
-        <div
-            style="display: flex; justify-content: space-between; align-items: center; margin: 0px 0px; width: 100%; margin-bottom: 10px;">
-            <a href="{{ route('users.profile.index') }}" style="text-align: center; width: 105px;">
-                <span class="img-fluid icon">
-                    😀
-                </span>
-                {{ __('messages.my_account') }}
-            </a>
-            <a href="{{ route('users.family.index') }}" style="text-align: center; width: 105px;">
-                <span class="img-fluid icon">
-                    👪
-                </span>
-                {{ __('messages.my_family') }}
-            </a>
-            <a href="{{ route('users.cooks.index') }}" style="text-align: center; width: 105px;">
-                <span class="img-fluid icon">
-                    👨‍🍳
-                </span>
-                {{ __('messages.chefs') }}
-            </a>
-        </div>
+        {{-- Start Cheifs Lens --}}
+        <div>
+            <div
+                style="display: flex; justify-content: space-between; align-items: center; margin: 0px 0px; width: 100%; margin-bottom: 10px;">
+                <a href="{{ route('users.profile.index') }}" style="text-align: center; width: 105px;">
+                    <span class="img-fluid icon">
+                        😀
+                    </span>
+                    {{ __('messages.my_account') }}
+                </a>
+                <a href="{{ route('users.family.index') }}" style="text-align: center; width: 105px;">
+                    <span class="img-fluid icon">
+                        👪
+                    </span>
+                    {{ __('messages.my_family') }}
+                </a>
+                <a href="{{ route('users.cooks.index') }}" style="text-align: center; width: 105px;">
+                    <span class="img-fluid icon">
+                        👨‍🍳
+                    </span>
+                    {{ __('messages.chefs') }}
+                </a>
+            </div>
 
-        <div style="display: flex
+            <div
+                style="display: flex
 ;
     justify-content: space-between;
     align-items: center;
     margin: 0px 0px;
     width: 100%;">
-            <a href="{{ route('users.blocked.index') }}" style="text-align: center; width: 105px;">
-                <span class="img-fluid icon">
-                    ❌
-                </span>
-                {{ __('messages.blacklist') }}
-            </a>
-            <a href="{{ route('users.meals.table-cook') }}" style="text-align: center; width: 105px;">
-                <span class="img-fluid icon">
-                    📋
-                </span>
-                {{ __('messages.cooking_schedule') }}
-            </a>
-            <a href="{{ route('users.notifications.index') }}" style="text-align: center; width: 105px;">
-                <span class="img-fluid icon" style="position: relative;">
-                    @if ($notifications)
-                    <span class="badge-text">{{ $notifications->count() }}</span>
-                    @endif
-                    🔔
-                </span>
-                {{ __('messages.notifications') }}
-            </a>
+                <a href="{{ route('users.blocked.index') }}" style="text-align: center; width: 105px;">
+                    <span class="img-fluid icon">
+                        ❌
+                    </span>
+                    {{ __('messages.blacklist') }}
+                </a>
+                <a href="{{ route('users.meals.table-cook') }}" style="text-align: center; width: 105px;">
+                    <span class="img-fluid icon">
+                        📋
+                    </span>
+                    {{ __('messages.cooking_schedule') }}
+                </a>
+                <a href="{{ route('users.notifications.index') }}" style="text-align: center; width: 105px;">
+                    <span class="img-fluid icon" style="position: relative;">
+                        @if ($notifications)
+                            <span class="badge-text">{{ $notifications->count() }}</span>
+                        @endif
+                        🔔
+                    </span>
+                    {{ __('messages.notifications') }}
+                </a>
+            </div>
         </div>
-    </div>
-    {{-- End Cheifs Lens --}}
+        {{-- End Cheifs Lens --}}
 
-    {{-- Start Banner --}}
-    {{-- @if ($banner)
+        {{-- Start Banner --}}
+        {{-- @if ($banner)
     <div class="search-box">
         <img style="width: 100%;" src="{{ asset('storage/' . $banner->image) }}" alt="">
     </div>
     @endif --}}
-    {{-- End Banner --}}
+        {{-- End Banner --}}
 
-    {{-- Start Cheifs --}}
-    {{-- <div class="swiper categories-swiper dz-swiper m-b20">
+        {{-- Start Cheifs --}}
+        {{-- <div class="swiper categories-swiper dz-swiper m-b20">
         <div class="title-bar mb-0">
             <h5 class="title">الطهاه</h5>
         </div>
@@ -192,377 +193,381 @@
             </div>
         </div>
     </div> --}}
-    {{-- End Cheifs --}}
+        {{-- End Cheifs --}}
 
-    {{-- Start Special request --}}
-    <div class="container--cart">
-        <a href="{{ route('users.special.create') }}" style="border-radius: 0px 15px 15px 0px;" class="special-request">
-            {{ __('messages.special_requests') }}
-        </a>
-        <a href="{{ route('users.special.index') }}" style="border-radius: 15px 0px 0px 15px;" class="special-request">
-            {{-- {{ __('messages.special_requests') }} --}}
-            {{ __('messages.سجل الطلبات') }}
-        </a>
-    </div>
-    {{-- End Special request --}}
+        {{-- Start Special request --}}
+        <div class="container--cart">
+            <a href="{{ route('users.special.create') }}" style="border-radius: 0px 15px 15px 0px;"
+                class="special-request">
+                {{ __('messages.special_requests') }}
+            </a>
+            <a href="{{ route('users.special.index') }}" style="border-radius: 15px 0px 0px 15px;" class="special-request">
+                {{-- {{ __('messages.special_requests') }} --}}
+                {{ __('messages.سجل الطلبات') }}
+            </a>
+        </div>
+        {{-- End Special request --}}
 
-    {{-- Start Cheifs --}}
-    <div class="swiper categories-swiper dz-swiper m-b20">
-        <div class="title-bar mb-0 chef-title-container">
-            @auth
-            @if ($recipe)
-            <a href="{{ route('users.meals.show', $recipe->recipe->id) }}">
-                <li class="container-cart mb-10">
-                    <div class="dz-card list"
-                        style="margin-bottom: 0px; flex-direction: column; border: 1px solid #ccc; box-shadow: 0px 0px 0px 2px #cccccc7a;">
-                        <p class="recpie-name">
-                            {{ __('messages.next_meal_is') }}
-                        </p>
-                        <div class="dz-media"
-                            style="position: relative; display: flex; align-items: center; gap: 20px;">
-                            <img src="assets/images/background.png"
-                                style="width: 150px; border-bottom-right-radius: 15px !important;" alt="">
-                            <div class="dz-head">
-                                <h6 class="title">
-                                    <span>{{ $recipe->recipe->title }}</span>
-                                </h6>
-                                @forelse ($recipe->recipe->subCategories as $subCategory)
-                                <span class="badge badge-info">{{ $subCategory?->recipe?->name_ar }}</span>
-                                @empty
-                                <span class="text-muted">{{ __('messages.none') }}</span>
-                                @endforelse
-                                <ul class="tag-list" style="display: flex; gap: 10px;">
-                                    <li class="dz-price" style="text-align: center; font-size: 14px;">
-                                        <i class="fa-solid fa-clock" style="color: var(--primary-color);"></i>
-                                        {{ $recipe->recipe->preparation_time }}
-                                    </li>
-                                    <li class="dz-price" style="text-align: center; font-size: 14px;">
-                                        <i class="fa-solid fa-eye" style="color: var(--primary-color);"></i>
-                                        {{ $recipe->recipe->views ?? 0 }}
-                                    </li>
-                                    <li class="dz-price" style="text-align: center; font-size: 14px;">
-                                        <i class="fa-solid fa-heart" style="color: var(--primary-color);"></i>
-                                        {{ $recipe->recipe->favorites_count ?? 0 }}
-                                    </li>
-                                </ul>
-                                <div>
-                                    <div style="display: flex; gap: 10px; font-size: 13px; align-items: center;"
-                                        class="tags">
-                                        <img src="{{ asset('storage/' . $recipe->recipe->kitchen->image) }}"
-                                            style="border-radius: 50% !important; width: 30px !important; height: 30px !important;"
-                                            alt="">
-                                        {{ trans_field($recipe->recipe->kitchen, 'name') }}
+        {{-- Start Cheifs --}}
+        <div class="swiper categories-swiper dz-swiper m-b20">
+            <div class="title-bar mb-0 chef-title-container">
+                @auth
+                    @if ($recipe)
+                        <a href="{{ route('users.meals.show', $recipe->recipe->id) }}">
+                            <li class="container-cart mb-10">
+                                <div class="dz-card list"
+                                    style="margin-bottom: 0px; flex-direction: column; border: 1px solid #ccc; box-shadow: 0px 0px 0px 2px #cccccc7a;">
+                                    <p class="recpie-name">
+                                        {{ __('messages.next_meal_is') }}
+                                    </p>
+                                    <div class="dz-media"
+                                        style="position: relative; display: flex; align-items: center; gap: 20px;">
+                                        <img src="assets/images/background.png"
+                                            style="width: 150px; border-bottom-right-radius: 15px !important;" alt="">
+                                        <div class="dz-head">
+                                            <h6 class="title">
+                                                <span>{{ $recipe->recipe->title }}</span>
+                                            </h6>
+                                            @forelse ($recipe->recipe->subCategories as $subCategory)
+                                                <span class="badge badge-info">{{ $subCategory?->recipe?->name_ar }}</span>
+                                            @empty
+                                                <span class="text-muted">{{ __('messages.none') }}</span>
+                                            @endforelse
+                                            <ul class="tag-list" style="display: flex; gap: 10px;">
+                                                <li class="dz-price" style="text-align: center; font-size: 14px;">
+                                                    <i class="fa-solid fa-clock" style="color: var(--primary-color);"></i>
+                                                    {{ $recipe->recipe->preparation_time }}
+                                                </li>
+                                                <li class="dz-price" style="text-align: center; font-size: 14px;">
+                                                    <i class="fa-solid fa-eye" style="color: var(--primary-color);"></i>
+                                                    {{ $recipe->recipe->views ?? 0 }}
+                                                </li>
+                                                <li class="dz-price" style="text-align: center; font-size: 14px;">
+                                                    <i class="fa-solid fa-heart" style="color: var(--primary-color);"></i>
+                                                    {{ $recipe->recipe->favorites_count ?? 0 }}
+                                                </li>
+                                            </ul>
+                                            <div>
+                                                <div style="display: flex; gap: 10px; font-size: 13px; align-items: center;"
+                                                    class="tags">
+                                                    <img src="{{ asset('storage/' . $recipe->recipe->kitchen->image) }}"
+                                                        style="border-radius: 50% !important; width: 30px !important; height: 30px !important;"
+                                                        alt="">
+                                                    {{ trans_field($recipe->recipe->kitchen, 'name') }}
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        </div>
-                    </div>
-                </li>
-            </a>
-            @else
-            <p style="text-align: center; font-size: 21px;">{{ __('messages.no_plans') }}</p>
-            @endif
-            @endauth
-            <h5 class="title">
-                <img class="chef-icon" src="{{ asset('assets/images/user-logo/chef.gif') }}" alt="">
-            </h5>
-            <h5 class="title">{{ __('messages.chef_suggestion') }}</h5>
-        </div>
-        <ul class="featured-list">
-            @if ($dailyRecipe)
-            <a href="{{ route('users.meals.show', $dailyRecipe) }}">
-                <li class="container-cart" style="border: 1px solid #bababa;">
-                    <div class="dz-card list" style="height: unset !important; margin-bottom: 0px;">
-                        <div class="dz-media recipe-media">
-                            <img src="{{ asset('storage/' . $dailyRecipe->dish_image) }}" style="
+                            </li>
+                        </a>
+                    @else
+                        <p style="text-align: center; font-size: 21px;">{{ __('messages.no_plans') }}</p>
+                    @endif
+                @endauth
+                <h5 class="title">
+                    <img class="chef-icon" src="{{ asset('assets/images/user-logo/chef.gif') }}" alt="">
+                </h5>
+                <h5 class="title">{{ __('messages.chef_suggestion') }}</h5>
+            </div>
+            <ul class="featured-list">
+                @if ($dailyRecipe)
+                    <a href="{{ route('users.meals.show', $dailyRecipe) }}">
+                        <li class="container-cart" style="border: 1px solid #bababa;">
+                            <div class="dz-card list" style="height: unset !important; margin-bottom: 0px;">
+                                <div class="dz-media recipe-media">
+                                    <img src="{{ asset('storage/' . $dailyRecipe->dish_image) }}"
+                                        style="
                                 border-radius: 0px 22px 22px 0px !important;
                                 height: 100% !important;
                                 max-height: 148px !important;
-                                max-width: 150px;" alt="">
-                        </div>
-                        <div class="dz-content">
-                            <div class="dz-head cart-items">
-                                <div>
-                                    <h6 class="title" style="padding-left: 13px;">
-                                        <span style="font-size: 13px;">{{ $dailyRecipe->title }}</span>
-                                    </h6>
-                                    <ul class="tag-list">
-                                        @if ($dailyRecipe->meal_type)
-                                        @foreach (explode(',', $dailyRecipe->meal_type) as $type)
-                                        <li><span>{{ __('messages.' . strtolower(trim($type))) }}</span>
-                                        </li>
-                                        @endforeach
-                                        @endif
-                                    </ul>
-                                    @forelse ($dailyRecipe->subCategories as $subCategory)
-                                    <span class="badge badge-info">
-                                        @if (app()->getLocale() == 'ar')
-                                        {{ $subCategory->name_ar }}
-                                        @else
-                                        {{ $subCategory->name_en }}
-                                        @endif
-                                    </span>
-                                    @empty
-                                    <span class="text-muted">{{ __('messages.no_subcategories') }}</span>
-                                    @endforelse
-                                    <ul class="tag-list recipe-stats">
-                                        <li class="dz-price stat-item">
-                                            <i class="fa-solid fa-clock primary-icon"></i>
-                                            {{ $dailyRecipe->prep_time ?? '5' }}
-                                        </li>
-                                        <li class="dz-price stat-item">
-                                            <i class="fa-solid fa-eye primary-icon"></i>
-                                            {{ $dailyRecipe->views ?? 0 }}
-                                        </li>
-                                        <li class="dz-price stat-item">
-                                            <i class="fa-solid fa-heart primary-icon"></i>
-                                            {{ $favorites_count }}
-                                        </li>
-                                    </ul>
+                                max-width: 150px;"
+                                        alt="">
                                 </div>
-                                <div class="bottom-container">
-                                    <div class="tags cuisine-tag">
-                                        <img src="{{ $dailyRecipe->cuisine_flag ?? 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/fe/Flag_of_Egypt.svg/800px-Flag_of_Egypt.svg.png' }}"
-                                            class="cuisine-flag" style="border-radius: 50% !important;" alt="">
-                                        {{ $dailyRecipe->cuisine ?? __('messages.egyptian_cuisine') }}
-                                    </div>
-                                    <div class="bookmark" style="bottom: 0px;">
-                                        @auth
-                                        <button class="favorite-btn"
-                                            onclick="toggleFavorite({{ $dailyRecipe->id }}, this)" type="button">
-                                            <label class="heart-switch">
-                                                <input type="checkbox" {{
-                                                    auth()->user()?->favorites->contains($dailyRecipe->id) ? 'checked' :
-                                                '' }}>
-                                                <svg viewBox="0 0 33 23" fill="white">
-                                                    <path d="M23.5,0.5 C28.4705627,0.5 32.5,4.52943725 32.5,9.5
+                                <div class="dz-content">
+                                    <div class="dz-head cart-items">
+                                        <div>
+                                            <h6 class="title" style="padding-left: 13px;">
+                                                <span style="font-size: 13px;">{{ $dailyRecipe->title }}</span>
+                                            </h6>
+                                            <ul class="tag-list">
+                                                @if ($dailyRecipe->meal_type)
+                                                    @foreach (explode(',', $dailyRecipe->meal_type) as $type)
+                                                        <li><span>{{ __('messages.' . strtolower(trim($type))) }}</span>
+                                                        </li>
+                                                    @endforeach
+                                                @endif
+                                            </ul>
+                                            @forelse ($dailyRecipe->subCategories as $subCategory)
+                                                <span class="badge badge-info">
+                                                    @if (app()->getLocale() == 'ar')
+                                                        {{ $subCategory->name_ar }}
+                                                    @else
+                                                        {{ $subCategory->name_en }}
+                                                    @endif
+                                                </span>
+                                            @empty
+                                                <span class="text-muted">{{ __('messages.no_subcategories') }}</span>
+                                            @endforelse
+                                            <ul class="tag-list recipe-stats">
+                                                <li class="dz-price stat-item">
+                                                    <i class="fa-solid fa-clock primary-icon"></i>
+                                                    {{ $dailyRecipe->prep_time ?? '5' }}
+                                                </li>
+                                                <li class="dz-price stat-item">
+                                                    <i class="fa-solid fa-eye primary-icon"></i>
+                                                    {{ $dailyRecipe->views ?? 0 }}
+                                                </li>
+                                                <li class="dz-price stat-item">
+                                                    <i class="fa-solid fa-heart primary-icon"></i>
+                                                    {{ $favorites_count }}
+                                                </li>
+                                            </ul>
+                                        </div>
+                                        <div class="bottom-container">
+                                            <div class="tags cuisine-tag">
+                                                <img src="{{ $dailyRecipe->cuisine_flag ?? 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/fe/Flag_of_Egypt.svg/800px-Flag_of_Egypt.svg.png' }}"
+                                                    class="cuisine-flag" style="border-radius: 50% !important;"
+                                                    alt="">
+                                                {{ $dailyRecipe->cuisine ?? __('messages.egyptian_cuisine') }}
+                                            </div>
+                                            <div class="bookmark" style="bottom: 0px;">
+                                                @auth
+                                                    <button class="favorite-btn"
+                                                        onclick="toggleFavorite({{ $dailyRecipe->id }}, this)"
+                                                        type="button">
+                                                        <label class="heart-switch">
+                                                            <input type="checkbox"
+                                                                {{ auth()->user()?->favorites->contains($dailyRecipe->id) ? 'checked' : '' }}>
+                                                            <svg viewBox="0 0 33 23" fill="white">
+                                                                <path d="M23.5,0.5 C28.4705627,0.5 32.5,4.52943725 32.5,9.5
                                                                     C32.5,16.9484448 21.46672,22.5 16.5,22.5
                                                                     C11.53328,22.5 0.5,16.9484448 0.5,9.5
                                                                     C0.5,4.52952206 4.52943725,0.5 9.5,0.5
                                                                     C12.3277083,0.5 14.8508336,1.80407476 16.5007741,3.84362242
                                                                     C18.1491664,1.80407476 20.6722917,0.5 23.5,0.5 Z">
-                                                    </path>
-                                                </svg>
-                                            </label>
-                                        </button>
-                                        @else
-                                        <button class="favorite-btn" onclick="login()" type="button">
-                                            <label class="heart-switch">
-                                                <input type="checkbox" disabled>
-                                                <svg viewBox="0 0 33 23" fill="white">
-                                                    <path
-                                                        d="M23.5,0.5 C28.4705627,0.5 32.5,4.52943725 32.5,9.5
+                                                                </path>
+                                                            </svg>
+                                                        </label>
+                                                    </button>
+                                                @else
+                                                    <button class="favorite-btn" onclick="login()" type="button">
+                                                        <label class="heart-switch">
+                                                            <input type="checkbox" disabled>
+                                                            <svg viewBox="0 0 33 23" fill="white">
+                                                                <path
+                                                                    d="M23.5,0.5 C28.4705627,0.5 32.5,4.52943725 32.5,9.5
                                                                                                             C32.5,16.9484448 21.46672,22.5 16.5,22.5
                                                                                                             C11.53328,22.5 0.5,16.9484448 0.5,9.5
                                                                                                             C0.5,4.52952206 4.52943725,0.5 9.5,0.5
                                                                                                             C12.3277083,0.5 14.8508336,1.80407476 16.5007741,3.84362242
                                                                                                             C18.1491664,1.80407476 20.6722917,0.5 23.5,0.5 Z">
-                                                    </path>
-                                                </svg>
-                                            </label>
-                                        </button>
-                                        @endauth
+                                                                </path>
+                                                            </svg>
+                                                        </label>
+                                                    </button>
+                                                @endauth
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                </li>
-            </a>
-            @else
-            <li>{{ __('messages.no_meals_available') }}</li>
-            @endif
-        </ul>
-    </div>
-
-    <style>
-        .chef-title-container {
-            flex-direction: column;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .chef-icon {
-            width: 50px;
-        }
-
-        .recipe-media {
-            position: relative;
-        }
-
-        .recipe-stats {
-            display: flex;
-            gap: 10px;
-        }
-
-        .stat-item {
-            text-align: center;
-            font-size: 14px;
-        }
-
-        .primary-icon {
-            color: var(--primary-color);
-        }
-
-        .cuisine-tag {
-            display: flex;
-            gap: 10px;
-            font-size: 13px;
-            align-items: center;
-        }
-
-        .cuisine-flag {
-            border-radius: 50% !important;
-            width: 30px;
-            height: 30px;
-        }
-
-        .favorite-btn {
-            border: 0;
-            background-color: unset;
-        }
-    </style>
-    {{-- End Cheifs --}}
-
-    {{-- Start Kitchens --}}
-    <div class="categories-swiper m-b20" style="height: 200px;">
-        <div class="title-bar mb-3 kitchen-title">
-            <h5 class="title">
-                <img class="kitchen-icon" src="{{ asset('assets/images/user-logo/kitchen.gif') }}" alt="">
-            </h5>
-            <h5 class="title">{{ __('messages.kitchens') }}</h5>
+                        </li>
+                    </a>
+                @else
+                    <li>{{ __('messages.no_meals_available') }}</li>
+                @endif
+            </ul>
         </div>
 
-        <div class="swiper kitchenSwiper">
-            <div class="swiper-wrapper">
-                @foreach ($kitchens as $kitchen)
-                <div class="swiper-slide kitchen-slide">
-                    <span>
-                        <div class="dz-categories-bx kitchen-card">
-                            <div class="icon-bx">
-                                <img src="{{ asset('storage/' . $kitchen->image) }}" class="kitchen-image"
-                                    alt="{{ $kitchen->name_ar }}">
-                            </div>
-                            <div class="dz-content">
-                                <h6 class="title">
-                                    <span class="kitchen-name">
-                                        @if (app()->getLocale() == 'ar')
-                                        {{ $kitchen->name_ar }}
-                                        @else
-                                        {{ $kitchen->name_en }}
-                                        @endif
-                                    </span>
-                                </h6>
-                                <span class="text-primary">
-                                    {{ __('messages.recipes_count', ['count' => $kitchen->recipes_count ??
-                                    count($kitchen->recipes)]) }}
-                                </span>
-                            </div>
+        <style>
+            .chef-title-container {
+                flex-direction: column;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .chef-icon {
+                width: 50px;
+            }
+
+            .recipe-media {
+                position: relative;
+            }
+
+            .recipe-stats {
+                display: flex;
+                gap: 10px;
+            }
+
+            .stat-item {
+                text-align: center;
+                font-size: 14px;
+            }
+
+            .primary-icon {
+                color: var(--primary-color);
+            }
+
+            .cuisine-tag {
+                display: flex;
+                gap: 10px;
+                font-size: 13px;
+                align-items: center;
+            }
+
+            .cuisine-flag {
+                border-radius: 50% !important;
+                width: 30px;
+                height: 30px;
+            }
+
+            .favorite-btn {
+                border: 0;
+                background-color: unset;
+            }
+        </style>
+        {{-- End Cheifs --}}
+
+        {{-- Start Kitchens --}}
+        <div class="categories-swiper m-b20" style="height: 200px;">
+            <div class="title-bar mb-3 kitchen-title">
+                <h5 class="title">
+                    <img class="kitchen-icon" src="{{ asset('assets/images/user-logo/kitchen.gif') }}" alt="">
+                </h5>
+                <h5 class="title">{{ __('messages.kitchens') }}</h5>
+            </div>
+
+            <div class="swiper kitchenSwiper">
+                <div class="swiper-wrapper">
+                    @foreach ($kitchens as $kitchen)
+                        <div class="swiper-slide kitchen-slide">
+                            <span>
+                                <div class="dz-categories-bx kitchen-card">
+                                    <div class="icon-bx">
+                                        <img src="{{ asset('storage/' . $kitchen->image) }}" class="kitchen-image"
+                                            alt="{{ $kitchen->name_ar }}">
+                                    </div>
+                                    <div class="dz-content">
+                                        <h6 class="title">
+                                            <span class="kitchen-name">
+                                                @if (app()->getLocale() == 'ar')
+                                                    {{ $kitchen->name_ar }}
+                                                @else
+                                                    {{ $kitchen->name_en }}
+                                                @endif
+                                            </span>
+                                        </h6>
+                                        <span class="text-primary">
+                                            {{ __('messages.recipes_count', ['count' => $kitchen->recipes_count ?? count($kitchen->recipes)]) }}
+                                        </span>
+                                    </div>
+                                </div>
+                            </span>
                         </div>
-                    </span>
+                    @endforeach
                 </div>
+            </div>
+        </div>
+
+        <div class="m-b20">
+            <div class="title-bar mb-0 top-rated-title">
+                <h5 class="title">
+                    <img class="badge-icon" src="{{ asset('assets/images/user-logo/badge.gif') }}" alt="">
+                </h5>
+                <h5 class="title">{{ __('messages.top_rated') }}</h5>
+            </div>
+
+            <div class="top-recipes-container">
+                @foreach ($topRecipes as $recipe)
+                    <a href="{{ route('users.meals.show', $recipe) }}" class="recipe-card">
+                        <img src="{{ asset('storage/' . $recipe->dish_image) }}" alt="{{ $recipe->name }}"
+                            class="recipe-image">
+                        <img src="{{ asset('assets/images/user-logo/' . ($loop->index + 1) . '.png') }}"
+                            class="chef-logo" alt="">
+                        <p class="recipe-name">
+                            {{ Str::limit($recipe->title, 20) }}
+                            {{ substr($recipe->title, 0, 10) }}
+                        </p>
+                    </a>
                 @endforeach
             </div>
         </div>
-    </div>
 
-    <div class="m-b20">
-        <div class="title-bar mb-0 top-rated-title">
-            <h5 class="title">
-                <img class="badge-icon" src="{{ asset('assets/images/user-logo/badge.gif') }}" alt="">
-            </h5>
-            <h5 class="title">{{ __('messages.top_rated') }}</h5>
-        </div>
+        <style>
+            .kitchen-title,
+            .top-rated-title {
+                display: flex;
+                flex-direction: column;
+                text-align: center;
+            }
 
-        <div class="top-recipes-container">
-            @foreach ($topRecipes as $recipe)
-            <a href="{{ route('users.meals.show', $recipe) }}" class="recipe-card">
-                <img src="{{ asset('storage/' . $recipe->dish_image) }}" alt="{{ $recipe->name }}" class="recipe-image">
-                <img src="{{ asset('assets/images/user-logo/' . ($loop->index + 1) . '.png') }}" class="chef-logo"
-                    alt="">
-                <p class="recipe-name">
-                    {{ Str::limit($recipe->title, 20) }}
-                    {{ substr($recipe->title, 0, 10) }}
-                </p>
-            </a>
-            @endforeach
-        </div>
-    </div>
+            .kitchen-icon,
+            .badge-icon {
+                width: 50px;
+            }
 
-    <style>
-        .kitchen-title,
-        .top-rated-title {
-            display: flex;
-            flex-direction: column;
-            text-align: center;
-        }
+            .kitchen-slide {
+                width: 200px !important;
+            }
 
-        .kitchen-icon,
-        .badge-icon {
-            width: 50px;
-        }
+            .kitchen-card {
+                padding: 15px;
+            }
 
-        .kitchen-slide {
-            width: 200px !important;
-        }
+            .kitchen-image {
+                width: 50px;
+                min-width: 50px;
+                height: 50px;
+                border-radius: 50%;
+                object-fit: cover;
+                border: 2px solid var(--primary-color);
+            }
 
-        .kitchen-card {
-            padding: 15px;
-        }
+            .kitchen-name {
+                width: 105px;
+                display: block;
+            }
 
-        .kitchen-image {
-            width: 50px;
-            min-width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 2px solid var(--primary-color);
-        }
+            .top-rated-title {
+                flex-direction: column;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
 
-        .kitchen-name {
-            width: 105px;
-            display: block;
-        }
+            .top-recipes-container {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 10px;
+                margin-top: 20px;
+            }
 
-        .top-rated-title {
-            flex-direction: column;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
+            .recipe-card {
+                position: relative;
+                box-shadow: 0px 0px 3px 3px #ededed;
+                border-radius: 15px;
+                width: 33%;
+            }
 
-        .top-recipes-container {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            margin-top: 20px;
-        }
+            .recipe-image {
+                width: 100%;
+                height: 122px;
+                border-radius: 15px 15px 0px 0px;
+            }
 
-        .recipe-card {
-            position: relative;
-            box-shadow: 0px 0px 3px 3px #ededed;
-            border-radius: 15px;
-            width: 33%;
-        }
+            .recipe-name {
+                text-align: center;
+                font-size: 13px;
+                padding: 5px 0px;
+            }
+        </style>
 
-        .recipe-image {
-            width: 100%;
-            height: 122px;
-            border-radius: 15px 15px 0px 0px;
-        }
-
-        .recipe-name {
-            text-align: center;
-            font-size: 13px;
-            padding: 5px 0px;
-        }
-    </style>
-
-    {{-- JavaScript للتهيئة --}}
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        {{-- JavaScript للتهيئة --}}
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
                 const swiper = new Swiper('.kitchenSwiper', {
                     slidesPerView: 1,
                     spaceBetween: 10,
@@ -604,11 +609,11 @@
                     }
                 });
             });
-    </script>
-    {{-- End Kitchens --}}
+        </script>
+        {{-- End Kitchens --}}
 
-    <!-- Featured Beverages -->
-    {{-- <div class="title-bar">
+        <!-- Featured Beverages -->
+        {{-- <div class="title-bar">
         <h5 class="title notifications-title">{{ __('messages.latest_notifications') }}</h5>
         <a href="{{ route('users.notifications.index') }}">{{ __('messages.all') }}</a>
     </div>
@@ -656,36 +661,36 @@
         @endforeach
     </ul> --}}
 
-    <style>
-        .notifications-title {
-            margin-right: 0px !important;
-        }
+        <style>
+            .notifications-title {
+                margin-right: 0px !important;
+            }
 
-        .notification-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
+            .notification-header {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+            }
 
-        .lunch-tag {
-            color: green;
-        }
+            .lunch-tag {
+                color: green;
+            }
 
-        .status-unavailable {
-            color: red;
-        }
+            .status-unavailable {
+                color: red;
+            }
 
-        .status-new {
-            color: rgb(38, 0, 255);
-        }
-    </style>
+            .status-new {
+                color: rgb(38, 0, 255);
+            }
+        </style>
 
-    <!-- Featured Beverages -->
+        <!-- Featured Beverages -->
 
-    {!! $swalScript !!}
+        {!! $swalScript !!}
 
-    <script>
-        function openModal() {
+        <script>
+            function openModal() {
                 Swal.fire({
                     title: "رائع",
                     text: "تم التحديث بنجاح",
@@ -749,32 +754,15 @@
             function login() {
                 window.location.href = "{{ route('users.auth.login') }}";
             }
-    </script>
+        </script>
     @endsection
 
-    {{-- ضع هذا الكود في آخر صفحة welcome.blade.php --}}
+{{-- ضع هذا الكود في آخر صفحة welcome.blade.php --}}
 
-    <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
-    <script>
-        // محاولة كل ثانية لمدة 30 ثانية
-var attempts = 0;
-var maxAttempts = 30;
+<script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
 
-var interval = setInterval(function() {
-    attempts++;
-    
-    if (window.OneSignal && window.OneSignal.login) {
-        window.OneSignal.login("{{ Auth::id() }}");
-        console.log('OneSignal User ID Set: {{ Auth::id() }}');
-        clearInterval(interval);
-    } else if (attempts >= maxAttempts) {
-        console.log('OneSignal not found after 30 seconds');
-        clearInterval(interval);
-    }
-}, 1000);
-    </script>
-    <script>
-        window.OneSignalDeferred = window.OneSignalDeferred || [];
+<script>
+    window.OneSignalDeferred = window.OneSignalDeferred || [];
   
   OneSignalDeferred.push(async function(OneSignal) {
     await OneSignal.init({
@@ -785,4 +773,4 @@ var interval = setInterval(function() {
       await OneSignal.login("{{ Auth::id() }}");
     @endauth
   });
-    </script>
+</script>
