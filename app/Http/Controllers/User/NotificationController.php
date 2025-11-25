@@ -50,41 +50,38 @@ class NotificationController extends Controller
         return response()->json(['success' => true, 'message' => 'تم إرسال الإشعار بنجاح']);
     }
 
+
     public function sendUnavailableNotificationFamily(Request $request)
     {
-        $request->validate([
-            'component_name' => 'required|string'
-        ]);
-
         $userId = $this->getUserId();
+
         if (!$userId) {
-            return response()->json(['success' => false, 'message' => 'المستخدم غير موجود'], 401);
+            return response()->json(['success' => false], 401);
         }
 
-        $userName = Auth::check()
-            ? Auth::user()->name
-            : (session('family_id')
-                ? MyFamily::find(session('family_id'))?->name
-                : (session('cook_id')
-                    ? Cook::find(session('cook_id'))?->name
-                    : 'مستخدم'));
-
-        $today = now()->format('Y-m-d');
-        $message = "أرسل {$userName} أن المكون '{$request->component_name}' غير متوفر بتاريخ {$today}";
-
+        // حفظ الإشعار في قاعدة البيانات
         Notification::create([
             'user_id' => $userId,
-            'message' => $message,
+            'message' => $request->component_name . ' غير متوفر',
             'is_read' => false
         ]);
 
-        // إرسال إشعار OneSignal للأب
-        $parent = User::find($userId);
-        if ($parent && $parent->onesignal_player_id) {
-            $this->sendPushNotification($parent->onesignal_player_id, $message);
+        // إرسال Push Notification بالـ External ID
+        try {
+            Http::withHeaders([
+                'Authorization' => 'Key ' . env('ONESIGNAL_REST_API_KEY'),
+                'Content-Type' => 'application/json'
+            ])->post('https://onesignal.com/api/v1/notifications', [
+                'app_id' => env('ONESIGNAL_APP_ID'),
+                'include_external_user_ids' => [(string)$userId], // ⚠️ مهم: استخدم External ID
+                'contents' => ['ar' => $request->component_name . ' غير متوفر'],
+                'headings' => ['ar' => 'تنبيه']
+            ]);
+        } catch (\Exception $e) {
+            \Log::error('OneSignal Error: ' . $e->getMessage());
         }
 
-        return response()->json(['success' => true, 'message' => 'تم إرسال الإشعار بنجاح']);
+        return response()->json(['success' => true]);
     }
 
     private function getUserId()
