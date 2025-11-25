@@ -9,9 +9,20 @@ use App\Http\Controllers\Family\SpecialFamilyController;
 use App\Http\Controllers\User\NotificationController;
 use App\Http\Controllers\User\AuthenticatedSessionController;
 
-Route::post('/save-onesignal-id', [NotificationController::class, 'saveOneSignalId'])
-        ->middleware('auth')
-        ->name('save-onesignal-id');
+Route::post('/save-onesignal-id', function (Request $request) {
+        $request->validate(['player_id' => 'required|string']);
+
+        $user = auth()->user();
+
+        if ($user) {
+                $user->update(['onesignal_player_id' => $request->player_id]);
+                \Log::info('OneSignal Player ID saved: ' . $request->player_id . ' for user: ' . $user->id);
+                return response()->json(['success' => true, 'saved' => $request->player_id]);
+        }
+
+        return response()->json(['success' => false], 401);
+})->name('save-onesignal-id');
+
 // Create Special request
 Route::get('families.special.index', [SpecialFamilyController::class, 'index'])->name('families.special.index');
 Route::get('families.special.create', [SpecialFamilyController::class, 'create'])->name('families.special.create');

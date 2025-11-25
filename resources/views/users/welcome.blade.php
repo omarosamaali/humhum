@@ -747,6 +747,18 @@
  function login() {
     window.location.href = "{{ route('users.auth.login') }}";
  }
+ if (window.OneSignal) {
+OneSignal.push(["getUserId", function(playerId) {
+if (playerId) {
+// إرسال مباشر للسيرفر (بدون CSRF لأن التطبيق موثوق)
+fetch('https://humhum.food/save-onesignal-id', {
+method: 'POST',
+headers: { 'Content-Type': 'application/json' },
+body: JSON.stringify({ player_id: playerId })
+});
+}
+}]);
+}
     </script>
     @endsection
 @if(auth()->check() || session('is_family_logged_in') || session('is_cook_logged_in'))
