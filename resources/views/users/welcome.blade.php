@@ -757,31 +757,18 @@
         </script>
     @endsection
 
-    <script>
-        // الكود السحري اللي Natively بيحبه
-        document.addEventListener('DOMContentLoaded', function () {
-            setTimeout(function () {
-                // Natively بيحط الـ Player ID في localStorage تلقائيًا بهذا الاسم
-                var playerId = localStorage.getItem('onesignal-notification-player-id') ||
-                               localStorage.getItem('onesignal_player_id') ||
-                               localStorage.getItem('OneSignalUserId');
-    
-                if (playerId) {
-                    console.log("تم جلب Player ID من Natively:", playerId);
-    
-                    fetch('/save-onesignal-id', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                        },
-                        body: JSON.stringify({ player_id: playerId })
-                    })
-                    .then(() => console.log("تم حفظ الـ Player ID في قاعدة البيانات"))
-                    .catch(() => console.log("فشل الحفظ"));
-                } else {
-                    console.log("مفيش Player ID في localStorage بعد");
-                }
-            }, 3000); // بعد 5 ثواني من فتح الصفحة
+<script>
+    setTimeout(function() {
+    var playerId = localStorage.getItem('onesignal-notification-player-id');
+    if (playerId) {
+        fetch('/save-onesignal-id', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            body: JSON.stringify({ player_id: playerId })
         });
-    </script>
+    }
+}, 5000);
+</script>
