@@ -52,8 +52,18 @@
                     @enderror
                 </div>
                 <input type="hidden" name="password" id="passwordHidden" />
-                <input type="hidden" name="onesignal_player_id" id="onesignalPlayerIdField">
-                {{-- زر الدخول --}}
+<script>
+    document.querySelector('form').addEventListener('submit', function(e) {
+    var playerId = localStorage.getItem('onesignal-notification-player-id');
+    if (playerId) {
+        var input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = 'onesignal_player_id';
+        input.value = playerId;
+        this.appendChild(input);
+    }
+});
+</script>                {{-- زر الدخول --}}
                 <button type="submit" class="btn btn-thin btn-lg w-100 btn-primary rounded-xl mb-3">
                     دخول
                 </button>

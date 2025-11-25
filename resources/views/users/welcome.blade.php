@@ -760,53 +760,48 @@
 {{-- ضع هذا الكود في آخر صفحة welcome.blade.php --}}
 
 <script>
-    console.log('🔍 بدأ البحث عن OneSignal Player ID...');
-
-// محاولة 1: بعد 3 ثواني
-setTimeout(function() {
-    checkAndSave();
-}, 3000);
-
-// محاولة 2: بعد 7 ثواني
-setTimeout(function() {
-    checkAndSave();
-}, 7000);
-
-// محاولة 3: بعد 15 ثانية
-setTimeout(function() {
-    checkAndSave();
-}, 15000);
-
-function checkAndSave() {
-    // جرب كل الأسماء الممكنة
-    var playerId = localStorage.getItem('onesignal-notification-player-id') ||
-                   localStorage.getItem('onesignal_player_id') ||
-                   localStorage.getItem('OneSignalUserId') ||
-                   localStorage.getItem('ONE_SIGNAL_SDK_DB://SdkProperties::userId');
+    // طريقة Natively الصحيحة
+document.addEventListener('DOMContentLoaded', function() {
     
-    console.log('📱 Player ID:', playerId);
-    console.log('🗂️ كل محتويات localStorage:', localStorage);
-    
-    if (playerId && playerId !== 'null') {
-        console.log('✅ تم العثور على Player ID:', playerId);
-        
-        fetch('/save-onesignal-id', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': '{{ csrf_token() }}'
-            },
-            body: JSON.stringify({ player_id: playerId })
-        })
-        .then(response => response.json())
-        .then(data => {
-            console.log('✅ تم حفظ Player ID في قاعدة البيانات');
-        })
-        .catch(error => {
-            console.error('❌ فشل حفظ Player ID:', error);
+    // محاولة 1: Natively Bridge
+    if (window.NativelyBridge) {
+        window.NativelyBridge.getOneSignalPlayerId(function(playerId) {
+            if (playerId) {
+                savePlayerId(playerId);
+            }
         });
-    } else {
-        console.log('⚠️ Player ID مش موجود لسه');
     }
+    
+    // محاولة 2: OneSignal SDK مباشرة
+    setTimeout(function() {
+        if (window.OneSignal) {
+            window.OneSignal.push(function() {
+                window.OneSignal.getUserId(function(userId) {
+                    if (userId) {
+                        savePlayerId(userId);
+                    }
+                });
+            });
+        }
+    }, 3000);
+    
+    // محاولة 3: localStorage (backup)
+    setTimeout(function() {
+        var playerId = localStorage.getItem('onesignal-notification-player-id');
+        if (playerId) {
+            savePlayerId(playerId);
+        }
+    }, 5000);
+});
+
+function savePlayerId(playerId) {
+    fetch('/save-onesignal-id', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+        },
+        body: JSON.stringify({ player_id: playerId })
+    });
 }
 </script>
