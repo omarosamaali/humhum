@@ -768,23 +768,8 @@
       appId: "7f1a49f4-0d09-43d8-a0df-1a13b6c8b085",
     });
     
-    // ربط User ID من Laravel
-    await OneSignal.login("{{ Auth::id() }}");
-    
-    // جلب OneSignal Player ID
-    setTimeout(async function() {
-      const playerId = await OneSignal.User.PushSubscription.id;
-      
-      if (playerId) {
-        fetch('/save-onesignal-id', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': '{{ csrf_token() }}'
-          },
-          body: JSON.stringify({ player_id: playerId })
-        });
-      }
-    }, 3000);
+    @auth
+      await OneSignal.login("{{ Auth::id() }}");
+    @endauth
   });
 </script>
