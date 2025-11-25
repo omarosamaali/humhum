@@ -12,6 +12,17 @@ use Illuminate\Validation\ValidationException;
 
 class AuthenticatedSessionController extends Controller
 {
+    public function saveOneSignalPlayerId(Request $request)
+    {
+        $request->validate(['player_id' => 'required|string']);
+
+        auth()->user()->update([
+            'onesignal_player_id' => $request->player_id
+        ]);
+
+        return response()->json(['success' => true]);
+    }
+
     private function getUserId()
     {
         if (Auth::check()) {

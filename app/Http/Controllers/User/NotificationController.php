@@ -54,28 +54,29 @@ class NotificationController extends Controller
     public function sendUnavailableNotificationFamily(Request $request)
     {
         $userId = $this->getUserId();
+        $user = User::find($userId);
 
-        if (!$userId) {
-            return response()->json(['success' => false], 401);
+        if (!$user || !$user->onesignal_player_id) {
+            return response()->json(['success' => false, 'message' => 'Player ID not found'], 404);
         }
 
-        // حفظ الإشعار في قاعدة البيانات
+        // حفظ في قاعدة البيانات
         Notification::create([
             'user_id' => $userId,
             'message' => $request->component_name . ' غير متوفر',
             'is_read' => false
         ]);
 
-        // إرسال Push Notification بالـ External ID
+        // ✅ إرسال بالـ Player ID (مش External ID)
         try {
             Http::withHeaders([
                 'Authorization' => 'Key ' . env('ONESIGNAL_REST_API_KEY'),
                 'Content-Type' => 'application/json'
             ])->post('https://onesignal.com/api/v1/notifications', [
                 'app_id' => env('ONESIGNAL_APP_ID'),
-                'include_external_user_ids' => [(string)$userId], // ⚠️ مهم: استخدم External ID
+                'include_player_ids' => [$user->onesignal_player_id], // ⚠️ Player ID مش External ID
                 'contents' => ['ar' => $request->component_name . ' غير متوفر'],
-                'headings' => ['ar' => 'تنبيه']
+                'headings' => ['ar' => 'تنبيه من ' . $user->name]
             ]);
         } catch (\Exception $e) {
             \Log::error('OneSignal Error: ' . $e->getMessage());

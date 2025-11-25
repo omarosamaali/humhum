@@ -26,17 +26,6 @@ use App\Http\Controllers\User\NotificationController;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
-Route::post('/save-onesignal-id', function (Request $request) {
-    \Log::info('🔥 وصل Player ID: ' . $request->player_id);
-
-    if ($user = auth()->user()) {
-        $user->update(['onesignal_player_id' => $request->player_id]);
-        \Log::info('✅ تم الحفظ للمستخدم: ' . $user->id);
-    }
-
-    return response()->json(['success' => true]);
-})->middleware('auth');
-
 require __DIR__ . '/auth.php';
 
 Route::post('/save-player-id', [NotificationController::class, 'savePlayerId'])->name('save.player.id');

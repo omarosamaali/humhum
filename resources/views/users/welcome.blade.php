@@ -759,18 +759,22 @@
 
 {{-- ضع هذا الكود في آخر صفحة welcome.blade.php --}}
 
-<script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
-
 <script>
-    window.OneSignalDeferred = window.OneSignalDeferred || [];
-  
-  OneSignalDeferred.push(async function(OneSignal) {
-    await OneSignal.init({
-      appId: "7f1a49f4-0d09-43d8-a0df-1a13b6c8b085",
-    });
+    // ⏰ انتظر 3 ثواني عشان Natively يخلص شغله
+setTimeout(function() {
+    // 🔍 اقرأ الـ Player ID من localStorage
+    const playerId = localStorage.getItem('onesignal-notification-player-id');
     
-    @auth
-      await OneSignal.login("{{ Auth::id() }}");
-    @endauth
-  });
+    if (playerId) {
+        // 📤 ارفع Player ID للسيرفر
+        fetch('{{ route("users.save-onesignal-player-id") }}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            body: JSON.stringify({ player_id: playerId })
+        });
+    }
+}, 3000);
 </script>

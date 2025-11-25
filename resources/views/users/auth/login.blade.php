@@ -76,36 +76,6 @@
 
     </div>
 </div>
-<script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
-<script>
-    window.OneSignalDeferred = window.OneSignalDeferred || [];
 
-OneSignalDeferred.push(async function(OneSignal) {
-  await OneSignal.init({
-    appId: "7f1a49f4-0d09-43d8-a0df-1a13b6c8b085",
-  });
-});
-
-// بعد نجاح اللوجن
-document.querySelector('form').addEventListener('submit', function(e) {
-  e.preventDefault();
-  
-  fetch(this.action, {
-    method: 'POST',
-    body: new FormData(this)
-  })
-  .then(response => response.json())
-  .then(async data => {
-    if (data.success && data.user_id) {
-      // ربط OneSignal
-      if (window.OneSignal) {
-        await window.OneSignal.login(data.user_id.toString());
-      }
-      // redirect
-      window.location.href = data.redirect || '/welcome';
-    }
-  });
-});
-</script>
 <script src="{{ asset('assets/js/password.js') }}"></script>
 @endsection
