@@ -749,48 +749,41 @@
  }
     </script>
     @endsection
+@if(auth()->check() || session('is_family_logged_in') || session('is_cook_logged_in'))
+<script src="https://cdn.onesignal.com/sdks/OneSignalSDK.js" async=""></script>
+<script>
+    var OneSignal = window.OneSignal || [];
+    OneSignal.push(function() {
+        OneSignal.init({
+            appId: "{{ env('ONESIGNAL_APP_ID') }}",
+            allowLocalhostAsSecureOrigin: true,
+            notifyButton: { enable: false },
+            autoResubscribe: true,
+            persistNotification: false,
+            // الأهم: خلّي OneSignal يشتغل حتى في WebView
+            serviceWorkerParam: { scope: '/' },
+            serviceWorkerPath: 'OneSignalSDKWorker.js'
+        });
 
-    @if(env('APP_ENV') !== 'local')
-    <!-- OneSignal Production -->
-    <script src="https://cdn.onesignal.com/sdks/OneSignalSDK.js" async=""></script>
-    @else
-    <!-- OneSignal Localhost -->
-    <script src="https://cdn.onesignal.com/sdks/OneSignalSDK.js" async=""></script>
-    @endif
-    
-    <script>
-        window.OneSignal = window.OneSignal || [];
-        OneSignal.push(function() {
-            OneSignal.init({
-                appId: "{{ env('ONESIGNAL_APP_ID') }}", // 7f1a49f4-0d09-43d8-a0df-1a13b6c8b085
-                safari_web_id: "web.onesignal.auto",
-                notifyButton: { enable: false },
-                allowLocalhostAsSecureOrigin: true, // مهم للـ localhost
-                autoResubscribe: true,
-                persistNotification: false,
-            });
-    
-            // حفظ Player ID تلقائي بعد الاشتراك
-            OneSignal.on('subscriptionChange', function(isSubscribed) {
-                if (isSubscribed) {
-                    OneSignal.getUserId().then(function(playerId) {
-                        if (playerId) {
-                            fetch('/save-onesignal-id', {
-                                method: 'POST',
-                                headers: {
-                                    'Content-Type': 'application/json',
-                                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                                },
-                                body: JSON.stringify({ player_id: playerId })
-                            });
-                        }
-                    });
-                }
-            });
-    
-            // لو اليوزر مشترك من قبل، احفظ الـ ID فورًا
-            OneSignal.getUserId().then(function(playerId) {
+        // ده اللي هيشتغل في Natively / WebView
+        OneSignal.on('subscriptionChange', function(isSubscribed) {
+            console.log('OneSignal subscription changed:', isSubscribed);
+            if (isSubscribed) {
+                sendPlayerIdToServer();
+            }
+        });
+
+        // وده عشان لو كان مشترك من قبل
+        OneSignal.isPushNotificationsEnabled(function(isEnabled) {
+            if (isEnabled) {
+                sendPlayerIdToServer();
+            }
+        });
+
+        function sendPlayerIdToServer() {
+            OneSignal.getExternalUserId() || OneSignal.getUserId(function(playerId) {
                 if (playerId) {
+                    console.log('OneSignal Player ID:', playerId);
                     fetch('/save-onesignal-id', {
                         method: 'POST',
                         headers: {
@@ -798,8 +791,30 @@
                             'X-CSRF-TOKEN': '{{ csrf_token() }}'
                         },
                         body: JSON.stringify({ player_id: playerId })
+                    }).then(r => r.json()).then(data => {
+                        console.log('Player ID saved to server:', playerId);
                     });
                 }
             });
+        }
+
+        // لو التطبيق (Natively) بعت الـ ID بنفسه (أحسن طريقة)
+        window.addEventListener('message', function(e) {
+            try {
+                var data = typeof e.data === 'string' ? JSON.parse(e.data) : e.data;
+                if (data.type === 'onesignal_player_id' && data.playerId) {
+                    console.log('Player ID from native app:', data.playerId);
+                    fetch('/save-onesignal-id', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        },
+                        body: JSON.stringify({ player_id: data.playerId })
+                    });
+                }
+            } catch(err) {}
         });
-    </script>
+    });
+</script>
+@endif
