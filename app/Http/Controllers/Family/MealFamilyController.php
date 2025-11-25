@@ -255,6 +255,7 @@ class MealFamilyController extends Controller
         return view('families.meals.steps', compact('recipe', 'steps', 'completedSteps'));
     }
 
+
     public function families(string $id)
     {
         $recipe = Recipe::findOrFail($id);

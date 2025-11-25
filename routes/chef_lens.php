@@ -17,6 +17,9 @@ use App\Http\Controllers\Admin\ReportController;
 use App\Http\Controllers\Admin\ChefLensUserController;
 use App\Http\Controllers\Admin\ChefLensVideosController;
 use App\Http\Controllers\Admin\ChefLensChallengesController;
+use App\Http\Controllers\User\AuthenticatedSessionController;
+
+Route::post('/save-onesignal-id', [AuthenticatedSessionController::class, 'saveOneSignalId'])->middleware('auth');
 
 Route::get('/chef_lens/welcome', [VideoController::class, 'guestIndex'])->name('welcome');
 

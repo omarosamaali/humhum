@@ -4,40 +4,12 @@ namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
-use App\Models\MyFamily;
-use App\Models\Cook;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 
 class AuthenticatedSessionController extends Controller
 {
-    public function saveOneSignalPlayerId(Request $request)
-    {
-        $request->validate(['player_id' => 'required|string']);
-
-        auth()->user()->update([
-            'onesignal_player_id' => $request->player_id
-        ]);
-
-        return response()->json(['success' => true]);
-    }
-
-    private function getUserId()
-    {
-        if (Auth::check()) {
-            return Auth::id();
-        }
-        if (session('is_family_logged_in') && session('family_id')) {
-            return MyFamily::find(session('family_id'))?->user_id;
-        }
-
-        if (session('is_cook_logged_in') && session('cook_id')) {
-            return Cook::find(session('cook_id'))?->user_id;
-        }
-        return null;
-    }
-
     public function create()
     {
         return view('users.auth.login');
@@ -50,40 +22,38 @@ class AuthenticatedSessionController extends Controller
             'password' => ['required', 'string'],
         ]);
 
+        // البحث عن المستخدم بالإيميل
         $user = User::where('email', $credentials['email'])->first();
 
+        // مقارنة الباسورد مباشرة بدون تشفير
         if (!$user || $user->password !== $credentials['password']) {
             throw ValidationException::withMessages([
                 'email' => __('البريد الإلكتروني أو كلمة المرور غير صحيحة'),
             ]);
         }
 
+        // تسجيل دخول المستخدم يدوياً
         Auth::login($user, true);
+
         $request->session()->regenerate();
 
-        // لو Ajax request
-        if ($request->expectsJson()) {
-            return response()->json([
-                'success' => true,
-                'user_id' => $user->id,
-                'redirect' => route('users.welcome')
-            ]);
-        }
-
-        return redirect()->route('users.welcome')
+        return redirect()->intended(route('users.welcome', absolute: false))
             ->with('success', 'تم تسجيل الدخول بنجاح');
     }
-    public function saveFcmToken(Request $request)
-    {
-        $request->validate(['fcm_token' => 'required|string']);
 
-        auth()->user()->update([
-            'fcm_token' => $request->fcm_token
+    public function saveOneSignalId(Request $request)
+    {
+        $request->validate([
+            'player_id' => 'required|string'
+        ]);
+
+        Auth::user()->update([
+            'onesignal_player_id' => $request->player_id
         ]);
 
         return response()->json(['success' => true]);
     }
-
+    
     public function destroy(Request $request)
     {
         Auth::guard('web')->logout();

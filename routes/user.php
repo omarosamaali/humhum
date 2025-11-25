@@ -7,7 +7,6 @@ use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\NewPasswordController;
 use App\Http\Controllers\User\BlockedController;
-use App\Http\Controllers\Users\CookTableController;
 use App\Http\Controllers\MealPlanController;
 use App\Http\Controllers\User\FaqController;
 use App\Http\Controllers\User\TermsController;
@@ -15,10 +14,6 @@ use App\Http\Controllers\User\MessageController;
 use App\Http\Controllers\User\NotificationController;
 use App\Http\Controllers\MealController;
 use App\Http\Controllers\Users\SpecialController;
-
-Route::post('/save-onesignal-player-id', [AuthenticatedSessionController::class, 'saveOneSignalPlayerId'])
-    ->name('users.save-onesignal-player-id');
-
 
 Route::post('/recipe/complete-step', [MealController::class, 'completeStep'])->name('recipe.complete-step');
 Route::get('users/meals/show/{id}', [MealController::class, 'show'])->name('users.meals.show');
