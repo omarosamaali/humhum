@@ -15,16 +15,13 @@ Route::post('/save-onesignal-id', function (Request $request) {
         $request->validate(['player_id' => 'required|string']);
 
         $user = auth()->user();
-
         if ($user) {
                 $user->update(['onesignal_player_id' => $request->player_id]);
-                \Log::info('OneSignal Player ID saved: ' . $request->player_id . ' for user ID: ' . $user->id);
+                \Log::info('OneSignal Player ID saved: ' . $request->player_id . ' | User: ' . $user->id);
                 return response()->json(['success' => true]);
         }
-
         return response()->json(['success' => false], 401);
 });
-
 // Create Special request
 Route::get('families.special.index', [SpecialFamilyController::class, 'index'])->name('families.special.index');
 Route::get('families.special.create', [SpecialFamilyController::class, 'create'])->name('families.special.create');

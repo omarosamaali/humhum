@@ -81,32 +81,6 @@
 <script src="{{ asset('assets/js/password.js') }}"></script>
 <script>
 
-    // بعد ما يسجل دخول (في أي مكان بعد Auth::login)
-    document.addEventListener('deviceready', function () {
-    // جلب الـ Player ID من OneSignal Native
-    if (window.plugins && window.plugins.OneSignal) {
-    window.plugins.OneSignal.getPermissionSubscriptionState(function(status) {
-    var playerId = status.subscriptionStatus.userId;
     
-    if (playerId) {
-    console.log("OneSignal Player ID من التطبيق:", playerId);
-    
-    // إرسال للسيرفر
-    fetch('https://humhum.food/save-onesignal-id', {
-    method: 'POST',
-    headers: {
-    'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({ player_id: playerId })
-    })
-    .then(r => r.json())
-    .then(data => {
-    console.log("تم حفظ Player ID:", playerId);
-    })
-    .catch(err => console.error("فشل الحفظ:", err));
-    }
-    });
-    }
-    }, false);
 </script>
 @endsection
