@@ -757,10 +757,39 @@
         </script>
     @endsection
 
+{{-- ضع هذا الكود في آخر صفحة welcome.blade.php --}}
+
 <script>
-    setTimeout(function() {
-    var playerId = localStorage.getItem('onesignal-notification-player-id');
-    if (playerId) {
+    console.log('🔍 بدأ البحث عن OneSignal Player ID...');
+
+// محاولة 1: بعد 3 ثواني
+setTimeout(function() {
+    checkAndSave();
+}, 3000);
+
+// محاولة 2: بعد 7 ثواني
+setTimeout(function() {
+    checkAndSave();
+}, 7000);
+
+// محاولة 3: بعد 15 ثانية
+setTimeout(function() {
+    checkAndSave();
+}, 15000);
+
+function checkAndSave() {
+    // جرب كل الأسماء الممكنة
+    var playerId = localStorage.getItem('onesignal-notification-player-id') ||
+                   localStorage.getItem('onesignal_player_id') ||
+                   localStorage.getItem('OneSignalUserId') ||
+                   localStorage.getItem('ONE_SIGNAL_SDK_DB://SdkProperties::userId');
+    
+    console.log('📱 Player ID:', playerId);
+    console.log('🗂️ كل محتويات localStorage:', localStorage);
+    
+    if (playerId && playerId !== 'null') {
+        console.log('✅ تم العثور على Player ID:', playerId);
+        
         fetch('/save-onesignal-id', {
             method: 'POST',
             headers: {
@@ -768,7 +797,16 @@
                 'X-CSRF-TOKEN': '{{ csrf_token() }}'
             },
             body: JSON.stringify({ player_id: playerId })
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('✅ تم حفظ Player ID في قاعدة البيانات');
+        })
+        .catch(error => {
+            console.error('❌ فشل حفظ Player ID:', error);
         });
+    } else {
+        console.log('⚠️ Player ID مش موجود لسه');
     }
-}, 5000);
+}
 </script>
