@@ -8,6 +8,8 @@ use App\Http\Controllers\Family\MealFamilyController;
 use App\Http\Controllers\Family\SpecialFamilyController;
 use App\Http\Controllers\User\NotificationController;
 use App\Http\Controllers\User\AuthenticatedSessionController;
+// import Request
+use Illuminate\Http\Request;
 
 Route::post('/save-onesignal-id', function (Request $request) {
         $request->validate(['player_id' => 'required|string']);
