@@ -35,6 +35,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'phone_verified_at',
         'profile_image',
         'user_type',
+        'onesignal_player_id',
         'status',
         'role',
         'otp',

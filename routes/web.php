@@ -23,8 +23,17 @@ use App\Models\ChefProfile;
 use App\Models\ChallengeReview;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\User\NotificationController;
-
 use Carbon\Carbon;
+use Illuminate\Http\Request;
+
+Route::post('/save-onesignal-id', function (Request $request) {
+    $request->validate(['player_id' => 'required|string']);
+    if ($user = auth()->user()) {
+        $user->update(['onesignal_player_id' => $request->player_id]);
+        \Log::info('OneSignal Player ID saved: ' . $request->player_id);
+    }
+    return response()->json(['success' => true]);
+});
 
 require __DIR__ . '/auth.php';
 
