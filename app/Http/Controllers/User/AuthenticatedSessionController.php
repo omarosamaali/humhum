@@ -22,38 +22,19 @@ class AuthenticatedSessionController extends Controller
             'password' => ['required', 'string'],
         ]);
 
-        // البحث عن المستخدم بالإيميل
         $user = User::where('email', $credentials['email'])->first();
-
-        // مقارنة الباسورد مباشرة بدون تشفير
         if (!$user || $user->password !== $credentials['password']) {
             throw ValidationException::withMessages([
                 'email' => __('البريد الإلكتروني أو كلمة المرور غير صحيحة'),
             ]);
         }
-
-        // تسجيل دخول المستخدم يدوياً
         Auth::login($user, true);
-
         $request->session()->regenerate();
-
         return redirect()->intended(route('users.welcome', absolute: false))
-            ->with('success', 'تم تسجيل الدخول بنجاح');
+            ->with('success', 'تم تسجيل الدخول بنجاح')
+            ->with('onesignal_user_id', $user->id);
     }
 
-    public function saveOneSignalId(Request $request)
-    {
-        $request->validate([
-            'player_id' => 'required|string'
-        ]);
-
-        Auth::user()->update([
-            'onesignal_player_id' => $request->player_id
-        ]);
-
-        return response()->json(['success' => true]);
-    }
-    
     public function destroy(Request $request)
     {
         Auth::guard('web')->logout();

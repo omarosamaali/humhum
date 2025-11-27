@@ -12,7 +12,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->string('onesignal_player_id')->nullable()->unique();
+            $table->dropColumn('onesignal_player_id');
+            $table->dropColumn('device_type');
+            $table->dropColumn('fcm_token');
+            
         });
     }
 
@@ -22,7 +25,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn('onesignal_player_id');
+            $table->string('onesignal_player_id')->nullable()->unique();
         });
     }
 };

@@ -26,7 +26,6 @@
                 <div class="m-b30">
                     <div class="input-group input-mini input-lg" style="justify-content: center;">
                         <label class="form-label">كلمة المرور</label>
-                        
                         <div class="otp-group" id="otpGroup" aria-label="حقل كلمة المرور المكوّن من 4 خانات"
                             style="display: flex;  gap: 5px; margin-bottom: 40px; direction: rtl;">
                             <input inputmode="numeric" pattern="[0-9]*" maxlength="1" data-index="0"
@@ -48,19 +47,14 @@
                     @enderror
                 </div>
                 <input type="hidden" name="password" id="passwordHidden" />
-                {{-- زر الدخول --}}
                 <button type="submit" class="btn btn-thin btn-lg w-100 btn-primary rounded-xl mb-3">
                     دخول
                 </button>
-
-                {{-- نسيت كلمة المرور --}}
                 <p class="form-text text-center">
                     نسيت كلمة المرور؟
                     <a href="{{ route('users.auth.password.request') }}" class="link ms-2">استرجاع كلمة المرور</a>
                 </p>
             </form>
-
-            {{-- إنشاء حساب جديد --}}
             <div class="text-center account-footer">
                 <a href="{{ route('users.auth.register') }}" style="border: 1px solid var(--primary-color);
                 background-color: white !important; color: var(--primary-color) !important;"
@@ -69,35 +63,33 @@
                 </a>
             </div>
         </div>
-
     </div>
 </div>
-
 <script src="{{ asset('assets/js/password.js') }}"></script>
-<script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+<script src="https://cdn.onesignal.com/sdks/OneSignalSDK.js" async=""></script>
 <script>
-    window.OneSignalDeferred = window.OneSignalDeferred || [];
-  OneSignalDeferred.push(async function(OneSignal) {
-    await OneSignal.init({
-      appId: "{{ env('ONESIGNAL_APP_ID') }}",
+    window.OneSignal = window.OneSignal || [];
+    
+    OneSignal.push(function() {
+        OneSignal.init({
+            appId: "7f1a49f4-0d09-43d8-a0df-1a13b6c8b085", // حط الـ ID بتاعك هنا مباشرة عشان تضمن
+            // لو عايز يطلب إذن الإشعارات تلقائيًا (اختياري)
+            autoResubscribe: true,
+            notifyButton: {
+                enable: false,
+            },
+        });
+
+        // كل مرة الصفحة تتحمل واليوزر مسجل دخوله → يتسجل في OneSignal فورًا
+        @auth
+            OneSignal.push(function() {
+                OneSignal.sendTag("user_id", "{{ auth()->id() }}");
+                OneSignal.sendTag("user_email", "{{ auth()->email() }}");
+                OneSignal.sendTag("is_mobile", "true"); // عشان تعرف إنه من التطبيق
+            });
+        @endauth
     });
 
-    // طلب الإذن وحفظ الـ Player ID
-    const permission = await OneSignal.Notifications.permission;
-    if (permission) {
-      const playerId = await OneSignal.User.PushSubscription.id;
-      if (playerId) {
-        // إرسال الـ Player ID للسيرفر
-        fetch('/save-onesignal-id', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': '{{ csrf_token() }}'
-          },
-          body: JSON.stringify({ player_id: playerId })
-        });
-      }
-    }
-  });
+    // لو اليوزر لسة ما دخلش → لما يعمل login ويرجع الصفحة دي تاني هيتسجل تلقائي
 </script>
 @endsection
