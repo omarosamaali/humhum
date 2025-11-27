@@ -66,8 +66,8 @@
     </div>
 </div>
 <script src="{{ asset('assets/js/password.js') }}"></script>
-<script src="https://cdn.onesignal.com/sdks/OneSignalSDK.js" async=""></script>
-<script>
+{{-- <script src="https://cdn.onesignal.com/sdks/OneSignalSDK.js" async=""></script> --}}
+{{-- <script>
     window.OneSignal = window.OneSignal || [];
     
     OneSignal.push(function() {
@@ -91,5 +91,5 @@
     });
 
     // لو اليوزر لسة ما دخلش → لما يعمل login ويرجع الصفحة دي تاني هيتسجل تلقائي
-</script>
+</script> --}}
 @endsection

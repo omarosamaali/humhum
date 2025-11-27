@@ -624,10 +624,9 @@
 </script>
 @if(session('onesignal_user_id'))
 <script>
-    OneSignal.push(function() {
-        OneSignal.sendTag("user_id", "{{ session('onesignal_user_id') }}");
-        OneSignal.sendTag("user_email", "{{ auth()->user()->email }}");
-    });
+    if (window.onesignal_native) {
+        window.onesignal_native.setExternalUserId("{{ session('onesignal_user_id') }}");
+    }
 </script>
 @endif
 @endsection
