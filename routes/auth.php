@@ -90,9 +90,11 @@ Route::middleware('auth.user')->group(function () {
     Route::post('users.auth.logout', [AuthenticatedSessionController::class, 'destroy'])
         ->name('users.auth.logout');
 });
+Route::middleware('auth')->group(callback: function () {
 
-Route::get('/auth/login-success', [AuthenticatedSessionController::class, 'loginSuccess'])
-    ->name('auth.login-success');
+    Route::get('/auth/login-success', [AuthenticatedSessionController::class, 'loginSuccess'])
+        ->name('auth.login-success');
+});
     
 Route::middleware('check.user')->group(function () {
     // Cooks Login Routes
