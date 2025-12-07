@@ -21,7 +21,6 @@ class AuthenticatedSessionController extends Controller
             'email' => ['required', 'email'],
             'password' => ['required', 'string'],
         ]);
-
         $user = User::where('email', $credentials['email'])->first();
         if (!$user || $user->password !== $credentials['password']) {
             throw ValidationException::withMessages([
@@ -30,9 +29,7 @@ class AuthenticatedSessionController extends Controller
         }
         Auth::login($user, true);
         $request->session()->regenerate();
-        return redirect()->intended(route('users.welcome', absolute: false))
-            ->with('success', 'تم تسجيل الدخول بنجاح')
-            ->with('onesignal_user_id', $user->id);
+        return redirect()->route('auth.login-success');
     }
 
     public function destroy(Request $request)
@@ -43,5 +40,13 @@ class AuthenticatedSessionController extends Controller
 
         return redirect()->route('users.auth.login')
             ->with('success', 'تم تسجيل الخروج بنجاح');
+    }
+
+    public function loginSuccess()
+    {
+        if (!Auth::check()) {
+            return redirect()->route('auth.login');
+        }
+        return view('auth.login-success');
     }
 }

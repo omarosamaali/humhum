@@ -21,6 +21,7 @@ use App\Http\Controllers\User\NotificationController;
 use App\Http\Controllers\User\CooksController;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Auth;
+
 Route::middleware('auth.user')->group(function () {
     // Cooks Routes
     Route::get('users.cooks.index', [CooksController::class, 'index'])->name('users.cooks.index');
@@ -46,7 +47,7 @@ Route::middleware('auth.user')->group(function () {
     Route::get('users.family.show.{myFamily}', [FamilyController::class, 'show'])->name('users.family.show');
     Route::post('users.family.store', [FamilyController::class, 'store'])->name('users.family.store');
     Route::get('users.family.edit.{myFamily}', [FamilyController::class, 'edit'])
-    ->name('users.family.edit');
+        ->name('users.family.edit');
     Route::put('users.family.update.{myFamily}', [FamilyController::class, 'update'])->name('users.family.update');
     Route::get('users.family.choose-image.{myFamily}', [FamilyController::class, 'chooseImage'])
         ->name('users.family.chooseImage');
@@ -58,7 +59,7 @@ Route::middleware('auth.user')->group(function () {
     Route::post('users/family/{myFamily}/update-has-email', [FamilyController::class, 'update_has_email'])
         ->name('users.family.update_has_email');
     Route::get('users.family.send_notification.{myFamily}', [FamilyController::class, 'edit_send_notification'])
-    ->name('users.family.send_notification');
+        ->name('users.family.send_notification');
     Route::post('users/family/{myFamily}/update-send-notification', [FamilyController::class, 'update_send_notification'])
         ->name('users.family.update_send_notification');
     Route::get('users.family.language.{myFamily}', [FamilyController::class, 'edit_language'])
@@ -90,6 +91,9 @@ Route::middleware('auth.user')->group(function () {
         ->name('users.auth.logout');
 });
 
+Route::get('/auth/login-success', [AuthenticatedSessionController::class, 'loginSuccess'])
+    ->name('auth.login-success');
+    
 Route::middleware('check.user')->group(function () {
     // Cooks Login Routes
     Route::get('users.cooks_members.login', [CooksController::class, 'cook_login'])
@@ -97,7 +101,7 @@ Route::middleware('check.user')->group(function () {
     Route::post('users.cooks_members.login', [CooksController::class, 'cook_login_post'])
         ->name('users.cooks.login.post');
 
-        // Registration OTP Routes (for new user registration)
+    // Registration OTP Routes (for new user registration)
     Route::get('users.auth.register.verify-otp', [OtpController::class, 'showForm'])
         ->name('users.register.verify.otp');
     Route::post('users.auth.register.verify-otp', [OtpController::class, 'verify'])

@@ -66,30 +66,4 @@
     </div>
 </div>
 <script src="{{ asset('assets/js/password.js') }}"></script>
-{{-- <script src="https://cdn.onesignal.com/sdks/OneSignalSDK.js" async=""></script> --}}
-{{-- <script>
-    window.OneSignal = window.OneSignal || [];
-    
-    OneSignal.push(function() {
-        OneSignal.init({
-            appId: "7f1a49f4-0d09-43d8-a0df-1a13b6c8b085", // حط الـ ID بتاعك هنا مباشرة عشان تضمن
-            // لو عايز يطلب إذن الإشعارات تلقائيًا (اختياري)
-            autoResubscribe: true,
-            notifyButton: {
-                enable: false,
-            },
-        });
-
-        // كل مرة الصفحة تتحمل واليوزر مسجل دخوله → يتسجل في OneSignal فورًا
-        @auth
-            OneSignal.push(function() {
-                OneSignal.sendTag("user_id", "{{ auth()->id() }}");
-                OneSignal.sendTag("user_email", "{{ auth()->email() }}");
-                OneSignal.sendTag("is_mobile", "true"); // عشان تعرف إنه من التطبيق
-            });
-        @endauth
-    });
-
-    // لو اليوزر لسة ما دخلش → لما يعمل login ويرجع الصفحة دي تاني هيتسجل تلقائي
-</script> --}}
 @endsection

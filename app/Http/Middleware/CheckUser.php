@@ -9,16 +9,10 @@ use Illuminate\Support\Facades\Auth;
 
 class CheckUser
 {
-    /**
-     * Handle an incoming request.
-     *
-     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
-     */
     public function handle(Request $request, Closure $next): Response
     {
-
-        if (Auth::check()) {
-            return redirect('users.welcome');
+        if (Auth::check() && !$request->routeIs('auth.login-success')) {
+            return redirect()->route('auth.login-success');
         }
 
         return $next($request);
