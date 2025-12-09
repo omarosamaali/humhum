@@ -185,10 +185,12 @@ $t = $translations[$lang] ?? $translations['ar'];
                             <label class="form-label" for="password"
                                 style="text-align: center; align-items: center; justify-content: center; display: flex;">{{
                                 $t['password'] }}</label>
-                            @php
-                            $rtlLanguages = ['ar', 'ur', 'ps'];
-                            $dir = in_array($memberData->language, $rtlLanguages) ? 'direction:rtl;' : 'direction:ltr;';
-                            @endphp
+                        @php
+                        $rtlLanguages = ['ar', 'ur', 'ps'];
+                        $dir = isset($cookData) && in_array($cookData->language, $rtlLanguages)
+                        ? 'direction:rtl;'
+                        : 'direction:ltr;';
+                        @endphp
                             <div style="{{ $dir }}" id="otp" class="digit-group input-mini">
                                 <input class="form-control otp-input" type="text" maxlength="1" data-index="0" required>
                                 <input class="form-control otp-input" type="text" maxlength="1" data-index="1" required>
