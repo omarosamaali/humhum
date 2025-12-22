@@ -25,8 +25,52 @@ use App\Http\Controllers\ContactController;
 use App\Http\Controllers\User\NotificationController;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 
 require __DIR__ . '/auth.php';
+// ============================================
+// routes/api.php
+// ============================================
+
+// Route::post('/api-login', function (Request $request) {
+
+//     $user = DB::table('users')
+//         ->where('email', $request->email)
+//         ->first();
+
+//     if ($user && $request->password === $user->password) {
+//         return response()->json([
+//             'success' => true,
+//             'message' => 'تم تسجيل الدخول بنجاح',
+//             'user' => [
+//                 'id' => $user->id,
+//                 'name' => $user->name,
+//                 'email' => $user->email,
+//                 'status' => $user->status
+//             ]
+//         ]);
+//     }
+
+//     return response()->json([
+//         'success' => false,
+//         'message' => 'البيانات غير صحيحة'
+//     ], 401);
+// });
+
+
+Route::get('/users', function () {
+    $users = DB::table('users')
+        ->select('id', 'name', 'email', 'role', 'status')
+        ->get();
+
+    return response()->json([
+        'success' => true,
+        'count' => $users->count(),
+        'data' => $users
+    ]);
+});
 
 Route::post('/save-player-id', [NotificationController::class, 'savePlayerId'])->name('save.player.id');
 Route::post('/contacts', [ContactController::class, 'store'])->name('contacts.store');
@@ -74,12 +118,13 @@ Route::get('/', function () {
 });
 
 Route::middleware(['auth'])->group(function () {
-    Route::get('/admin/get-subcategories', [App\Http\Controllers\Admin\RecipesController::class, 'getSubCategories']);});
+    Route::get('/admin/get-subcategories', [App\Http\Controllers\Admin\RecipesController::class, 'getSubCategories']);
+});
 Route::post('/c1he3f/snaps/store-snap', [SnapController::class, 'store'])->name('c1he3f.snaps.store-snap');
 Route::get('/c1he3f/snaps/get-subcategory-details/{subCategoryId}', [SnapController::class, 'getSubcategoryDetails'])->name('get.subcategory-details');
 Route::get('/c1he3f/snaps/get-subcategories/{mainCategoryId}', [SnapController::class, 'getSubcategories'])->name('get.subcategories');
 Route::get('/c1he3f/snaps/edit-snap/{snap}', [SnapController::class, 'edit'])->name('c1he3f.snaps.edit-snap');
-Route::get('/c1he3f/snaps/lens-show/{snap}', function(Snap $snap){
+Route::get('/c1he3f/snaps/lens-show/{snap}', function (Snap $snap) {
     return view('c1he3f.snaps.lens-show', compact('snap'));
 })->name('c1he3f.snaps.lens-show');
 
@@ -90,7 +135,7 @@ Route::put('/c1he3f/snaps/update-snap/{snap}', [SnapController::class, 'update']
 Route::delete('/c1he3f/snaps/delete/{snap}', [SnapController::class, 'destroy'])->name('c1he3f.snaps.delete');
 Route::get('/c1he3f/snaps/all-snap', function () {
     $publishedSnaps = Snap::where('status', 'published')
-    ->where('user_id', auth()->user()->id)->with(['mainCategory', 'subCategories'])->get();
+        ->where('user_id', auth()->user()->id)->with(['mainCategory', 'subCategories'])->get();
     $draftSnaps = Snap::where('status', 'draft')
         ->where('user_id', auth()->user()->id)->with(['mainCategory', 'subCategories'])->get();
     $mainCategories = MainCategories::all();
@@ -203,8 +248,8 @@ Route::get('c1he3f/index', function () {
     // $notificationsCount = ChallengeReview::whereHas('challengeResponse', function ($query) {
     //     $query->where('user_id', Auth::user()->id);
     // })->count(); 
-    
-    
+
+
     return view('c1he3f.index', compact(
         'recipes',
         'mainCategories',

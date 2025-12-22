@@ -71,7 +71,7 @@ class NotificationController extends Controller
                     : 'مستخدم'));
 
         $today = now()->format('Y-m-d');
-        $message = "أرسل {$userName} أن المكون '{$request->component_name}' غير متوفر بتاريخ {$today}";
+        $message = "أرسل {$userName} أن المكون '{$request->component_name}' غير متوفر ";
 
         // حفظ الإشعار في قاعدة البيانات
         Notification::create([
