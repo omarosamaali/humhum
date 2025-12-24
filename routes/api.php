@@ -4,6 +4,18 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 
+Route::get('/users', function () {
+    $users = DB::table('users')
+        ->select('id', 'name', 'email', 'role', 'status')
+        ->get();
+
+    return response()->json([
+        'success' => true,
+        'count' => $users->count(),
+        'data' => $users
+    ]);
+});
+
 Route::post('/login', function (Request $request) {
 
     $user = DB::table('users')

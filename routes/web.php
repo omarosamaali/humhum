@@ -4,7 +4,6 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\ProfileController;
 use App\Models\AboutUs;
-use App\Models\Terms;
 use App\Models\Faq;
 use App\Models\MainCategories;
 use App\Models\SubCategory;
@@ -24,53 +23,9 @@ use App\Models\ChallengeReview;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\User\NotificationController;
 use Carbon\Carbon;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 
 require __DIR__ . '/auth.php';
-// ============================================
-// routes/api.php
-// ============================================
 
-// Route::post('/api-login', function (Request $request) {
-
-//     $user = DB::table('users')
-//         ->where('email', $request->email)
-//         ->first();
-
-//     if ($user && $request->password === $user->password) {
-//         return response()->json([
-//             'success' => true,
-//             'message' => 'تم تسجيل الدخول بنجاح',
-//             'user' => [
-//                 'id' => $user->id,
-//                 'name' => $user->name,
-//                 'email' => $user->email,
-//                 'status' => $user->status
-//             ]
-//         ]);
-//     }
-
-//     return response()->json([
-//         'success' => false,
-//         'message' => 'البيانات غير صحيحة'
-//     ], 401);
-// });
-
-
-Route::get('/users', function () {
-    $users = DB::table('users')
-        ->select('id', 'name', 'email', 'role', 'status')
-        ->get();
-
-    return response()->json([
-        'success' => true,
-        'count' => $users->count(),
-        'data' => $users
-    ]);
-});
 
 Route::post('/save-player-id', [NotificationController::class, 'savePlayerId'])->name('save.player.id');
 Route::post('/contacts', [ContactController::class, 'store'])->name('contacts.store');
