@@ -132,7 +132,7 @@ class MealController extends Controller
                 $completedSteps[] = $stepIndex;
                 session()->put("recipe_{$recipeId}_completed_steps", $completedSteps);
 
-                // الإرسال يحصل فقط عند أول خطوة (Index 0)
+                // الإرسال يحصل فقط عند الخطوة الأولى (Index 0)
                 if ($stepIndex === 0) {
                     $familyId = session('family_id');
                     $cookId = session('cook_id');
@@ -141,13 +141,12 @@ class MealController extends Controller
                     $userId = null;
                     $targetTopic = "";
 
-                    // تحديد من الذي بدأ الطبخ وبناء الرسالة
+                    // بناء محتوى الرسالة وتحديد التوبيك
                     if ($cookId) {
                         $cook = Cook::find($cookId);
                         if ($cook) {
                             $userId = $cook->user_id;
                             $messageContent = "الطاهي {$cook->name} بدأ في طبخ {$recipeTitle}";
-                            // التوبيك لازم يكون مشترك بين أفراد العيلة الواحدة
                             $targetTopic = "family_group_" . $userId;
                         }
                     } elseif ($familyId) {
@@ -159,10 +158,9 @@ class MealController extends Controller
                         }
                     }
 
-                    // إذا تأكدنا من وجود محتوى للرسالة
                     if ($messageContent != "" && $userId) {
 
-                        // ١. التخزين في قاعدة البيانات (عشان تظهر جوه التطبيق)
+                        // ١. التخزين في الداتابيز عشان تظهر جوه قائمة التنبيهات في الموقع
                         Notification::create([
                             'user_id' => $userId,
                             'family_member_id' => $familyId,
@@ -171,22 +169,31 @@ class MealController extends Controller
                             'is_read' => false
                         ]);
 
-                        // ٢. الإرسال عبر Firebase (عشان تظهر والتطبيق مقفول)
+                        // ٢. الإرسال لـ Firebase (بصيغة توافق Natively Wrapper)
                         try {
                             $messaging = app('firebase.messaging');
 
+                            // هنا بنبعت Notification (للنظام) و Data (للتطبيق) مع بعض
                             $fcmMessage = CloudMessage::withTarget('topic', $targetTopic)
                                 ->withNotification(FirebaseNotification::create('تنبيه طبخ جديد 🍳', $messageContent))
+                                ->withAndroidConfig(AndroidConfig::fromArray([
+                                    'priority' => 'high',
+                                    'notification' => [
+                                        'sound' => 'default',
+                                        'channel_id' => 'default', // القناة الافتراضية في أندرويد
+                                        'click_action' => 'FLUTTER_NOTIFICATION_CLICK',
+                                    ],
+                                ]))
                                 ->withData([
+                                    'title' => 'تنبيه طبخ جديد 🍳',
+                                    'body' => $messageContent,
                                     'recipe_id' => (string)$recipeId,
-                                    'type' => 'start_cooking',
-                                    'click_action' => 'FLUTTER_NOTIFICATION_CLICK' // مهم جداً لاستقبال الإشعار في الخلفية
+                                    'click_action' => 'FLUTTER_NOTIFICATION_CLICK',
                                 ]);
 
                             $messaging->send($fcmMessage);
                         } catch (\Exception $firebaseEx) {
                             Log::error('Firebase Error: ' . $firebaseEx->getMessage());
-                            // كملنا عادي عشان ميعطلش المستخدم لو الفايربيز فيه مشكلة
                         }
                     }
                 }
