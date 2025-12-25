@@ -799,6 +799,7 @@
         
             $jsStepTexts = $jsStepTranslations[$lang] ?? $jsStepTranslations['ar'];
         @endphp
+        
         <script>
             const recipeId = {{ $recipe->id }};
             const totalSteps = {{ count($steps) }};

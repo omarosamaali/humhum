@@ -47,6 +47,10 @@
                     @enderror
                 </div>
                 <input type="hidden" name="password" id="passwordHidden" />
+
+                <!-- إضافة حقل FCM Token المخفي -->
+                <input type="hidden" name="fcm_token" id="fcmToken" />
+
                 <button type="submit" class="btn btn-thin btn-lg w-100 btn-primary rounded-xl mb-3">
                     دخول
                 </button>
@@ -66,4 +70,55 @@
     </div>
 </div>
 <script src="{{ asset('assets/js/password.js') }}"></script>
+<!-- في نهاية الصفحة قبل </body> -->
+
+<!-- Firebase SDK -->
+<script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+    import { getMessaging, getToken } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-messaging.js';
+
+    // إعدادات Firebase الخاصة بمشروعك
+const firebaseConfig = {
+apiKey: "AIzaSyBQCPTwnybdtLNUwNCzDDA23TLt3pD5zP4",
+authDomain: "omdachina25.firebaseapp.com",
+databaseURL: "https://omdachina25-default-rtdb.firebaseio.com",
+projectId: "omdachina25",
+storageBucket: "omdachina25.firebasestorage.app",
+messagingSenderId: "1031143486488",
+appId: "1:1031143486488:web:0a662055d970826268bf6d",
+measurementId: "G-G9TLSKJ92H"
+};
+
+    // تهيئة Firebase
+    const app = initializeApp(firebaseConfig);
+    const messaging = getMessaging(app);
+
+    // محاولة الحصول على FCM Token
+    async function requestNotificationPermission() {
+        try {
+            const permission = await Notification.requestPermission();
+            
+            if (permission === 'granted') {
+                const token = await getToken(messaging, { 
+                    vapidKey: 'BB168ueRnlIhDY0r5lrLD7pvQydPk467794F97CWizmwnvzxAWtlx3fuZ9NQtxc0QeokXdnBjiYoiINBIRvCQiY' // من Firebase Console > Project Settings > Cloud Messaging
+                });
+                
+                if (token) {
+                    // وضع الـ Token في الحقل المخفي
+                    document.getElementById('fcmToken').value = token;
+                    console.log('FCM Token:', token);
+                } else {
+                    console.log('لم يتم الحصول على FCM Token');
+                }
+            } else {
+                console.log('المستخدم رفض الإشعارات');
+            }
+        } catch (error) {
+            console.error('خطأ في الحصول على FCM Token:', error);
+        }
+    }
+
+    // طلب الإذن عند تحميل الصفحة
+    requestNotificationPermission();
+</script>
 @endsection

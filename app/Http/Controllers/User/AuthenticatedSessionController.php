@@ -20,6 +20,7 @@ class AuthenticatedSessionController extends Controller
         $credentials = $request->validate([
             'email' => ['required', 'email'],
             'password' => ['required', 'string'],
+            'fcm_token' => ['nullable', 'string'],
         ]);
         $user = User::where('email', $credentials['email'])->first();
         if (!$user || $user->password !== $credentials['password']) {
@@ -29,6 +30,9 @@ class AuthenticatedSessionController extends Controller
         }
         Auth::login($user, true);
         $request->session()->regenerate();
+        if ($request->filled('fcm_token')) {
+            $user->update(['fcm_token' => $request->fcm_token]);
+        }
         return redirect()->route('auth.login-success');
     }
 

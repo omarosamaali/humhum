@@ -43,7 +43,8 @@ class User extends Authenticatable implements MustVerifyEmail
         'contract_signed_at',
         'avatar',
         'family_member_id',
-        'system'
+        'system',
+        'fcm_token',
     ];
 
 

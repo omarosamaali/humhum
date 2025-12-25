@@ -10,6 +10,7 @@
         "berkayk/onesignal-laravel": "^2.4",
         "google/cloud-text-to-speech": "^2.2",
         "google/cloud-translate": "^2.0",
+        "guzzlehttp/guzzle": "^7.9",
         "kreait/firebase-php": "^7.23",
         "laravel-notification-channels/onesignal": "^2.8",
         "laravel/framework": "^12.0",
