@@ -10,6 +10,9 @@ use App\Models\Cook;
 use App\Models\Notification;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use Kreait\Firebase\Messaging\CloudMessage;
+use Kreait\Firebase\Messaging\Notification as FirebaseNotification;
 
 class MealController extends Controller
 {
@@ -40,7 +43,7 @@ class MealController extends Controller
                 if (in_array($mealDate, $excludedDays)) {
                     continue;
                 }
-      
+
                 if (!$detail->recipe_id || !$detail->recipe) {
                     continue; // Skip if no recipe or recipe not found
                 }
@@ -87,7 +90,7 @@ class MealController extends Controller
     {
         $recipe = Recipe::find($id);
         $cookieName = 'recipe_view_' . $id;
-        if(!request()->cookie($cookieName)){
+        if (!request()->cookie($cookieName)) {
             $recipe->increment('views');
             cookie()->queue($cookieName, 'true', 43200);
         }
@@ -103,7 +106,8 @@ class MealController extends Controller
         return view('users.meals.show-meal', compact('recipe', 'mealPlan'));
     }
 
-    public function ingredients(string $id){
+    public function ingredients(string $id)
+    {
         $recipe = Recipe::findOrFail($id);
         return view('users.meals.ingredients', compact('recipe'));
     }
@@ -128,30 +132,62 @@ class MealController extends Controller
                 $completedSteps[] = $stepIndex;
                 session()->put("recipe_{$recipeId}_completed_steps", $completedSteps);
 
+                // الإرسال يحصل فقط عند أول خطوة (Index 0)
                 if ($stepIndex === 0) {
                     $familyId = session('family_id');
                     $cookId = session('cook_id');
 
+                    $messageContent = "";
+                    $userId = null;
+                    $targetTopic = "";
+
+                    // تحديد من الذي بدأ الطبخ وبناء الرسالة
                     if ($cookId) {
                         $cook = Cook::find($cookId);
-                        Notification::create([
-                            'user_id' => $cook->user_id,
-                            'family_member_id' => null,
-                            'cook_id' => $cook->id,
-                            'message' => "الطاهي {$cook->name} بدأ في طبخ {$recipeTitle}",
-                            'is_read' => false
-                        ]);
+                        if ($cook) {
+                            $userId = $cook->user_id;
+                            $messageContent = "الطاهي {$cook->name} بدأ في طبخ {$recipeTitle}";
+                            // التوبيك لازم يكون مشترك بين أفراد العيلة الواحدة
+                            $targetTopic = "family_group_" . $userId;
+                        }
                     } elseif ($familyId) {
                         $familyMember = MyFamily::find($familyId);
+                        if ($familyMember) {
+                            $userId = $familyMember->user_id;
+                            $messageContent = "أحد أفراد العائلة {$familyMember->name} بدأ في طبخ {$recipeTitle}";
+                            $targetTopic = "family_group_" . $userId;
+                        }
+                    }
+
+                    // إذا تأكدنا من وجود محتوى للرسالة
+                    if ($messageContent != "" && $userId) {
+
+                        // ١. التخزين في قاعدة البيانات (عشان تظهر جوه التطبيق)
                         Notification::create([
-                            'user_id' => $familyMember->user_id,
+                            'user_id' => $userId,
                             'family_member_id' => $familyId,
-                            'cook_id' => null,
-                            'message' => "أحد أفراد العائلة {$familyMember->name} بدأ في طبخ {$recipeTitle}",
+                            'cook_id' => $cookId,
+                            'message' => $messageContent,
                             'is_read' => false
                         ]);
-                    } else {
-                        \Log::warning('No family_id or cook_id in session');
+
+                        // ٢. الإرسال عبر Firebase (عشان تظهر والتطبيق مقفول)
+                        try {
+                            $messaging = app('firebase.messaging');
+
+                            $fcmMessage = CloudMessage::withTarget('topic', $targetTopic)
+                                ->withNotification(FirebaseNotification::create('تنبيه طبخ جديد 🍳', $messageContent))
+                                ->withData([
+                                    'recipe_id' => (string)$recipeId,
+                                    'type' => 'start_cooking',
+                                    'click_action' => 'FLUTTER_NOTIFICATION_CLICK' // مهم جداً لاستقبال الإشعار في الخلفية
+                                ]);
+
+                            $messaging->send($fcmMessage);
+                        } catch (\Exception $firebaseEx) {
+                            Log::error('Firebase Error: ' . $firebaseEx->getMessage());
+                            // كملنا عادي عشان ميعطلش المستخدم لو الفايربيز فيه مشكلة
+                        }
                     }
                 }
             }
@@ -161,7 +197,7 @@ class MealController extends Controller
                 'completed_steps' => $completedSteps
             ]);
         } catch (\Exception $e) {
-            \Log::error('Complete step error: ' . $e->getMessage());
+            Log::error('Complete step error: ' . $e->getMessage());
             return response()->json([
                 'success' => false,
                 'error' => $e->getMessage()
@@ -206,7 +242,7 @@ class MealController extends Controller
 
         return view('users.meals.families', compact('recipe', 'familyMembers'));
     }
-    
+
     public function facts(string $id)
     {
         $recipe = Recipe::findOrFail($id);
@@ -263,7 +299,8 @@ class MealController extends Controller
         return view('users.meals.table-cook', compact('recipe', 'recipeCount', 'nextMeal', 'nextMealType'));
     }
 
-    public function destroy(string $id) {
+    public function destroy(string $id)
+    {
         $meals = MealPlan::findOrFail($id);
         $meals->delete();
         return redirect()->route('users.meals.table-cook');
@@ -364,6 +401,4 @@ class MealController extends Controller
 
         return view('users.meals.view-meal-dinner', compact('recipe'));
     }
-
-    
 }

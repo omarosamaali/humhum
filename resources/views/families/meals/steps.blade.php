@@ -574,20 +574,15 @@
                         </div>
                         <span id="step-text-{{ $index }}"
                             style="@if (in_array($index, $completedSteps)) text-decoration: line-through; @elseif($index > count($completedSteps)) opacity: 0.6; @endif">
-                            {{-- {{ $step['description'] ?? $noDescriptionText }} --}}
                             {{ \App\Helpers\TranslationHelper::translate($step['description'] ?? ($noDescriptionText ?? ''), $lang) }}
                         </span>
                     </div>
                     <div style="display: flex; gap: 5px; align-items: center;">
                         <div onclick="completeStep({{ $index }})" id="complete-btn-{{ $index }}"
-                            style="cursor: pointer; 
-                    border: 1px solid var(--primary); 
-                    padding: 5px; border-radius: 5px; width: fit-content; margin-top: 10px;
-                    @if (in_array($index, $completedSteps)) background-color: white;
-                    pointer-events: none; opacity: 0.6; cursor: not-allowed; @endif"
+                            style="cursor: pointer; border: 1px solid var(--primary); padding: 5px; border-radius: 5px; width: fit-content; margin-top: 10px;@if (in_array($index, $completedSteps)) background-color: white;pointer-events: none; opacity: 0.6; cursor: not-allowed; @endif"
                             title="@if (in_array($index, $completedSteps)) {{ $stepStatus['completed'] }}
-                           @elseif($index == count($completedSteps)) {{ $stepStatus['finish_step'] }}
-                           @else {{ $stepStatus['finish_previous'] }} @endif">
+                            @elseif($index == count($completedSteps)) {{ $stepStatus['finish_step'] }}
+                            @else {{ $stepStatus['finish_previous'] }} @endif">
                             <i style="font-size: 20px; color: var(--primary) !important;" class="fa-solid fa-check"></i>
                         </div>
                         <div onclick="speakText('{{ addslashes($step['description']) }}')"
