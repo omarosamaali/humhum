@@ -132,83 +132,63 @@ class MealController extends Controller
                 $completedSteps[] = $stepIndex;
                 session()->put("recipe_{$recipeId}_completed_steps", $completedSteps);
 
-                // الإرسال يحصل فقط عند الخطوة الأولى (Index 0)
                 if ($stepIndex === 0) {
                     $familyId = session('family_id');
                     $cookId = session('cook_id');
-
                     $messageContent = "";
                     $userId = null;
-                    $targetTopic = "";
 
-                    // بناء محتوى الرسالة وتحديد التوبيك
                     if ($cookId) {
-                        $cook = Cook::find($cookId);
+                        $cook = \App\Models\Cook::find($cookId);
                         if ($cook) {
                             $userId = $cook->user_id;
                             $messageContent = "الطاهي {$cook->name} بدأ في طبخ {$recipeTitle}";
-                            $targetTopic = "family_group_" . $userId;
                         }
                     } elseif ($familyId) {
-                        $familyMember = MyFamily::find($familyId);
+                        $familyMember = \App\Models\MyFamily::find($familyId);
                         if ($familyMember) {
                             $userId = $familyMember->user_id;
                             $messageContent = "أحد أفراد العائلة {$familyMember->name} بدأ في طبخ {$recipeTitle}";
-                            $targetTopic = "family_group_" . $userId;
                         }
                     }
 
                     if ($messageContent != "" && $userId) {
-
-                        // ١. التخزين في الداتابيز عشان تظهر جوه قائمة التنبيهات في الموقع
-                        Notification::create([
+                        // تخزين في قاعدة البيانات
+                        \App\Models\Notification::create([
                             'user_id' => $userId,
-                            'family_member_id' => $familyId,
-                            'cook_id' => $cookId,
                             'message' => $messageContent,
                             'is_read' => false
                         ]);
 
-                        // ٢. الإرسال لـ Firebase (بصيغة توافق Natively Wrapper)
-                        try {
-                            $messaging = app('firebase.messaging');
+                        // إرسال لـ Firebase
+                        $messaging = app('firebase.messaging');
+                        $targetTopic = "family_group_" . $userId;
 
-                            // هنا بنبعت Notification (للنظام) و Data (للتطبيق) مع بعض
-                            $fcmMessage = CloudMessage::withTarget('topic', $targetTopic)
-                                ->withNotification(FirebaseNotification::create('تنبيه طبخ جديد 🍳', $messageContent))
-                                ->withAndroidConfig(AndroidConfig::fromArray([
-                                    'priority' => 'high',
-                                    'notification' => [
-                                        'sound' => 'default',
-                                        'channel_id' => 'default', // القناة الافتراضية في أندرويد
-                                        'click_action' => 'FLUTTER_NOTIFICATION_CLICK',
-                                    ],
-                                ]))
-                                ->withData([
-                                    'title' => 'تنبيه طبخ جديد 🍳',
-                                    'body' => $messageContent,
-                                    'recipe_id' => (string)$recipeId,
+                        $fcmMessage = CloudMessage::withTarget('topic', $targetTopic)
+                            ->withNotification(\Kreait\Firebase\Messaging\Notification::create('تنبيه طبخ جديد 🍳', $messageContent))
+                            ->withAndroidConfig(\Kreait\Firebase\Messaging\AndroidConfig::fromArray([
+                                'priority' => 'high',
+                                'notification' => [
+                                    'sound' => 'default',
+                                    'channel_id' => 'default',
                                     'click_action' => 'FLUTTER_NOTIFICATION_CLICK',
-                                ]);
+                                ],
+                            ]))
+                            ->withData([
+                                'title' => 'تنبيه طبخ جديد 🍳',
+                                'body' => $messageContent,
+                                'click_action' => 'FLUTTER_NOTIFICATION_CLICK',
+                            ]);
 
-                            $messaging->send($fcmMessage);
-                        } catch (\Exception $firebaseEx) {
-                            Log::error('Firebase Error: ' . $firebaseEx->getMessage());
-                        }
+                        $messaging->send($fcmMessage);
                     }
                 }
             }
 
-            return response()->json([
-                'success' => true,
-                'completed_steps' => $completedSteps
-            ]);
+            return response()->json(['success' => true, 'completed_steps' => $completedSteps]);
         } catch (\Exception $e) {
-            Log::error('Complete step error: ' . $e->getMessage());
-            return response()->json([
-                'success' => false,
-                'error' => $e->getMessage()
-            ], 500);
+            \Log::error($e->getMessage());
+            return response()->json(['success' => false, 'error' => $e->getMessage()], 500);
         }
     }
 
