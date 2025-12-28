@@ -140,13 +140,13 @@ class MealController extends Controller
                     $userId = null;
 
                     if ($cookId) {
-                        $cook = \App\Models\Cook::find($cookId);
+                        $cook = Cook::find($cookId);
                         if ($cook) {
                             $userId = $cook->user_id;
                             $messageContent = "الطاهي {$cook->name} بدأ في طبخ {$recipeTitle}";
                         }
                     } elseif ($familyId) {
-                        $familyMember = \App\Models\MyFamily::find($familyId);
+                        $familyMember = MyFamily::find($familyId);
                         if ($familyMember) {
                             $userId = $familyMember->user_id;
                             $messageContent = "أحد أفراد العائلة {$familyMember->name} بدأ في طبخ {$recipeTitle}";
@@ -155,7 +155,7 @@ class MealController extends Controller
 
                     if ($messageContent != "" && $userId) {
                         // 1. التخزين في قاعدة البيانات
-                        \App\Models\Notification::create([
+                        Notification::create([
                             'user_id' => $userId,
                             'message' => $messageContent,
                             'is_read' => false
@@ -165,8 +165,8 @@ class MealController extends Controller
                         $messaging = app('firebase.messaging');
                         $targetTopic = "family_group_" . $userId;
 
-                        $fcmMessage = \Kreait\Firebase\Messaging\CloudMessage::withTarget('topic', $targetTopic)
-                            ->withNotification(\Kreait\Firebase\Messaging\Notification::create('تنبيه طبخ جديد 🍳', $messageContent))
+                        $fcmMessage = CloudMessage::withTarget('topic', $targetTopic)
+                            ->withNotification(Notification::create('تنبيه طبخ جديد 🍳', $messageContent))
                             ->withAndroidConfig(\Kreait\Firebase\Messaging\AndroidConfig::fromArray([
                                 'priority' => 'high', // ضروري جداً للتطبيق المغلق
                                 'notification' => [
