@@ -794,7 +794,43 @@
         
             $jsStepTexts = $jsStepTranslations[$lang] ?? $jsStepTranslations['ar'];
         @endphp
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                // 1. تحديد الـ UserId من السيشن (تأكد أن المتغير متاح في الـ Blade)
+                const currentUserId = "{{ session('cook_user_id') ?? session('family_user_id') ?? $userId ?? '' }}";
+                
+                if (currentUserId) {
+                    const topicName = "family_group_" + currentUserId;
+                    
+                    // 2. وظيفة الاشتراك عبر جسر BuildNatively
+                    function subscribeToNativeTopic(topic) {
+                        // فحص نظام Android
+                        if (window.nativeApp && typeof window.nativeApp.subscribeToTopic === 'function') {
+                            window.nativeApp.subscribeToTopic(topic);
+                            console.log("Subscribed to Android Topic: " + topic);
+                        } 
+                        // فحص نظام iOS (إذا كان متاحاً)
+                        else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.subscribeToTopic) {
+                            window.webkit.messageHandlers.subscribeToTopic.postMessage(topic);
+                            console.log("Subscribed to iOS Topic: " + topic);
+                        }
+                        else {
+                            console.log("Not in a Native App environment.");
+                        }
+                    }
         
+                    // تنفيذ الاشتراك
+                    subscribeToNativeTopic(topicName);
+                }
+            });
+        
+            // دالة إضافية لفتح روابط الإشعارات إذا كان التطبيق يدعم ذلك
+            function handleNativeNotificationClick(url) {
+                if (url) {
+                    window.location.href = url;
+                }
+            }
+        </script>
         <script>
             const recipeId = {{ $recipe->id }};
             const totalSteps = {{ count($steps) }};
@@ -894,7 +930,7 @@
                         },
                         body: JSON.stringify({
                             recipe_id: recipeId,
-                            meal_name: "{{ $recipe->title }}" // أضف هذا
+                            meal_name: "{{ $recipe->title }}"
                         })
                     })
                     .then(response => response.json())
@@ -925,7 +961,6 @@
                         },
                         body: JSON.stringify({
                             meal_name: "{{ $recipe->title }}",
-
                         })
                     })
                     .then(response => response.json())

@@ -132,6 +132,7 @@ class MealController extends Controller
                 $completedSteps[] = $stepIndex;
                 session()->put("recipe_{$recipeId}_completed_steps", $completedSteps);
 
+                // نرسل الإشعار فقط عند بداية أول خطوة
                 if ($stepIndex === 0) {
                     $familyId = session('family_id');
                     $cookId = session('cook_id');
@@ -153,25 +154,26 @@ class MealController extends Controller
                     }
 
                     if ($messageContent != "" && $userId) {
-                        // تخزين في قاعدة البيانات
+                        // 1. التخزين في قاعدة البيانات
                         \App\Models\Notification::create([
                             'user_id' => $userId,
                             'message' => $messageContent,
                             'is_read' => false
                         ]);
 
-                        // إرسال لـ Firebase
+                        // 2. إرسال لـ Firebase
                         $messaging = app('firebase.messaging');
                         $targetTopic = "family_group_" . $userId;
 
-                        $fcmMessage = CloudMessage::withTarget('topic', $targetTopic)
+                        $fcmMessage = \Kreait\Firebase\Messaging\CloudMessage::withTarget('topic', $targetTopic)
                             ->withNotification(\Kreait\Firebase\Messaging\Notification::create('تنبيه طبخ جديد 🍳', $messageContent))
                             ->withAndroidConfig(\Kreait\Firebase\Messaging\AndroidConfig::fromArray([
-                                'priority' => 'high',
+                                'priority' => 'high', // ضروري جداً للتطبيق المغلق
                                 'notification' => [
                                     'sound' => 'default',
-                                    'channel_id' => 'default',
+                                    'channel_id' => 'default', // تأكد أن BuildNatively تستخدم default
                                     'click_action' => 'FLUTTER_NOTIFICATION_CLICK',
+                                    'visibility' => 'public',
                                 ],
                             ]))
                             ->withData([
@@ -181,13 +183,16 @@ class MealController extends Controller
                             ]);
 
                         $messaging->send($fcmMessage);
+
+                        // اختياري: تسجيل في الـ Log للتأكد من الإرسال
+                        \Log::info("FCM Sent to topic: $targetTopic");
                     }
                 }
             }
 
             return response()->json(['success' => true, 'completed_steps' => $completedSteps]);
         } catch (\Exception $e) {
-            \Log::error($e->getMessage());
+            \Log::error("FCM Error: " . $e->getMessage());
             return response()->json(['success' => false, 'error' => $e->getMessage()], 500);
         }
     }
