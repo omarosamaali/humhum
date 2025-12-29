@@ -132,23 +132,21 @@ class NotificationController extends Controller
         $messageContent = "أرسل {$userName} أن المكون '{$request->component_name}' غير متوفر بتاريخ {$today}";
 
         // 1. حفظ في قاعدة البيانات
-        \App\Models\Notification::create([
+        Notification::create([
             'user_id' => $userId,
             'message' => $messageContent,
             'is_read' => false
         ]);
 
-        // 2. إرسال لـ Firebase لجميع الـ Topics المسجلة للمستخدم
+        // 2. إرسال لـ Firebase لجميع الـ Topics
         try {
             $messaging = app('firebase.messaging');
-
-            // جلب كل المواضيع المسجلة لهذا المستخدم (كما في جدول fcm_topics بالصورة)
-            $userTopics = \App\Models\FcmTopic::where('user_id', $userId)->get();
+            $userTopics = FcmTopic::where('user_id', $userId)->get();
 
             if ($userTopics->isNotEmpty()) {
                 foreach ($userTopics as $userTopic) {
                     if ($userTopic->topic) {
-                        $fcmMessage = \Kreait\Firebase\Messaging\CloudMessage::withTarget('topic', $userTopic->topic)
+                        $fcmMessage = CloudMessage::withTarget('topic', $userTopic->topic)
                             ->withNotification([
                                 'title' => 'مكون غير متوفر 🛒',
                                 'body'  => $messageContent
@@ -163,16 +161,15 @@ class NotificationController extends Controller
                         \Log::info("✅ FCM Unavailable sent to: {$userTopic->topic}");
                     }
                 }
-            } else {
-                \Log::warning("⚠️ No FCM topics found for user: $userId to send unavailable notification");
             }
         } catch (\Exception $e) {
-            \Log::error("❌ FCM Multi-Send Error (Unavailable): " . $e->getMessage());
+            \Log::error("❌ Firebase Error: " . $e->getMessage());
         }
 
-        // 3. الإبقاء على OneSignal (اختياري إذا كنت لا تزال تستخدمه)
-        $user = User::find($userId);
-        if ($user && $user->onesignal_player_id) {
+        // 3. تعديل استدعاء موديل User (هنا كان الخطأ)
+        // نستخدم \App\Models\User بدلاً من User فقط لتجنب خطأ الـ Namespace
+        $user = \App\Models\User::find($userId);
+        if ($user && isset($user->onesignal_player_id) && $user->onesignal_player_id) {
             try {
                 $this->oneSignal->sendNotification(
                     $user->onesignal_player_id,
