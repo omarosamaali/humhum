@@ -814,7 +814,8 @@
             subscribeToNativeTopic(topicName);
         }
     });
-</script>        <script>
+</script>       
+ <script>
             const recipeId = {{ $recipe->id }};
             const totalSteps = {{ count($steps) }};
             let completedSteps = @json($completedSteps);
