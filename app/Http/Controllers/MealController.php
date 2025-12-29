@@ -132,70 +132,85 @@ class MealController extends Controller
                 $completedSteps[] = $stepIndex;
                 session()->put("recipe_{$recipeId}_completed_steps", $completedSteps);
 
-                // نرسل الإشعار فقط عند بداية أول خطوة
-                if ($stepIndex === 0) {
+                if ($stepIndex == 0) {
                     $familyId = session('family_id');
                     $cookId = session('cook_id');
                     $messageContent = "";
                     $userId = null;
 
                     if ($cookId) {
-                        $cook = Cook::find($cookId);
+                        $cook = \App\Models\Cook::find($cookId);
                         if ($cook) {
                             $userId = $cook->user_id;
-                            $messageContent = "الطاهي {$cook->name} بدأ في طبخ {$recipeTitle}";
+                            $messageContent = "الطاهي " . ($cook->name ?? 'مجهول') . " بدأ في طبخ " . $recipeTitle;
                         }
                     } elseif ($familyId) {
-                        $familyMember = MyFamily::find($familyId);
+                        $familyMember = \App\Models\MyFamily::find($familyId);
                         if ($familyMember) {
                             $userId = $familyMember->user_id;
-                            $messageContent = "أحد أفراد العائلة {$familyMember->name} بدأ في طبخ {$recipeTitle}";
+                            $messageContent = "أحد أفراد العائلة " . ($familyMember->name ?? 'مجهول') . " بدأ في طبخ " . $recipeTitle;
                         }
                     }
 
                     if ($messageContent != "" && $userId) {
-                        // 1. التخزين في قاعدة البيانات
-                        Notification::create([
-                            'user_id' => $userId,
-                            'message' => $messageContent,
-                            'is_read' => false
-                        ]);
-
-                        // 2. إرسال لـ Firebase
-                        $messaging = app('firebase.messaging');
-                        $targetTopic = "family_group_" . $userId;
-
-                        $fcmMessage = CloudMessage::withTarget('topic', $targetTopic)
-                            ->withNotification(Notification::create('تنبيه طبخ جديد 🍳', $messageContent))
-                            ->withAndroidConfig(\Kreait\Firebase\Messaging\AndroidConfig::fromArray([
-                                'priority' => 'high', // ضروري جداً للتطبيق المغلق
-                                'notification' => [
-                                    'sound' => 'default',
-                                    'channel_id' => 'default', // تأكد أن BuildNatively تستخدم default
-                                    'click_action' => 'FLUTTER_NOTIFICATION_CLICK',
-                                    'visibility' => 'public',
-                                ],
-                            ]))
-                            ->withData([
-                                'title' => 'تنبيه طبخ جديد 🍳',
-                                'body' => $messageContent,
-                                'click_action' => 'FLUTTER_NOTIFICATION_CLICK',
+                        // 1. حفظ الإشعار في قاعدة البيانات
+                        try {
+                            \App\Models\Notification::create([
+                                'user_id' => $userId,
+                                'message' => $messageContent,
+                                'is_read' => 0
                             ]);
+                            \Log::info("✅ Notification saved in DB for user: $userId");
+                        } catch (\Exception $e) {
+                            \Log::error("❌ Error saving notification: " . $e->getMessage());
+                        }
 
-                        $messaging->send($fcmMessage);
+                        // 2. إرسال لـ Firebase لجميع الـ Topics
+                        try {
+                            $messaging = app('firebase.messaging');
 
-                        // اختياري: تسجيل في الـ Log للتأكد من الإرسال
-                        \Log::info("FCM Sent to topic: $targetTopic");
+                            // التعديل هنا: جلب كل المواضيع بدلاً من أول واحد فقط
+                            $userTopics = \App\Models\FcmTopic::where('user_id', $userId)->get();
+
+                            if ($userTopics->isNotEmpty()) {
+                                foreach ($userTopics as $userTopic) {
+                                    if ($userTopic->topic) {
+                                        $fcmMessage = \Kreait\Firebase\Messaging\CloudMessage::withTarget('topic', $userTopic->topic)
+                                            ->withNotification([
+                                                'title' => 'تنبيه طبخ جديد 🍳',
+                                                'body'  => $messageContent
+                                            ])
+                                            ->withData([
+                                                'click_action' => 'FLUTTER_NOTIFICATION_CLICK',
+                                                'recipe_id'    => (string)$recipeId,
+                                                'type'         => 'cooking_started'
+                                            ]);
+
+                                        $messaging->send($fcmMessage);
+                                        \Log::info("✅ FCM sent to topic: {$userTopic->topic}");
+                                    }
+                                }
+                            } else {
+                                \Log::warning("⚠️ No FCM topics found for user: $userId");
+                            }
+                        } catch (\Exception $e) {
+                            \Log::error("❌ FCM Multi-Send Error: " . $e->getMessage());
+                        }
                     }
                 }
             }
 
-            return response()->json(['success' => true, 'completed_steps' => $completedSteps]);
+            return response()->json([
+                'success' => true,
+                'completed_steps' => $completedSteps,
+                'message' => 'Step completed successfully'
+            ]);
         } catch (\Exception $e) {
-            \Log::error("FCM Error: " . $e->getMessage());
+            \Log::error("❌ completeStep Error: " . $e->getMessage());
             return response()->json(['success' => false, 'error' => $e->getMessage()], 500);
         }
     }
+
 
     public function resetSteps(Request $request)
     {

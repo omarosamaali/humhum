@@ -129,23 +129,59 @@ class NotificationController extends Controller
                     : 'مستخدم'));
 
         $today = now()->format('Y-m-d');
-        $message = "أرسل {$userName} أن المكون '{$request->component_name}' غير متوفر بتاريخ {$today}";
+        $messageContent = "أرسل {$userName} أن المكون '{$request->component_name}' غير متوفر بتاريخ {$today}";
 
-        // حفظ في قاعدة البيانات
-        Notification::create([
+        // 1. حفظ في قاعدة البيانات
+        \App\Models\Notification::create([
             'user_id' => $userId,
-            'message' => $message,
+            'message' => $messageContent,
             'is_read' => false
         ]);
 
-        // إرسال Push Notification للأب
+        // 2. إرسال لـ Firebase لجميع الـ Topics المسجلة للمستخدم
+        try {
+            $messaging = app('firebase.messaging');
+
+            // جلب كل المواضيع المسجلة لهذا المستخدم (كما في جدول fcm_topics بالصورة)
+            $userTopics = \App\Models\FcmTopic::where('user_id', $userId)->get();
+
+            if ($userTopics->isNotEmpty()) {
+                foreach ($userTopics as $userTopic) {
+                    if ($userTopic->topic) {
+                        $fcmMessage = \Kreait\Firebase\Messaging\CloudMessage::withTarget('topic', $userTopic->topic)
+                            ->withNotification([
+                                'title' => 'مكون غير متوفر 🛒',
+                                'body'  => $messageContent
+                            ])
+                            ->withData([
+                                'click_action' => 'FLUTTER_NOTIFICATION_CLICK',
+                                'component'    => $request->component_name,
+                                'type'         => 'ingredient_unavailable'
+                            ]);
+
+                        $messaging->send($fcmMessage);
+                        \Log::info("✅ FCM Unavailable sent to: {$userTopic->topic}");
+                    }
+                }
+            } else {
+                \Log::warning("⚠️ No FCM topics found for user: $userId to send unavailable notification");
+            }
+        } catch (\Exception $e) {
+            \Log::error("❌ FCM Multi-Send Error (Unavailable): " . $e->getMessage());
+        }
+
+        // 3. الإبقاء على OneSignal (اختياري إذا كنت لا تزال تستخدمه)
         $user = User::find($userId);
         if ($user && $user->onesignal_player_id) {
-            $this->oneSignal->sendNotification(
-                $user->onesignal_player_id,
-                $message,
-                'مكون غير متوفر 🛒'
-            );
+            try {
+                $this->oneSignal->sendNotification(
+                    $user->onesignal_player_id,
+                    $messageContent,
+                    'مكون غير متوفر 🛒'
+                );
+            } catch (\Exception $e) {
+                \Log::error("❌ OneSignal Error: " . $e->getMessage());
+            }
         }
 
         return response()->json(['success' => true, 'message' => 'تم إرسال الإشعار بنجاح']);
