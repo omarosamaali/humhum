@@ -75,23 +75,52 @@
 <!-- Firebase SDK -->
 <script type="module">
     import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-    import { getMessaging, getToken } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-messaging.js';
+    import { getMessaging, getToken, onMessage } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-messaging.js';
 
     // إعدادات Firebase الخاصة بمشروعك
-const firebaseConfig = {
-apiKey: "AIzaSyBQCPTwnybdtLNUwNCzDDA23TLt3pD5zP4",
-authDomain: "omdachina25.firebaseapp.com",
-databaseURL: "https://omdachina25-default-rtdb.firebaseio.com",
-projectId: "omdachina25",
-storageBucket: "omdachina25.firebasestorage.app",
-messagingSenderId: "1031143486488",
-appId: "1:1031143486488:web:0a662055d970826268bf6d",
-measurementId: "G-G9TLSKJ92H"
-};
+    const firebaseConfig = {
+        apiKey: "AIzaSyBQCPTwnybdtLNUwNCzDDA23TLt3pD5zP4",
+        authDomain: "omdachina25.firebaseapp.com",
+        databaseURL: "https://omdachina25-default-rtdb.firebaseio.com",
+        projectId: "omdachina25",
+        storageBucket: "omdachina25.firebasestorage.app",
+        messagingSenderId: "1031143486488",
+        appId: "1:1031143486488:web:0a662055d970826268bf6d",
+        measurementId: "G-G9TLSKJ92H"
+    };
 
     // تهيئة Firebase
     const app = initializeApp(firebaseConfig);
     const messaging = getMessaging(app);
+
+    // إرسال الـ Token للـ Backend
+    async function subscribeToTopic(token) {
+        @if(auth()->check())
+        try {
+            const response = await fetch('{{ route("subscribe.topic") }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: JSON.stringify({
+                    fcm_token: token,
+                    user_id: {{ auth()->id() }}
+                })
+            });
+            
+            const data = await response.json();
+            
+            if (data.success) {
+                console.log('✅ تم الاشتراك في التوبيك بنجاح:', data.topic);
+            } else {
+                console.error('❌ فشل الاشتراك:', data.error);
+            }
+        } catch (error) {
+            console.error('❌ خطأ في إرسال Token للـ Backend:', error);
+        }
+        @endif
+    }
 
     // محاولة الحصول على FCM Token
     async function requestNotificationPermission() {
@@ -99,26 +128,59 @@ measurementId: "G-G9TLSKJ92H"
             const permission = await Notification.requestPermission();
             
             if (permission === 'granted') {
+                console.log('✅ تم منح إذن الإشعارات');
+                
                 const token = await getToken(messaging, { 
-                    vapidKey: 'BB168ueRnlIhDY0r5lrLD7pvQydPk467794F97CWizmwnvzxAWtlx3fuZ9NQtxc0QeokXdnBjiYoiINBIRvCQiY' // من Firebase Console > Project Settings > Cloud Messaging
+                    vapidKey: 'BB168ueRnlIhDY0r5lrLD7pvQydPk467794F97CWizmwnvzxAWtlx3fuZ9NQtxc0QeokXdnBjiYoiINBIRvCQiY'
                 });
                 
                 if (token) {
-                    // وضع الـ Token في الحقل المخفي
-                    document.getElementById('fcmToken').value = token;
-                    console.log('FCM Token:', token);
+                    console.log('🔑 FCM Token:', token);
+                    
+                    // وضع الـ Token في الحقل المخفي (إذا كان موجود)
+                    const fcmTokenField = document.getElementById('fcmToken');
+                    if (fcmTokenField) {
+                        fcmTokenField.value = token;
+                    }
+                    
+                    // إرسال Token للـ Backend والاشتراك في التوبيك
+                    await subscribeToTopic(token);
                 } else {
-                    console.log('لم يتم الحصول على FCM Token');
+                    console.log('⚠️ لم يتم الحصول على FCM Token');
                 }
+            } else if (permission === 'denied') {
+                console.log('❌ المستخدم رفض الإشعارات');
             } else {
-                console.log('المستخدم رفض الإشعارات');
+                console.log('⏳ المستخدم لم يحدد بعد');
             }
         } catch (error) {
-            console.error('خطأ في الحصول على FCM Token:', error);
+            console.error('❌ خطأ في الحصول على FCM Token:', error);
         }
     }
 
-    // طلب الإذن عند تحميل الصفحة
+    // استقبال الإشعارات في الـ Foreground (عندما يكون الموقع مفتوح)
+    onMessage(messaging, (payload) => {
+        console.log('📩 تم استلام إشعار:', payload);
+        
+        const notificationTitle = payload.notification?.title || 'إشعار جديد';
+        const notificationOptions = {
+            body: payload.notification?.body || '',
+            icon: '/firebase-logo.png', // ضع مسار الأيقونة
+            badge: '/badge-icon.png',
+            data: payload.data
+        };
+        
+        // عرض الإشعار
+        if (Notification.permission === 'granted') {
+            new Notification(notificationTitle, notificationOptions);
+        }
+    });
+
+    // طلب الإذن عند تحميل الصفحة (فقط للمستخدمين المسجلين)
+    @if(auth()->check())
     requestNotificationPermission();
+    @else
+    console.log('⚠️ المستخدم غير مسجل دخول - لن يتم طلب إذن الإشعارات');
+    @endif
 </script>
 @endsection

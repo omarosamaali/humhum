@@ -9,6 +9,7 @@
         "php": "^8.2",
         "berkayk/onesignal-laravel": "^2.4",
         "google/apiclient": "^2.18",
+        "google/cloud-pubsub": "^2.13",
         "google/cloud-text-to-speech": "^2.2",
         "google/cloud-translate": "^2.0",
         "guzzlehttp/guzzle": "^7.9",

@@ -26,7 +26,7 @@ use Carbon\Carbon;
 
 require __DIR__ . '/auth.php';
 
-
+Route::post('/subscribe-topic', [NotificationController::class, 'subscribeTopic'])->name('subscribe.topic');
 Route::post('/save-player-id', [NotificationController::class, 'savePlayerId'])->name('save.player.id');
 Route::post('/contacts', [ContactController::class, 'store'])->name('contacts.store');
 Route::get('/contacts', [ContactController::class, 'index'])->name('contacts.index');

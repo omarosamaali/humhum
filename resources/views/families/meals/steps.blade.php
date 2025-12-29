@@ -794,44 +794,27 @@
         
             $jsStepTexts = $jsStepTranslations[$lang] ?? $jsStepTranslations['ar'];
         @endphp
-        <script>
-            document.addEventListener("DOMContentLoaded", function() {
-                // 1. تحديد الـ UserId من السيشن (تأكد أن المتغير متاح في الـ Blade)
-                const currentUserId = "{{ session('cook_user_id') ?? session('family_user_id') ?? $userId ?? '' }}";
-                
-                if (currentUserId) {
-                    const topicName = "family_group_" + currentUserId;
-                    
-                    // 2. وظيفة الاشتراك عبر جسر BuildNatively
-                    function subscribeToNativeTopic(topic) {
-                        // فحص نظام Android
-                        if (window.nativeApp && typeof window.nativeApp.subscribeToTopic === 'function') {
-                            window.nativeApp.subscribeToTopic(topic);
-                            console.log("Subscribed to Android Topic: " + topic);
-                        } 
-                        // فحص نظام iOS (إذا كان متاحاً)
-                        else if (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.subscribeToTopic) {
-                            window.webkit.messageHandlers.subscribeToTopic.postMessage(topic);
-                            console.log("Subscribed to iOS Topic: " + topic);
-                        }
-                        else {
-                            console.log("Not in a Native App environment.");
-                        }
-                    }
-        
-                    // تنفيذ الاشتراك
-                    subscribeToNativeTopic(topicName);
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const currentUserId = "{{ session('cook_user_id') ?? session('family_user_id') ?? $userId ?? '' }}";
+        if (currentUserId) {
+            const topicName = "humhum_eyJpdiI6Im1xV0xPQnFBUTgxQVdvUWtwdXZlWFE9PSIsInZhbHVlIjoiaG01ZnJpdzRaYkJnR0h2ZE5TZ3MyVXdoSVA4NTZEQmllWHV1cHJTbmx4aW5Fdi9JejhvY0FpZzdLaEZQMndDbnZDQUVoejZ5d3RNYTA1eXBBKzNXZS9VcEI4KzRWdlk2ekdnSm5BNE5KNjduUCtZVXhsd2xCOHBhOUdMV1dWcHkiLCJtYWMiOiIyZjMwNjdlYTg4MGM3YmFiMGVlNGQwZjcwZGJkYzgyZjAxZTY3YTRiMzMxYzVkMjYyMWIzY2M3M2Y3YzdlYTAwIiwidGFnIjoiIn0%3D";
+            function subscribeToNativeTopic(topic) {
+                if (window.natively && typeof window.natively.subscribeToTopic === 'function') {
+                    window.natively.subscribeToTopic(topic);
+                    console.log("Natively: Subscribed to Topic -> " + topic);
+                } 
+                else if (window.nativeApp && typeof window.nativeApp.subscribeToTopic === 'function') {
+                    window.nativeApp.subscribeToTopic(topic);
                 }
-            });
-        
-            // دالة إضافية لفتح روابط الإشعارات إذا كان التطبيق يدعم ذلك
-            function handleNativeNotificationClick(url) {
-                if (url) {
-                    window.location.href = url;
+                else {
+                    console.log("Natively Bridge not found. If you are on a browser, this is normal.");
                 }
             }
-        </script>
-        <script>
+            subscribeToNativeTopic(topicName);
+        }
+    });
+</script>        <script>
             const recipeId = {{ $recipe->id }};
             const totalSteps = {{ count($steps) }};
             let completedSteps = @json($completedSteps);

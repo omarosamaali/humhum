@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\MyFamily;
 use App\Models\Cook;
 use App\Services\OneSignalService;
+use App\Models\FcmTopic;
+use Kreait\Firebase\Messaging\CloudMessage;
 
 class NotificationController extends Controller
 {
@@ -18,6 +20,50 @@ class NotificationController extends Controller
     {
         $this->oneSignal = $oneSignal;
     }
+
+    public function subscribeTopic(Request $request)
+    {
+        $request->validate([
+            'fcm_token' => 'required|string',
+            'user_id' => 'required|integer'
+        ]);
+
+        $userId = $request->user_id;
+        $fcmToken = $request->fcm_token;
+
+        // إنشاء التوبيك (نفس الطريقة اللي في Firebase Console)
+        $topic = "humhum_user_" . $userId;
+
+        try {
+            // حفظ في قاعدة البيانات
+            FcmTopic::updateOrCreate(
+                ['user_id' => $userId],
+                [
+                    'fcm_token' => $fcmToken,
+                    'topic' => $topic
+                ]
+            );
+
+            // الاشتراك في التوبيك في Firebase
+            $messaging = app('firebase.messaging');
+            $messaging->subscribeToTopic($topic, $fcmToken);
+
+            \Log::info("✅ User $userId subscribed to topic: $topic");
+
+            return response()->json([
+                'success' => true,
+                'message' => 'تم الاشتراك بنجاح',
+                'topic' => $topic
+            ]);
+        } catch (\Exception $e) {
+            \Log::error("❌ Subscribe Error: " . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
 
     public function index()
     {
