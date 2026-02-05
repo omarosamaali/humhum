@@ -362,7 +362,7 @@
                     <h4 class="title">{{ __('messages.المكونات') }}</h4>
                 </div>
                 <div class="left-content">
-                    <a href="{{ url()->previous() ?: route('home') }}" id="back-btn">
+                    <a href="{{ route('users.meals.show' , $recipe) }}" id="back-btn">
                         <i class="feather icon-arrow-left"></i>
                     </a>
                 </div>

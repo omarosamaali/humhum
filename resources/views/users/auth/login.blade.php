@@ -10,13 +10,13 @@
                 <img src="{{ asset('assets/images/user-logo/logo.png') }}" alt="logo">
             </div>
         </div>
-        <div class="account-section">
+        <div class="account-section" style="margin-top: 74px;">
             <form action="{{ route('users.auth.post') }}" method="POST" class="m-b30">
                 @csrf
                 <div class="mb-4">
                     <label class="form-label" for="email">البريد الإلكتروني</label>
                     <div class="input-group input-mini input-lg">
-                        <input type="email" id="email" name="email" class="form-control text-center"
+                        <input autofocus type="email" id="email" name="email" class="form-control text-center"
                             placeholder="example@email.com" required value="{{ old('email') }}">
                     </div>
                     @error('email')
@@ -24,22 +24,32 @@
                     @enderror
                 </div>
                 <div class="m-b30">
-                    <div class="input-group input-mini input-lg" style="justify-content: center;">
+                    <div class="input-group input-mini input-lg" style="flex-direction: column;
+    justify-content: center;
+    align-items: center;">
                         <label class="form-label">كلمة المرور</label>
                         <div class="otp-group" id="otpGroup" aria-label="حقل كلمة المرور المكوّن من 4 خانات"
-                            style="display: flex;  gap: 5px; margin-bottom: 40px; direction: rtl;">
-                            <input inputmode="numeric" pattern="[0-9]*" maxlength="1" data-index="0"
-                                autocomplete="one-time-code" class="form-control otp-input" type="text" id="digit-2"
-                                الاسم="الرقم ٢" عنصر نائب="" البيانات-التالي="الرقم ٣" البيانات-السابق="الرقم ١">
-                            <input inputmode="numeric" pattern="[0-9]*" maxlength="1" data-index="1"
-                                autocomplete="one-time-code" class="form-control otp-input" type="text" id="digit-3"
-                                name="digit-3" placeholder="" data-next="digit-4" data-previous="digit-2">
-                            <input inputmode="numeric" pattern="[0-9]*" maxlength="1" data-index="2"
-                                autocomplete="one-time-code" class="form-control otp-input" type="text" id="digit-4"
-                                name="digit-4" placeholder="" data-next="digit-5" data-previous="digit-3">
-                            <input inputmode="numeric" pattern="[0-9]*" maxlength="1" data-index="3"
-                                autocomplete="one-time-code" class="form-control otp-input" type="text" id="digit-5"
-                                name="digit-5" placeholder="" data-next="digit-6" data-previous="digit-4">
+                            style="display: flex;  gap: 5px; margin-bottom: 40px; direction: ltr;">
+                            <input style="padding-left: 12px !important; height: 50px;
+    width: 50px;border: 2px solid #d1d0d0 !important;border-radius: 13px;" inputmode="numeric" pattern="[0-9]*"
+                                maxlength="1" data-index="0" autocomplete="one-time-code" class="form-control otp-input"
+                                type="text" id="digit-2" الاسم="الرقم ٢" عنصر نائب="" البيانات-التالي="الرقم ٣"
+                                البيانات-السابق="الرقم ١">
+                            <input style="padding-left: 12px !important; height: 50px;
+    width: 50px;border: 2px solid #d1d0d0 !important;border-radius: 13px;" inputmode="numeric" pattern="[0-9]*"
+                                maxlength="1" data-index="1" autocomplete="one-time-code" class="form-control otp-input"
+                                type="text" id="digit-3" name="digit-3" placeholder="" data-next="digit-4"
+                                data-previous="digit-2">
+                            <input style="padding-left: 12px !important;  height: 50px;
+    width: 50px;border: 2px solid #d1d0d0 !important;border-radius: 13px;" inputmode="numeric" pattern="[0-9]*"
+                                maxlength="1" data-index="2" autocomplete="one-time-code" class="form-control otp-input"
+                                type="text" id="digit-4" name="digit-4" placeholder="" data-next="digit-5"
+                                data-previous="digit-3">
+                            <input style="padding-left: 12px !important; height: 50px;
+    width: 50px;border: 2px solid #d1d0d0 !important;border-radius: 13px;" inputmode="numeric" pattern="[0-9]*"
+                                maxlength="1" data-index="3" autocomplete="one-time-code" class="form-control otp-input"
+                                type="text" id="digit-5" name="digit-5" placeholder="" data-next="digit-6"
+                                data-previous="digit-4">
                         </div>
                     </div>
                     @error('password')

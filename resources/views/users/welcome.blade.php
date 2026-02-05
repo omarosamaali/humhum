@@ -461,7 +461,7 @@
                 @foreach ($kitchens as $kitchen)
                 <div class="swiper-slide kitchen-slide">
                     <span>
-                        <div class="dz-categories-bx kitchen-card">
+                        <div style="padding: 15px 16px 15px 25px !important;" class="dz-categories-bx kitchen-card">
                             <div class="icon-bx">
                                 <img src="{{ asset('storage/' . $kitchen->image) }}" class="kitchen-image"
                                     alt="{{ $kitchen->name_ar }}">

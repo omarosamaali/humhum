@@ -1,26 +1,45 @@
 document.addEventListener("DOMContentLoaded", function () {
     const form = document.getElementById("register-form");
     const submitBtn = document.getElementById("submit-btn");
-    form.addEventListener("input", function () {
-        const allFilled = Array.from(form.querySelectorAll("[required]")).every(
-            (input) => input.value.trim() !== ""
-        );
-        submitBtn.disabled = !allFilled;
-    });
+    
+    if (form && submitBtn) {
+        form.addEventListener("input", function () {
+            const allFilled = Array.from(form.querySelectorAll("[required]")).every(
+                (input) => input.value.trim() !== ""
+            );
+            submitBtn.disabled = !allFilled;
+        });
+    }
 });
+
 (function () {
     const inputs = Array.from(document.querySelectorAll(".otp-input"));
     const hidden = document.getElementById("passwordHidden");
-    const form = document.getElementById("myForm");
+    const form = inputs[0]?.closest('form');
+    
+    if (!inputs.length || !hidden || !form) return;
 
-    inputs[0].focus();
+    // ❌ امسح السطر ده:
+    // inputs[0].focus();
+    
+    // ✅ بدلاً منه، اعمل focus على أول PIN input لما المستخدم يكتب في الـ email
+    const emailInput = document.getElementById('email');
+    if (emailInput) {
+        emailInput.addEventListener('keydown', function(e) {
+            // لو ضغط Tab أو Enter بعد ما يكتب الـ email
+            if ((e.key === 'Tab' || e.key === 'Enter') && this.value.trim() !== '') {
+                e.preventDefault();
+                inputs[0].focus();
+            }
+        });
+    }
 
     inputs.forEach((input, idx) => {
         input.addEventListener("input", (e) => {
             const value = e.target.value;
             const digit = value.replace(/\D/g, "").slice(0, 1);
             e.target.value = digit;
-
+            
             if (digit && idx < inputs.length - 1) {
                 inputs[idx + 1].focus();
                 inputs[idx + 1].select();
@@ -40,16 +59,18 @@ document.addEventListener("DOMContentLoaded", function () {
 
         input.addEventListener("paste", (e) => {
             e.preventDefault();
-            const paste = (e.clipboardData || window.clipboardData).getData(
-                "text"
-            );
+            const paste = (e.clipboardData || window.clipboardData).getData("text");
             const digits = paste
                 .replace(/\D/g, "")
                 .slice(0, inputs.length - idx)
                 .split("");
+            
             digits.forEach((d, i) => {
-                inputs[idx + i].value = d;
+                if (inputs[idx + i]) {
+                    inputs[idx + i].value = d;
+                }
             });
+            
             const nextIndex = Math.min(idx + digits.length, inputs.length - 1);
             inputs[nextIndex].focus();
             updateHidden();
