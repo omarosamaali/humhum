@@ -64,8 +64,54 @@
                         </li>
                     </ul>
                 </div>
+
             </div>
         </div>
+
+        <form id="delete-account-form" method="POST" action="{{ route('users.profile.destroy') }}" style="display: none;">
+            @csrf
+            @method('DELETE')
+        </form>
+        
+        <button onclick="deleteUser()" style="border: 1px solid red; background-color: white !important; color: red !important;"
+            class="btn btn-secondary btn-lg btn-thin rounded-xl w-100">
+            {{ __('messages.delete_account') }}
+        </button>
+        
+        <script>
+            function deleteUser() {
+                Swal.fire({
+                    title: "{{ __('messages.delete_confirmation') }}",
+                    html: `
+                        <p style="color: red; font-weight: bold; margin-bottom: 15px;">
+                            {{ __('messages.delete_warning') }}
+                        </p>
+                        <p style="margin-bottom: 15px;">{{ __('messages.type_delete_confirm') }}</p>
+                        <input type="text" id="delete-confirm" class="swal2-input" placeholder="DELETE" style="width: 80%;">
+                    `,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: "{{ __('messages.yes_delete') }}",
+                    cancelButtonText: "{{ __('messages.cancel') }}",
+                    preConfirm: () => {
+                        const input = document.getElementById('delete-confirm').value;
+                        if (input !== 'DELETE') {
+                            Swal.showValidationMessage("{{ __('messages.must_type_delete') }}");
+                            return false;
+                        }
+                        return true;
+                    }
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        document.getElementById('delete-account-form').submit();
+                    }
+                });
+            }
+        </script>
+
+        {!! $swalScript !!}
     </main>
 </div>
 @endsection
