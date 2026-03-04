@@ -6,6 +6,40 @@
     :root {
         --primary: #660099 !important;
     }
+
+.accordion-button {
+color: #000 !important;
+}
+
+.accordion-body p {
+color: #333 !important;
+}
+
+.accordion-collapse.collapse {
+visibility: visible;
+}
+
+.accordion-collapse.collapse:not(.show) {
+display: none;
+visibility: hidden;
+}
+
+.accordion-collapse.collapse.show {
+display: block;
+visibility: visible;
+}
+
+.accordion-button {
+color: #000 !important;
+}
+
+.accordion-body p {
+color: #333 !important;
+}
+
+.accordion.dz-accordion.style-2 .accordion-item .accordion-header .accordion-button:not(.collapsed) {
+    background: white;
+}
 </style>
 
 <body>

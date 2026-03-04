@@ -200,6 +200,37 @@
         main {
                 margin-top: 0px !important;
                 }
+
+                .text-primary {
+                    color: #29A500 !important;
+                    }
+                    
+                    :root {
+                    --primary: #29A500 !important;
+                    }
+                    
+                    .header {
+                    display: none !important;
+                    }
+                    
+                    main {
+                    margin-top: 0px !important;
+                    }
+                    
+                    ::selection {
+                    background-color: #29A500 !important;
+                    color: white !important;
+                    }
+                    
+                    .accordion-collapse.collapse {
+                    visibility: visible !important;
+                    display: none;
+                    }
+                    
+                    .accordion-collapse.collapse.show {
+                    display: block;
+                    visibility: visible !important;
+                    }
     </style>
 <body>
     <div class="page-wrapper">
