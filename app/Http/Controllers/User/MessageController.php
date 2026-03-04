@@ -11,10 +11,13 @@ class MessageController extends Controller
 {
     public function index()
     {
-        $messages = MessageUser::where('user_id', Auth::id())
-            ->orWhereHas('replies', function ($query) { 
-                $query->where('user_id', Auth::id());
-            })->with('user', 'replies.user')->latest()->get();
+        $userId = Auth::id();
+
+        $messages = MessageUser::where('user_id', $userId)
+            ->with(['user', 'replies.user'])
+            ->latest()
+            ->get();
+
         return view('users.messages.index', compact('messages'));
     }
 
