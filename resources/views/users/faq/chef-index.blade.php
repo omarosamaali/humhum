@@ -10,6 +10,10 @@
     .header {
         display: none !important;
         }
+
+        main {
+            margin-top: 0px !important;
+        }
 </style>
 
 <body>
