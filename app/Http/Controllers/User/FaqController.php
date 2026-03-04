@@ -17,4 +17,10 @@ class FaqController extends Controller
         ->get();
         return view('users.faq.index', compact('faqs'));
     }
+
+    public function chefIndex() {
+        $faqs = Faq::where('status', 1)->where('place', 'both')->orWhere('place', 'user')
+            ->get();
+        return view('users.faq.chef-index', compact('faqs'));
+    }
 }

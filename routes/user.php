@@ -23,6 +23,18 @@ Route::get('users.meals.steps.{id}', [MealController::class, 'steps'])->name('us
 Route::post('/recipe/reset-steps', [MealController::class, 'resetSteps'])->name('recipe.reset-steps');
 Route::get('users.meals.facts.{id}', [MealController::class, 'facts'])->name('users.meals.facts');
 
+Route::get('users.faq.index', FaqController::class)->name('users.faq.index');
+Route::get('users.faq.chef-index', [FaqController::class, 'chefIndex'])->name('users.faq.chef-index');
+
+// About
+Route::get('users.about.index', AboutController::class)->name('users.about.index');
+Route::get('users.about.chef-index', [AboutController::class, 'chefIndex'])->name('users.about.chef-index');
+
+// Terms
+Route::get('users.terms.index', TermsController::class)->name('users.terms.index');
+Route::get('users.terms.chef-index', [TermsController::class, 'chefIndex'])->name('users.terms.chef-index');
+
+
 Route::middleware('auth.user')->group(function () {
     // Create Special request
     Route::get('users.special.index', [SpecialController::class, 'index'])->name('users.special.index');
@@ -57,13 +69,6 @@ Route::middleware('auth.user')->group(function () {
     Route::get('users/messages/{message}', [MessageController::class, 'showUser'])->name('users.messages.show');
 
     // FAQ
-    Route::get('users.faq.index', FaqController::class)->name('users.faq.index');
-
-    // About
-    Route::get('users.about.index', AboutController::class)->name('users.about.index');
-
-    // Terms
-    Route::get('users.terms.index', TermsController::class)->name('users.terms.index');
 
     // Cook Table Routes
     Route::get('users.cook_table.index', [MealPlanController::class, 'create'])->name('users.cook_table.index');

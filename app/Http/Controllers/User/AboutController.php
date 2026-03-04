@@ -16,4 +16,10 @@ class AboutController extends Controller
         $about = AboutUs::first();
         return view('users.about.index', compact('about'));
     }
+
+    public function chefIndex()
+    {
+        $about = AboutUs::first();
+        return view('users.about.chef-index', compact('about'));
+    }
 }

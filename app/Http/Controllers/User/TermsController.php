@@ -16,4 +16,10 @@ class TermsController extends Controller
         $terms = Terms::first();
         return view('users.terms.index', compact('terms'));
     }
+
+    public function chefIndex(Request $request)
+    {
+        $terms = Terms::first();
+        return view('users.terms.chef-index', compact('terms'));
+    }
 }
