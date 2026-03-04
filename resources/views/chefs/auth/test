@@ -1,68 +1,31 @@
 @php
 $translations = [
-'ar' => ['welcome' => 'أهلاً', 'family_number' => 'رقم العضوية', 'password' => 'رمز الدخول', 'login' => 'دخول'],
-'en' => [
-'welcome' => 'Hello',
-'family_number' => 'Membership Number',
-'password' => 'Access Code',
-'login' => 'Login',
-],
-'id' => [
-'welcome' => 'Halo',
-'family_number' => 'Nomor Keanggotaan',
-'password' => 'Kode Akses',
-'login' => 'Masuk',
-],
-'am' => ['welcome' => 'ሰላም', 'family_number' => 'የአባልነት ቁጥር', 'password' => 'የመዳረሻ ኮድ', 'login' => 'ግባ'],
-'hi' => [
-'welcome' => 'नमस्ते',
-'family_number' => 'सदस्यता संख्या',
-'password' => 'पहुँच कोड',
-'login' => 'लॉगिन',
-],
-'bn' => [
-'welcome' => 'হ্যালো',
-'family_number' => 'সদস্য নম্বর',
-'password' => 'অ্যাক্সেস কোড',
-'login' => 'লগইন',
-],
-'ml' => [
-'welcome' => 'ഹലോ',
-'family_number' => 'അംഗത്വ നമ്പർ',
-'password' => 'ആക്സസ് കോഡ്',
-'login' => 'ലോഗിൻ',
-],
-'fil' => [
-'welcome' => 'Kumusta',
-'family_number' => 'Numero ng Miyembro',
-'password' => 'Access Code',
-'login' => 'Mag-login',
-],
-'ur' => ['welcome' => 'ہیلو', 'family_number' => 'ممبرشپ نمبر', 'password' => 'رسائی کوڈ', 'login' => 'لاگ ان'],
-'ta' => [
-'welcome' => 'வணக்கம்',
-'family_number' => 'உறுப்பினர் எண்',
-'password' => 'அணுகல் குறியீடு',
-'login' => 'உள்நுழை',
-],
-'ne' => [
-'welcome' => 'नमस्ते',
-'family_number' => 'सदस्यता नम्बर',
-'password' => 'पहुँच कोड',
-'login' => 'लगइन',
-],
-'ps' => [
-'welcome' => 'سلام',
-'family_number' => 'د غړیتوب شمېره',
-'password' => 'د لاسرسي کوډ',
-'login' => 'ننوتل',
-],
-'fr' => [
-'welcome' => 'Bonjour',
-'family_number' => 'Numéro de membre',
-'password' => 'Code d\'accès',
-'login' => 'Connexion',
-],
+'ar' => ['welcome' => 'أهلاً', 'family_number' => 'رقم العائلة', 'password' => 'رمز المستخدم', 'login' => 'دخول',
+'settings' => 'إعدادات الحساب'],
+'en' => ['welcome' => 'Hello', 'family_number' => 'Membership Number', 'password' => 'Access Code', 'login' => 'Login',
+'settings' => 'Settings'],
+'id' => ['welcome' => 'Halo', 'family_number' => 'Nomor Keanggotaan', 'password' => 'Kode Akses', 'login' => 'Masuk',
+'settings' => 'Pengaturan'],
+'am' => ['welcome' => 'ሰላም', 'family_number' => 'የአባልነት ቁጥር', 'password' => 'የመዳረሻ ኮድ', 'login' => 'ግባ', 'settings' =>
+'ቅንብሮች'],
+'hi' => ['welcome' => 'नमस्ते', 'family_number' => 'सदस्यता संख्या', 'password' => 'पहुँच कोड', 'login' => 'लॉगिन',
+'settings' => 'सेटिंग्स'],
+'bn' => ['welcome' => 'হ্যালো', 'family_number' => 'সদস্য নম্বর', 'password' => 'অ্যাক্সেস কোড', 'login' => 'লগইন',
+'settings' => 'সেটিংস'],
+'ml' => ['welcome' => 'ഹലോ', 'family_number' => 'അംഗത്വ നമ്പർ', 'password' => 'ആക്സസ് കോഡ്', 'login' => 'ലോഗിൻ',
+'settings' => 'ക്രമീകരണങ്ങൾ'],
+'fil' => ['welcome' => 'Kumusta', 'family_number' => 'Numero ng Miyembro', 'password' => 'Access Code', 'login' =>
+'Mag-login', 'settings' => 'Mga Setting'],
+'ur' => ['welcome' => 'ہیلو', 'family_number' => 'ممبرشپ نمبر', 'password' => 'رسائی کوڈ', 'login' => 'لاگ ان',
+'settings' => 'ترتیبات'],
+'ta' => ['welcome' => 'வணக்கம்', 'family_number' => 'உறுப்பினர் எண்', 'password' => 'அணுகல் குறியீடு', 'login' =>
+'உள்நுழை', 'settings' => 'அமைப்புகள்'],
+'ne' => ['welcome' => 'नमस्ते', 'family_number' => 'सदस्यता नम्बर', 'password' => 'पहुँच कोड', 'login' => 'लगइन',
+'settings' => 'सेटिङहरू'],
+'ps' => ['welcome' => 'سلام', 'family_number' => 'د غړیتوب شمېره', 'password' => 'د لاسرسي کوډ', 'login' => 'ننوتل',
+'settings' => 'ترتیبات'],
+'fr' => ['welcome' => 'Bonjour', 'family_number' => 'Numéro de membre', 'password' => 'Code d\'accès', 'login' =>
+'Connexion', 'settings' => 'Paramètres'],
 ];
 
 $lang = $cookData->language ?? 'ar';
@@ -84,6 +47,10 @@ $t = $translations[$lang] ?? $translations['ar'];
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <style>
+        .dz-authentication-area {
+            padding: 84px 15px 35px !important;
+        }
+
         :root {
             --primary: #29A500;
         }
@@ -98,33 +65,28 @@ $t = $translations[$lang] ?? $translations['ar'];
             border-color: var(--primary);
         }
 
-        .member-info {
+        .page-title {
             text-align: center;
-            margin-bottom: 20px;
-            padding: 15px;
-            border-radius: 10px;
-            margin-top: 72px;
-        }
-
-        .member-avatar {
-            width: 80px;
-            height: 100px;
-            border-radius: 50%;
-            object-fit: contain;
-            border: 3px solid var(--primary);
-            margin-bottom: 10px;
-        }
-
-        .member-name {
-            font-size: 18px;
+            font-size: 22px;
             font-weight: bold;
             color: #333;
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+
+        .member-number-display {
+            text-align: center;
+            font-size: 16px;
+            color: #555;
             margin-bottom: 5px;
         }
 
-        .member-number {
-            font-size: 19px;
+        .member-number-value {
+            text-align: center;
+            font-size: 20px;
+            font-weight: bold;
             color: #000;
+            margin-bottom: 25px;
         }
 
         .digit-group.input-mini .form-control {
@@ -153,50 +115,53 @@ $t = $translations[$lang] ?? $translations['ar'];
                     <div class="main-logo text-center mb-4">
                         <img src="{{ asset('assets/images/family-logo/logo.png') }}" alt="logo" style="width: 100px;">
                     </div>
-                    @if ($cookData)
-                    <div class="member-info text-center mb-4">
-                        <div class="member-number">{{ $t['welcome'] }}</div>
-                        <img src="{{ $cookData->image ? $cookData->image : asset('assets/images/default.jpg') }}"
-                            class="member-avatar" alt="{{ $cookData->name }}" style="border-radius: 50%; width: 100px;">
-                        <div class="member-name">{{ $cookData->name }}</div>
-                    </div>
-                    @endif
+
+                    <!-- عنوان الإعدادات -->
+                    <div class="page-title">{{ $t['settings'] }}</div>
+
+                    {{-- @if ($cookData)
+                    <!-- رقم العائلة -->
+                    <div class="member-number-display">{{ $t['family_number'] }}</div>
+                    <div class="member-number-value">{{ $cookData->cook_number }}</div>
+                    @endif --}}
 
                     <form method="POST" action="{{ route('chef.auth.store') }}">
                         @csrf
 
                         @if ($cookData)
-                        <input type="hidden" name="cook_number" value="{{ $cookData->cook_number }}">
                         <input type="hidden" name="cook_id" value="{{ $cookData->id }}">
-                        @else
+                        @endif
+                        
                         <div class="mb-4">
-                            <label class="form-label" for="cook_number">{{ $t['family_number'] }}</label>
+                            <label class="form-label" style="text-align: center; justify-content: center !important; display: flex;" for="cook_number">{{ $t['family_number'] }}</label>
                             <input type="text" name="cook_number" id="cook_number"
                                 class="form-control @error('cook_number') is-invalid @enderror"
-                                value="{{ old('cook_number', $cook_number) }}" maxlength="5" pattern="\d{1,5}"
+                                value="{{ old('cook_number', $cookData->cook_number ?? $cook_number) }}" maxlength="5" pattern="\d{1,5}"
                                 inputmode="numeric">
                             @error('cook_number')
                             <span class="text-danger">{{ $message }}</span>
                             @enderror
                         </div>
-                        @endif
 
                         <div class="mb-4">
+                            @php
+                            $rtlLanguages = ['ar', 'ur', 'ps'];
+                            $dir = isset($cookData) && in_array($cookData->language, $rtlLanguages)
+                            ? 'direction:rtl;'
+                            : 'direction:ltr;';
+                            @endphp
+                         <div class="mb-4">
                             <label class="form-label" for="password"
-                                style="text-align: center; align-items: center; justify-content: center; display: flex;">{{
-                                $t['password'] }}</label>
-                        @php
-                        $rtlLanguages = ['ar', 'ur', 'ps'];
-                        $dir = isset($cookData) && in_array($cookData->language, $rtlLanguages)
-                        ? 'direction:rtl;'
-                        : 'direction:ltr;';
-                        @endphp
-                            <div style="direction:ltr;" id="otp" class="digit-group input-mini">
-                                <input class="form-control otp-input" type="text" maxlength="1" data-index="0" required>
-                                <input class="form-control otp-input" type="text" maxlength="1" data-index="1" required>
-                                <input class="form-control otp-input" type="text" maxlength="1" data-index="2" required>
-                                <input class="form-control otp-input" type="text" maxlength="1" data-index="3" required>
-                            </div>
+                                style="text-align: center; align-items: center; justify-content: center; display: flex;">
+                                {{ $t['password'] }}
+                            </label>
+                            <input type="text" name="password" id="password" class="form-control @error('password') is-invalid @enderror"
+                                maxlength="4" pattern="\d{4}" inputmode="numeric"
+                                style="text-align: center; letter-spacing: 8px; font-size: 17px;" required>
+                            @error('password')
+                            <span class="text-danger">{{ $message }}</span>
+                            @enderror
+                        </div>
                             <input type="hidden" name="password" id="password-hidden">
                             @error('password')
                             <span class="text-danger">{{ $message }}</span>
