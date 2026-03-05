@@ -187,10 +187,11 @@ $t = $translations[$lang] ?? $translations['ar'];
                             <div class="m-b30">
                                 <label>{{ $t['password'] }}</label>
                                 <input type="hidden" name="password" id="password-hidden">
-                                @php
-                                $rtlLanguages = ['ar', 'ur', 'ps'];
-                                $dir = in_array($memberData->language, $rtlLanguages) ? 'direction:rtl;' : 'direction:ltr;';
-                                @endphp
+                               @php
+                            $rtlLanguages = ['ar', 'ur', 'ps'];
+                            $memberLang = $memberData->language ?? 'ar';
+                            $dir = in_array($memberLang, $rtlLanguages) ? 'direction:rtl;' : 'direction:ltr;';
+                            @endphp
                                 <div style="{{ $dir }}" id="otp" class="digit-group">
                                     @for ($i = 0; $i < 4; $i++) <input class="form-control otp-input" type="text"
                                         maxlength="1" data-index="{{ $i }}" required>
