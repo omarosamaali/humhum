@@ -122,21 +122,22 @@
             </div>
         </div>
 
-        {{-- اللينك داخل الكارت في الأسفل --}}
-        <div style="
-            width: 100%;
-            background-color: #ffffff;
-            border-top: 1px solid #e0e0e0;
-            border-radius: 0 0 12px 12px;
-            padding: 8px 15px;
-            box-sizing: border-box;
-            word-break: break-all;
-            margin-top: 8px;
-        ">
-            <p style="font-size: 15px; color: #000000; margin: 0; text-align: center;">
-                🔗 https://humhum.food/chef.login.{{ $cook->cook_number }}.{{ $cook->id }}
-            </p>
-        </div>
+        {{-- الأرقام داخل الكارت في الأسفل --}}
+    {{-- الأرقام داخل الكارت في الأسفل --}}
+    <div style="
+        width: 100%;
+        background-color: #ffffff;
+        border-top: 1px solid #e0e0e0;
+        border-radius: 0 0 12px 12px;
+        padding: 8px 15px;
+        box-sizing: border-box;
+        margin-top: 8px;
+        text-align: center;
+    ">
+        <p style="font-size: 14px; color: #000000; margin: 0;">
+            رمز العائلة: <strong>{{ $cook->cook_number }}</strong> &nbsp;|&nbsp; رمز المستخدم: <strong>{{ $cook->id }}</strong>
+        </p>
+    </div>
 
     </div>
 </li>
