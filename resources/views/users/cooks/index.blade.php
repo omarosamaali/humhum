@@ -84,45 +84,63 @@
 
     <ul class="featured-list">
         <div>
-            @foreach ($cooks as $cook)
-            <li class="container-cart">
-                <div class="dz-card list">
-                    <div class="dz-media" style="position: relative;">
-                        <img src="{{ $cook?->image ? $cook->image : asset('assets/images/default.jpg') }}" style="width: 100px; height: 100px; margin: auto; margin-top: 10px; border-radius: 50%; border: 2px solid
-                            var(--primary-color)" class="card-img-top" alt="...">
-                    </div>
-                    <div class="dz-content">
-                        <div class="dz-head">
-                            <h6 class="title">
-                                <span>{{ $cook->name }}</span>
-                            </h6>
-                            <span class="badge badge-info"
-                                style="color: var(--primary-color); background-color: unset !important; font-size: 12px;">
-                                {{ __('messages.language') }} {{ __('messages.' . $cook->language) }}
-                            </span>
-                            <br />
-                            <div style="display: flex; align-items: center; gap: 10px; margin-left: 10px;">
-                                <a href="{{ route('users.cooks.edit', $cook) }}"
-                                    style="text-align: center; border: 0px; background-color: var(--primary-color); border-radius: 15px; color: white; padding: 5px 10px; width: 95%; margin-top: 10px;">
-                                    {{ __('messages.edit') }}
-                                </a>
-                                <form id="delete-form-{{ $cook->id }}" style="display: none;"
-                                    action="{{ route('users.cooks.destroy', $cook->id) }}" method="POST">
-                                    @csrf
-                                    @method('DELETE')
-                                </form>
-
-                                <button type="button" onclick="deleteUser({{ $cook->id }})"
-                                    style="display: block; width: 100%; text-align: center; border: 0px; background-color: red; border-radius: 15px; color: white; padding: 5px 10px; width: 95%; margin-top: 10px;">
-                                    {{ __('messages.delete') }}
-                                </button>
-                            </div>
-                        </div>
+@foreach ($cooks as $cook)
+<li class="container-cart">
+    <div class="dz-card list" style="flex-direction: column;">
+        <div style="display: flex;">
+            <div class="dz-media" style="position: relative;">
+                <img src="{{ $cook?->image ? $cook->image : asset('assets/images/default.jpg') }}"
+                    style="width: 100px; height: 100px; margin: auto; margin-top: 10px; border-radius: 50%; border: 2px solid var(--primary-color)"
+                    class="card-img-top" alt="...">
+            </div>
+            <div class="dz-content">
+                <div class="dz-head">
+                    <h6 class="title">
+                        <span>{{ $cook->name }}</span>
+                    </h6>
+                    <span class="badge badge-info"
+                        style="color: var(--primary-color); background-color: unset !important; font-size: 12px;">
+                        {{ __('messages.language') }} {{ __('messages.' . $cook->language) }}
+                    </span>
+                    <br />
+                    <div style="display: flex; align-items: center; gap: 10px; margin-left: 10px;">
+                        <a href="{{ route('users.cooks.edit', $cook) }}"
+                            style="text-align: center; border: 0px; background-color: var(--primary-color); border-radius: 15px; color: white; padding: 5px 10px; width: 95%; margin-top: 10px;">
+                            {{ __('messages.edit') }}
+                        </a>
+                        <form id="delete-form-{{ $cook->id }}" style="display: none;"
+                            action="{{ route('users.cooks.destroy', $cook->id) }}" method="POST">
+                            @csrf
+                            @method('DELETE')
+                        </form>
+                        <button type="button" onclick="deleteUser({{ $cook->id }})"
+                            style="display: block; width: 100%; text-align: center; border: 0px; background-color: red; border-radius: 15px; color: white; padding: 5px 10px; width: 95%; margin-top: 10px;">
+                            {{ __('messages.delete') }}
+                        </button>
                     </div>
                 </div>
-            </li>
-            @endforeach
+            </div>
         </div>
+
+        {{-- اللينك داخل الكارت في الأسفل --}}
+        <div style="
+            width: 100%;
+            background-color: #ffffff;
+            border-top: 1px solid #e0e0e0;
+            border-radius: 0 0 12px 12px;
+            padding: 8px 15px;
+            box-sizing: border-box;
+            word-break: break-all;
+            margin-top: 8px;
+        ">
+            <p style="font-size: 15px; color: #000000; margin: 0; text-align: center;">
+                🔗 https://humhum.food/chef.login.{{ $cook->cook_number }}.{{ $cook->id }}
+            </p>
+        </div>
+
+    </div>
+</li>
+@endforeach        </div>
     </ul>
 </main>
 

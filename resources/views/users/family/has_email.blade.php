@@ -156,17 +156,17 @@
                                         class="form-control otp-input" type="text" id="digit-4" name="digit-4"
                                         value="{{ $myFamily?->password[3] ?? '' }}" autocomplete="off">
                                 </div>
-                                @php
+                                {{-- @php
                                     $userLoginEmail = url('/') . '/family_members.login.' . Auth::user()->membership_number . '.' . $myFamily->id;
-                                @endphp
-                                <label for="userLoginEmail" style="width: 100%;" class="text-center form-label">
+                                @endphp --}}
+                                {{-- <label for="userLoginEmail" style="width: 100%;" class="text-center form-label">
                                     {{ __('messages.تسجيل دخول العضو من خلال الرابط التالي') }}
                                 </label>
                                 <input id="userLoginEmail" type="text" class="form-control text-center" value="{{ $userLoginEmail }}">
                                 <button type="button" class="btn btn-success btn-sm" onclick="copyLoginLink()" style="margin-top: 10px; width: 100%;">
                                     {{ __('messages.copy_link') }}
                                     <i class="fa fa-copy" style="margin: 0px 5px;"></i> 
-                                </button>
+                                </button> --}}
                             </div>
                             <input type="hidden" name="password" id="passwordHidden" />
                         </div>

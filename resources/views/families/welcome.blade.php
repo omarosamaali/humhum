@@ -950,12 +950,18 @@
         $t = $static[$lang] ?? $static['ar'];
         @endphp
 
-        <a href="{{ route('families.meals.show', $recipe->id) }}" class="button-special-request">
-            {{ $t['new_request'] }}
-        </a>
-        <a href="{{ route('families.meals.index') }}" class="button-special-request">
-            {{ $t['cooking_schedule'] }}
-        </a>
+        @if($recipe)
+            <a href="{{ route('families.meals.show', $recipe->id) }}" class="button-special-request">
+                {{ $t['new_request'] }}
+            </a>
+            <a href="{{ route('families.meals.index') }}" class="button-special-request">
+                {{ $t['cooking_schedule'] }}
+            </a>
+            @else
+            <a href="{{ route('families.meals.index') }}" class="button-special-request" style="width: 100%;">
+                {{ $t['cooking_schedule'] }}
+            </a>
+            @endif
     </div>
     @if(auth()->check() || session('is_family_logged_in') || session('is_cook_logged_in'))
 
