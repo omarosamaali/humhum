@@ -74,20 +74,43 @@ class SpecialController extends Controller
             ]);
 
             // حفظ الحاضرين
+            // حفظ الحاضرين
             if ($request->has('attendees') && is_array($request->attendees)) {
-                $attendees = [];
+                $userAttendees = [];
+                $familyAttendees = [];
+
                 foreach ($request->attendees as $attendeeId) {
-                    // تحديد النوع: لو كان نفس المستخدم أو من MyFamily
-                    $type = ($attendeeId == auth()->id()) ? 'user' : 'family_member';
-                    $attendees[] = [
-                        'special_request_id' => $special->id,
-                        'attendee_id' => $attendeeId,
-                        'attendee_type' => $type,
-                        'created_at' => now(),
-                        'updated_at' => now(),
-                    ];
+                    $attendeeId = (int) $attendeeId;
+                    $now = now();
+
+                    if ($attendeeId === auth()->id()) {
+                        $userAttendees[] = [
+                            'special_request_id' => $special->id,
+                            'attendee_id' => $attendeeId,
+                            'attendee_type' => 'user',
+                            'created_at' => $now,
+                            'updated_at' => $now,
+                        ];
+                    } else {
+                        $familyAttendees[] = [
+                            'special_request_id' => $special->id,
+                            'attendee_id' => $attendeeId,
+                            'attendee_type' => 'family_member',
+                            'created_at' => $now,
+                            'updated_at' => $now,
+                        ];
+                    }
                 }
-                SpecialRequestAttendee::insert($attendees);
+
+                if (!empty($familyAttendees)) {
+                    SpecialRequestAttendee::insert($familyAttendees);
+                }
+
+                if (!empty($userAttendees)) {
+                    DB::statement('SET FOREIGN_KEY_CHECKS=0');
+                    SpecialRequestAttendee::insert($userAttendees);
+                    DB::statement('SET FOREIGN_KEY_CHECKS=1');
+                }
             }
         });
 
