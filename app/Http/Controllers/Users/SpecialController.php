@@ -168,7 +168,8 @@ class SpecialController extends Controller
 
             // لو اختار طباخ محترف → نبعت له notification
             if ($cookId) {
-                $topic = 'humhum_chef_' . $cookId . '_' . $userId;
+                $cook  = Cook::find($cookId);
+                $topic = 'humhum_chef_' . ($cook->cook_number ?? $cookId) . '_' . $cookId;
 
                 $mealTypeMap = [
                     'breakfast' => 'إفطار',

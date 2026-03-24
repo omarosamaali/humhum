@@ -72,6 +72,49 @@ class NotificationController extends Controller
     }
 
 
+    public function subscribeChefTopic(Request $request)
+    {
+        $request->validate([
+            'fcm_token'   => 'required|string',
+            'cook_id'     => 'required|integer',
+            'cook_number' => 'required|string',
+        ]);
+
+        $fcmToken   = $request->fcm_token;
+        $cookId     = $request->cook_id;
+        $cookNumber = $request->cook_number;
+        $topic      = 'humhum_chef_' . $cookNumber . '_' . $cookId;
+
+        \Log::info('📲 [CHEF SUBSCRIBE] subscribeChefTopic called', [
+            'cook_id'     => $cookId,
+            'cook_number' => $cookNumber,
+            'topic'       => $topic,
+        ]);
+
+        try {
+            // جيب user_id من الـ cook
+            $cook   = \App\Models\Cook::find($cookId);
+            $userId = $cook?->user_id;
+
+            FcmTopic::updateOrCreate(
+                ['topic' => $topic],
+                ['user_id' => $userId, 'fcm_token' => $fcmToken]
+            );
+
+            \App\Models\User::where('id', $userId)->update(['fcm_token' => $fcmToken]);
+
+            $messaging = app('firebase.messaging');
+            $messaging->subscribeToTopic($topic, $fcmToken);
+
+            \Log::info("✅ [CHEF SUBSCRIBE] Cook $cookId subscribed to: $topic");
+
+            return response()->json(['success' => true, 'topic' => $topic]);
+        } catch (\Exception $e) {
+            \Log::error('❌ [CHEF SUBSCRIBE] Error: ' . $e->getMessage());
+            return response()->json(['success' => false, 'error' => $e->getMessage()], 500);
+        }
+    }
+
     public function index()
     {
         $notifications = Notification::where('user_id', Auth::id())->orderBy('created_at', 'desc')->get();

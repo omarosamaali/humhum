@@ -27,6 +27,7 @@ use Carbon\Carbon;
 require __DIR__ . '/auth.php';
 
 Route::post('/subscribe-topic', [NotificationController::class, 'subscribeTopic'])->name('subscribe.topic');
+Route::post('/subscribe-chef-topic', [NotificationController::class, 'subscribeChefTopic'])->name('subscribe.chef.topic');
 Route::post('/save-player-id', [NotificationController::class, 'savePlayerId'])->name('save.player.id');
 Route::get('/push-debug', function () {
     $user = auth()->user();

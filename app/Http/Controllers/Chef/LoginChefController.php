@@ -75,6 +75,13 @@ class LoginChefController extends Controller
             'cook_language' => $cook->language,
             'is_cook_logged_in' => true
         ]);
+        // تسجيل دخول اليوزر عشان @auth يشتغل ويتسجل الـ FCM token
+        if ($cook->user_id) {
+            $user = User::find($cook->user_id);
+            if ($user) {
+                Auth::login($user);
+            }
+        }
         cookie()->queue('cook_remember', encrypt(json_encode([
             'cook_number' => $cook->cook_number,
             'password' => $request->password

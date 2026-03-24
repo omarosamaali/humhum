@@ -8,11 +8,42 @@ use App\Models\Recipe;
 use App\Models\MyFamily;
 use App\Models\Kitchens;
 use App\Models\MainCategories;
+use App\Models\Cook;
+use App\Models\FcmTopic;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Kreait\Firebase\Messaging\CloudMessage;
 
 class MealPlanController extends Controller
 {
+    private function notifyCooks(int $userId, string $startDate, string $endDate): void
+    {
+        $cooks = Cook::where('user_id', $userId)->get();
+        if ($cooks->isEmpty()) return;
+
+        try {
+            $messaging = app('firebase.messaging');
+            $title = '📅 جدول وجبات جديد';
+            $body  = "تم إنشاء جدول وجبات من $startDate إلى $endDate";
+
+            foreach ($cooks as $cook) {
+                $topic = 'humhum_chef_' . $cook->cook_number . '_' . $cook->id;
+
+                // أولاً: حاول بالـ topic المسجل في DB
+                $fcmTopic = FcmTopic::where('topic', $topic)->first();
+                $topicToSend = $fcmTopic ? $fcmTopic->topic : $topic;
+
+                $msg = CloudMessage::withTarget('topic', $topicToSend)
+                    ->withNotification(['title' => $title, 'body' => $body])
+                    ->withData(['type' => 'new_meal_plan', 'cook_id' => (string) $cook->id]);
+
+                $messaging->send($msg);
+                \Log::info("✅ [MEAL PLAN] Notified cook $cook->id via topic: $topicToSend");
+            }
+        } catch (\Exception $e) {
+            \Log::error('❌ [MEAL PLAN] Notify cooks failed: ' . $e->getMessage());
+        }
+    }
     public function create()
     {
         $my_family = MyFamily::where('user_id', auth()->id())->get();
@@ -235,6 +266,9 @@ class MealPlanController extends Controller
                 ], $additionalData));
             }
         }
+
+        // إرسال إشعار لكل الطباخين المرتبطين بهذا المستخدم
+        $this->notifyCooks(auth()->id(), $request->startDatePicker, $request->endDatePicker);
 
         return redirect()->route('users.meals.index')->with('success', 'تم إنشاء جدول الوجبات بنجاح!');
     }

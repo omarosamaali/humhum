@@ -104,3 +104,56 @@
         {{ $t['new_request'] }}
     </a>
 </div>
+
+@auth
+<script>
+async function saveChefFCMToken(token) {
+    if (!token) return;
+    try {
+        await fetch('{{ route("subscribe.chef.topic") }}', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
+            body: JSON.stringify({
+                fcm_token:   token,
+                cook_id:     {{ session('cook_id', 0) }},
+                cook_number: '{{ session('cook_number', '') }}'
+            })
+        });
+        console.log('✅ Chef FCM token saved');
+    } catch (e) {
+        console.error('❌ Failed to save chef FCM token:', e);
+    }
+}
+
+async function initChefFCMToken() {
+    if (window._fcmToken && window._fcmToken.length > 10) {
+        await saveChefFCMToken(window._fcmToken); return;
+    }
+    if (window.AndroidBridge && typeof window.AndroidBridge.getFCMToken === 'function') {
+        const t = window.AndroidBridge.getFCMToken();
+        if (t && t.length > 10) { await saveChefFCMToken(t); return; }
+    }
+    try {
+        const { initializeApp } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js');
+        const { getMessaging, getToken } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-messaging.js');
+        const app = initializeApp({
+            apiKey: "AIzaSyBQCPTwnybdtLNUwNCzDDA23TLt3pD5zP4",
+            authDomain: "omdachina25.firebaseapp.com",
+            projectId: "omdachina25",
+            storageBucket: "omdachina25.firebasestorage.app",
+            messagingSenderId: "1031143486488",
+            appId: "1:1031143486488:web:0a662055d970826268bf6d"
+        });
+        const messaging = getMessaging(app);
+        const permission = await Notification.requestPermission();
+        if (permission !== 'granted') return;
+        const token = await getToken(messaging, { vapidKey: 'BB168ueRnlIhDY0r5lrLD7pvQydPk467794F97CWizmwnvzxAWtlx3fuZ9NQtxc0QeokXdnBjiYoiINBIRvCQiY' });
+        if (token) await saveChefFCMToken(token);
+    } catch (e) {
+        console.log('ℹ️ Web Push not supported:', e.message);
+    }
+}
+
+initChefFCMToken();
+</script>
+@endauth
