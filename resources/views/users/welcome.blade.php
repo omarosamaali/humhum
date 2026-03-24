@@ -653,17 +653,24 @@
     }
 
     async function initFCMToken() {
-        // الطريقة 1: لو التطبيق WebView وعنده AndroidBridge
+        // الطريقة 1: الأندرويد بيحقن الـ token مباشرة في window._fcmToken
+        if (window._fcmToken && window._fcmToken.length > 10) {
+            console.log('📱 Got token from Android (_fcmToken)');
+            await saveFCMToken(window._fcmToken);
+            return;
+        }
+
+        // الطريقة 2: لو التطبيق WebView وعنده AndroidBridge
         if (window.AndroidBridge && typeof window.AndroidBridge.getFCMToken === 'function') {
             const token = window.AndroidBridge.getFCMToken();
             if (token && token.length > 10) {
-                console.log('📱 Got token from Android native');
+                console.log('📱 Got token from AndroidBridge');
                 await saveFCMToken(token);
                 return;
             }
         }
 
-        // الطريقة 2: Web Push (للمتصفح العادي فقط)
+        // الطريقة 3: Web Push (للمتصفح العادي فقط)
         try {
             const { initializeApp } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js');
             const { getMessaging, getToken } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-messaging.js');

@@ -40,4 +40,45 @@ class OneSignalService
             return false;
         }
     }
+
+    public function sendToUser($userId, $title, $message, $data = [])
+    {
+        $subscriptions = \App\Models\PushSubscription::where('user_id', $userId)
+            ->whereNotNull('player_id')
+            ->pluck('player_id')
+            ->toArray();
+
+        \Log::info('🔔 [OneSignal] sendToUser', [
+            'user_id' => $userId,
+            'player_ids_found' => count($subscriptions),
+        ]);
+
+        if (empty($subscriptions)) {
+            \Log::warning('⚠️ [OneSignal] No player IDs for user: ' . $userId);
+            return false;
+        }
+
+        try {
+            $response = $this->client->post('https://onesignal.com/api/v1/notifications', [
+                'headers' => [
+                    'Content-Type' => 'application/json',
+                    'Authorization' => 'Basic ' . $this->restApiKey,
+                ],
+                'json' => [
+                    'app_id' => $this->appId,
+                    'include_player_ids' => $subscriptions,
+                    'headings' => ['ar' => $title],
+                    'contents' => ['ar' => $message],
+                    'priority' => 10,
+                    'data' => $data,
+                ]
+            ]);
+
+            \Log::info('✅ [OneSignal] Sent successfully to user: ' . $userId);
+            return json_decode($response->getBody(), true);
+        } catch (\Exception $e) {
+            \Log::error('❌ [OneSignal] sendToUser Error: ' . $e->getMessage());
+            return false;
+        }
+    }
 }

@@ -297,8 +297,10 @@
     
     <script>
         if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/sw.js');
-    }
+            navigator.serviceWorker.register('/sw.js', { scope: '/' })
+                .then(reg => console.log('✅ SW registered'))
+                .catch(err => console.log('❌ SW error:', err));
+        }
     </script>
 </head>
 

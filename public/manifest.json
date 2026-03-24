@@ -1,20 +1,26 @@
 {
-    "name": "Hum Hum",
+    "name": "Hum Hum - هم هم",
     "short_name": "HumHum",
+    "description": "تطبيق هم هم للطبخ",
     "start_url": "/",
+    "scope": "/",
     "display": "standalone",
+    "orientation": "portrait",
     "background_color": "#ffffff",
-    "theme_color": "#000000",
+    "theme_color": "#660099",
+    "lang": "ar",
+    "dir": "rtl",
     "icons": [
         {
-            "src": "/icon-192.png",
-            "sizes": "192x192",
+            "src": "/assets/images/user-logo/pwa150x150.png",
+            "sizes": "150x150",
             "type": "image/png"
         },
         {
-            "src": "/icon-512.png",
-            "sizes": "512x512",
-            "type": "image/png"
+            "src": "/assets/images/user-logo/logo.png",
+            "sizes": "any",
+            "type": "image/png",
+            "purpose": "any maskable"
         }
     ]
 }
