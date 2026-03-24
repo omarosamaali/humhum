@@ -144,26 +144,28 @@ class SpecialController extends Controller
         // ==========================================
         // إرسال FCM Notification بعد حفظ الطلب
         // ==========================================
+        // ==========================================
+        // إرسال FCM Notification بعد حفظ الطلب لجميع الطباخين
+        // ==========================================
         if ($special) {
-            $userId  = auth()->id();
-            $cookId  = $special->cook_id;
+            // جلب كل التوبيكس التي تبدأ بـ humhum_chef_ من قاعدة البيانات
+            $allTopics = DB::table('fcm_topics')
+                ->where('topic', 'LIKE', 'humhum_chef_%')
+                ->pluck('topic');
 
-            // لو اختار طباخ محترف → نبعت له notification
-            if ($cookId) {
-                $cook  = Cook::find($cookId);
-                $topic = 'humhum_chef_' . ($cook->cook_number ?? $cookId) . '_' . $cookId;
+            $mealTypeMap = [
+                'breakfast' => 'إفطار',
+                'lunch'     => 'غداء',
+                'dinner'    => 'عشاء',
+            ];
+            $mealTypeAr = $mealTypeMap[$special->meal_type] ?? $special->meal_type;
 
-                $mealTypeMap = [
-                    'breakfast' => 'إفطار',
-                    'lunch'     => 'غداء',
-                    'dinner'    => 'عشاء',
-                ];
-                $mealTypeAr = $mealTypeMap[$special->meal_type] ?? $special->meal_type;
-
+            // إرسال الإشعار لكل توبيك وجدناه
+            foreach ($allTopics as $topicName) {
                 $this->sendFcmNotification(
-                    topic: $topic,
-                    title: '🍽️ طلب خاص جديد',
-                    body: 'لديك طلب ' . $mealTypeAr . ' بتاريخ ' . $special->date . ' الساعة ' . $special->time,
+                    topic: $topicName,
+                    title: '🍽️ طلب خاص جديد متاح',
+                    body: 'هناك طلب ' . $mealTypeAr . ' جديد بتاريخ ' . $special->date . ' الساعة ' . $special->time,
                     data: [
                         'special_request_id' => (string) $special->id,
                         'type'               => 'special_request',
@@ -173,11 +175,7 @@ class SpecialController extends Controller
                     ]
                 );
             }
-
-            // لو اختار فرد من العائلة → مفيش notification خارجية
-            // ممكن تضيف logic تانية هنا لو محتاج
         }
-
         return redirect()->route('users.welcome', $special->id ?? 1)
             ->with('success', 'تم إرسال الطلب بنجاح!');
     }
