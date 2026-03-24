@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(grep -r \"fcm_token\\\\|getFCMToken\\\\|getToken\\\\|firebase.messaging\\\\|initializeApp\" 'f:/Hum Hum/resources' --include=*.js --include=*.blade.php -l)"
+    ]
+  }
+}

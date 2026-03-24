@@ -44,6 +44,9 @@ class NotificationController extends Controller
                 ]
             );
 
+            // حفظ الـ token في جدول users أيضاً عشان يُستخدم في الإشعارات المباشرة
+            \App\Models\User::where('id', $userId)->update(['fcm_token' => $fcmToken]);
+
             // الاشتراك في التوبيك في Firebase
             $messaging = app('firebase.messaging');
             $messaging->subscribeToTopic($topic, $fcmToken);

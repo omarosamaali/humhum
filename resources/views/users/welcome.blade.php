@@ -629,4 +629,54 @@
     }
 </script>
 @endif
+
+@auth
+<script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+    import { getMessaging, getToken } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-messaging.js';
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyBQCPTwnybdtLNUwNCzDDA23TLt3pD5zP4",
+        authDomain: "omdachina25.firebaseapp.com",
+        databaseURL: "https://omdachina25-default-rtdb.firebaseio.com",
+        projectId: "omdachina25",
+        storageBucket: "omdachina25.firebasestorage.app",
+        messagingSenderId: "1031143486488",
+        appId: "1:1031143486488:web:0a662055d970826268bf6d",
+        measurementId: "G-G9TLSKJ92H"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const messaging = getMessaging(app);
+
+    async function initFCMToken() {
+        try {
+            const permission = await Notification.requestPermission();
+            if (permission !== 'granted') return;
+
+            const token = await getToken(messaging, {
+                vapidKey: 'BB168ueRnlIhDY0r5lrLD7pvQydPk467794F97CWizmwnvzxAWtlx3fuZ9NQtxc0QeokXdnBjiYoiINBIRvCQiY'
+            });
+
+            if (!token) return;
+
+            await fetch('{{ route("subscribe.topic") }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: JSON.stringify({
+                    fcm_token: token,
+                    user_id: {{ auth()->id() }}
+                })
+            });
+        } catch (e) {
+            console.error('FCM init error:', e);
+        }
+    }
+
+    initFCMToken();
+</script>
+@endauth
 @endsection
