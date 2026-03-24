@@ -10,43 +10,25 @@ use App\Models\Recipe;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Http;
 use App\Models\SpecialRequestAttendee;
 
 class SpecialController extends Controller
 {
     // ==========================================
-    // إرسال FCM Notification عن طريق Topic
-    // Topic format: humhum_chef_{cook_id}_{user_id}
+    // إرسال FCM Notification عن طريق Topic (Kreait SDK)
+    // Topic format: humhum_chef_{cook_number}_{cook_id}
     // ==========================================
     private function sendFcmNotification(string $topic, string $title, string $body, array $data = []): void
     {
         try {
-            $serverKey = config('services.fcm.server_key'); // ضيف في config/services.php
-
-            $response = Http::withHeaders([
-                'Authorization' => 'key=' . $serverKey,
-                'Content-Type'  => 'application/json',
-            ])->post('https://fcm.googleapis.com/fcm/send', [
-                'to'           => '/topics/' . $topic,
-                'notification' => [
-                    'title' => $title,
-                    'body'  => $body,
-                    'sound' => 'default',
-                ],
-                'data' => array_merge($data, [
-                    'click_action' => 'FLUTTER_NOTIFICATION_CLICK',
-                ]),
-            ]);
-
-            if (!$response->successful()) {
-                Log::error('FCM Error', [
-                    'topic'    => $topic,
-                    'response' => $response->json(),
-                ]);
-            }
+            $messaging = app('firebase.messaging');
+            $message = \Kreait\Firebase\Messaging\CloudMessage::withTarget('topic', $topic)
+                ->withNotification(['title' => $title, 'body' => $body])
+                ->withData(array_merge($data, ['click_action' => 'FLUTTER_NOTIFICATION_CLICK']));
+            $messaging->send($message);
+            Log::info('✅ [SPECIAL] FCM sent to chef topic: ' . $topic);
         } catch (\Exception $e) {
-            Log::error('FCM Exception: ' . $e->getMessage(), ['topic' => $topic]);
+            Log::error('❌ [SPECIAL] FCM failed for topic ' . $topic . ': ' . $e->getMessage());
         }
     }
 
@@ -221,7 +203,8 @@ class SpecialController extends Controller
 
         // إشعار الطباخ بالإلغاء قبل الحذف
         if ($specialRequest->cook_id) {
-            $topic = 'humhum_chef_' . $specialRequest->cook_id . '_' . auth()->id();
+            $cancelCook = Cook::find($specialRequest->cook_id);
+            $topic = 'humhum_chef_' . ($cancelCook->cook_number ?? $specialRequest->cook_id) . '_' . $specialRequest->cook_id;
 
             $this->sendFcmNotification(
                 topic: $topic,
