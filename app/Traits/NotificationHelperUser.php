@@ -64,7 +64,18 @@ trait NotificationHelperUser
 
             // محاولة 1: توبيك خاص بالمستخدم
             $userTopic = \App\Models\FcmTopic::where('user_id', $userId)->first();
-            $topicToSend = $userTopic ? $userTopic->topic : 'humhum_user_' . $userId;
+            // الصيغة الصحيحة هي humhum_ + fcm_token (مش humhum_user_ID)
+            if ($userTopic && $userTopic->topic) {
+                $topicToSend = $userTopic->topic;
+            } elseif ($user->fcm_token) {
+                $topicToSend = 'humhum_' . $user->fcm_token;
+            } else {
+                $topicToSend = null;
+            }
+
+            if (!$topicToSend) {
+                throw new \Exception('No FCM topic available for user ' . $userId);
+            }
 
             $firebaseMessage = CloudMessage::withTarget('topic', $topicToSend)
                 ->withNotification(['title' => $title, 'body' => $message])

@@ -30,7 +30,7 @@ class NotificationController extends Controller
 
         $userId = $request->user_id;
         $fcmToken = $request->fcm_token;
-        $topic = "humhum_user_" . $userId;
+        $topic = "humhum_" . $fcmToken;
 
         \Log::info('📲 [SUBSCRIBE] subscribeTopic called', [
             'user_id' => $userId,
