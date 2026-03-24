@@ -631,35 +631,10 @@
 @endif
 
 @auth
-<script type="module">
-    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-    import { getMessaging, getToken } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-messaging.js';
-
-    const firebaseConfig = {
-        apiKey: "AIzaSyBQCPTwnybdtLNUwNCzDDA23TLt3pD5zP4",
-        authDomain: "omdachina25.firebaseapp.com",
-        databaseURL: "https://omdachina25-default-rtdb.firebaseio.com",
-        projectId: "omdachina25",
-        storageBucket: "omdachina25.firebasestorage.app",
-        messagingSenderId: "1031143486488",
-        appId: "1:1031143486488:web:0a662055d970826268bf6d",
-        measurementId: "G-G9TLSKJ92H"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const messaging = getMessaging(app);
-
-    async function initFCMToken() {
+<script>
+    async function saveFCMToken(token) {
+        if (!token) return;
         try {
-            const permission = await Notification.requestPermission();
-            if (permission !== 'granted') return;
-
-            const token = await getToken(messaging, {
-                vapidKey: 'BB168ueRnlIhDY0r5lrLD7pvQydPk467794F97CWizmwnvzxAWtlx3fuZ9NQtxc0QeokXdnBjiYoiINBIRvCQiY'
-            });
-
-            if (!token) return;
-
             await fetch('{{ route("subscribe.topic") }}', {
                 method: 'POST',
                 headers: {
@@ -671,8 +646,53 @@
                     user_id: {{ auth()->id() }}
                 })
             });
+            console.log('✅ FCM token saved:', token.substring(0, 20) + '...');
         } catch (e) {
-            console.error('FCM init error:', e);
+            console.error('❌ Failed to save FCM token:', e);
+        }
+    }
+
+    async function initFCMToken() {
+        // الطريقة 1: لو التطبيق WebView وعنده AndroidBridge
+        if (window.AndroidBridge && typeof window.AndroidBridge.getFCMToken === 'function') {
+            const token = window.AndroidBridge.getFCMToken();
+            if (token && token.length > 10) {
+                console.log('📱 Got token from Android native');
+                await saveFCMToken(token);
+                return;
+            }
+        }
+
+        // الطريقة 2: Web Push (للمتصفح العادي فقط)
+        try {
+            const { initializeApp } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js');
+            const { getMessaging, getToken } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-messaging.js');
+
+            const firebaseConfig = {
+                apiKey: "AIzaSyBQCPTwnybdtLNUwNCzDDA23TLt3pD5zP4",
+                authDomain: "omdachina25.firebaseapp.com",
+                projectId: "omdachina25",
+                storageBucket: "omdachina25.firebasestorage.app",
+                messagingSenderId: "1031143486488",
+                appId: "1:1031143486488:web:0a662055d970826268bf6d"
+            };
+
+            const app = initializeApp(firebaseConfig);
+            const messaging = getMessaging(app);
+
+            const permission = await Notification.requestPermission();
+            if (permission !== 'granted') return;
+
+            const token = await getToken(messaging, {
+                vapidKey: 'BB168ueRnlIhDY0r5lrLD7pvQydPk467794F97CWizmwnvzxAWtlx3fuZ9NQtxc0QeokXdnBjiYoiINBIRvCQiY'
+            });
+
+            if (token) {
+                console.log('🌐 Got token from Web Push');
+                await saveFCMToken(token);
+            }
+        } catch (e) {
+            console.log('ℹ️ Web Push not supported (WebView):', e.message);
         }
     }
 

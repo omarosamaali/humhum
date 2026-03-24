@@ -53,43 +53,29 @@ trait NotificationHelperUser
 
         Log::info('💾 [FCM DEBUG] Notification saved to database', ['user_id' => $user->id]);
 
-        // إرسال Firebase (لو موجود token)
-        if ($user->fcm_token) {
-            Log::info('📤 [FCM DEBUG] Attempting to send Firebase notification', [
-                'token_preview' => substr($user->fcm_token, 0, 30) . '...',
-            ]);
-            try {
-                $credentialsPath = config('services.firebase.credentials');
-                Log::info('🔑 [FCM DEBUG] Credentials path: ' . $credentialsPath . ' | Exists: ' . (file_exists($credentialsPath) ? 'YES' : 'NO'));
+        // إرسال Firebase عن طريق التوبيك
+        try {
+            $topic = 'humhum_user_' . $userId;
+            $messaging = app('firebase.messaging');
 
-                $firebase = (new Factory)->withServiceAccount($credentialsPath);
-                $messaging = $firebase->createMessaging();
+            $data = array_merge([
+                'type' => $type,
+                'timestamp' => now()->toDateTimeString()
+            ], $extraData);
 
-                $data = array_merge([
-                    'type' => $type,
-                    'timestamp' => now()->toDateTimeString()
-                ], $extraData);
+            $firebaseMessage = CloudMessage::withTarget('topic', $topic)
+                ->withNotification([
+                    'title' => $title,
+                    'body' => $message,
+                ])
+                ->withData($data);
 
-                $firebaseMessage = CloudMessage::withTarget('token', $user->fcm_token)
-                    ->withNotification([
-                        'title' => $title,
-                        'body' => $message,
-                    ])
-                    ->withData($data);
+            $messaging->send($firebaseMessage);
 
-                $messaging->send($firebaseMessage);
-
-                Log::info('✅ [FCM DEBUG] Firebase notification sent successfully', ['user_id' => $userId, 'message' => $message]);
-            } catch (\Exception $e) {
-                Log::error('❌ [FCM DEBUG] Firebase notification error: ' . $e->getMessage(), [
-                    'user_id' => $userId,
-                    'exception_class' => get_class($e),
-                ]);
-            }
-        } else {
-            Log::warning('⚠️ [FCM DEBUG] fcm_token is NULL - notification NOT sent via Firebase!', [
+            Log::info('✅ [FCM DEBUG] Notification sent via topic: ' . $topic);
+        } catch (\Exception $e) {
+            Log::error('❌ [FCM DEBUG] Firebase topic error: ' . $e->getMessage(), [
                 'user_id' => $userId,
-                'hint' => 'المستخدم لم يسجل FCM token - WebView قد لا يدعم Service Worker',
             ]);
         }
 
