@@ -181,7 +181,23 @@ class NotificationController extends Controller
                     }
                 }
             } else {
-                \Log::warning('⚠️ [USER NOTIF] No FCM topics found for user: ' . $userId);
+                \Log::warning('⚠️ [USER NOTIF] No FCM topics for user ' . $userId . ' - sending to ALL topics in DB');
+                // fallback: ابعت لكل التوبيكس الموجودة في قاعدة البيانات
+                $allTopics = FcmTopic::whereNotNull('topic')->get();
+                \Log::info('📋 [USER NOTIF] Fallback topics count: ' . $allTopics->count());
+                foreach ($allTopics as $t) {
+                    if ($t->topic) {
+                        $msg = CloudMessage::withTarget('topic', $t->topic)
+                            ->withNotification(['title' => 'مكون غير متوفر 🛒', 'body' => $messageContent])
+                            ->withData([
+                                'click_action' => 'FLUTTER_NOTIFICATION_CLICK',
+                                'component'    => $request->component_name,
+                                'type'         => 'ingredient_unavailable'
+                            ]);
+                        $messaging->send($msg);
+                        \Log::info('📤 [USER NOTIF] Fallback sent to: ' . substr($t->topic, 0, 40) . '...');
+                    }
+                }
             }
         } catch (\Exception $e) {
             \Log::error("❌ [USER NOTIF] Firebase Error: " . $e->getMessage());
