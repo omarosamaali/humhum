@@ -53,9 +53,8 @@ trait NotificationHelperUser
 
         Log::info('💾 [FCM DEBUG] Notification saved to database', ['user_id' => $user->id]);
 
-        // إرسال Firebase عن طريق التوبيك
+        // إرسال Firebase
         try {
-            $topic = 'humhum_user_' . $userId;
             $messaging = app('firebase.messaging');
 
             $data = array_merge([
@@ -63,20 +62,40 @@ trait NotificationHelperUser
                 'timestamp' => now()->toDateTimeString()
             ], $extraData);
 
-            $firebaseMessage = CloudMessage::withTarget('topic', $topic)
-                ->withNotification([
-                    'title' => $title,
-                    'body' => $message,
-                ])
+            // محاولة 1: توبيك خاص بالمستخدم
+            $userTopic = \App\Models\FcmTopic::where('user_id', $userId)->first();
+            $topicToSend = $userTopic ? $userTopic->topic : 'humhum_user_' . $userId;
+
+            $firebaseMessage = CloudMessage::withTarget('topic', $topicToSend)
+                ->withNotification(['title' => $title, 'body' => $message])
                 ->withData($data);
 
             $messaging->send($firebaseMessage);
+            Log::info('✅ [FCM DEBUG] Sent via topic: ' . $topicToSend);
 
-            Log::info('✅ [FCM DEBUG] Notification sent via topic: ' . $topic);
         } catch (\Exception $e) {
-            Log::error('❌ [FCM DEBUG] Firebase topic error: ' . $e->getMessage(), [
-                'user_id' => $userId,
-            ]);
+            Log::warning('⚠️ [FCM DEBUG] Topic failed: ' . $e->getMessage() . ' - trying all topics');
+
+            // محاولة 2: إرسال لكل التوبيكس الموجودة في قاعدة البيانات
+            try {
+                $allTopics = \App\Models\FcmTopic::whereNotNull('topic')->get();
+                Log::info('📋 [FCM DEBUG] All topics in DB: ' . $allTopics->count());
+
+                if ($allTopics->isNotEmpty()) {
+                    $messaging = app('firebase.messaging');
+                    foreach ($allTopics as $t) {
+                        $msg = CloudMessage::withTarget('topic', $t->topic)
+                            ->withNotification(['title' => $title, 'body' => $message])
+                            ->withData($data);
+                        $messaging->send($msg);
+                        Log::info('📤 [FCM DEBUG] Sent to fallback topic: ' . $t->topic);
+                    }
+                } else {
+                    Log::warning('❌ [FCM DEBUG] No topics at all in DB - user must subscribe first');
+                }
+            } catch (\Exception $e2) {
+                Log::error('❌ [FCM DEBUG] All fallbacks failed: ' . $e2->getMessage());
+            }
         }
 
         return true;

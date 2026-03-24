@@ -363,7 +363,14 @@ class FamilyController extends Controller
             'is_family_logged_in' => true
         ]);
 
-        // حفظ cookie بناءً على id بدل password
+        // تسجيل دخول اليوزر الرئيسي عشان @auth يشتغل وتتسجل الـ FCM token
+        if ($familyMember->user_id) {
+            $parentUser = User::find($familyMember->user_id);
+            if ($parentUser) {
+                Auth::login($parentUser);
+            }
+        }
+
         cookie()->queue('family_remember', encrypt(json_encode([
             'family_number' => $familyMember->family_number,
             'member_id' => $familyMember->id
