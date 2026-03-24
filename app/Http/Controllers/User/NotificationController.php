@@ -30,9 +30,13 @@ class NotificationController extends Controller
 
         $userId = $request->user_id;
         $fcmToken = $request->fcm_token;
-
-        // إنشاء التوبيك (نفس الطريقة اللي في Firebase Console)
         $topic = "humhum_user_" . $userId;
+
+        \Log::info('📲 [SUBSCRIBE] subscribeTopic called', [
+            'user_id' => $userId,
+            'topic' => $topic,
+            'token_preview' => substr($fcmToken, 0, 30) . '...',
+        ]);
 
         try {
             // حفظ في قاعدة البيانات
@@ -119,7 +123,14 @@ class NotificationController extends Controller
         ]);
 
         $userId = $this->getUserId();
+
+        \Log::info('📨 [USER NOTIF] sendUnavailableNotificationFamily called', [
+            'user_id' => $userId,
+            'component' => $request->component_name,
+        ]);
+
         if (!$userId) {
+            \Log::warning('❌ [USER NOTIF] No user_id - aborting');
             return response()->json(['success' => false, 'message' => 'المستخدم غير موجود'], 401);
         }
 
@@ -146,6 +157,11 @@ class NotificationController extends Controller
             $messaging = app('firebase.messaging');
             $userTopics = FcmTopic::where('user_id', $userId)->get();
 
+            \Log::info('🔍 [USER NOTIF] FCM Topics found: ' . $userTopics->count(), [
+                'user_id' => $userId,
+                'topics' => $userTopics->pluck('topic')->toArray(),
+            ]);
+
             if ($userTopics->isNotEmpty()) {
                 foreach ($userTopics as $userTopic) {
                     if ($userTopic->topic) {
@@ -161,12 +177,14 @@ class NotificationController extends Controller
                             ]);
 
                         $messaging->send($fcmMessage);
-                        \Log::info("✅ FCM Unavailable sent to: {$userTopic->topic}");
+                        \Log::info("✅ [USER NOTIF] FCM sent to topic: {$userTopic->topic}");
                     }
                 }
+            } else {
+                \Log::warning('⚠️ [USER NOTIF] No FCM topics found for user: ' . $userId);
             }
         } catch (\Exception $e) {
-            \Log::error("❌ Firebase Error: " . $e->getMessage());
+            \Log::error("❌ [USER NOTIF] Firebase Error: " . $e->getMessage());
         }
 
         // 3. تعديل استدعاء موديل User (هنا كان الخطأ)

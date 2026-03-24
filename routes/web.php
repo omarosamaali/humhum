@@ -28,6 +28,16 @@ require __DIR__ . '/auth.php';
 
 Route::post('/subscribe-topic', [NotificationController::class, 'subscribeTopic'])->name('subscribe.topic');
 Route::post('/save-player-id', [NotificationController::class, 'savePlayerId'])->name('save.player.id');
+Route::get('/push-debug', function () {
+    $user = auth()->user();
+    $fcmTopic = $user ? \App\Models\FcmTopic::where('user_id', $user->id)->first() : null;
+    return response()->json([
+        'user_id' => $user?->id,
+        'fcm_token_in_db' => $user?->fcm_token ? substr($user->fcm_token, 0, 30).'...' : 'NULL',
+        'topic_in_db' => $fcmTopic?->topic ?? 'NULL',
+        'message' => 'افتح هذا الرابط في التطبيق وابعتلي النتيجة',
+    ]);
+})->name('push.debug');
 Route::post('/contacts', [ContactController::class, 'store'])->name('contacts.store');
 Route::get('/contacts', [ContactController::class, 'index'])->name('contacts.index');
 Route::patch('/contacts/{id}/read', [ContactController::class, 'markAsRead'])->name('contacts.read');

@@ -9,6 +9,7 @@ use App\Models\MyFamily;
 use App\Models\Cook;
 use App\Services\OneSignalService;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class NotificationController extends Controller
 {
@@ -31,6 +32,11 @@ class NotificationController extends Controller
         $userId = $this->getUserId();
         $familyId = session('family_id');
         $cookId = session('cook_id');
+
+        Log::info('📲 [NOTIF] savePlayerId called', [
+            'user_id' => $userId,
+            'player_id' => substr($request->player_id, 0, 20) . '...',
+        ]);
 
         PushSubscription::updateOrCreate(
             ['player_id' => $request->player_id],
@@ -55,7 +61,17 @@ class NotificationController extends Controller
         ]);
 
         $userId = $this->getUserId();
+
+        Log::info('📨 [NOTIF] sendUnavailableNotificationFamily called', [
+            'user_id' => $userId,
+            'component' => $request->component_name,
+            'session_family_id' => session('family_id'),
+            'session_cook_id' => session('cook_id'),
+            'auth_check' => Auth::check(),
+        ]);
+
         if (!$userId) {
+            Log::warning('❌ [NOTIF] No user_id found - aborting');
             return response()->json(['success' => false, 'message' => 'المستخدم غير موجود'], 401);
         }
 
@@ -91,8 +107,11 @@ class NotificationController extends Controller
             'date' => $today
         ];
 
+        Log::info('💾 [NOTIF] Notification saved to DB', ['user_id' => $userId, 'message' => $message]);
+
         // إرسال للمستخدم الرئيسي
         if ($userId) {
+            Log::info('📤 [NOTIF] Sending via OneSignal to user: ' . $userId);
             $this->oneSignal->sendToUser($userId, $title, $message, $data);
         }
 
