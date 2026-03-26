@@ -64,17 +64,42 @@
         right: -30px;
     }
 
+    /* === Back Button === */
+    .btn-back {
+        position: absolute;
+        top: 18px;
+        left: 18px;
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(8px);
+        border: 1.5px solid rgba(255, 255, 255, 0.25);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #fff;
+        text-decoration: none;
+        z-index: 2;
+        transition: background 0.2s, transform 0.15s;
+    }
+
+    .btn-back:hover {
+        background: rgba(255, 255, 255, 0.25);
+    }
+
+    .btn-back:active {
+        transform: scale(0.92);
+    }
+
     .login-hero .logo-wrap {
         display: inline-flex;
         align-items: center;
         justify-content: center;
-        /* background: rgba(255, 255, 255, 0.15); */
         backdrop-filter: blur(10px);
-        /* border-radius: 22px; */
         width: 180px;
         height: 1px;
         margin-bottom: 20px;
-        /* border: 1.5px solid rgba(255, 255, 255, 0.25); */
         position: relative;
         z-index: 1;
     }
@@ -241,11 +266,6 @@
         color: var(--primary-color, #2563eb) !important;
     }
 
-    /* Dots mask */
-    .otp-input.masked::after {
-        content: '●';
-    }
-
     /* === Submit Button === */
     .btn-login {
         width: 100%;
@@ -372,6 +392,15 @@
 
     <!-- Hero -->
     <div class="login-hero">
+
+        <!-- Back Button -->
+        <a href="{{ route('users.welcome') }}" class="btn-back" aria-label="العودة للرئيسية">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="15 18 9 12 15 6" />
+            </svg>
+        </a>
+
         <div class="logo-wrap">
             <img src="{{ asset('assets/images/user-logo/logo.png') }}" alt="logo">
         </div>
