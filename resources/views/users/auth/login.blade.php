@@ -30,11 +30,16 @@
 
     /* === Hero Top Section === */
     .login-hero {
-        background: linear-gradient(160deg, var(--primary-color, #2563eb) 0%, color-mix(in srgb, var(--primary-color, #2563eb) 70%, #000) 100%);
-        padding: 56px 28px 52px;
+        background: linear-gradient(160deg, var(--primary-color, #2563eb) 0%,
+                color-mix(in srgb, var(--primary-color, #2563eb) 70%, #000) 100%);
+        padding: 63px 26px 17px;
         position: relative;
         overflow: hidden;
         text-align: center;
+        position: fixed;
+        top: 0px;
+        z-index: 0;
+        width: 100%;
     }
 
     .login-hero::before {
@@ -67,7 +72,7 @@
         backdrop-filter: blur(10px);
         /* border-radius: 22px; */
         width: 180px;
-        height: 180px;
+        height: 1px;
         margin-bottom: 20px;
         /* border: 1.5px solid rgba(255, 255, 255, 0.25); */
         position: relative;
@@ -103,7 +108,7 @@
     .login-card {
         background: #fff;
         border-radius: 32px 32px 0 0;
-        margin-top: -24px;
+        margin-top: 210px;
         flex: 1;
         padding: 36px 24px 40px;
         position: relative;
