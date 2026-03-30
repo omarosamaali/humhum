@@ -166,7 +166,7 @@ $t = $translations[$lang] ?? $translations['ar'];
                     @endif
 
                     <div class="account-section">
-                        <form method="POST" action="{{ route('family_members.login.post') }}">
+                        <form method="POST" action="{{ route('families_members.login.post') }}">
                             @csrf
 
                             @if ($memberData)
