@@ -270,6 +270,7 @@
         }
 
     </style>
+<style>input[type="password"]{direction:ltr;text-align:left;}</style>
 </head>
 <body>
     <div class="page-wrapper">

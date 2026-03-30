@@ -18,8 +18,8 @@ Route::get('/families/meals/load-more', [SpecialFamilyController::class, 'loadMo
         ->name('families.meals.load-more');
 
 // Family Login Routes
-Route::get('family_members.login.{family_number?}.{member_id?}', [FamilyController::class, 'family_login'])->name('family_members.login');
-Route::post('users/family_members.login', [FamilyController::class, 'family_login_post'])->name('family_members.login.post');
+Route::get('families_members.login.{family_number?}.{member_id?}', [FamilyController::class, 'family_login'])->name('families_members.login');
+Route::post('users/families_members.login', [FamilyController::class, 'family_login_post'])->name('families_members.login.post');
 Route::get('families.welcome', [WelcomeController::class, 'index'])->name('families.welcome');
 
 // Family Routes

@@ -82,7 +82,7 @@
                                     <input type="hidden" name="password" id="password-hidden">
                                     @php
                                                                 $rtlLanguages = ['ar', 'ur', 'ps'];
-                                                                $dir = in_array($memberData->language, $rtlLanguages) ? 'direction:rtl;' : 'direction:ltr;';
+                                                                $dir = in_array($memberData->language, $rtlLanguages) ? 'direction:ltr;' : 'direction:ltr;';
                                                                 @endphp
                                     <div style="{{ $dir }}" id="otp" class="digit-group input-mini">
                                         <input class="form-control otp-input" type="text" maxlength="1" data-index="0">

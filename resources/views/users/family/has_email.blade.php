@@ -157,7 +157,7 @@
                                         value="{{ $myFamily?->password[3] ?? '' }}" autocomplete="off">
                                 </div>
                                 {{-- @php
-                                    $userLoginEmail = url('/') . '/family_members.login.' . Auth::user()->membership_number . '.' . $myFamily->id;
+                                    $userLoginEmail = url('/') . '/families_members.login.' . Auth::user()->membership_number . '.' . $myFamily->id;
                                 @endphp --}}
                                 {{-- <label for="userLoginEmail" style="width: 100%;" class="text-center form-label">
                                     {{ __('messages.تسجيل دخول العضو من خلال الرابط التالي') }}

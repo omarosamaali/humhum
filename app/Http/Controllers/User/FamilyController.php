@@ -333,7 +333,7 @@ class FamilyController extends Controller
             }
         }
 
-        return view('users.family_members.login', compact('memberData', 'family_number'));
+        return view('users.families_members.login', compact('memberData', 'family_number'));
     }
 
     public function family_login_post(Request $request)

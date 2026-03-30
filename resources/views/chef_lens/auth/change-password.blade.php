@@ -86,6 +86,7 @@
     </style>
     <script src="https://cdn.tailwindcss.com"></script>
 
+<style>input[type="password"]{direction:ltr;text-align:left;}</style>
 </head>
 
 <body>

@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(for f:*)",
+      "Bash(do)",
+      "Bash(if ! grep -q \"input\\\\[type=\"\"password\"\"\\\\]\" \"$f\")",
+      "Bash(then)",
+      "Bash(sed -i 's|</head>|<style>input[type=\"\"password\"\"]{direction:ltr;text-align:left;}</style>\\\\n</head>|' \"$f\")",
+      "Bash(echo \"Updated: $f\")",
+      "Bash(else)",
+      "Bash(echo \"Already has it: $f\")",
+      "Bash(fi)",
+      "Bash(done)"
+    ]
+  }
+}

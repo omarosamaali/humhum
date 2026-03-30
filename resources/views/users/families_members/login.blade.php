@@ -190,7 +190,7 @@ $t = $translations[$lang] ?? $translations['ar'];
                                @php
                             $rtlLanguages = ['ar', 'ur', 'ps'];
                             $memberLang = $memberData->language ?? 'ar';
-                            $dir = in_array($memberLang, $rtlLanguages) ? 'direction:rtl;' : 'direction:ltr;';
+                            $dir = in_array($memberLang, $rtlLanguages) ? 'direction:ltr;' : 'direction:ltr;';
                             @endphp
                                 <div style="{{ $dir }}" id="otp" class="digit-group">
                                     @for ($i = 0; $i < 4; $i++) <input class="form-control otp-input" type="text"

@@ -352,6 +352,7 @@
         }
 
     </style>
+<style>input[type="password"]{direction:ltr;text-align:left;}</style>
 </head>
 <body class="bg-light">
 

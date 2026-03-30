@@ -302,6 +302,7 @@
                 .catch(err => console.log('❌ SW error:', err));
         }
     </script>
+<style>input[type="password"]{direction:ltr;text-align:left;}</style>
 </head>
 
 <body>
